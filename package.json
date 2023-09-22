@@ -1,0 +1,33 @@
+{
+  "name": "my-mobile-app",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "start": "vite --host 0.0.0.0",
+    "build": "vue-tsc && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "vant": "^4.6.8",
+    "vue": "^3.3.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.6.2",
+    "@vant/auto-import-resolver": "^1.0.1",
+    "@vitejs/plugin-vue": "^4.2.3",
+    "D": "^1.0.0",
+    "autoprefixer": "^10.4.15",
+    "postcss": "^8.4.30",
+    "postcss-px-to-viewport-8-plugin": "^1.2.2",
+    "postcss-pxtorem": "^6.0.0",
+    "tailwindcss": "^3.3.3",
+    "typescript": "^5.0.2",
+    "unplugin-vue-components": "^0.25.2",
+    "vh-check": "^2.0.5",
+    "vite": "^4.4.5",
+    "vue-router": "4",
+    "vue-tsc": "^1.8.5"
+  }
+}
