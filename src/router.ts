@@ -6,7 +6,7 @@ const routes = [
     name: 'Home',
     component: () => import('@/views/home/index.vue'),
     mete: {
-      title: '主页'
+      title: '主页',
     },
   },
   {
@@ -14,17 +14,17 @@ const routes = [
     name: 'About',
     component: () => import('@/views/about/index.vue'),
     mete: {
-      title: '关于'
+      title: '关于',
     },
-  }
+  },
 ]
 
 const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _, next) => {
   const title = to?.meta?.title
   if (title) {
     document.title = title as string
