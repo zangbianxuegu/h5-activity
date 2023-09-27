@@ -68,9 +68,20 @@
 <script setup lang="ts">
 import { showDialog } from 'vant'
 import { ref, reactive, onMounted } from 'vue'
+import { columnList } from '@/apis/common'
 const daysList = ref<HTMLInputElement | null>(null)
 
+const params = ref({
+  id: '1',
+  status: 'open',
+})
+async function getColumnList(): Promise<void> {
+  const { code, data } = await columnList(params.value)
+  console.log(' code, data: ', code, data)
+}
+
 onMounted(() => {
+  void getColumnList()
   const first = daysList.value?.children[0]
   first && first.classList.add('active')
 })
