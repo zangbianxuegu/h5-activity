@@ -68,20 +68,9 @@
 <script setup lang="ts">
 import { showDialog } from 'vant'
 import { ref, reactive, onMounted } from 'vue'
-import { columnList } from '@/apis/common'
 const daysList = ref<HTMLInputElement | null>(null)
 
-const params = ref({
-  id: '1',
-  status: 'open',
-})
-async function getColumnList(): Promise<void> {
-  const { code, data } = await columnList(params.value)
-  console.log(' code, data: ', code, data)
-}
-
 onMounted(() => {
-  void getColumnList()
   const first = daysList.value?.children[0]
   first && first.classList.add('active')
 })
@@ -109,9 +98,26 @@ function handleHelp(): void {
 }
 
 function handleSignin(): void {
-  void showDialog({
-    teleport: '#app',
-    message: '签到成功',
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'ngwebview_notify_native',
+    reqData: {
+      notification_name: 'NT_NOTIFICATION_EXTEND',
+      data: {
+        resource: '/internal/jingling/get_player_mission_data',
+        content: {
+          task: 'page_sign_in',
+        },
+      },
+    },
+    callback_id: 'notify_signin',
+    callback: {
+      nativeCallback: function (respJSONString: string) {
+        void showDialog({
+          teleport: '#app',
+          message: JSON.parse(respJSONString).responseData,
+        })
+      },
+    },
   })
 }
 

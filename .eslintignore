@@ -1,5 +1,8 @@
 node_modules/
 dist/
+public/
+.husky/
 .prettierrc
 .eslintrc
 vite-env.d.ts
+postcss.config.js
