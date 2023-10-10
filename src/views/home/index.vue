@@ -121,19 +121,19 @@ function handleSignin(): void {
   })
 }
 
-function onResize(): void {
-  let clientWidth = document.documentElement.clientWidth
-  let clientHeight = document.documentElement.clientHeight
+// function onResize(): void {
+//   let clientWidth = document.documentElement.clientWidth
+//   let clientHeight = document.documentElement.clientHeight
 
-  if (clientWidth < clientHeight) {
-    ;[clientWidth, clientHeight] = [clientHeight, clientWidth]
-  }
-  pageStyle.value = {
-    width: `${clientWidth}px`,
-    height: `${clientHeight}px`,
-  }
-}
-window.addEventListener('resize', onResize, false)
+//   if (clientWidth < clientHeight) {
+//     ;[clientWidth, clientHeight] = [clientHeight, clientWidth]
+//   }
+//   pageStyle.value = {
+//     width: `${clientWidth}px`,
+//     height: `${clientHeight}px`,
+//   }
+// }
+// window.addEventListener('resize', onResize, false)
 </script>
 
 <style scoped lang="scss">
