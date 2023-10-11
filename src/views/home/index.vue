@@ -120,7 +120,6 @@ function handleSignin(): void {
     },
   })
 }
-
 // function onResize(): void {
 //   let clientWidth = document.documentElement.clientWidth
 //   let clientHeight = document.documentElement.clientHeight
