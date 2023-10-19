@@ -1,8 +1,11 @@
 node_modules/
 dist/
+build/
 public/
 .husky/
 .prettierrc
 .eslintrc
 vite-env.d.ts
+components.d.ts
+auto-import.d.ts
 postcss.config.js

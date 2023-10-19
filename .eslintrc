@@ -14,7 +14,8 @@
     "standard-with-typescript",
     "plugin:prettier/recommended",
     "plugin:json/recommended",
-    "prettier"
+    "prettier",
+    "./.eslintrc-auto-import.json"
   ],
   "overrides": [],
   "parser": "vue-eslint-parser",

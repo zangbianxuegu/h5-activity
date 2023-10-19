@@ -67,7 +67,6 @@
 
 <script setup lang="ts">
 import { showDialog } from 'vant'
-import { ref, reactive, onMounted } from 'vue'
 const daysList = ref<HTMLInputElement | null>(null)
 
 onMounted(() => {
@@ -104,9 +103,12 @@ function handleSignin(): void {
       notification_name: 'NT_NOTIFICATION_EXTEND',
       data: {
         resource: '/internal/jingling/get_player_mission_data',
-        content: {
-          task: 'page_sign_in',
-        },
+        content: JSON.stringify({
+          source_token: '',
+          source_id: '',
+          event: 'sprite_season20_start',
+          user: 'b0c6ae38-ea78-45a0-bf29-087a23b0400e',
+        }),
       },
     },
     callback_id: 'notify_signin',
