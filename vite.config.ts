@@ -49,11 +49,10 @@ export default defineConfig({
     },
   },
   server: {
-    port: 3000,
-    host: '0.0.0.0',
     hmr: true,
   },
   build: {
+    target: 'es2015',
     outDir: resolve(__dirname, 'build'),
     minify: 'esbuild',
     assetsInlineLimit: 4096,

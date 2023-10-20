@@ -116,7 +116,7 @@ function handleSignin(): void {
       nativeCallback: function (respJSONString: string) {
         void showDialog({
           teleport: '#app',
-          message: JSON.parse(respJSONString).responseData,
+          message: respJSONString,
         })
       },
     },
