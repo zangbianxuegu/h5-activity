@@ -12,7 +12,9 @@
     },
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,

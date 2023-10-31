@@ -7,8 +7,8 @@ export default {
     //   propList: ['*'],
     // },
     'postcss-px-to-viewport-8-plugin': {
-      viewportWidth: 1624,
-      viewportHeight: 761,
+      viewportWidth: 2560,
+      viewportHeight: 1200,
       exclude: [/node_modules/],
       viewportUnit: 'vmax',
     },

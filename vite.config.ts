@@ -6,19 +6,7 @@ import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from '@vant/auto-import-resolver'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
-// import { readFileSync } from 'fs'
 
-// const getEntryPath = (): any => {
-//   const entryMap = {}
-//   const entryPath = resolve(__dirname, './src/pages')
-//   const entryFiles = readFileSync(entryPath)
-//   entryFiles.forEach((filePath) => {
-//     entryMap[filePath] = resolve(__dirname, `/src/pages/${filePath}/index.html`)
-//   })
-//   return entryMap
-// }
-
-// https://vitejs.dev/config/
 export default defineConfig({
   root: './src/',
   base: './',
