@@ -7,7 +7,7 @@
         假日打卡
       </h1>
       <div class="date flex items-center align-middle">
-        <div class="date-text">9.28-10.6</div>
+        <div class="date-text">{{ time }}</div>
         <div
           class="date-help bg-contain bg-center bg-no-repeat"
           @click="handleHelp"
@@ -24,6 +24,7 @@
             :class="[
               'signin-day overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
               `signin-day${index + 1}`,
+              activityData.award[index] === 1 ? 'active' : '',
             ]"
           >
             {{ item }}
@@ -31,7 +32,10 @@
         </ul>
         <div class="signin-footer">
           <p class="signed-days text-right">
-            已累计签到<span class="signed-days-num">2</span>/9天
+            已累计签到<span class="signed-days-num">{{
+              activityData.value
+            }}</span
+            >/9天
           </p>
           <div class="flex items-end">
             <div
@@ -41,6 +45,7 @@
             </div>
             <div
               class="signin-btn signin-btn-today overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+              :class="{ disabled: isTodaySignIn }"
               @click="handleSignin"
             >
               今日签到
@@ -81,15 +86,19 @@
         </p>
       </template>
     </activity-modal>
-    <activity-modal ref="modal">
+    <activity-modal ref="modalReward">
       <template #content>
         <p class="modal-text">
-          恭喜你获得<span class="modal-text-blue">雪人的馈赠</span>：
+          恭喜你获得
+          <span class="modal-text-blue"
+            >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+            {{ curRewards.count }}</span
+          >：
         </p>
         <div class="mt-10 flex items-center justify-center">
           <img
             class="modal-reward"
-            src="@/assets/images/signin/signin-day1-reward.png"
+            :src="handleSrc(String(curRewards.name))"
             alt="reward"
           />
         </div>
@@ -99,11 +108,73 @@
 </template>
 
 <script setup lang="ts">
-import { showDialog } from 'vant'
+import { showToast } from 'vant'
+import {
+  getPlayerMissionData,
+  setPlayerTask,
+  claimMissionReward,
+} from '@/utils/request'
 import ActivityModal from './activity-modal.vue'
-const daysList = ref<HTMLInputElement | null>(null)
+
+interface Event {
+  task_id: string
+  stages: number[]
+  award: number[]
+  value: number
+  score: string
+  is_eggy_reward: boolean
+  is_today_sign_in: boolean
+  awarded_types: any[]
+}
+
+interface Rewards {
+  name: string
+  count: number
+}
+
+interface RewardsName {
+  rainbow: string
+  candles: string
+  message_boat: string
+  trail_red: string
+  energy: string
+  recording_candle: string
+  heart: string
+  bonfire: string
+  resize_potion: string
+}
+
+const rewardsText: RewardsName = {
+  rainbow: '彩虹',
+  candles: '蜡烛',
+  message_boat: '传信纸船',
+  trail_red: '红色尾迹',
+  energy: '元气满满',
+  recording_candle: '留影蜡烛',
+  heart: '爱心',
+  bonfire: '篝火',
+  resize_potion: '体型重塑',
+}
+
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modal = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const daysList = ref<HTMLInputElement | null>(null)
+const activityData: Ref<Event> = ref({
+  task_id: 'activity_sign_in_m1',
+  stages: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+  award: [0, 0, 0, 0, 0, 0, 0, 0, 0],
+  value: 0,
+  score: '',
+  is_eggy_reward: false,
+  is_today_sign_in: false,
+  awarded_types: [],
+})
+const isTodaySignIn = ref(false)
+const curRewards: Ref<Rewards> = ref({
+  name: 'rainbow',
+  count: 1,
+})
+const rewardId = ref(1)
 
 const state = reactive({
   daysList: [
@@ -119,39 +190,88 @@ const state = reactive({
   ],
 })
 
-onMounted(() => {
-  const first = daysList.value?.children[0]
-  first && first.classList.add('active')
+defineProps({
+  time: String,
 })
 
+const emit = defineEmits<{
+  onReward: [value: number]
+}>()
+
+onMounted(() => {
+  try {
+    getActivityData()
+  } catch (error) {
+    console.error(error)
+  }
+})
+
+// 显示帮助
 function handleHelp(): void {
   modalHelp.value?.openModal()
 }
 
+// 处理 img src
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../../assets/images/signin/reward-${name}.png`,
+    import.meta.url,
+  ).href
+
+  return imgSrc
+}
+
+// 获取任务进度
+function getActivityData(): void {
+  getPlayerMissionData({ event: 'activity_sign_in_1' }, function (data) {
+    activityData.value = data?.activity_sign_in_1[0]
+    rewardId.value = activityData.value.value
+    isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
+    const shouldClaimedRewardCount = activityData.value.stages.filter(
+      (stage) => stage <= activityData.value.value,
+    ).length
+    const isClaimedReward =
+      activityData.value.award.filter((item) => item === 1).length ===
+      shouldClaimedRewardCount
+        ? 1
+        : 0
+    emit('onReward', isClaimedReward)
+    console.log('signin activityData: ', activityData.value)
+  })
+}
+
+// 签到
 function handleSignin(): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/internal/jingling/get_player_mission_data',
-        content: JSON.stringify({
-          source_token: '',
-          source_id: '',
-          event: 'sprite_season20_start',
-          user: 'b0c6ae38-ea78-45a0-bf29-087a23b0400e',
-        }),
+  if (isTodaySignIn.value) {
+    showToast('今日已签到')
+    return
+  }
+  if (rewardId.value >= 9) {
+    showToast('签到任务已全部完成')
+    return
+  }
+  // 更新任务进度，更新 value
+  setPlayerTask({ task: 'activity_sign_in_m1' }, function () {
+    // 更新 reward_id
+    rewardId.value++
+
+    // 领奖
+    claimMissionReward(
+      {
+        event: 'activity_sign_in_1',
+        task: 'activity_sign_in_m1',
+        rewardId: rewardId.value,
       },
-    },
-    callback_id: 'notify_signin',
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        void showDialog({
-          teleport: '#app',
-          message: respJSONString,
-        })
+      function (rewards) {
+        console.log('signin rewards: ', rewards)
+        getActivityData()
+        modalReward.value?.openModal()
+        curRewards.value = {
+          name: Object.keys(rewards)[0],
+          count: Number(Object.values(rewards)[0]),
+        }
       },
-    },
+    )
   })
 }
 </script>
@@ -313,7 +433,6 @@ function handleSignin(): void {
   }
 }
 .modal-reward {
-  width: 162px;
-  height: 131px;
+  width: 150px;
 }
 </style>

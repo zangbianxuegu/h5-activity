@@ -10,14 +10,14 @@
       @click.stop
     >
       <div
-        class="modal-close absolute right-2.5 top-1.5 overflow-hidden bg-contain bg-center bg-no-repeat indent-[100%]"
+        class="modal-close absolute right-2.5 top-1.5 overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
         @click="closeModal"
       >
         关闭
       </div>
       <div class="mt-2 flex items-center justify-center">
         <h2
-          class="modal-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[100%]"
+          class="modal-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
         >
           标题
         </h2>

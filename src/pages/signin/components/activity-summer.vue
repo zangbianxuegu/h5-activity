@@ -7,7 +7,7 @@
         暑期签到
       </h1>
       <div class="date flex items-center align-middle">
-        <div class="date-text">7.28-8.24</div>
+        <div class="date-text">{{ time }}</div>
         <div
           class="date-help bg-contain bg-center bg-no-repeat"
           @click="handleHelp"
@@ -17,8 +17,8 @@
     <div class="main-content flex">
       <div class="signin-list flex flex-wrap">
         <div
-          v-for="(item, index) in Array.from(daysRewardMap.keys())"
-          :key="item"
+          v-for="(item, index) in rewardList"
+          :key="item.stage"
           :class="[
             'signin-item bg-contain bg-center bg-no-repeat',
             {
@@ -29,13 +29,16 @@
             },
           ]"
         >
-          <div class="signin-title text-center">{{ item }}天</div>
-          <div class="signin-content flex items-center justify-center">
+          <div class="signin-title text-center">{{ item.stage }}天</div>
+          <div
+            class="signin-content flex items-center justify-center"
+            @click="handleReward(item.status, index + 1)"
+          >
             <div
               :class="[
                 'signin-reward bg-contain bg-center bg-no-repeat',
-                `signin-reward-${daysRewardMap.get(item)?.reward}`,
-                `${daysRewardMap.get(item)?.status}`,
+                `signin-reward-${item.reward}`,
+                `${item.status}`,
               ]"
             ></div>
           </div>
@@ -43,7 +46,10 @@
       </div>
       <div class="signin-count bg-contain bg-center bg-no-repeat text-center">
         <div class="signin-title"></div>
-        <div class="signin-count-num"><span>4</span>天</div>
+        <div class="signin-count-num">
+          <span>{{ activityData.value }}</span
+          >天
+        </div>
         <div class="absolute bottom-0 w-full text-center">
           <p class="signin-forget-num">漏签<span>2</span>天</p>
           <div
@@ -56,6 +62,7 @@
     </div>
     <div
       class="signin-btn signin-btn-today overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+      :class="{ 'disabled opacity-60': isTodaySignIn }"
       @click="handleSignin"
     >
       今日签到
@@ -92,102 +99,216 @@
         </p>
       </template>
     </activity-modal>
+    <activity-modal ref="modalReward">
+      <template #content>
+        <p class="modal-text">
+          恭喜你获得
+          <span class="modal-text-blue"
+            >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+            {{ curRewards.count }}</span
+          >：
+        </p>
+        <div class="mt-10 flex items-center justify-center">
+          <img
+            class="modal-reward"
+            :src="handleSrc(String(curRewards.count))"
+            alt="reward"
+          />
+        </div>
+      </template>
+    </activity-modal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { showDialog } from 'vant'
+import { showToast } from 'vant'
+import {
+  getPlayerMissionData,
+  setPlayerTask,
+  claimMissionReward,
+} from '@/utils/request'
 import ActivityModal from './activity-modal.vue'
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-const daysRewardMap = new Map([
-  [
-    '1',
-    {
-      reward: 10,
-      status: 'redeemed',
-    },
-  ],
-  [
-    '3',
-    {
-      reward: 10,
-      status: 'redeemed',
-    },
-  ],
-  [
-    '5',
-    {
-      reward: 10,
-      status: 'redeemed',
-    },
-  ],
-  [
-    '7',
-    {
-      reward: 10,
-      status: 'redeemed',
-    },
-  ],
-  [
-    '10',
-    {
-      reward: 20,
-      status: 'can',
-    },
-  ],
-  [
-    '15',
-    {
-      reward: 20,
-      status: 'can',
-    },
-  ],
-  [
-    '20',
-    {
-      reward: 20,
-      status: 'wait',
-    },
-  ],
-  [
-    '25',
-    {
-      reward: 20,
-      status: 'wait',
-    },
-  ],
+interface Event {
+  task_id: string
+  stages: number[]
+  award: number[]
+  value: number
+  score: string
+  is_eggy_reward: boolean
+  is_today_sign_in: boolean
+  awarded_types: any[]
+}
+
+interface Rewards {
+  name: string
+  count: number
+}
+
+interface RewardsName {
+  eden_fragment: string
+}
+
+const rewardsText: RewardsName = {
+  eden_fragment: '伊甸之眼碎片',
+}
+
+const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+
+const activityData: Ref<Event> = ref({
+  task_id: 'activity_sign_in_m3',
+  stages: [1, 3, 5, 7, 9, 12, 15, 20],
+  award: [0, 0, 0, 0, 0, 0, 0, 0],
+  value: 0,
+  score: '',
+  is_eggy_reward: false,
+  is_today_sign_in: false,
+  awarded_types: [],
+})
+const isTodaySignIn = ref(false)
+const curRewards: Ref<Rewards> = ref({
+  name: '',
+  count: 10,
+})
+const rewardList = ref([
+  {
+    stage: 1,
+    reward: 10,
+    status: 'wait',
+  },
+  {
+    stage: 3,
+    reward: 10,
+    status: 'wait',
+  },
+  {
+    stage: 5,
+    reward: 10,
+    status: 'wait',
+  },
+  {
+    stage: 7,
+    reward: 10,
+    status: 'wait',
+  },
+  {
+    stage: 10,
+    reward: 20,
+    status: 'wait',
+  },
+  {
+    stage: 15,
+    reward: 20,
+    status: 'wait',
+  },
+  {
+    stage: 20,
+    reward: 20,
+    status: 'wait',
+  },
+  {
+    stage: 25,
+    reward: 20,
+    status: 'wait',
+  },
 ])
 
+defineProps({
+  time: String,
+})
+
+const emit = defineEmits<{
+  onReward: [value: number]
+}>()
+
+onMounted(() => {
+  getActivityData()
+})
+
+// 显示帮助
 function handleHelp(): void {
   modalHelp.value?.openModal()
 }
 
-function handleSignin(): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/internal/jingling/get_player_mission_data',
-        content: JSON.stringify({
-          source_token: '',
-          source_id: '',
-          event: 'sprite_season20_start',
-          user: 'b0c6ae38-ea78-45a0-bf29-087a23b0400e',
-        }),
-      },
-    },
-    callback_id: 'notify_signin',
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        void showDialog({
-          teleport: '#app',
-          message: respJSONString,
-        })
-      },
-    },
+// 处理 img src
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../../assets/images/signin/summer-reward-${name}-wait.png`,
+    import.meta.url,
+  ).href
+
+  return imgSrc
+}
+
+// 获取任务进度
+function getActivityData(): void {
+  getPlayerMissionData({ event: 'activity_sign_in_3' }, function (data) {
+    activityData.value = data?.activity_sign_in_3[0]
+    isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
+    const shouldClaimedRewardCount = activityData.value.stages.filter(
+      (stage) => stage <= activityData.value.value,
+    ).length
+    const isClaimedReward =
+      activityData.value.award.filter((item) => item === 1).length ===
+      shouldClaimedRewardCount
+        ? 1
+        : 0
+    emit('onReward', isClaimedReward)
+    console.log('summer activityData: ', activityData.value)
+    rewardList.value = rewardList.value.map((item, index) => {
+      return {
+        ...item,
+        status:
+          activityData.value.award[index] === 1
+            ? 'redeemed'
+            : item.stage > activityData.value.value
+            ? 'wait'
+            : 'can',
+      }
+    })
   })
+}
+
+// 签到
+function handleSignin(): void {
+  if (isTodaySignIn.value) {
+    showToast('今日已签到')
+    return
+  }
+  // 更新任务进度，更新 value
+  setPlayerTask({ task: 'activity_sign_in_m3' }, function () {
+    showToast('签到成功')
+    getActivityData()
+  })
+}
+
+// 领奖
+function handleReward(status: string, rewardId: number): void {
+  if (status === 'redeemed') {
+    showToast('已领奖')
+    return
+  }
+  if (status === 'wait') {
+    showToast('签到天数不足')
+    return
+  }
+  claimMissionReward(
+    {
+      event: 'activity_sign_in_3',
+      task: 'activity_sign_in_m3',
+      rewardId,
+    },
+    function (rewards) {
+      console.log('summer rewards: ', rewards)
+      getActivityData()
+      modalReward.value?.openModal()
+      curRewards.value = {
+        name: Object.keys(rewards)[0],
+        count: Number(Object.values(rewards)[0]),
+      }
+    },
+  )
 }
 </script>
 
@@ -351,5 +472,9 @@ function handleSignin(): void {
   &-blue {
     color: #4db6da;
   }
+}
+.modal-reward {
+  width: 164px;
+  height: 163px;
 }
 </style>

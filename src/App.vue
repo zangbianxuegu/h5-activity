@@ -1,19 +1,21 @@
 <template>
   <!-- <router-view></router-view> -->
-  <div>
-    <button
-      class="rounded-md bg-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-sm"
+  <div class="m-4 flex flex-row flex-wrap gap-4">
+    <!-- <a
+      class="border-b border-current font-semibold text-gray-600 no-underline"
+      href="./pages/signin/index.html"
+      >签到活动</a
     >
-      <a href="./pages/signin/index.html">签到活动</a>
-    </button>
-    <button
-      class="ml-4 rounded-md bg-violet-500 px-4 py-2 text-sm font-semibold text-white shadow-sm"
-    >
-      <a href="./pages/signin/index.html"
-        ><a href="./pages/about/index.html">关于</a></a
-      >
-    </button>
+    <a
+      class="border-b border-current font-semibold text-gray-600 no-underline"
+      href="./pages/about/index.html"
+      >关于</a
+    > -->
   </div>
 </template>
+
+<script setup lang="ts">
+window.location.href = './pages/signin/index.html'
+</script>
 
 <style scoped></style>
