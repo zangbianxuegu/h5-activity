@@ -153,44 +153,38 @@ const isActivityActive = ref({
   summer: true,
 })
 
-// const isTodaySignIn: Ref<IsTodaySignIn> = ref({
-//   signin: false,
-//   winter: false,
-//   summer: false,
-// })
-
 let allActiveEvents: AllActiveEvents = {
   activity_sign_in_3: {
     start_time: 1698768000,
     end_time: 1699977600,
-    active: 1,
-    is_claimed_reward: 0,
+    active: 0,
+    is_claimed_reward: 1,
     is_new: 0,
   },
   activity_sign_in_2: {
     start_time: 1698768000,
     end_time: 1699977600,
-    active: 1,
-    is_claimed_reward: 0,
+    active: 0,
+    is_claimed_reward: 1,
     is_new: 0,
   },
   activity_sign_in_1: {
     start_time: 1698768000,
     end_time: 1699977600,
-    active: 1,
-    is_claimed_reward: 0,
+    active: 0,
+    is_claimed_reward: 1,
     is_new: 0,
   },
 }
 
-// 是否已领奖
+// 是否已领奖，1: 已领奖，0: 未领奖
 const isClaimedReward: Ref<IsActivity> = ref({
   signin: 1,
   winter: 1,
   summer: 1,
 })
 
-// 是否新活动
+// 是否新活动，1: 是新活动，0: 不是新活动
 const isNew: Ref<IsActivity> = ref({
   signin: 0,
   winter: 0,
@@ -214,9 +208,91 @@ onMounted(() => {
   }
 })
 
-// 设置是否已领奖状态
-function handleSetIsClaimedReward(type: keyof IsActivity, value: number): void {
-  isClaimedReward.value[type] = value
+// 重置菜单状态
+function resetAllTabStates(isMainSub: boolean): void {
+  isNavOneActive.value = false
+  if (isMainSub) {
+    isNavTwoActive.value = false
+    isSubNavActive.value = false
+  }
+  isSubNavOneActive.value = false
+  isSubNavTwoActive.value = false
+
+  pageOne.value?.classList.remove('active')
+  pageTwo.value?.classList.remove('active')
+  pageThree.value?.classList.remove('active')
+}
+
+// 更新是否新活动
+function updateIsNewStatus(type: keyof IsActivity, event: string): void {
+  if (isNew.value[type] === 1) {
+    setWebRedDot({ event }, function () {
+      isNew.value[type] = 0
+    })
+  }
+}
+
+// 一级 TAB 切换
+function handleChangeMainTab(index: number): void {
+  // 重置所有状态
+  resetAllTabStates(true)
+  switch (index) {
+    case 1:
+      handleTabOne()
+      break
+    case 2:
+      handleTabTwo()
+      break
+  }
+}
+
+// 点击一级菜单一
+function handleTabOne(): void {
+  isNavOneActive.value = true
+  pageOne.value?.classList.add('active')
+  updateIsNewStatus('signin', 'activity_sign_in_1')
+}
+
+// 点击一级菜单二
+function handleTabTwo(): void {
+  isNavTwoActive.value = true
+  isSubNavActive.value = true
+
+  if (isActivityActive.value.winter) {
+    isSubNavOneActive.value = true
+    pageTwo.value?.classList.add('active')
+    updateIsNewStatus('winter', 'activity_sign_in_2')
+  } else if (isActivityActive.value.summer) {
+    isSubNavTwoActive.value = true
+    pageThree.value?.classList.add('active')
+    updateIsNewStatus('summer', 'activity_sign_in_3')
+  }
+}
+
+// 二级 TAB 切换
+function handleChangeSubTab(index: number): void {
+  resetAllTabStates(false)
+  switch (index) {
+    case 1:
+      handleSubTab(index)
+      updateIsNewStatus('winter', 'activity_sign_in_2')
+      break
+    case 2:
+      handleSubTab(index)
+      updateIsNewStatus('summer', 'activity_sign_in_3')
+      break
+  }
+}
+
+// 点击二级菜单
+function handleSubTab(index: number): void {
+  if (index === 1) {
+    isSubNavOneActive.value = true
+    pageTwo.value?.classList.add('active')
+  } else {
+    isSubNavTwoActive.value = true
+    pageThree.value?.classList.add('active')
+  }
 }
 
 // 获取所有活动信息
@@ -242,19 +318,16 @@ function getAllEvents(): void {
     } else {
       console.error('activeEvents is not a valid AllActiveEvents object')
     }
-    // 测试
-    // allActiveEvents.activity_sign_in_1.start_time =
-    //   Math.floor(Date.now() / 1000) + 60
-    // allActiveEvents.activity_sign_in_2.start_time =
-    //   Math.floor(Date.now() / 1000) + 60
-    // allActiveEvents.activity_sign_in_3.start_time =
-    //   Math.floor(Date.now() / 1000) + 60
 
     // 设置活动状态
     isActivityActive.value = {
-      signin: getActivityStatus(allActiveEvents.activity_sign_in_1),
-      winter: getActivityStatus(allActiveEvents.activity_sign_in_2),
-      summer: getActivityStatus(allActiveEvents.activity_sign_in_3),
+      signin: allActiveEvents.activity_sign_in_1.active === 1,
+      winter: allActiveEvents.activity_sign_in_2.active === 1,
+      summer: allActiveEvents.activity_sign_in_3.active === 1,
+    }
+
+    if (!isActivityActive.value.signin) {
+      pageOne.value?.classList.toggle('active')
     }
 
     // 设置红点信息：是否已领奖、是否新活动
@@ -277,14 +350,9 @@ function getAllEvents(): void {
   })
 }
 
-// 判断活动是否 active
-function getActivityStatus(activity: Activity): boolean {
-  const now = Date.now()
-  return (
-    now >= activity.start_time * 1000 &&
-    now <= activity.end_time * 1000 &&
-    activity.active === 1
-  )
+// 设置是否已领奖状态
+function handleSetIsClaimedReward(type: keyof IsActivity, value: number): void {
+  isClaimedReward.value[type] = value
 }
 
 // 格式化日期
@@ -292,126 +360,6 @@ function formatDate(activity: Activity): string {
   const startTime = dayjs.unix(activity.start_time)
   const endTime = dayjs.unix(activity.end_time)
   return `${startTime.format('M.D')}-${endTime.format('M.D')}`
-}
-
-// function handleMainTransition(index: number): void {
-//   if (!document.startViewTransition) {
-//     handleChangeMainTab(index)
-//   }
-//   document.startViewTransition(() => {
-//     handleChangeMainTab(index)
-//   })
-// }
-
-// function handleSubTransition(index: number): void {
-//   if (!document.startViewTransition) {
-//     handleChangeSubTab(index)
-//   }
-//   document.startViewTransition(() => {
-//     handleChangeSubTab(index)
-//   })
-// }
-
-// 一级 TAB 切换
-function handleChangeMainTab(index: number): void {
-  switch (index) {
-    case 1:
-      isNavOneActive.value = true
-      isNavTwoActive.value = false
-      isSubNavActive.value = false
-      pageOne.value?.classList.add('active')
-      pageTwo.value?.classList.remove('active')
-      pageThree.value?.classList.remove('active')
-      // 设置新活动状态
-      if (isNew.value.signin === 1) {
-        setWebRedDot({ event: 'activity_sign_in_1' }, function (res) {
-          console.log('设置新活动1状态回调 res: ', res)
-          isNew.value.signin = 0
-        })
-      }
-      break
-    case 2:
-      isNavOneActive.value = false
-      isNavTwoActive.value = true
-      isSubNavActive.value = true
-      if (isActivityActive.value.winter && isActivityActive.value.summer) {
-        isSubNavOneActive.value = true
-        isSubNavTwoActive.value = false
-        pageOne.value?.classList.remove('active')
-        pageTwo.value?.classList.add('active')
-        pageThree.value?.classList.remove('active')
-        // 设置新活动状态
-        if (isNew.value.winter === 1) {
-          setWebRedDot({ event: 'activity_sign_in_2' }, function (res) {
-            console.log('设置新活动2状态回调 res: ', res)
-            isNew.value.winter = 0
-          })
-        }
-      } else if (
-        isActivityActive.value.winter &&
-        !isActivityActive.value.summer
-      ) {
-        isSubNavOneActive.value = true
-        pageOne.value?.classList.remove('active')
-        pageTwo.value?.classList.add('active')
-        // 设置新活动状态
-        if (isNew.value.winter === 1) {
-          setWebRedDot({ event: 'activity_sign_in_2' }, function (res) {
-            console.log('设置新活动2状态回调 res: ', res)
-            isNew.value.winter = 0
-          })
-        }
-      } else if (
-        !isActivityActive.value.winter &&
-        isActivityActive.value.summer
-      ) {
-        isSubNavTwoActive.value = true
-        pageOne.value?.classList.remove('active')
-        pageThree.value?.classList.add('active')
-        // 设置新活动状态
-        if (isNew.value.summer === 1) {
-          setWebRedDot({ event: 'activity_sign_in_3' }, function (res) {
-            console.log('设置新活动3状态回调 res: ', res)
-            isNew.value.summer = 0
-          })
-        }
-      }
-      break
-  }
-}
-
-// 二级 TAB 切换
-function handleChangeSubTab(index: number): void {
-  switch (index) {
-    case 1:
-      isSubNavOneActive.value = true
-      isSubNavTwoActive.value = false
-      pageOne.value?.classList.remove('active')
-      pageTwo.value?.classList.add('active')
-      pageThree.value?.classList.remove('active')
-      // 设置新活动状态
-      if (isNew.value.winter === 1) {
-        setWebRedDot({ event: 'activity_sign_in_2' }, function (res) {
-          console.log('设置新活动2状态回调 res: ', res)
-          isNew.value.winter = 0
-        })
-      }
-      break
-    case 2:
-      isSubNavOneActive.value = false
-      isSubNavTwoActive.value = true
-      pageOne.value?.classList.remove('active')
-      pageTwo.value?.classList.remove('active')
-      pageThree.value?.classList.add('active')
-      // 设置新活动状态
-      if (isNew.value.summer === 1) {
-        setWebRedDot({ event: 'activity_sign_in_3' }, function (res) {
-          console.log('设置新活动3状态回调 res: ', res)
-          isNew.value.summer = 0
-        })
-      }
-      break
-  }
 }
 
 // 关闭
