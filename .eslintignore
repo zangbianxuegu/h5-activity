@@ -9,3 +9,4 @@ vite-env.d.ts
 components.d.ts
 auto-import.d.ts
 postcss.config.js
+tailwind.config.js
