@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
-// import router from '@/router'
+import router from '@/router'
 import vhCheck from 'vh-check'
 import VConsole from 'vconsole'
 
@@ -13,7 +13,7 @@ import 'vant/es/image-preview/style'
 vhCheck()
 
 const app = createApp(App)
-// app.use(router)
+app.use(router)
 app.mount('#app')
 
 if (process.env.NODE_ENV !== 'production') {

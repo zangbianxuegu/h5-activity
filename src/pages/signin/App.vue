@@ -27,9 +27,9 @@
         >
           签到活动
         </li>
-        <li
-          class="nav-item nav-item-third bg-contain bg-center bg-no-repeat"
-        ></li>
+        <li class="nav-item nav-item-third bg-contain bg-center bg-no-repeat">
+          小光快报
+        </li>
       </ul>
     </nav>
     <nav
@@ -478,9 +478,10 @@ function handleClose(): void {
   &-third {
     left: 80px;
     top: 653px;
-    width: 158px;
+    width: 200px;
     height: 220px;
-    background-image: url('@/assets/images/signin/nav3.png');
+    // background-image: url('@/assets/images/signin/nav3.png');
+    color: #fff;
     &.active {
       &::after {
         top: 40px;

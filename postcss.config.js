@@ -1,5 +1,7 @@
 export default {
   plugins: {
+    // 必须放置在 tailwindcss 之前
+    'tailwindcss/nesting': {},
     tailwindcss: {},
     autoprefixer: {},
     // 'postcss-pxtorem': {
@@ -8,9 +10,10 @@ export default {
     // },
     'postcss-px-to-viewport-8-plugin': {
       viewportWidth: 2560,
-      viewportHeight: 1200,
+      // viewportHeight: 1200,
       exclude: [/node_modules/],
-      viewportUnit: 'vmax',
+      // vmax
+      viewportUnit: 'vw',
     },
   },
 }

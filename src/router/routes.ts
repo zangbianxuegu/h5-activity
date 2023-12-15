@@ -2,22 +2,49 @@ import type { RouteRecordRaw } from 'vue-router'
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/index',
+    redirect: '/page1',
   },
-  // {
-  //   path: '/index',
-  //   name: 'Index',
-  //   component: () => import('@/views/home/index.vue'),
-  //   meta: {
-  //     title: '首页',
-  //   },
-  // },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   component: () => import('@/views/about/index.vue'),
-  //   meta: {
-  //     title: '关于',
-  //   },
-  // },
+  {
+    path: '/page1',
+    name: 'Page1',
+    component: () => import('@/components/Page1'),
+    meta: {
+      title: '页面1',
+    },
+  },
+  {
+    path: '/page2',
+    name: 'Page2',
+    redirect: '/page2/sub-page1',
+    component: () => import('@/components/Page2'),
+    meta: {
+      title: '页面2',
+    },
+    children: [
+      {
+        path: 'sub-page1',
+        name: 'SubPage1',
+        component: () => import('@/components/SubPage1'),
+        meta: {
+          title: '二级页面1',
+        },
+      },
+      {
+        path: 'sub-page2',
+        name: 'SubPage2',
+        component: () => import('@/components/SubPage2'),
+        meta: {
+          title: '二级页面2',
+        },
+      },
+    ],
+  },
+  {
+    path: '/bulletin',
+    name: 'Bulletin',
+    component: () => import('@/components/Bulletin'),
+    meta: {
+      title: '小光快报',
+    },
+  },
 ]

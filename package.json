@@ -39,6 +39,8 @@
     "eslint-plugin-vue": "^9.17.0",
     "husky": "^8.0.3",
     "lint-staged": "^14.0.1",
+    "lodash.debounce": "^4.0.8",
+    "lodash.throttle": "^4.1.1",
     "postcss": "^8.4.30",
     "postcss-px-to-viewport-8-plugin": "^1.2.2",
     "postcss-pxtorem": "^6.0.0",
