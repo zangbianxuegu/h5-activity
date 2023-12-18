@@ -2,56 +2,65 @@
   <div class="bulletin flex h-screen flex-col items-center justify-center">
     <div class="bulletin-wrapper">
       <div class="flex justify-between">
+        <!-- 轮播图 -->
         <van-swipe
           class="swipe"
           :style="generateDynamicStyles({ width: 1260, height: 712 })"
           :autoplay="3000"
           indicator-color="white"
         >
-          <van-swipe-item>
-            <img src="images/banner1.jpg" class="w-full" alt="" />
+          <van-swipe-item v-for="banner in banners" :key="banner.id">
+            <a :href="banner.link_url">
+              <img
+                :src="`/images/${banner.img_name}.jpg`"
+                class="border-r-20 w-full"
+                :alt="banner.name"
+              />
+            </a>
           </van-swipe-item>
-          <van-swipe-item
-            ><img src="images/banner2.jpg" class="w-full" alt=""
-          /></van-swipe-item>
-          <van-swipe-item
-            ><img src="images/banner3.jpg" class="w-full" alt=""
-          /></van-swipe-item>
         </van-swipe>
+        <!-- 固定位 -->
         <div
           class="flex flex-col-reverse"
           :style="generateDynamicStyles({ width: 330 })"
         >
-          <p class="mt-4">
-            <img src="/images/fixed1.jpg" alt="加入创作匠" />
-          </p>
-          <p>
-            <img src="/images/fixed2.jpg" alt="光遇编年史" />
+          <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
+            <a :href="fixed.link_url">
+              <img
+                :src="`/images/${fixed.img_name}.jpg`"
+                class="w-full"
+                :alt="fixed.name"
+              />
+            </a>
           </p>
         </div>
       </div>
+      <!-- 列表 -->
       <div class="sidebar flex">
         <div
+          v-for="(sidebar, index) in sidebars"
+          :key="sidebar.id"
           class="sidebar-item"
           :style="
-            generateDynamicStyles({ width: 520, height: 294, marginRight: 30 })
+            index === 2
+              ? generateDynamicStyles({
+                  width: 520,
+                  height: 294,
+                })
+              : generateDynamicStyles({
+                  width: 520,
+                  height: 294,
+                  marginRight: 30,
+                })
           "
         >
-          <img src="images/sidebar1.jpg" alt="" />
-        </div>
-        <div
-          class="sidebar-item"
-          :style="
-            generateDynamicStyles({ width: 520, height: 294, marginRight: 30 })
-          "
-        >
-          <img src="images/sidebar2.jpg" alt="" />
-        </div>
-        <div
-          class="sidebar-item"
-          :style="generateDynamicStyles({ width: 520, height: 294 })"
-        >
-          <img src="images/sidebar3.jpg" alt="" />
+          <a :href="sidebar.link_url">
+            <img
+              :src="`/images/${sidebar.img_name}.jpg`"
+              class="border-r-20 w-full"
+              :alt="sidebar.name"
+            />
+          </a>
         </div>
       </div>
     </div>
@@ -60,7 +69,11 @@
 
 <script setup lang="ts">
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import { type DesignConfig } from '@/types'
+import {
+  type DesignConfig,
+  type BulletinItem,
+  type BulletinData,
+} from '@/types'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -109,10 +122,29 @@ const generateDynamicStyles = (
   return dynamicStyles
 }
 
-fetch('/data.json')
+const bulletinData = ref<BulletinData | null>(null)
+
+const banners = computed(() => {
+  return bulletinData.value?.bulletin
+    .filter((item: BulletinItem) => item.type === 'banner')
+    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
+})
+const fixeds = computed(() => {
+  return bulletinData.value?.bulletin
+    .filter((item: BulletinItem) => item.type === 'fixed')
+    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
+})
+const sidebars = computed(() => {
+  return bulletinData.value?.bulletin
+    .filter((item: BulletinItem) => item.type === 'sidebar')
+    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
+})
+
+fetch('/activity_center.json')
   .then((res) => res.json())
   .then((data) => {
     console.log(data)
+    bulletinData.value = data
   })
   .catch((error) => {
     console.error('Error fetching JSON:', error)
@@ -131,9 +163,15 @@ fetch('/data.json')
   color: #fff;
   font-size: 60px;
   text-align: center;
-  background-color: #39a9ed;
+  /* background-color: #39a9ed; */
+}
+.border-r-20 {
+  border-radius: 20px;
 }
 .sidebar {
   margin-top: 30px;
+  /* width: 1620px; */
+  /* height: 294px; */
+  /* overflow-x: scroll; */
 }
 </style>

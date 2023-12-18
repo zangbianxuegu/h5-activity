@@ -29,10 +29,10 @@ export default function useResponsiveStyles(config: DesignConfig): {
     const clientHeight =
       window.innerHeight || document.documentElement.clientHeight
 
-    // 理想的屏幕主体内容宽度。包含了两边空白，而非只是内容部分
+    // 理想的屏幕主体宽。包含了两边空白，而非只是内容部分
     // 例如：iPhone X，公告页面，(2100-60) / 2560 = X / 812，X = ((2100 - 60) / 2560) * 812 = 647.0625
     const clientIdealMainWidth = (designMainWidth / designWidth) * clientWidth
-    // 理想的屏幕主体内容高度
+    // 理想的屏幕主体高
     // 例如：iPhone X，公告页面，(1200-60) / 1200 = Y / 375，Y = ((1200 - 60) / 1200) * 375 = 356.25
     const clientIdealMainHeight =
       (designMainHeight / designHeight) * clientHeight
@@ -40,19 +40,19 @@ export default function useResponsiveStyles(config: DesignConfig): {
     // 例如：iPhone X，公告页面，647.0625 / 356.25 = 1.8163
     const clientIdealMainRatio = clientIdealMainWidth / clientIdealMainHeight
 
-    // 实际的屏幕主体内容宽度
+    // 实际的屏幕主体宽
     // 例如 iPhone X: 2560 / 1620 = 812 / X，X = 513.84375
     // const clientActualMainWidth =
     //   (designMainContentWidth / designWidth) * clientWidth
-    // 实际的屏幕主体内容高度
+    // 实际的屏幕主体高
     // 例如 iPhone X：2560 / 1006 = 812 / Y，Y = 328.60625
     const clientActualMainHeight =
       (designMainContentHeight / designWidth) * clientWidth
-    // 实际的屏幕主体内容宽高比，例如 iPhone X：513.84375 / 328.60625
+    // 实际的屏幕主体宽高比，例如 iPhone X：513.84375 / 328.60625
     // const clientActualMainRatio =
     //   clientActualMainWidth / clientActualMainHeight
 
-    // 理想的屏幕主体内容宽高比 和 设计稿主体内容宽高比 比较
+    // 理想的屏幕主体宽高比 和 设计稿主体内容宽高比 比较
     if (clientIdealMainRatio > designMainContentRatio) {
       console.log(
         'clientIdealMainRatio, designMainContentRatio: ',

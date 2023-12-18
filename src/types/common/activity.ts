@@ -14,3 +14,21 @@ export interface DesignConfig {
   designMainContentHeight: number
   designMainContentRatio: number
 }
+
+export interface BulletinItem {
+  channel: string
+  description: string
+  effective_time: string
+  expired_time: string
+  id: number
+  img_name: string
+  link_url: string
+  name: string
+  priority: number
+  tag: string
+  type: string
+}
+
+export interface BulletinData {
+  bulletin: BulletinItem[]
+}

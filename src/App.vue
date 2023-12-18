@@ -27,13 +27,14 @@
 <script setup lang="ts">
 // window.location.href = './pages/signin/index.html'
 import Menu from '@/components/Menu'
+import { type MenuItem } from '@/types'
 
-const menuData = [
+const menuData = ref<MenuItem[]>([
   {
     label: '菜单名称1',
     value: 'activity_1',
     routeName: 'Page1',
-    active: false,
+    active: true,
   },
   {
     label: '菜单名称2',
@@ -45,17 +46,13 @@ const menuData = [
     label: '小光快报',
     value: 'bulletin',
     routeName: 'Bulletin',
-    active: true,
+    active: false,
   },
-]
+])
 
-function onChange(val: any): void {
-  console.log('val: ', val)
-  menuData.forEach((item) => {
-    item.active = false
-    if (item.value === val.value) {
-      item.active = true
-    }
+function onChange(newItem: MenuItem): void {
+  menuData.value.forEach((item) => {
+    item.active = item.value === newItem.value
   })
 
   console.log('menuData: ', menuData)
