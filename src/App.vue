@@ -15,8 +15,13 @@
     </div> -->
 
   <div class="page flex min-h-screen bg-cover bg-center bg-no-repeat">
-    <nav class="w-[460px] shrink-0 py-4">
-      <Menu :data="menuData" @on-change="onChange"></Menu>
+    <nav class="nav flex w-[460px] shrink-0 flex-col justify-between py-4">
+      <div>
+        <Menu :data="menuData" @on-change="onChange"></Menu>
+      </div>
+      <div class="nav-sprite flex">
+        <a class="nav-sprite-text" href="https://game.163.com/">前往精灵>></a>
+      </div>
     </nav>
     <main class="">
       <router-view></router-view>
@@ -64,5 +69,21 @@ function onChange(newItem: MenuItem): void {
   width: 100%;
   height: 100%;
   background-image: url('@/assets/images/bulletin/bg.jpg');
+}
+.nav-sprite {
+  width: 443px;
+  height: 107px;
+  line-height: 107px;
+  background-image: url('@/assets/images/bulletin/nav-sprite.png');
+  background-size: contain;
+  background-position: center;
+  font-size: 36px;
+  color: rgba(255, 255, 255, 0.6);
+
+  &-text {
+    padding-left: 140px;
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

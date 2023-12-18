@@ -56,9 +56,6 @@ function handleNav(item: MenuItem): void {
     background-repeat: no-repeat;
   }
 }
-.nav-text {
-  /* width: 200px; */
-}
 .nav-icon {
   margin-right: 60px;
   width: 49px;

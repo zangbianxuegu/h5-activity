@@ -4,7 +4,7 @@
       <div class="flex justify-between">
         <!-- 轮播图 -->
         <van-swipe
-          class="swipe"
+          class="swipe border-r-20"
           :style="generateDynamicStyles({ width: 1260, height: 712 })"
           :autoplay="3000"
           indicator-color="white"
@@ -12,7 +12,7 @@
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a :href="banner.link_url">
               <img
-                :src="`/images/${banner.img_name}.jpg`"
+                :src="`/images/${banner.img_name}`"
                 class="border-r-20 w-full"
                 :alt="banner.name"
               />
@@ -21,13 +21,13 @@
         </van-swipe>
         <!-- 固定位 -->
         <div
-          class="flex flex-col-reverse"
-          :style="generateDynamicStyles({ width: 330 })"
+          class="flex flex-col-reverse pb-0.5"
+          :style="generateDynamicStyles({ width: 330, marginLeft: 30 })"
         >
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
             <a :href="fixed.link_url">
               <img
-                :src="`/images/${fixed.img_name}.jpg`"
+                :src="`/images/${fixed.img_name}`"
                 class="w-full"
                 :alt="fixed.name"
               />
@@ -56,10 +56,11 @@
         >
           <a :href="sidebar.link_url">
             <img
-              :src="`/images/${sidebar.img_name}.jpg`"
+              :src="`/images/${sidebar.img_name}`"
               class="border-r-20 w-full"
               :alt="sidebar.name"
             />
+            <span class="sidebar-tag">{{ sidebar.tag }}</span>
           </a>
         </div>
       </div>
@@ -69,11 +70,7 @@
 
 <script setup lang="ts">
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import {
-  type DesignConfig,
-  type BulletinItem,
-  type BulletinData,
-} from '@/types'
+import { type DesignConfig, type BulletinItem } from '@/types'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -122,39 +119,75 @@ const generateDynamicStyles = (
   return dynamicStyles
 }
 
-const bulletinData = ref<BulletinData | null>(null)
+// 当前日期
+const currentDate = new Date()
+// 当前应用的渠道
+const currentChannel = 'netease'
+// 公告页面数据
+const bulletinData = ref<BulletinItem[] | null>(null)
 
-const banners = computed(() => {
-  return bulletinData.value?.bulletin
-    .filter((item: BulletinItem) => item.type === 'banner')
-    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
-})
-const fixeds = computed(() => {
-  return bulletinData.value?.bulletin
-    .filter((item: BulletinItem) => item.type === 'fixed')
-    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
-})
-const sidebars = computed(() => {
-  return bulletinData.value?.bulletin
-    .filter((item: BulletinItem) => item.type === 'sidebar')
-    .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
-})
+// 判断条目是否在有效时间范围内
+const isEffective = (item: BulletinItem): boolean => {
+  const currentTime = currentDate.getTime()
+  const effectiveTime = new Date(item.effective_time).getTime()
+  const expiredTime = new Date(item.expired_time).getTime()
+  return currentTime >= effectiveTime && currentTime <= expiredTime
+}
 
-fetch('/activity_center.json')
-  .then((res) => res.json())
-  .then((data) => {
-    console.log(data)
+// 判断条目是否适用于当前渠道
+const isChannelApplicable = (item: BulletinItem): boolean => {
+  const channels = item.channel.split(',')
+  return channels.some((channel) => {
+    const [name, value] = channel.split(':')
+    return name === currentChannel && value === '1'
+  })
+}
+
+// 创建过滤和排序后的计算属性
+const filterAndSortItems = (
+  type: string,
+): ComputedRef<BulletinItem[] | undefined> => {
+  return computed(() => {
+    return bulletinData.value
+      ?.filter((item: BulletinItem) => item.type === type)
+      .filter(isEffective)
+      .filter(isChannelApplicable)
+      .sort((a: BulletinItem, b: BulletinItem) => a.priority - b.priority)
+  })
+}
+
+// 轮播图数据
+const banners = filterAndSortItems('banner')
+// 固定位数据
+const fixeds = filterAndSortItems('fixed')
+// 侧边栏数据
+const sidebars = filterAndSortItems('sidebar')
+
+// 获取 JSON 数据
+const fetchData = async (): Promise<void> => {
+  try {
+    const res = await fetch('/activity_center.json')
+    const data = await res.json()
     bulletinData.value = data
-  })
-  .catch((error) => {
+    console.log('data: ', data)
+  } catch (error) {
     console.error('Error fetching JSON:', error)
-  })
+    // Implement user-friendly error handling here
+  }
+}
+fetchData().catch((error) => {
+  // Handle any errors that weren't caught in fetchData
+  console.error('Unhandled error during fetchData:', error)
+})
 </script>
 
 <style scoped>
 .bulletin {
   width: 2100px;
   /* overflow: scroll; */
+}
+.test {
+  border: 1px solid red;
 }
 .swipe {
   overflow: hidden;
@@ -170,8 +203,27 @@ fetch('/activity_center.json')
 }
 .sidebar {
   margin-top: 30px;
-  /* width: 1620px; */
-  /* height: 294px; */
+  /* width: 1620px;
+  height: 294px; */
   /* overflow-x: scroll; */
+
+  &-item {
+    position: relative;
+  }
+
+  &-tag {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+    padding: 0 30px;
+    height: 48px;
+    line-height: 48px;
+    color: #fff;
+    font-size: 34px;
+    background: #3ac2ee;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.13);
+  }
 }
 </style>
