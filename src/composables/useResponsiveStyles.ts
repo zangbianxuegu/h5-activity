@@ -23,11 +23,9 @@ export default function useResponsiveStyles(config: DesignConfig): {
     // 重置缩放系数
     factor.value = 1
     // 屏幕宽
-    const clientWidth =
-      window.innerWidth || document.documentElement.clientWidth
+    const clientWidth = document.documentElement.clientWidth
     // 屏幕高
-    const clientHeight =
-      window.innerHeight || document.documentElement.clientHeight
+    const clientHeight = document.documentElement.clientHeight
 
     // 理想的屏幕主体宽。包含了两边空白，而非只是内容部分
     // 例如：iPhone X，公告页面，(2100-60) / 2560 = X / 812，X = ((2100 - 60) / 2560) * 812 = 647.0625

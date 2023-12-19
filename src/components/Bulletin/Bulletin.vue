@@ -12,7 +12,7 @@
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a :href="banner.link_url">
               <img
-                :src="`/images/${banner.img_name}`"
+                :src="`./images/${banner.img_name}`"
                 class="border-r-20 w-full"
                 :alt="banner.name"
               />
@@ -27,7 +27,7 @@
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
             <a :href="fixed.link_url">
               <img
-                :src="`/images/${fixed.img_name}`"
+                :src="`./images/${fixed.img_name}`"
                 class="w-full"
                 :alt="fixed.name"
               />
@@ -56,7 +56,7 @@
         >
           <a :href="sidebar.link_url">
             <img
-              :src="`/images/${sidebar.img_name}`"
+              :src="`./images/${sidebar.img_name}`"
               class="border-r-20 w-full"
               :alt="sidebar.name"
             />
@@ -166,7 +166,7 @@ const sidebars = filterAndSortItems('sidebar')
 // 获取 JSON 数据
 const fetchData = async (): Promise<void> => {
   try {
-    const res = await fetch('/activity_center.json')
+    const res = await fetch('./activity_center.json')
     const data = await res.json()
     bulletinData.value = data
     console.log('data: ', data)
