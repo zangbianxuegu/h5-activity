@@ -36,13 +36,13 @@ import { type MenuItem } from '@/types'
 
 const menuData = ref<MenuItem[]>([
   {
-    label: '菜单名称1',
+    label: '密林寻终携光夜行',
     value: 'activity_1',
     routeName: 'Page1',
-    active: true,
+    active: false,
   },
   {
-    label: '菜单名称2',
+    label: '寻猫启示',
     value: 'subject',
     routeName: 'Page2',
     active: false,
@@ -51,7 +51,7 @@ const menuData = ref<MenuItem[]>([
     label: '小光快报',
     value: 'bulletin',
     routeName: 'Bulletin',
-    active: false,
+    active: true,
   },
 ])
 

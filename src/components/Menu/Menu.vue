@@ -43,8 +43,8 @@ function handleNav(item: MenuItem): void {
   width: 460px;
   height: 200px;
   /* font-size: 16px; px-to-viewport-ignore */
-  /* font-size: 40px; */
-  font-size: max(40px, 1rem);
+  font-size: 40px;
+  /* font-size: max(40px, 1rem); */
   color: rgba(255, 255, 255, 0.6);
 
   &--active {
@@ -55,6 +55,9 @@ function handleNav(item: MenuItem): void {
     background-size: cover;
     background-repeat: no-repeat;
   }
+}
+.nav-text {
+  width: 160px;
 }
 .nav-icon {
   margin-right: 60px;
