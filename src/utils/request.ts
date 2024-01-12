@@ -37,7 +37,7 @@ export function getPlayerMissionData(
           resStr = resStr.replace(/\\/g, '')
           res = JSON.parse(resStr)
         }
-        console.log('获取玩家任务进度信息 res: ', res)
+        // console.log('获取玩家任务进度信息 res: ', res)
         if (res.code === 200) {
           onSuccess(res.data)
         } else {
@@ -226,6 +226,162 @@ export function setWebRedDot(
         } else {
           if (res.result === 'inactive event') {
             showToast('活动未开启')
+          }
+        }
+      },
+    },
+  })
+}
+
+// 重置任务进度（包括每日签到数据）
+export function resetTaskValue(
+  { task, event }: { task: string; event: string },
+  onSuccess: (res: any) => void,
+): void {
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'ngwebview_notify_native',
+    reqData: {
+      notification_name: 'NT_NOTIFICATION_EXTEND',
+      data: {
+        resource: '/account/debug/reset_task_value',
+        content: JSON.stringify({
+          event,
+          task,
+        }),
+      },
+    },
+    callback: {
+      nativeCallback: function (respJSONString: string) {
+        console.log('重置任务进度 respJSONString: ', respJSONString)
+        const reg = /"web_response":"({.*?})"/
+        const match = respJSONString.match(reg)
+        let res = null
+        if (match) {
+          let resStr = match[1]
+          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
+          resStr = resStr.replace(/\\/g, '')
+          res = JSON.parse(resStr)
+        }
+        if (res.result === 'ok') {
+          onSuccess(res)
+        } else {
+          showToast('重置任务进度错误')
+        }
+      },
+    },
+  })
+}
+
+// 重置领奖数据
+export function resetSpriteReward(
+  { task, event }: { task: string; event: string },
+  onSuccess: (res: any) => void,
+): void {
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'ngwebview_notify_native',
+    reqData: {
+      notification_name: 'NT_NOTIFICATION_EXTEND',
+      data: {
+        resource: '/account/debug/reset_sprite_reward',
+        content: JSON.stringify({
+          event,
+          task,
+        }),
+      },
+    },
+    callback: {
+      nativeCallback: function (respJSONString: string) {
+        console.log('重置领奖数据 respJSONString: ', respJSONString)
+        const reg = /"web_response":"({.*?})"/
+        const match = respJSONString.match(reg)
+        let res = null
+        if (match) {
+          let resStr = match[1]
+          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
+          resStr = resStr.replace(/\\/g, '')
+          res = JSON.parse(resStr)
+        }
+        if (res.result === 'ok') {
+          onSuccess(res)
+        } else {
+          showToast('重置领奖数据错误')
+        }
+      },
+    },
+  })
+}
+
+// 重置红点
+export function gmsResetWebRedDot(
+  { event }: { event: string },
+  onSuccess: (res: any) => void,
+): void {
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'ngwebview_notify_native',
+    reqData: {
+      notification_name: 'NT_NOTIFICATION_EXTEND',
+      data: {
+        resource: '/account/gms_reset_web_red_dot',
+        content: JSON.stringify({
+          event,
+        }),
+      },
+    },
+    callback: {
+      nativeCallback: function (respJSONString: string) {
+        console.log('重置红点 respJSONString: ', respJSONString)
+        const reg = /"web_response":"({.*?})"/
+        const match = respJSONString.match(reg)
+        let res = null
+        if (match) {
+          let resStr = match[1]
+          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
+          resStr = resStr.replace(/\\/g, '')
+          res = JSON.parse(resStr)
+        }
+        if (res.result === 'ok') {
+          onSuccess(res)
+        } else {
+          showToast('重置红点错误')
+        }
+      },
+    },
+  })
+}
+
+// 日志数据上报
+export function webViewStatistics(
+  { module }: { module: string },
+  onSuccess: (res: any) => void,
+): void {
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'ngwebview_notify_native',
+    reqData: {
+      notification_name: 'NT_NOTIFICATION_EXTEND',
+      data: {
+        resource: '/account/jingling/web_view_statistics',
+        content: JSON.stringify({
+          module,
+        }),
+      },
+    },
+    callback: {
+      nativeCallback: function (respJSONString: string) {
+        console.log('日志数据上报 respJSONString: ', respJSONString)
+        const reg = /"web_response":"({.*?})"/
+        const match = respJSONString.match(reg)
+        let res = null
+        if (match) {
+          let resStr = match[1]
+          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
+          resStr = resStr.replace(/\\/g, '')
+          res = JSON.parse(resStr)
+        }
+        if (res.code === 200) {
+          onSuccess(res)
+        } else {
+          if (res.result === 'invalid module') {
+            console.error('日志数据上传失败 invalid module')
           }
         }
       },

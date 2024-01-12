@@ -4,19 +4,29 @@
       <div class="flex justify-between">
         <!-- 轮播图 -->
         <van-swipe
-          class="swipe border-r-20"
+          class="swipe border-r-10"
           :style="generateDynamicStyles({ width: 1260, height: 712 })"
           :autoplay="3000"
           indicator-color="white"
         >
           <van-swipe-item v-for="banner in banners" :key="banner.id">
-            <a :href="banner.link_url">
+            <!-- <a
+              :href="banner.link_url"
+              @click="handleWebViewStatistics(banner.name)"
+            >
               <img
                 :src="`./images/${banner.img_name}`"
-                class="border-r-20 w-full"
+                class="border-r-10 w-full"
                 :alt="banner.name"
               />
-            </a>
+            </a> -->
+            <div @click="handleWebViewStatistics(banner.name)">
+              <img
+                :src="`./images/${banner.img_name}`"
+                class="border-r-10 w-full"
+                :alt="banner.name"
+              />
+            </div>
           </van-swipe-item>
         </van-swipe>
         <!-- 固定位 -->
@@ -25,7 +35,10 @@
           :style="generateDynamicStyles({ width: 330, marginLeft: 30 })"
         >
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
-            <a :href="fixed.link_url">
+            <a
+              :href="fixed.link_url"
+              @click="handleWebViewStatistics(fixed.name)"
+            >
               <img
                 :src="`./images/${fixed.img_name}`"
                 class="w-full"
@@ -54,14 +67,33 @@
                 })
           "
         >
-          <a :href="sidebar.link_url">
+          <!-- <a
+            :href="sidebar.link_url"
+            @click="handleWebViewStatistics(sidebar.name)"
+          >
             <img
               :src="`./images/${sidebar.img_name}`"
-              class="border-r-20 w-full"
+              class="border-r-10 w-full"
               :alt="sidebar.name"
             />
-            <span class="sidebar-tag">{{ sidebar.tag }}</span>
-          </a>
+            <span
+              class="sidebar-tag"
+              :style="generateDynamicStyles({ fontSize: 34 })"
+              >{{ sidebar.tag }}</span
+            >
+          </a> -->
+          <div @click="handleWebViewStatistics(sidebar.name)">
+            <img
+              :src="`./images/${sidebar.img_name}`"
+              class="border-r-10 w-full"
+              :alt="sidebar.name"
+            />
+            <span
+              class="sidebar-tag"
+              :style="generateDynamicStyles({ fontSize: 34 })"
+              >{{ sidebar.tag }}</span
+            >
+          </div>
         </div>
       </div>
     </div>
@@ -71,6 +103,8 @@
 <script setup lang="ts">
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { type DesignConfig, type BulletinItem } from '@/types'
+import { showToast } from 'vant'
+import { webViewStatistics } from '@/utils/request'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -158,6 +192,7 @@ const filterAndSortItems = (
 
 // 轮播图数据
 const banners = filterAndSortItems('banner')
+console.log('banners: ', banners)
 // 固定位数据
 const fixeds = filterAndSortItems('fixed')
 // 侧边栏数据
@@ -175,10 +210,19 @@ const fetchData = async (): Promise<void> => {
     // Implement user-friendly error handling here
   }
 }
-fetchData().catch((error) => {
-  // Handle any errors that weren't caught in fetchData
-  console.error('Unhandled error during fetchData:', error)
+onMounted(() => {
+  fetchData().catch((error) => {
+    // Handle any errors that weren't caught in fetchData
+    console.error('Unhandled error during fetchData:', error)
+  })
 })
+
+// 日志数据上报
+function handleWebViewStatistics(module: string): void {
+  webViewStatistics({ module }, function () {
+    showToast('日志数据上报成功')
+  })
+}
 </script>
 
 <style scoped>
@@ -198,8 +242,8 @@ fetchData().catch((error) => {
   text-align: center;
   /* background-color: #39a9ed; */
 }
-.border-r-20 {
-  border-radius: 20px;
+.border-r-10 {
+  border-radius: 10px;
 }
 .sidebar {
   margin-top: 30px;

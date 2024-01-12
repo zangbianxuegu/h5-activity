@@ -2,39 +2,43 @@ import type { RouteRecordRaw } from 'vue-router'
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/page1',
+    redirect: '/holiday',
   },
   {
-    path: '/page1',
-    name: 'Page1',
-    component: () => import('@/components/Page1'),
+    path: '/holiday',
+    name: 'Holiday',
+    component: () => import('@/views/Holiday'),
     meta: {
-      title: '页面1',
+      title: '假日打卡',
+      module: 'activity_sign_in_1',
     },
   },
   {
-    path: '/page2',
-    name: 'Page2',
-    redirect: '/page2/sub-page1',
-    component: () => import('@/components/Page2'),
+    path: '/signin',
+    name: 'Signin',
+    redirect: '/signin/winter',
+    component: () => import('@/views/Signin'),
     meta: {
-      title: '页面2',
+      title: '签到活动',
+      module: 'signin',
     },
     children: [
       {
-        path: 'sub-page1',
-        name: 'SubPage1',
-        component: () => import('@/components/SubPage1'),
+        path: 'winter',
+        name: 'Winter',
+        component: () => import('@/views/Signin/Winter'),
         meta: {
-          title: '二级页面1',
+          title: '冬季签到',
+          module: 'activity_sign_in_2',
         },
       },
       {
-        path: 'sub-page2',
-        name: 'SubPage2',
-        component: () => import('@/components/SubPage2'),
+        path: 'summer',
+        name: 'Summer',
+        component: () => import('@/views/Signin/Summer'),
         meta: {
-          title: '二级页面2',
+          title: '暑假签到',
+          module: 'activity_sign_in_3',
         },
       },
     ],
@@ -42,9 +46,10 @@ export const routes: RouteRecordRaw[] = [
   {
     path: '/bulletin',
     name: 'Bulletin',
-    component: () => import('@/components/Bulletin'),
+    component: () => import('@/views/Bulletin'),
     meta: {
       title: '小光快报',
+      module: 'activity_center_notice',
     },
   },
 ]

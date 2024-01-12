@@ -1,8 +1,10 @@
 export interface MenuItem {
   label: string
   value: string
-  active: boolean
   routeName: string
+  isNew: boolean
+  isClaimedReward: boolean
+  children?: MenuItem[]
 }
 
 export interface DesignConfig {
