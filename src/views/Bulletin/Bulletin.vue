@@ -1,7 +1,7 @@
 <template>
   <div class="bulletin flex h-screen flex-col items-center justify-center">
     <div class="bulletin-wrapper">
-      <div class="flex justify-between">
+      <div class="flex">
         <!-- 轮播图 -->
         <van-swipe
           class="swipe border-r-10"
@@ -10,7 +10,7 @@
           indicator-color="white"
         >
           <van-swipe-item v-for="banner in banners" :key="banner.id">
-            <!-- <a
+            <a
               :href="banner.link_url"
               @click="handleWebViewStatistics(banner.name)"
             >
@@ -19,14 +19,7 @@
                 class="border-r-10 w-full"
                 :alt="banner.name"
               />
-            </a> -->
-            <div @click="handleWebViewStatistics(banner.name)">
-              <img
-                :src="`./images/${banner.img_name}`"
-                class="border-r-10 w-full"
-                :alt="banner.name"
-              />
-            </div>
+            </a>
           </van-swipe-item>
         </van-swipe>
         <!-- 固定位 -->
@@ -49,13 +42,13 @@
         </div>
       </div>
       <!-- 列表 -->
-      <div class="sidebar flex">
+      <div class="sidebar flex" :style="generateDynamicStyles({ width: 1620 })">
         <div
           v-for="(sidebar, index) in sidebars"
           :key="sidebar.id"
           class="sidebar-item"
           :style="
-            index === 2
+            index === (sidebars && sidebars.length - 1)
               ? generateDynamicStyles({
                   width: 520,
                   height: 294,
@@ -67,7 +60,7 @@
                 })
           "
         >
-          <!-- <a
+          <a
             :href="sidebar.link_url"
             @click="handleWebViewStatistics(sidebar.name)"
           >
@@ -81,19 +74,7 @@
               :style="generateDynamicStyles({ fontSize: 34 })"
               >{{ sidebar.tag }}</span
             >
-          </a> -->
-          <div @click="handleWebViewStatistics(sidebar.name)">
-            <img
-              :src="`./images/${sidebar.img_name}`"
-              class="border-r-10 w-full"
-              :alt="sidebar.name"
-            />
-            <span
-              class="sidebar-tag"
-              :style="generateDynamicStyles({ fontSize: 34 })"
-              >{{ sidebar.tag }}</span
-            >
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -228,7 +209,7 @@ function handleWebViewStatistics(module: string): void {
 <style scoped>
 .bulletin {
   width: 2100px;
-  /* overflow: scroll; */
+  /* overflow: hidden; */
 }
 .test {
   border: 1px solid red;
@@ -249,10 +230,11 @@ function handleWebViewStatistics(module: string): void {
   margin-top: 30px;
   /* width: 1620px;
   height: 294px; */
-  /* overflow-x: scroll; */
+  overflow-x: scroll;
 
   &-item {
     position: relative;
+    flex-shrink: 0;
   }
 
   &-tag {
