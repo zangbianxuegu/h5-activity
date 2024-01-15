@@ -239,7 +239,7 @@ function handleHelp(): void {
 // 处理 img src
 function handleSrc(name: string): string {
   const imgSrc = new URL(
-    `../../../../assets/images/signin/winter-reward-${name}-wait.png`,
+    `../../../assets/images/signin/winter-reward-${name}-wait.png`,
     import.meta.url,
   ).href
 

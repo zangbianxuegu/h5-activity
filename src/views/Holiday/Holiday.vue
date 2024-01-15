@@ -215,7 +215,7 @@ function handleHelp(): void {
 // 处理 img src
 function handleSrc(name: string): string {
   const imgSrc = new URL(
-    `../../../assets/images/signin/reward-${name}.png`,
+    `../../assets/images/signin/reward-${name}.png`,
     import.meta.url,
   ).href
 
