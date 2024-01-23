@@ -75,6 +75,10 @@ export default function useResponsiveStyles(config: DesignConfig): {
       // 这个缩放系数就是在适配时宽度上应该放大的值
       factor.value = designMainWidth / designMainContentWidth
     }
+    document.documentElement.style.setProperty(
+      '--scale-factor',
+      String(factor.value),
+    )
   }, 200)
 
   // fix: 需要在初始化时就调用，而非在挂载时，页面已经渲染

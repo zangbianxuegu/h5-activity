@@ -1,3 +1,23 @@
+export interface BaseInfo {
+  currentTime: number
+  channel: string
+  appChannel: string
+  token: string
+}
+
+export interface Activity {
+  activity: string
+  startTime: number
+  endTime: number
+  isNew: boolean
+  isClaimedReward: boolean
+}
+
+// export type ActivityTimeItem = Pick<Activity, 'startTime' | 'endTime'>
+// export type ActivityTime = Record<string, ActivityTimeItem>
+
+export type ActivityTime = Record<string, string>
+
 export interface MenuItem {
   label: string
   value: string

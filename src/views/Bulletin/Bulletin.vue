@@ -5,14 +5,13 @@
         <!-- 轮播图 -->
         <van-swipe
           class="swipe border-r-10"
-          :style="generateDynamicStyles({ width: 1260, height: 712 })"
           :autoplay="3000"
           indicator-color="white"
         >
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a
-              :href="banner.link_url"
-              @click="handleWebViewStatistics(banner.name)"
+              :href="banner.link_url || 'javascript:void(0)'"
+              @click="handleItemClick(banner)"
             >
               <img
                 :src="`./images/${banner.img_name}`"
@@ -29,8 +28,8 @@
         >
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
             <a
-              :href="fixed.link_url"
-              @click="handleWebViewStatistics(fixed.name)"
+              :href="fixed.link_url || 'javascript:void(0)'"
+              @click="handleItemClick(fixed)"
             >
               <img
                 :src="`./images/${fixed.img_name}`"
@@ -61,8 +60,8 @@
           "
         >
           <a
-            :href="sidebar.link_url"
-            @click="handleWebViewStatistics(sidebar.name)"
+            :href="sidebar.link_url || 'javascript:void(0)'"
+            @click="handleItemClick(sidebar)"
           >
             <img
               :src="`./images/${sidebar.img_name}`"
@@ -86,6 +85,11 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { type DesignConfig, type BulletinItem } from '@/types'
 import { showToast } from 'vant'
 import { webViewStatistics } from '@/utils/request'
+import { useBaseStore } from '@/stores/base'
+
+// 基本信息
+const baseStore = useBaseStore()
+let currentTime = baseStore.baseInfo.currentTime
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -135,7 +139,13 @@ const generateDynamicStyles = (
 }
 
 // 当前日期
+// 服务端是否返回了当前时间
 const currentDate = new Date()
+if (currentTime) {
+  currentTime = currentTime * 1000
+} else {
+  currentTime = currentDate.getTime()
+}
 // 当前应用的渠道
 const currentChannel = 'netease'
 // 公告页面数据
@@ -143,7 +153,6 @@ const bulletinData = ref<BulletinItem[] | null>(null)
 
 // 判断条目是否在有效时间范围内
 const isEffective = (item: BulletinItem): boolean => {
-  const currentTime = currentDate.getTime()
   const effectiveTime = new Date(item.effective_time).getTime()
   const expiredTime = new Date(item.expired_time).getTime()
   return currentTime >= effectiveTime && currentTime <= expiredTime
@@ -200,9 +209,22 @@ onMounted(() => {
 
 // 日志数据上报
 function handleWebViewStatistics(module: string): void {
-  webViewStatistics({ module }, function () {
-    showToast('日志数据上报成功')
-  })
+  webViewStatistics({ module })
+    .then(() => {
+      showToast('日志数据上报成功')
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+// 点击事件
+function handleItemClick(item: BulletinItem): void {
+  if (item.link_url) {
+    handleWebViewStatistics(item.name)
+  } else {
+    showToast('敬请期待')
+  }
 }
 </script>
 
@@ -216,6 +238,8 @@ function handleWebViewStatistics(module: string): void {
 }
 .swipe {
   overflow: hidden;
+  width: calc(1260px * var(--scale-factor));
+  height: calc(712px * var(--scale-factor));
 }
 .van-swipe-item {
   color: #fff;

@@ -30,7 +30,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-import { useMenuStore } from '@/stores/menuStore'
+import { useMenuStore } from '@/stores/menu'
 
 const menuStore = useMenuStore()
 const menuData = computed(() => menuStore.menuData)
@@ -109,3 +109,4 @@ function handleNav(curItem: MenuItem): void {
   }
 }
 </style>
+@/stores/menu

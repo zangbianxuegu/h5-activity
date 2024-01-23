@@ -8,7 +8,7 @@
           冬季签到
         </h1>
         <div class="date flex items-center align-middle">
-          <div class="date-text">{{ time }}</div>
+          <div class="date-text">{{ activityTime }}</div>
           <div
             class="date-help bg-contain bg-center bg-no-repeat"
             @click="handleHelp"
@@ -130,9 +130,15 @@ import {
   claimMissionReward,
 } from '@/utils/request'
 import ActivityModal from '@/components/Modal'
-import { useMenuStore } from '@/stores/menuStore'
+import { useMenuStore } from '@/stores/menu'
+import { useActivityStore } from '@/stores/activity'
 
 const menuStore = useMenuStore()
+
+const activityStore = useActivityStore()
+const activityTime = computed(
+  () => activityStore.activityTime.activity_sign_in_3,
+)
 
 interface Event {
   task_id: string
@@ -219,10 +225,6 @@ const rewardList = ref([
   },
 ])
 
-defineProps({
-  time: String,
-})
-
 onMounted(() => {
   try {
     getActivityData()
@@ -248,35 +250,39 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: 'activity_sign_in_2' }, function (data) {
-    activityData.value = data?.activity_sign_in_2[0]
-    isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
-    const shouldClaimedRewardCount = activityData.value.stages.filter(
-      (stage) => stage <= activityData.value.value,
-    ).length
-    const isClaimedReward =
-      activityData.value.award.filter((item) => item === 1).length ===
-      shouldClaimedRewardCount
-    // 更新菜单数据 isClaimedReward
-    menuStore.updateMenuDataByIsClaimedReward(
-      'activity_sign_in_2',
-      isClaimedReward,
-    )
-    console.log('winter menuStore: ', menuStore)
-    console.log('winter activityData: ', activityData.value)
-    // 更新奖励列表状态
-    rewardList.value = rewardList.value.map((item, index) => {
-      return {
-        ...item,
-        status:
-          activityData.value.award[index] === 1
-            ? 'redeemed'
-            : item.stage > activityData.value.value
-            ? 'wait'
-            : 'can',
-      }
+  getPlayerMissionData({ event: 'activity_sign_in_2' })
+    .then((res) => {
+      activityData.value = res.data.event_data?.activity_sign_in_2[0]
+      isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
+      const shouldClaimedRewardCount = activityData.value.stages.filter(
+        (stage) => stage <= activityData.value.value,
+      ).length
+      const isClaimedReward =
+        activityData.value.award.filter((item) => item === 1).length ===
+        shouldClaimedRewardCount
+      // 更新菜单数据 isClaimedReward
+      menuStore.updateMenuDataByIsClaimedReward(
+        'activity_sign_in_2',
+        isClaimedReward,
+      )
+      console.log('winter menuStore: ', menuStore)
+      console.log('winter activityData: ', activityData.value)
+      // 更新奖励列表状态
+      rewardList.value = rewardList.value.map((item, index) => {
+        return {
+          ...item,
+          status:
+            activityData.value.award[index] === 1
+              ? 'redeemed'
+              : item.stage > activityData.value.value
+              ? 'wait'
+              : 'can',
+        }
+      })
     })
-  })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 // 签到
@@ -286,10 +292,14 @@ function handleSignin(): void {
     return
   }
   // 更新任务进度，更新 value
-  setPlayerTask({ task: 'activity_sign_in_m2' }, function () {
-    showToast('签到成功')
-    getActivityData()
-  })
+  setPlayerTask({ task: 'activity_sign_in_m2' })
+    .then(() => {
+      showToast('签到成功')
+      getActivityData()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 // 领奖
@@ -302,13 +312,13 @@ function handleReward(status: string, rewardId: number): void {
     showToast('签到天数不足')
     return
   }
-  claimMissionReward(
-    {
-      event: 'activity_sign_in_2',
-      task: 'activity_sign_in_m2',
-      rewardId,
-    },
-    function (rewards) {
+  claimMissionReward({
+    event: 'activity_sign_in_2',
+    task: 'activity_sign_in_m2',
+    rewardId,
+  })
+    .then((res) => {
+      const rewards = res.data.rewards
       console.log('winter rewards: ', rewards)
       getActivityData()
       modalReward.value?.openModal()
@@ -316,8 +326,10 @@ function handleReward(status: string, rewardId: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-    },
-  )
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 </script>
 
@@ -504,3 +516,4 @@ function handleReward(status: string, rewardId: number): void {
 <script setup lang="ts"></script>
 
 <style scoped></style> -->
+@/stores/menu

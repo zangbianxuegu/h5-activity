@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { type MenuItem } from '@/types'
 import { setWebRedDot } from '@/utils/request'
+import { showToast } from 'vant'
 
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
@@ -69,31 +70,35 @@ export const useMenuStore = defineStore('menu', () => {
         ?.children?.find((child) => child.value === event)
     }
     if (curItem?.isNew) {
-      setWebRedDot({ event }, function () {
-        menuData.value = menuData.value.map((item) => {
-          if (
-            item.value === 'signin' &&
-            item.children &&
-            item.children.length > 0
-          ) {
-            const children = item.children.map((child) => {
-              const isNew = child.value === event ? false : child.isNew
+      setWebRedDot({ event })
+        .then(() => {
+          menuData.value = menuData.value.map((item) => {
+            if (
+              item.value === 'signin' &&
+              item.children &&
+              item.children.length > 0
+            ) {
+              const children = item.children.map((child) => {
+                const isNew = child.value === event ? false : child.isNew
+                return {
+                  ...child,
+                  isNew,
+                }
+              })
               return {
-                ...child,
-                isNew,
+                ...item,
+                children,
               }
-            })
+            }
             return {
               ...item,
-              children,
+              isNew: item.value === event ? false : item.isNew,
             }
-          }
-          return {
-            ...item,
-            isNew: item.value === event ? false : item.isNew,
-          }
+          })
         })
-      })
+        .catch((error) => {
+          showToast(error.message)
+        })
     }
   }
 

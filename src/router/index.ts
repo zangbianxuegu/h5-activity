@@ -1,7 +1,8 @@
+import { showToast } from 'vant'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './routes'
 import { webViewStatistics } from '@/utils/request'
-import { useMenuStore } from '@/stores/menuStore'
+import { useMenuStore } from '@/stores/menu'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -24,9 +25,13 @@ router.beforeEach((to, _, next) => {
   try {
     if (typeof module === 'string') {
       if (module !== 'activity_center_notice') {
-        webViewStatistics({ module }, function () {
-          console.log('日志数据上报成功. module: ' + module)
-        })
+        webViewStatistics({ module })
+          .then(() => {
+            console.log('日志数据上报成功. module: ' + module)
+          })
+          .catch((error) => {
+            showToast(error.message)
+          })
       }
     }
   } catch (error) {

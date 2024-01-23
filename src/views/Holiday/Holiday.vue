@@ -8,7 +8,7 @@
           假日打卡
         </h1>
         <div class="date flex items-center align-middle">
-          <div class="date-text">{{ time }}</div>
+          <div class="date-text">{{ activityTime }}</div>
           <div
             class="date-help bg-contain bg-center bg-no-repeat"
             @click="handleHelp"
@@ -117,9 +117,15 @@ import {
   claimMissionReward,
 } from '@/utils/request'
 import ActivityModal from '@/components/Modal'
-import { useMenuStore } from '@/stores/menuStore'
+import { useMenuStore } from '@/stores/menu'
+import { useActivityStore } from '@/stores/activity'
 
 const menuStore = useMenuStore()
+
+const activityStore = useActivityStore()
+const activityTime = computed(
+  () => activityStore.activityTime.activity_sign_in_1,
+)
 
 interface Event {
   task_id: string
@@ -195,10 +201,6 @@ const state = reactive({
   ],
 })
 
-defineProps({
-  time: String,
-})
-
 onMounted(() => {
   try {
     getActivityData()
@@ -224,24 +226,28 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: 'activity_sign_in_1' }, function (data) {
-    activityData.value = data?.activity_sign_in_1[0]
-    rewardId.value = activityData.value.value
-    isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
-    const shouldClaimedRewardCount = activityData.value.stages.filter(
-      (stage) => stage <= activityData.value.value,
-    ).length
-    const isClaimedReward =
-      activityData.value.award.filter((item) => item === 1).length ===
-      shouldClaimedRewardCount
-    // 更新菜单数据 isClaimedReward
-    menuStore.updateMenuDataByIsClaimedReward(
-      'activity_sign_in_1',
-      isClaimedReward,
-    )
-    console.log('signin menuStore', menuStore)
-    console.log('signin activityData: ', activityData.value)
-  })
+  getPlayerMissionData({ event: 'activity_sign_in_1' })
+    .then((res) => {
+      activityData.value = res.data.event_data?.activity_sign_in_1[0]
+      rewardId.value = activityData.value.value
+      isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
+      const shouldClaimedRewardCount = activityData.value.stages.filter(
+        (stage) => stage <= activityData.value.value,
+      ).length
+      const isClaimedReward =
+        activityData.value.award.filter((item) => item === 1).length ===
+        shouldClaimedRewardCount
+      // 更新菜单数据 isClaimedReward
+      menuStore.updateMenuDataByIsClaimedReward(
+        'activity_sign_in_1',
+        isClaimedReward,
+      )
+      console.log('signin menuStore', menuStore)
+      console.log('signin activityData: ', activityData.value)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 // 签到
@@ -255,28 +261,31 @@ function handleSignin(): void {
     return
   }
   // 更新任务进度，更新 value
-  setPlayerTask({ task: 'activity_sign_in_m1' }, function () {
-    // 更新 reward_id
-    rewardId.value++
+  setPlayerTask({ task: 'activity_sign_in_m1' })
+    .then(() => {
+      // 更新 reward_id
+      rewardId.value++
 
-    // 领奖
-    claimMissionReward(
-      {
+      // 领奖
+      return claimMissionReward({
         event: 'activity_sign_in_1',
         task: 'activity_sign_in_m1',
         rewardId: rewardId.value,
-      },
-      function (rewards) {
-        console.log('signin rewards: ', rewards)
-        getActivityData()
-        modalReward.value?.openModal()
-        curRewards.value = {
-          name: Object.keys(rewards)[0],
-          count: Number(Object.values(rewards)[0]),
-        }
-      },
-    )
-  })
+      })
+    })
+    .then((res) => {
+      const rewards = res.data.rewards
+      console.log('signin rewards: ', rewards)
+      getActivityData()
+      modalReward.value?.openModal()
+      curRewards.value = {
+        name: Object.keys(rewards)[0],
+        count: Number(Object.values(rewards)[0]),
+      }
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 </script>
 
@@ -443,3 +452,4 @@ function handleSignin(): void {
   width: 150px;
 }
 </style>
+@/stores/menu

@@ -111,6 +111,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { showToast } from 'vant'
 import { getPlayerMissionData, setWebRedDot } from '@/utils/request'
 import ActivitySignin from './components/activity-signin.vue'
 import ActivityWinter from './components/activity-winter.vue'
@@ -226,9 +227,13 @@ function resetAllTabStates(isMainSub: boolean): void {
 // 更新是否新活动
 function updateIsNewStatus(type: keyof IsActivity, event: string): void {
   if (isNew.value[type] === 1) {
-    setWebRedDot({ event }, function () {
-      isNew.value[type] = 0
-    })
+    setWebRedDot({ event })
+      .then(() => {
+        isNew.value[type] = 0
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
   }
 }
 
@@ -297,57 +302,61 @@ function handleSubTab(index: number): void {
 
 // 获取所有活动信息
 function getAllEvents(): void {
-  getPlayerMissionData({}, function (res) {
-    console.log('APP res: ', res)
+  getPlayerMissionData({})
+    .then((res) => {
+      console.log('APP res: ', res)
 
-    // 判断活动是否显示
-    function isValidAllActiveEvents(obj: any): obj is AllActiveEvents {
-      return (
-        'activity_sign_in_1' in obj &&
-        'activity_sign_in_2' in obj &&
-        'activity_sign_in_3' in obj
+      // 判断活动是否显示
+      function isValidAllActiveEvents(obj: any): obj is AllActiveEvents {
+        return (
+          'activity_sign_in_1' in obj &&
+          'activity_sign_in_2' in obj &&
+          'activity_sign_in_3' in obj
+        )
+      }
+      const activeEvents = Object.fromEntries(
+        Object.entries(res).filter(
+          ([_, value]) => (value as Activity).active === 1,
+        ),
       )
-    }
-    const activeEvents = Object.fromEntries(
-      Object.entries(res).filter(
-        ([_, value]) => (value as Activity).active === 1,
-      ),
-    )
-    if (isValidAllActiveEvents(activeEvents)) {
-      allActiveEvents = activeEvents
-    } else {
-      console.error('activeEvents is not a valid AllActiveEvents object')
-    }
+      if (isValidAllActiveEvents(activeEvents)) {
+        allActiveEvents = activeEvents
+      } else {
+        console.error('activeEvents is not a valid AllActiveEvents object')
+      }
 
-    // 设置活动状态
-    isActivityActive.value = {
-      signin: allActiveEvents.activity_sign_in_1.active === 1,
-      winter: allActiveEvents.activity_sign_in_2.active === 1,
-      summer: allActiveEvents.activity_sign_in_3.active === 1,
-    }
+      // 设置活动状态
+      isActivityActive.value = {
+        signin: allActiveEvents.activity_sign_in_1.active === 1,
+        winter: allActiveEvents.activity_sign_in_2.active === 1,
+        summer: allActiveEvents.activity_sign_in_3.active === 1,
+      }
 
-    if (!isActivityActive.value.signin) {
-      pageOne.value?.classList.toggle('active')
-    }
+      if (!isActivityActive.value.signin) {
+        pageOne.value?.classList.toggle('active')
+      }
 
-    // 设置红点信息：是否已领奖、是否新活动
-    isClaimedReward.value.signin =
-      allActiveEvents.activity_sign_in_1.is_claimed_reward
-    isClaimedReward.value.winter =
-      allActiveEvents.activity_sign_in_2.is_claimed_reward
-    isClaimedReward.value.summer =
-      allActiveEvents.activity_sign_in_3.is_claimed_reward
-    isNew.value.signin = allActiveEvents.activity_sign_in_1.is_new
-    isNew.value.winter = allActiveEvents.activity_sign_in_2.is_new
-    isNew.value.summer = allActiveEvents.activity_sign_in_3.is_new
+      // 设置红点信息：是否已领奖、是否新活动
+      isClaimedReward.value.signin =
+        allActiveEvents.activity_sign_in_1.is_claimed_reward
+      isClaimedReward.value.winter =
+        allActiveEvents.activity_sign_in_2.is_claimed_reward
+      isClaimedReward.value.summer =
+        allActiveEvents.activity_sign_in_3.is_claimed_reward
+      isNew.value.signin = allActiveEvents.activity_sign_in_1.is_new
+      isNew.value.winter = allActiveEvents.activity_sign_in_2.is_new
+      isNew.value.summer = allActiveEvents.activity_sign_in_3.is_new
 
-    // 设置初始状态
-    if (isActivityActive.value.signin) {
-      handleChangeMainTab(1)
-    } else {
-      handleChangeMainTab(2)
-    }
-  })
+      // 设置初始状态
+      if (isActivityActive.value.signin) {
+        handleChangeMainTab(1)
+      } else {
+        handleChangeMainTab(2)
+      }
+    })
+    .catch((error) => {
+      console.error('所有活动 error', error.message)
+    })
 }
 
 // 设置是否已领奖状态

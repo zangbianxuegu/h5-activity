@@ -7,7 +7,7 @@
       <div class="nav-sprite flex">
         <a
           class="nav-sprite-text"
-          href="https://dev.gmsdk.gameyw.netease.com/sprite/index?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE3MDQ4ODQ4NjgsInV1aWQiOiJtYTc1LmJjNGIzYjVmYTA1YjJjZDYzMjNjZmJlMmE2MTQwODYxIn0.hQNhfb9Axnabb9SpeIGt5ETrYL0_FLThU1gKMNX71tA"
+          :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
           >前往精灵>></a
         >
       </div>
@@ -19,30 +19,42 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs'
+import { showToast } from 'vant'
 import Menu from '@/components/Menu'
-import { type MenuItem } from '@/types'
-import { getPlayerMissionData } from '@/utils/request'
-import { useMenuStore } from '@/stores/menuStore'
+import { type MenuItem, type Activity, type ActivityTime } from '@/types'
+import {
+  getPlayerMissionData,
+  getUserInfo,
+  getJinglingToken,
+} from '@/utils/request'
+import { useBaseStore } from '@/stores/base'
+import { useMenuStore } from '@/stores/menu'
+import { useActivityStore } from '@/stores/activity'
 import { useRoute } from 'vue-router'
 
 const route = useRoute()
 
+// 基本信息
+const baseStore = useBaseStore()
+const token = computed(() => baseStore.baseInfo.token)
+const { updateBaseInfoItems } = baseStore
+
+// 菜单数据
 const menuStore = useMenuStore()
 const menuData = computed(() => menuStore.menuData)
+const { updateMenuData } = menuStore
 
-// 活动数组类型
-interface Activity {
-  activity: string
-  isNew: boolean
-  isClaimedReward: boolean
-}
+// 活动信息
+const activityStore = useActivityStore()
+const { updateActivityTime } = activityStore
 
 // 接口数据类型
 interface ActivityData {
   start_time: number
+  end_time: number
   is_new: number
   is_claimed_reward: number
-  end_time: number
   active: number
 }
 type Activities = Record<string, ActivityData>
@@ -50,10 +62,37 @@ type Activities = Record<string, ActivityData>
 onMounted(() => {
   try {
     getAllEvents()
+    getBaseInfo()
   } catch (error) {
     console.error(error)
   }
 })
+
+// 获取基本信息
+function getBaseInfo(): void {
+  getUserInfo()
+    .then((res) => {
+      console.log('获取基本信息 res: ', res)
+      const tokenParams = {
+        game_uid: res.game_uid,
+        uid: res.uid,
+        login_from: res.login_from,
+        map: res.map,
+        return_buff: res.return_buff,
+        os: res.os,
+      }
+      return getJinglingToken(tokenParams)
+    })
+    .then((res) => {
+      const token = res.data.token
+      console.log('获取 token: ', token)
+      updateBaseInfoItems({ token })
+      console.log('baseStore: ', baseStore)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
@@ -62,6 +101,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
       if (activityInfo.active === 1) {
         activeEvents.push({
           activity: activityName,
+          startTime: activityInfo.start_time,
+          endTime: activityInfo.end_time,
           isNew: activityInfo.is_new === 1,
           isClaimedReward:
             activityName === 'activity_center_notice'
@@ -108,24 +149,47 @@ function generateMenuData(
 
 // 获取所有活动信息
 function getAllEvents(): void {
-  getPlayerMissionData({}, function (res) {
-    console.log('所有活动 res: ', res)
+  getPlayerMissionData({})
+    .then((res) => {
+      console.log('所有活动 res: ', res)
 
-    const activeEvents = extractActiveEvents(res)
-    console.log('可用的活动数组 activeEvents: ', activeEvents)
-    const newMenuData = generateMenuData(menuData.value, activeEvents)
-    console.log('最终的菜单数据 newMenuData: ', newMenuData)
+      const activeEvents = extractActiveEvents(res.data.event_data)
+      // console.log('可用的活动数组 activeEvents: ', activeEvents)
+      const newMenuData = generateMenuData(menuData.value, activeEvents)
+      // console.log('最终的菜单数据 newMenuData: ', newMenuData)
 
-    // 更新 store 存储
-    menuStore.updateMenuData(newMenuData)
+      // 活动时间
+      const newActivityTime = activeEvents
+        .filter((item) => item.startTime && item.endTime)
+        .reduce<ActivityTime>((acc, cur) => {
+          acc[cur.activity] = formatDate(cur.startTime, cur.endTime)
+          return acc
+        }, {})
 
-    // fix: 首次请求完菜单信息之后更新红点状态，路由拦截时数据还是初始数据
-    const module = route.meta.module
+      // 更新 store 存储
+      if (res.data?.current_time) {
+        updateBaseInfoItems({ currentTime: res.data.current_time })
+      }
+      updateActivityTime(newActivityTime)
+      updateMenuData(newMenuData)
 
-    if (module && typeof module === 'string') {
-      menuStore.updatedMenuDataByRoute(module)
-    }
-  })
+      // fix: 首次请求完菜单信息之后更新红点状态，路由拦截时数据还是初始数据
+      const module = route.meta.module
+
+      if (module && typeof module === 'string') {
+        menuStore.updatedMenuDataByRoute(module)
+      }
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+// 格式化日期
+function formatDate(startTime: number, endTime: number): string {
+  const start = dayjs.unix(startTime)
+  const end = dayjs.unix(endTime)
+  return `${start.format('M.D')}-${end.format('M.D')}`
 }
 </script>
 
@@ -152,3 +216,4 @@ function getAllEvents(): void {
   }
 }
 </style>
+@/stores/menu

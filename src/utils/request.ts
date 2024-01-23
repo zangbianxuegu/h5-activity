@@ -1,390 +1,457 @@
-import { showToast } from 'vant'
+import { type TokenParams, type PostMsgParams, type Response } from '@/types'
 
-// 获取玩家任务进度数据
-export function getPlayerMissionData(
-  { event }: { event?: string },
-  onSuccess: (res: any) => void,
-): void {
-  // if (!window.UniSDKJSBridge) {
-  //   console.error('请在客户端中打开！')
-  //   return
-  // }
+// Web 与 客户端通信
+function handlePostMessageToNative({
+  type,
+  resource,
+  content,
+  handleRes,
+}: PostMsgParams): void {
   window.UniSDKJSBridge.postMsgToNative({
     methodId: 'ngwebview_notify_native',
     reqData: {
       notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/internal/jingling/get_player_mission_data',
-        content: JSON.stringify({
-          source_token: '',
-          source_id: '',
-          // user: 'b79fb400-8bc4-47d9-b9e3-1ac28f99d72b',
-          event,
-        }),
-      },
+      data:
+        type === 'userinfo'
+          ? { type }
+          : {
+              type,
+              resource,
+              content: JSON.stringify(content),
+            },
     },
     callback: {
       nativeCallback: function (respJSONString: string) {
-        console.log('获取玩家任务进度信息 respJSONString: ', respJSONString)
-        // respJSONString Android：'{"methodId":"NGWebViewCallbackToWeb", "web_response":"{"code":200,"result":"ok"}", "callback_id":"202972267" }'
-        // respJSONString iOS："web_response":"{"code":200,"result":"ok"}"
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
-        // console.log('获取玩家任务进度信息 res: ', res)
-        if (res.code === 200) {
-          onSuccess(res.data)
-        } else {
-          if (res.code === 400) {
-            if (res.msg === 'invalid event') {
-              showToast('无效活动')
-            } else if (res.msg === 'invalid task') {
-              showToast('无任务')
-            } else if (res.msg === 'invalid user') {
-              showToast('user 错误')
-            } else if (res.msg === 'not recently online ') {
-              showToast('玩家最近不在线')
-            }
-          } else if (res.code === 401) {
-            if (res.msg === 'inactive event') {
-              showToast('活动未开启')
-            } else if (res.msg === 'repeat_request') {
-              showToast('请求频繁')
-            }
-          }
-        }
+        handleResponse(resource, respJSONString, handleRes)
       },
     },
   })
+}
+
+// 处理客户端响应
+function handleResponse(
+  resource: string | undefined,
+  respJSONString: string,
+  handleRes: (data: any) => void,
+): void {
+  console.log('Response JSON String: ', respJSONString)
+  const reg = /"web_response":"({.*?})"/
+  const match = respJSONString.match(reg)
+  let res: Response | null = null
+
+  if (match) {
+    const resStr = match[1].replace(/\\/g, '')
+    res = JSON.parse(resStr)
+  }
+
+  console.log('resource: ', resource, res)
+  handleRes(res)
+}
+
+// 获取用户信息，仅与客户端通信 Web <-> APP
+// window.UniSDKNativeCallback, -209576407, { "methodId": "NGWebViewCallbackToWeb", "web_response": "{"cmd":"kefu_get_token","uid":"aebgkelrab6bhqzn@ad.netease.win.163.com","game_uid":"65750a6d - 1717 - 4c45 - be90 - 7a7be8035cbf","os":"android","game_server":6,"login_from":0,"map":"CandleSpace","return_buff":"false"}", "callback_id": "-209576407"}
+export function getUserInfo(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'userinfo',
+      handleRes: (res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(new Error('获取用户信息出错'))
+        }
+      },
+    })
+  })
+}
+
+// 获取 token
+// 一般接口，响应结构如 { code: 200, msg: 'ok', data: {} }
+export function getJinglingToken(tokenParams: TokenParams): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/jingling/get_jingling_token',
+      content: {
+        token_params: JSON.stringify(tokenParams),
+      },
+      handleRes: (res: Response) => {
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = res.msg || '服务器连接失败'
+          reject(new Error(errorMessage))
+        }
+      },
+    })
+  })
+}
+
+// 获取玩家任务进度数据
+export function getPlayerMissionData({
+  event,
+}: {
+  event?: string
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/internal/jingling/get_player_mission_data',
+      content: {
+        source_token: '',
+        source_id: '',
+        event,
+      },
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
+          reject(new Error(errorMessage))
+        }
+      },
+    })
+  })
+}
+
+function handleErrMsgPlayerMission(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    400: {
+      'invalid event': '没有活动配置（无效的活动）',
+      'invalid task': '没有任务配置（无效的任务）',
+      'invalid user': '非法userid',
+      'not recently online': '玩家近期不在线',
+    },
+    401: {
+      'inactive event': '活动未开启',
+      'repeat request': '请求频繁',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+
+  const defaultErrorMessage = '获取玩家任务进度失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 更新任务进度
-export function setPlayerTask(
-  { task, value = 1 }: { task: string; value?: number },
-  onSuccess: (res: any) => void,
-): void {
-  // if (!window.UniSDKJSBridge) {
-  //   console.error('请在客户端中打开！')
-  //   return
-  // }
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/internal/jingling/set_player_task',
-        content: JSON.stringify({
-          source_token: '',
-          source_id: '',
-          task,
-          value,
-          // user: 'b79fb400-8bc4-47d9-b9e3-1ac28f99d72b',
-        }),
+export function setPlayerTask({
+  task,
+  value = 1,
+}: {
+  task: string
+  value?: number
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/internal/jingling/set_player_task',
+      content: {
+        source_token: '',
+        source_id: '',
+        task,
+        value,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('签到 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
-        console.log('签到 res: ', res)
+      handleRes: (res) => {
         if (res.code === 200) {
-          onSuccess(res)
+          resolve(res)
         } else {
-          if (res.code === 400) {
-            if (res.msg === 'invalid event') {
-              showToast('活动未开启')
-            } else if (res.msg === 'invalid_task') {
-              showToast('task参数错误')
-            } else if (res.msg === 'invalid user') {
-              showToast('错误的user')
-            } else if (res.result === 'Already') {
-              showToast('已签到')
-            }
-          }
+          const errorMessage = handleErrMsgPlayerTask(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
+}
+
+function handleErrMsgPlayerTask(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    400: {
+      'invalid task': '没有活动配置',
+      'invalid user': '非法userid',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+
+  const defaultErrorMessage = '更新任务进度失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 领奖
-export function claimMissionReward(
-  { task, event, rewardId }: { task: string; event: string; rewardId: number },
-  onSuccess: (res: any) => void,
-): void {
-  // if (!window.UniSDKJSBridge) {
-  //   console.error('请在客户端中打开！')
-  //   return
-  // }
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/internal/jingling/claim_jingling_mission_reward',
-        content: JSON.stringify({
-          source_token: '',
-          source_id: '',
-          task,
-          event,
-          reward_id: rewardId,
-          // user: 'b79fb400-8bc4-47d9-b9e3-1ac28f99d72b',
-        }),
+export function claimMissionReward({
+  task,
+  event,
+  rewardId,
+}: {
+  task: string
+  event: string
+  rewardId: number
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/internal/jingling/claim_jingling_mission_reward',
+      content: {
+        source_token: '',
+        source_id: '',
+        task,
+        event,
+        reward_id: rewardId,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('领奖 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
-        console.log('领奖 res: ', res)
+      handleRes: (res) => {
         if (res.code === 200) {
-          onSuccess(res.rewards)
+          resolve(res)
         } else {
-          if (res.code === 400) {
-            if (res.msg === 'invalid') {
-              showToast('未满足领奖条件')
-            } else if (res.msg === 'repeat_request') {
-              showToast('短时间内重复请求领取同一个奖励（10s）')
-            } else {
-              showToast('参数相关错误')
-            }
-          } else if (res.code === 401) {
-            showToast('活动未开启')
-          } else if (res.code === 403) {
-            if (res.msg === 'out of stock') {
-              showToast('超出库存')
-            } else if (res.msg === 'reward has already selected') {
-              showToast('该奖励已选择')
-            } else if (res.msg === 'already selected another') {
-              showToast('已选择其他奖励')
-            } else if (res.msg === 'already received the reward') {
-              showToast('重复领取')
-            }
-          }
+          const errorMessage = handleErrMsgMissionReward(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
+}
+
+function handleErrMsgMissionReward(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    400: {
+      invalid: '无效的活动',
+      'repeat request': '请求频繁',
+      'not recently online': '玩家近期不在线',
+      'wrong event or task': '错误的活动或任务（无效活动）',
+      'wrong reward_id': '错误的奖励id',
+      'concurrent request': '并发的请求',
+    },
+    401: {
+      inactive: '活动未开启',
+    },
+    403: {
+      'already received the reward': '已领取奖励',
+      'out of stock': '奖品库存不足',
+      'already has unlock': '已拥有该物品',
+      'reward has already selected': '已选择奖励',
+      'already selected another': '已选择其他奖励',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+
+  const defaultErrorMessage = '领奖失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 设置新活动状态
-export function setWebRedDot(
-  { event }: { event: string },
-  onSuccess: (res: any) => void,
-): void {
-  // if (!window.UniSDKJSBridge) {
-  //   console.error('请在客户端中打开！')
-  //   return
-  // }
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/account/set_web_red_dot',
-        content: JSON.stringify({
-          event,
-        }),
+export function setWebRedDot({ event }: { event: string }): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/set_web_red_dot',
+      content: {
+        event,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('设置新活动状态 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
+      handleRes: (res) => {
         if (res.code === 200) {
-          onSuccess(res)
+          resolve(res)
         } else {
-          if (res.result === 'inactive event') {
-            showToast('活动未开启')
-          }
+          const errorMessage = handleErrMsgRedDot(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
+}
+
+function handleErrMsgRedDot(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    400: {
+      'invalid event': '没有活动配置（无效的活动）',
+    },
+    401: {
+      'inactive event': '活动未开启',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+
+  const defaultErrorMessage = '设置新活动状态失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 重置任务进度（包括每日签到数据）
-export function resetTaskValue(
-  { task, event }: { task: string; event: string },
-  onSuccess: (res: any) => void,
-): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/account/debug/reset_task_value',
-        content: JSON.stringify({
-          event,
-          task,
-        }),
+export function resetTaskValue({
+  task,
+  event,
+}: {
+  task: string
+  event: string
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/debug/reset_task_value',
+      content: {
+        event,
+        task,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('重置任务进度 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
-        if (res.result === 'ok') {
-          onSuccess(res)
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res)
         } else {
-          showToast('重置任务进度错误')
+          const errorMessage = handleErrMsgRestTask(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
+}
+
+function handleErrMsgRestTask(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    401: {
+      'no event defs': '没有活动配置',
+      'no task defs': '没有任务配置',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+
+  const defaultErrorMessage = '重置任务进度失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 重置领奖数据
-export function resetSpriteReward(
-  { task, event }: { task: string; event: string },
-  onSuccess: (res: any) => void,
-): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/account/debug/reset_sprite_reward',
-        content: JSON.stringify({
-          event,
-          task,
-        }),
+export function resetSpriteReward({
+  task,
+  event,
+}: {
+  task: string
+  event: string
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/debug/reset_sprite_reward',
+      content: {
+        event,
+        task,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('重置领奖数据 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
-        if (res.result === 'ok') {
-          onSuccess(res)
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res)
         } else {
-          showToast('重置领奖数据错误')
+          const errorMessage = handleErrMsgResetReward(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
 }
 
+function handleErrMsgResetReward(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    401: {
+      'no task defs': '没有任务配置（无效的任务）',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+  const defaultErrorMessage = '重置领奖数据失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
+}
+
 // 重置红点
-export function gmsResetWebRedDot(
-  { event }: { event: string },
-  onSuccess: (res: any) => void,
-): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/account/gms_reset_web_red_dot',
-        content: JSON.stringify({
-          event,
-        }),
+// ! 响应与其他接口不同
+export function gmsResetWebRedDot({ event }: { event: string }): Promise<any> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/gms_reset_web_red_dot',
+      content: {
+        event,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('重置红点 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
+      // { "result": "ok" }
+      // { "result": "fail" }
+      handleRes: (res) => {
         if (res.result === 'ok') {
-          onSuccess(res)
+          resolve(res)
         } else {
-          showToast('重置红点错误')
+          reject(new Error('重置红点失败'))
         }
       },
-    },
+    })
   })
 }
 
 // 日志数据上报
-export function webViewStatistics(
-  { module }: { module: string },
-  onSuccess: (res: any) => void,
-): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data: {
-        resource: '/account/jingling/web_view_statistics',
-        content: JSON.stringify({
-          module,
-        }),
+export function webViewStatistics({
+  module,
+}: {
+  module: string
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/jingling/web_view_statistics',
+      content: {
+        module,
       },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        console.log('日志数据上报 respJSONString: ', respJSONString)
-        const reg = /"web_response":"({.*?})"/
-        const match = respJSONString.match(reg)
-        let res = null
-        if (match) {
-          let resStr = match[1]
-          // fix: iOS 返回：{\"code\": 200, \"result"\: \"OK\"}
-          resStr = resStr.replace(/\\/g, '')
-          res = JSON.parse(resStr)
-        }
+      handleRes: (res) => {
         if (res.code === 200) {
-          onSuccess(res)
+          resolve(res)
         } else {
-          if (res.result === 'invalid module') {
-            console.error('日志数据上传失败 invalid module')
-          }
+          const errorMessage = handleErrMsgViewStatistics(res.code, res.msg)
+          reject(new Error(errorMessage))
         }
       },
-    },
+    })
   })
+}
+
+function handleErrMsgViewStatistics(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    401: {
+      'inactive event': '活动未开启',
+    },
+    404: {
+      'invalid module': '没有活动配置（无效的活动）',
+    },
+    500: {
+      default: '服务器内部发生错误',
+    },
+  }
+  const defaultErrorMessage = '日志数据上报失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
