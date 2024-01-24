@@ -3,7 +3,12 @@ import { type BaseInfo } from '@/types'
 
 export const useBaseStore = defineStore('base', () => {
   // 基本信息
-  const baseInfo = ref<BaseInfo>({})
+  const baseInfo: Ref<BaseInfo> = ref({
+    currentTime: 0,
+    channel: '',
+    appChannel: '',
+    token: '',
+  })
 
   function updateBaseInfo(newBaseInfo: BaseInfo): void {
     baseInfo.value = newBaseInfo

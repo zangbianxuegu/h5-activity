@@ -140,11 +140,10 @@ const generateDynamicStyles = (
 
 // 当前日期
 // 服务端是否返回了当前时间
-const currentDate = new Date()
 if (currentTime) {
   currentTime = currentTime * 1000
 } else {
-  currentTime = currentDate.getTime()
+  currentTime = new Date().getTime()
 }
 // 当前应用的渠道
 const currentChannel = 'netease'
