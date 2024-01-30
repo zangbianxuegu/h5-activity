@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { type DesignConfig, type BulletinItem } from '@/types'
 import { showToast } from 'vant'
@@ -152,8 +153,8 @@ const bulletinData = ref<BulletinItem[] | null>(null)
 
 // 判断条目是否在有效时间范围内
 const isEffective = (item: BulletinItem): boolean => {
-  const effectiveTime = new Date(item.effective_time).getTime()
-  const expiredTime = new Date(item.expired_time).getTime()
+  const effectiveTime = dayjs(item.effective_time).valueOf()
+  const expiredTime = dayjs(item.expired_time).valueOf()
   return currentTime >= effectiveTime && currentTime <= expiredTime
 }
 
@@ -181,7 +182,6 @@ const filterAndSortItems = (
 
 // 轮播图数据
 const banners = filterAndSortItems('banner')
-console.log('banners: ', banners)
 // 固定位数据
 const fixeds = filterAndSortItems('fixed')
 // 侧边栏数据

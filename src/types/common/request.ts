@@ -1,7 +1,6 @@
 export interface TokenParams {
   game_uid: string
   uid: string
-  login_from: string
   map: string
   return_buff: string
   os: string

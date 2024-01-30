@@ -18,7 +18,7 @@
         <span class="nav-text">{{ item.label }}</span>
       </div>
     </div>
-    <ul class="text-white">
+    <!-- <ul class="text-white">
       <li
         class="w-full border text-center"
         @click="
@@ -91,19 +91,19 @@
       >
         重置红点小光快报
       </li>
-    </ul>
+    </ul> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { showToast } from 'vant'
+// import { showToast } from 'vant'
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-import {
-  resetTaskValue,
-  resetSpriteReward,
-  gmsResetWebRedDot,
-} from '@/utils/request'
+// import {
+//   resetTaskValue,
+//   resetSpriteReward,
+//   gmsResetWebRedDot,
+// } from '@/utils/request'
 import { useMenuStore } from '@/stores/menu'
 
 const router = useRouter()
@@ -150,38 +150,38 @@ function handleNav(curItem: MenuItem): void {
   })
 }
 
-// 重置任务进度（包括每日签到数据）
-function handleResetTaskValue(event: string, task: string): void {
-  resetTaskValue({ event, task })
-    .then(() => {
-      showToast('重置任务进度成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置任务进度（包括每日签到数据）
+// function handleResetTaskValue(event: string, task: string): void {
+//   resetTaskValue({ event, task })
+//     .then(() => {
+//       showToast('重置任务进度成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 
-// 重置领奖数据
-function handleResetSpriteReward(event: string, task: string): void {
-  resetSpriteReward({ event, task })
-    .then(() => {
-      showToast('重置领奖数据成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置领奖数据
+// function handleResetSpriteReward(event: string, task: string): void {
+//   resetSpriteReward({ event, task })
+//     .then(() => {
+//       showToast('重置领奖数据成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 
-// 重置红点
-function handleGmsResetWebRedDot(event: string): void {
-  gmsResetWebRedDot({ event })
-    .then(() => {
-      showToast('重置红点成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置红点
+// function handleGmsResetWebRedDot(event: string): void {
+//   gmsResetWebRedDot({ event })
+//     .then(() => {
+//       showToast('重置红点成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 </script>
 
 <style scoped>
@@ -218,7 +218,7 @@ function handleGmsResetWebRedDot(event: string): void {
   }
 }
 .nav-text {
-  width: 160px;
+  width: 170px;
 }
 .nav-icon {
   margin-right: 60px;
@@ -226,4 +226,3 @@ function handleGmsResetWebRedDot(event: string): void {
   height: 52px;
 }
 </style>
-@/stores/menu

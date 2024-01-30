@@ -1,112 +1,122 @@
 <template>
-  <div class="holiday flex h-screen flex-col items-center justify-center">
-    <div class="holiday-wrapper">
-      <div class="flex">
-        <h1
-          class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-        >
-          假日打卡
-        </h1>
-        <div class="date flex items-center align-middle">
-          <div class="date-text">{{ activityTime }}</div>
-          <div
-            class="date-help bg-contain bg-center bg-no-repeat"
-            @click="handleHelp"
-          ></div>
-        </div>
-      </div>
-      <div class="flex">
-        <img class="photo" src="@/assets/images/signin/photo.png" alt="img" />
-        <div class="signin">
-          <ul class="signin-list flex flex-row flex-wrap" ref="daysList">
-            <li
-              v-for="(item, index) in state.daysList"
-              :key="item"
-              :class="[
-                'signin-day overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                `signin-day${index + 1}`,
-                activityData.award[index] === 1 ? 'active' : '',
-              ]"
+  <Transition appear :name="bodyTransitionName" mode="out-in">
+    <div class="holiday flex h-screen flex-col items-center justify-center">
+      <div class="holiday-wrapper">
+        <Transition appear :name="headTransitionName" mode="out-in">
+          <div class="header flex">
+            <h1
+              class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
             >
-              {{ item }}
-            </li>
-          </ul>
-          <div class="signin-footer">
-            <p class="signed-days text-right">
-              已累计签到<span class="signed-days-num">{{
-                activityData.value
-              }}</span
-              >/9天
-            </p>
-            <div class="flex items-end">
+              假日打卡
+            </h1>
+            <div class="date flex items-center align-middle">
+              <div class="date-text">{{ activityTime }}</div>
               <div
-                class="signin-btn signin-btn-replenishment disabled overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-              >
-                限时补签
-              </div>
-              <div
-                class="signin-btn signin-btn-today overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-                :class="{ disabled: isTodaySignIn }"
-                @click="handleSignin"
-              >
-                今日签到
+                class="date-help bg-contain bg-center bg-no-repeat"
+                @click="handleHelp"
+              ></div>
+            </div>
+          </div>
+        </Transition>
+        <Transition appear :name="mainTransitionName" mode="out-in">
+          <div class="flex">
+            <img
+              class="photo"
+              src="@/assets/images/signin/photo.png"
+              alt="img"
+            />
+            <div class="signin">
+              <ul class="signin-list flex flex-row flex-wrap" ref="daysList">
+                <li
+                  v-for="(item, index) in state.daysList"
+                  :key="item"
+                  :class="[
+                    'signin-day overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    `signin-day${index + 1}`,
+                    activityData.award[index] === 1 ? 'active' : '',
+                  ]"
+                >
+                  {{ item }}
+                </li>
+              </ul>
+              <div class="signin-footer">
+                <p class="signed-days text-right">
+                  已累计签到<span class="signed-days-num">{{
+                    activityData.value
+                  }}</span
+                  >/9天
+                </p>
+                <div class="flex items-end">
+                  <div
+                    class="signin-btn signin-btn-replenishment disabled overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+                  >
+                    限时补签
+                  </div>
+                  <div
+                    class="signin-btn signin-btn-today overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+                    :class="{ disabled: isTodaySignIn }"
+                    @click="handleSignin"
+                  >
+                    今日签到
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        </Transition>
+        <activity-modal ref="modalHelp">
+          <template #content>
+            <p class="modal-text">
+              <span class="font-semibold">活动时间：</span
+              >2023年11月16日~2023年11月29日
+            </p>
+            <p class="modal-text">
+              <span class="font-semibold">活动内容：</span>
+            </p>
+            <p class="modal-text">
+              1、在云峰的活动区域内点播一次歌曲，即可领取<span
+                class="text-[#ffcb4d]"
+                >畅谈长桌</span
+              >×2；
+            </p>
+            <p class="modal-text">
+              2、点赞一首别人点播的歌曲，即可领取<span class="text-[#ffcb4d]"
+                >秋千</span
+              >×2；
+            </p>
+            <p class="modal-text">
+              3、使用一次古典音乐桌椅魔法，即可领取<span class="text-[#ffcb4d]"
+                >篝火</span
+              >×2；
+            </p>
+            <p class="modal-text">
+              4、活动期间累计点播10次歌曲，即可领取<span class="text-[#ffcb4d]"
+                >爱心</span
+              >×2。
+            </p>
+          </template>
+        </activity-modal>
+        <activity-modal ref="modalReward">
+          <template #content>
+            <p class="modal-text">
+              恭喜你获得
+              <span class="modal-text-blue"
+                >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                {{ curRewards.count }}</span
+              >：
+            </p>
+            <div class="mt-10 flex items-center justify-center">
+              <img
+                class="modal-reward"
+                :src="handleSrc(String(curRewards.name))"
+                alt="reward"
+              />
+            </div>
+          </template>
+        </activity-modal>
       </div>
-      <activity-modal ref="modalHelp">
-        <template #content>
-          <p class="modal-text">
-            <span class="font-semibold">活动时间：</span
-            >2023年11月16日~2023年11月29日
-          </p>
-          <p class="modal-text">
-            <span class="font-semibold">活动内容：</span>
-          </p>
-          <p class="modal-text">
-            1、在云峰的活动区域内点播一次歌曲，即可领取<span
-              class="text-[#ffcb4d]"
-              >畅谈长桌</span
-            >×2；
-          </p>
-          <p class="modal-text">
-            2、点赞一首别人点播的歌曲，即可领取<span class="text-[#ffcb4d]"
-              >秋千</span
-            >×2；
-          </p>
-          <p class="modal-text">
-            3、使用一次古典音乐桌椅魔法，即可领取<span class="text-[#ffcb4d]"
-              >篝火</span
-            >×2；
-          </p>
-          <p class="modal-text">
-            4、活动期间累计点播10次歌曲，即可领取<span class="text-[#ffcb4d]"
-              >爱心</span
-            >×2。
-          </p>
-        </template>
-      </activity-modal>
-      <activity-modal ref="modalReward">
-        <template #content>
-          <p class="modal-text">
-            恭喜你获得
-            <span class="modal-text-blue"
-              >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-              {{ curRewards.count }}</span
-            >：
-          </p>
-          <div class="mt-10 flex items-center justify-center">
-            <img
-              class="modal-reward"
-              :src="handleSrc(String(curRewards.name))"
-              alt="reward"
-            />
-          </div>
-        </template>
-      </activity-modal>
     </div>
-  </div>
+  </Transition>
 </template>
 
 <script setup lang="ts">
@@ -119,6 +129,7 @@ import {
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
+import { Session } from '@/utils/storage'
 
 const menuStore = useMenuStore()
 
@@ -187,6 +198,16 @@ const curRewards: Ref<Rewards> = ref({
 })
 const rewardId = ref(1)
 
+const isVisited = Session.get('isVisitedHoliday')
+const bodyTransitionName = ref('')
+const headTransitionName = ref('')
+const mainTransitionName = ref('')
+if (!isVisited) {
+  bodyTransitionName.value = 'fade-in-body'
+  headTransitionName.value = 'fade-in-head'
+  mainTransitionName.value = 'fade-in-main'
+}
+
 const state = reactive({
   daysList: [
     '第一天',
@@ -207,6 +228,7 @@ onMounted(() => {
   } catch (error) {
     console.error(error)
   }
+  Session.set('isVisitedHoliday', true)
 })
 
 // 显示帮助
@@ -290,6 +312,24 @@ function handleSignin(): void {
 </script>
 
 <style lang="scss" scoped>
+.fade-in-body-enter-active {
+  transition: opacity 1s ease-out;
+}
+.fade-in-body-enter-from {
+  opacity: 0.2;
+}
+.fade-in-head-enter-active {
+  transition: opacity 1s ease-out 0.2s;
+}
+.fade-in-head-enter-from {
+  opacity: 0.2;
+}
+.fade-in-main-enter-active {
+  transition: opacity 1s ease-out 0.5s;
+}
+.fade-in-main-enter-from {
+  opacity: 0.2;
+}
 .holiday {
   width: 2100px;
   position: relative;

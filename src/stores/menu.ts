@@ -7,7 +7,7 @@ export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
   const menuData = ref<MenuItem[]>([
     {
-      label: '假日打卡',
+      label: '假日打卡假日打卡',
       value: 'activity_sign_in_1',
       routeName: 'Holiday',
       isNew: false,

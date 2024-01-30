@@ -6,6 +6,8 @@ import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from '@vant/auto-import-resolver'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
+// import basicSsl from '@vitejs/plugin-basic-ssl'
+import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig({
   root: './src/',
@@ -30,6 +32,8 @@ export default defineConfig({
       ext: '.gz',
       deleteOriginFile: false,
     }),
+    // basicSsl(),
+    mkcert(),
   ],
   resolve: {
     alias: {
@@ -38,6 +42,13 @@ export default defineConfig({
   },
   server: {
     hmr: true,
+    // https: {
+    //   key: fs.readFileSync('C:/Users/wb.chenzhao01/10.227.198.175-key.pem'),
+    //   cert: fs.readFileSync('C:/Users/wb.chenzhao01/10.227.198.175.pem'),
+    // },
+    https: true,
+    // host: '0.0.0.0',
+    port: 5173,
   },
   build: {
     target: 'es2015',

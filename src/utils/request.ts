@@ -79,12 +79,36 @@ export function getJinglingToken(tokenParams: TokenParams): Promise<Response> {
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = res.msg || '服务器连接失败'
+          const errorMessage = handleErrMsgToken(res.code, res.msg)
           reject(new Error(errorMessage))
         }
       },
     })
   })
+}
+
+function handleErrMsgToken(code: number, msg: string): string {
+  const errorMessages: Record<number, Record<string, string>> = {
+    400: {
+      'missing required parameter': '请求参数不完整',
+      'invalid parameter value or gms error return':
+        '请求参数的值错误或gms的返回有错误',
+    },
+    500: {
+      'request gms failed': '请求gms出错',
+      'internal server error': '服务器内部发生错误',
+    },
+    502: {
+      'jingling did not return token': '精灵没有返回token',
+    },
+  }
+
+  const defaultErrorMessage = '获取玩家任务进度失败'
+  return (
+    errorMessages[code]?.[msg] ||
+    errorMessages[code]?.default ||
+    defaultErrorMessage
+  )
 }
 
 // 获取玩家任务进度数据

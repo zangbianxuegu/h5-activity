@@ -13,6 +13,11 @@
       </div>
     </nav>
     <main class="">
+      <!-- <router-view v-slot="{ Component }">
+        <Transition name="fade-in" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </router-view> -->
       <router-view></router-view>
     </main>
   </div>
@@ -76,7 +81,6 @@ function getBaseInfo(): void {
       const tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,
-        login_from: res.login_from,
         map: res.map,
         return_buff: res.return_buff,
         os: res.os,
