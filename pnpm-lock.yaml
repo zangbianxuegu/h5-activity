@@ -19,7 +19,7 @@ dependencies:
     version: 3.2.1(pinia@2.1.7)
   vant:
     specifier: ^4.6.8
-    version: 4.6.8(vue@3.3.4)
+    version: 4.8.1(vue@3.3.4)
   vue:
     specifier: ^3.3.4
     version: 3.3.4
@@ -4880,8 +4880,8 @@ packages:
       spdx-expression-parse: 3.0.1
     dev: true
 
-  /vant@4.6.8(vue@3.3.4):
-    resolution: {integrity: sha512-kWkv4kQJWOyF8qQzLD07yDscVBtx281yYdSXJ6RnXVMYje0hZMIikE06zM/NoVYUZTnStVTO89h0zAxLuuDd/A==}
+  /vant@4.8.1(vue@3.3.4):
+    resolution: {integrity: sha512-SkFZM3Z3Bwi5do+iQNfRgDi7b+Ka29rUUNzck06W2KoFie3CLTqSifLa5TuZCEoXPSkqR+fRH/VE5G57mmL8sg==}
     peerDependencies:
       vue: ^3.0.0
     dependencies:

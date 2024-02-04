@@ -7,6 +7,7 @@
           class="swipe border-r-10"
           :autoplay="3000"
           indicator-color="white"
+          :style="generateDynamicStyles({ width: 1260, height: 712 })"
         >
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a
@@ -125,7 +126,9 @@ const { factor } = useResponsiveStyles(designConfig)
 
 // px -> vw
 const calculatePxToViewport = (px: number): string => {
-  return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
+  const clientWidth = document.documentElement.clientWidth
+  return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
+  // return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
 }
 
 // 样式对象转换
