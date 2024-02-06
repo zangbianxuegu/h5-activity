@@ -129,6 +129,7 @@ import {
   setPlayerTask,
   claimMissionReward,
 } from '@/utils/request'
+import { type Event } from '@/types'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
@@ -136,20 +137,12 @@ import { useActivityStore } from '@/stores/activity'
 const menuStore = useMenuStore()
 
 const activityStore = useActivityStore()
+// 活动时间字符串
 const activityTime = computed(
-  () => activityStore.activityTime.activity_sign_in_2,
+  () => activityStore.activityTime.activity_sign_in_3,
 )
-
-interface Event {
-  task_id: string
-  stages: number[]
-  award: number[]
-  value: number
-  score: string
-  is_eggy_reward: boolean
-  is_today_sign_in: boolean
-  awarded_types: any[]
-}
+// 活动数据
+const activityData = computed(() => activityStore.eventData.activity_sign_in_3)
 
 interface Rewards {
   name: string
@@ -167,22 +160,14 @@ const rewardsText: RewardsName = {
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-const activityData: Ref<Event> = ref({
-  task_id: 'activity_sign_in_m3',
-  stages: [1, 3, 5, 7, 9, 12, 15, 20],
-  award: [0, 0, 0, 0, 0, 0, 0, 0],
-  value: 0,
-  score: '',
-  is_eggy_reward: false,
-  is_today_sign_in: false,
-  awarded_types: [],
-})
-const isTodaySignIn = ref(false)
+const isTodaySignIn = computed(() =>
+  Boolean(activityData.value.is_today_sign_in),
+)
 const curRewards: Ref<Rewards> = ref({
   name: '',
   count: 10,
 })
-const rewardList = ref([
+const REWARD_LIST = [
   {
     stage: 1,
     reward: 10,
@@ -223,7 +208,23 @@ const rewardList = ref([
     reward: 20,
     status: 'wait',
   },
-])
+]
+// 奖励列表状态
+const rewardList = computed(() => {
+  return REWARD_LIST.map((item, index) => {
+    return {
+      ...item,
+      status:
+        activityData.value.award[index] === 1
+          ? 'redeemed'
+          : item.stage > activityData.value.value
+          ? 'wait'
+          : 'can',
+    }
+  })
+})
+// 获取活动数据的时间
+let activityFetchTime = 0
 
 onMounted(() => {
   try {
@@ -250,38 +251,42 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
+  activityFetchTime = Date.now()
   getPlayerMissionData({ event: 'activity_sign_in_3' })
     .then((res) => {
-      activityData.value = res.data.event_data?.activity_sign_in_3[0]
-      isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
-      const shouldClaimedRewardCount = activityData.value.stages.filter(
-        (stage) => stage <= activityData.value.value,
+      const activityData: Event = res.data.event_data?.activity_sign_in_3[0]
+      const shouldClaimedRewardCount = activityData.stages.filter(
+        (stage) => stage <= activityData.value,
       ).length
       const isClaimedReward =
-        activityData.value.award.filter((item) => item === 1).length ===
+        activityData.award.filter((item) => item === 1).length ===
         shouldClaimedRewardCount
       // 更新菜单数据 isClaimedReward
       menuStore.updateMenuDataByIsClaimedReward(
         'activity_sign_in_3',
         isClaimedReward,
       )
-      console.log('summer menuStore: ', menuStore)
-      console.log('summer activityData: ', activityData.value)
-      rewardList.value = rewardList.value.map((item, index) => {
-        return {
-          ...item,
-          status:
-            activityData.value.award[index] === 1
-              ? 'redeemed'
-              : item.stage > activityData.value.value
-              ? 'wait'
-              : 'can',
-        }
-      })
+      // 更新缓存活动数据
+      activityStore.updateEventData('activity_sign_in_3', activityData)
     })
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+// 设置获取活动数据时间间隔大于3s
+function getActivityDataDelayed(): void {
+  const curTime = Date.now()
+  const timeElapsed = curTime - activityFetchTime
+  if (timeElapsed > 3500) {
+    getActivityData()
+  } else {
+    const delay = 3500 - timeElapsed
+    const timer = setTimeout(() => {
+      getActivityData()
+      clearTimeout(timer)
+    }, delay)
+  }
 }
 
 // 签到
@@ -294,7 +299,7 @@ function handleSignin(): void {
   setPlayerTask({ task: 'activity_sign_in_m3' })
     .then(() => {
       showToast('签到成功')
-      getActivityData()
+      getActivityDataDelayed()
     })
     .catch((error) => {
       showToast(error.message)
@@ -319,12 +324,12 @@ function handleReward(status: string, rewardId: number): void {
     .then((res) => {
       const rewards = res.data.rewards
       console.log('summer rewards: ', rewards)
-      getActivityData()
       modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
+      getActivityDataDelayed()
     })
     .catch((error) => {
       showToast(error.message)

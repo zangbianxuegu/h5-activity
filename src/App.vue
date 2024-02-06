@@ -77,7 +77,7 @@ onMounted(() => {
 function getBaseInfo(): void {
   getUserInfo()
     .then((res) => {
-      console.log('获取基本信息 res: ', res)
+      console.log('App 页面获取基本信息 res: ', res)
       const tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,
@@ -89,9 +89,8 @@ function getBaseInfo(): void {
     })
     .then((res) => {
       const token = res.data.token
-      console.log('获取 token: ', token)
+      console.log('App 页面获取 token: ', token)
       updateBaseInfoItems({ token })
-      console.log('baseStore: ', baseStore)
     })
     .catch((error) => {
       showToast(error.message)
@@ -155,8 +154,6 @@ function generateMenuData(
 function getAllEvents(): void {
   getPlayerMissionData({})
     .then((res) => {
-      console.log('所有活动 res: ', res)
-
       const activeEvents = extractActiveEvents(res.data.event_data)
       // console.log('可用的活动数组 activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(menuData.value, activeEvents)
@@ -185,6 +182,8 @@ function getAllEvents(): void {
       }
     })
     .catch((error) => {
+      console.log('app.vue', error)
+
       showToast(error.message)
     })
 }

@@ -126,28 +126,21 @@ import {
   setPlayerTask,
   claimMissionReward,
 } from '@/utils/request'
+import { type Event } from '@/types'
+import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
-import { Session } from '@/utils/storage'
 
 const menuStore = useMenuStore()
 
 const activityStore = useActivityStore()
+// 活动时间字符串
 const activityTime = computed(
   () => activityStore.activityTime.activity_sign_in_1,
 )
-
-interface Event {
-  task_id: string
-  stages: number[]
-  award: number[]
-  value: number
-  score: string
-  is_eggy_reward: boolean
-  is_today_sign_in: boolean
-  awarded_types: any[]
-}
+// 活动数据
+const activityData = computed(() => activityStore.eventData.activity_sign_in_1)
 
 interface Rewards {
   name: string
@@ -181,22 +174,14 @@ const rewardsText: RewardsName = {
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const daysList = ref<HTMLInputElement | null>(null)
-const activityData: Ref<Event> = ref({
-  task_id: 'activity_sign_in_m1',
-  stages: [1, 2, 3, 4, 5, 6, 7, 8, 9],
-  award: [0, 0, 0, 0, 0, 0, 0, 0, 0],
-  value: 0,
-  score: '',
-  is_eggy_reward: false,
-  is_today_sign_in: false,
-  awarded_types: [],
-})
 const isTodaySignIn = ref(false)
 const curRewards: Ref<Rewards> = ref({
   name: 'rainbow',
   count: 1,
 })
 const rewardId = ref(1)
+// 获取活动数据的时间
+let activityFetchTime = 0
 
 const isVisited = Session.get('isVisitedHoliday')
 const bodyTransitionName = ref('')
@@ -248,26 +233,30 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
+  activityFetchTime = Date.now()
   getPlayerMissionData({ event: 'activity_sign_in_1' })
     .then((res) => {
-      activityData.value = res.data.event_data?.activity_sign_in_1[0]
-      rewardId.value = activityData.value.value
-      isTodaySignIn.value = Boolean(activityData.value.is_today_sign_in)
-      const shouldClaimedRewardCount = activityData.value.stages.filter(
-        (stage) => stage <= activityData.value.value,
+      const activityData: Event = res.data.event_data?.activity_sign_in_1[0]
+      rewardId.value = activityData.value
+      isTodaySignIn.value = Boolean(activityData.is_today_sign_in)
+      const shouldClaimedRewardCount = activityData.stages.filter(
+        (stage) => stage <= activityData.value,
       ).length
       const isClaimedReward =
-        activityData.value.award.filter((item) => item === 1).length ===
+        activityData.award.filter((item) => item === 1).length ===
         shouldClaimedRewardCount
       // 更新菜单数据 isClaimedReward
       menuStore.updateMenuDataByIsClaimedReward(
         'activity_sign_in_1',
         isClaimedReward,
       )
-      console.log('signin menuStore', menuStore)
-      console.log('signin activityData: ', activityData.value)
+      // 更新缓存活动数据
+      activityStore.updateEventData('activity_sign_in_1', activityData)
+      // console.log('signin activityStore', activityStore)
     })
     .catch((error) => {
+      console.log('holiday.vue', error)
+
       showToast(error.message)
     })
 }
@@ -298,11 +287,22 @@ function handleSignin(): void {
     .then((res) => {
       const rewards = res.data.rewards
       console.log('signin rewards: ', rewards)
-      getActivityData()
       modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
+      }
+      // 设置获取活动数据时间间隔大于3s
+      const curTime = Date.now()
+      const timeElapsed = curTime - activityFetchTime
+      if (timeElapsed > 3500) {
+        getActivityData()
+      } else {
+        const delay = 3500 - timeElapsed
+        const timer = setTimeout(() => {
+          getActivityData()
+          clearTimeout(timer)
+        }, delay)
       }
     })
     .catch((error) => {

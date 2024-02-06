@@ -1,4 +1,10 @@
-import { type TokenParams, type PostMsgParams, type Response } from '@/types'
+import {
+  type TokenParams,
+  type PostMsgParams,
+  type Response,
+  type EventData,
+} from '@/types'
+import throttle from 'lodash.throttle'
 
 // Web 与 客户端通信
 function handlePostMessageToNative({
@@ -34,7 +40,7 @@ function handleResponse(
   respJSONString: string,
   handleRes: (data: any) => void,
 ): void {
-  console.log('Response JSON String: ', respJSONString)
+  console.log('客户端返回 Response JSON String: ', respJSONString)
   const reg = /"web_response":"({.*?})"/
   const match = respJSONString.match(reg)
   let res: Response | null = null
@@ -44,7 +50,7 @@ function handleResponse(
     res = JSON.parse(resStr)
   }
 
-  console.log('resource: ', resource, res)
+  console.log('接口：', resource, res)
   handleRes(res)
 }
 
@@ -111,30 +117,58 @@ function handleErrMsgToken(code: number, msg: string): string {
   )
 }
 
+// 使用 Map 或对象来存储针对每个活动的节流函数
+const throttledFetchMap: {
+  [K in keyof EventData]?: ReturnType<typeof throttle>
+} = {}
+
+// 原始的获取玩家任务数据的函数，没有应用节流
+function fetchPlayerMissionData(
+  { event }: { event?: keyof EventData },
+  resolve: (value: Response | PromiseLike<Response>) => void,
+  reject: (reason?: any) => void,
+): void {
+  handlePostMessageToNative({
+    type: 'protocol',
+    resource: '/internal/jingling/get_player_mission_data',
+    content: {
+      source_token: '',
+      source_id: '',
+      event,
+    },
+    handleRes: (res) => {
+      if (res.code === 200) {
+        resolve(res)
+      } else {
+        const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
+        reject(new Error(errorMessage))
+      }
+    },
+  })
+}
+
 // 获取玩家任务进度数据
+// 对外暴露的函数，根据 event 参数的存在与否决定是否使用节流
+// 服务端同一活动接口限制时间间隔 3s。实际测试，因为网络传输、Redis 存储，服务端记录的时间并不是前端请求发起时间，可能会存在前端请求间隔 1707163045531 -> 1707163048696，大于 3s，服务端 2024-02-06 14:12:42.104 -> 2024-02-06 14:12:45.037，小于 3s
+// 所以设置为 3500
 export function getPlayerMissionData({
   event,
 }: {
-  event?: string
+  event?: keyof EventData
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
-    handlePostMessageToNative({
-      type: 'protocol',
-      resource: '/internal/jingling/get_player_mission_data',
-      content: {
-        source_token: '',
-        source_id: '',
-        event,
-      },
-      handleRes: (res) => {
-        if (res.code === 200) {
-          resolve(res)
-        } else {
-          const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
-          reject(new Error(errorMessage))
-        }
-      },
-    })
+    if (event) {
+      let throttledFetch = throttledFetchMap[event]
+      if (!throttledFetch) {
+        throttledFetch = throttle(fetchPlayerMissionData, 3500, {
+          trailing: false,
+        })
+        throttledFetchMap[event] = throttledFetch
+      }
+      throttledFetch({ event }, resolve, reject)
+    } else {
+      fetchPlayerMissionData({ event }, resolve, reject)
+    }
   })
 }
 

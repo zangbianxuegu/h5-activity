@@ -53,7 +53,6 @@ export const useMenuStore = defineStore('menu', () => {
 
   // 更新菜单，根据访问页面
   function updatedMenuDataByRoute(event: string): void {
-    console.log('路由活动', event)
     // updateMenuDataByIsActive(event)
     updateMenuDataByIsNew(event)
   }

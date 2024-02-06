@@ -10,7 +10,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, _, next) => {
-  console.log('to: ', to)
+  console.log('页面路由 to: ', to)
   const title = to?.meta?.title
   const module = to?.meta?.module
   if (title) {
@@ -27,7 +27,7 @@ router.beforeEach((to, _, next) => {
       if (module !== 'activity_center_notice') {
         webViewStatistics({ module })
           .then(() => {
-            console.log('日志数据上报成功. module: ' + module)
+            // console.log('日志数据上报成功. module: ' + module)
           })
           .catch((error) => {
             showToast(error.message)
