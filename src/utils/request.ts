@@ -358,9 +358,11 @@ function handleErrMsgRedDot(code: number, msg: string): string {
 export function resetTaskValue({
   task,
   event,
+  clearDailyValue,
 }: {
   task: string
   event: string
+  clearDailyValue: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
@@ -369,6 +371,7 @@ export function resetTaskValue({
       content: {
         event,
         task,
+        clear_daily_value: clearDailyValue,
       },
       handleRes: (res) => {
         if (res.code === 200) {

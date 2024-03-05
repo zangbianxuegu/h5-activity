@@ -1,7 +1,9 @@
 <template>
   <div class="page flex min-h-screen bg-cover bg-center bg-no-repeat">
-    <nav class="nav flex w-[460px] shrink-0 flex-col justify-between py-4">
-      <div>
+    <nav
+      class="nav flex h-screen w-[460px] shrink-0 flex-col justify-between py-4"
+    >
+      <div class="menu overflow-y-scroll">
         <Menu></Menu>
       </div>
       <div class="nav-sprite flex">
@@ -12,7 +14,7 @@
         >
       </div>
     </nav>
-    <main class="">
+    <main class="flex items-center justify-center">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
           <component :is="Component" />
@@ -197,6 +199,9 @@ function formatDate(startTime: number, endTime: number): string {
 </script>
 
 <style scoped>
+.menu::-webkit-scrollbar {
+  display: none;
+}
 .page {
   width: 100%;
   height: 100%;
@@ -219,4 +224,3 @@ function formatDate(startTime: number, endTime: number): string {
   }
 }
 </style>
-@/stores/menu

@@ -38,6 +38,22 @@ export const useMenuStore = defineStore('menu', () => {
       ],
     },
     {
+      label: '田月桑时春风雀跃',
+      value: 'activity_sign_mayday_2024',
+      routeName: 'SignMayday2024',
+      isNew: false,
+      isClaimedReward: true,
+      children: [],
+    },
+    {
+      label: '田月桑时春风雀跃',
+      value: 'activity_sign_mayday_2',
+      routeName: 'SignMayday2',
+      isNew: false,
+      isClaimedReward: true,
+      children: [],
+    },
+    {
       label: '小光快报',
       value: 'activity_center_notice',
       routeName: 'Bulletin',
@@ -61,7 +77,13 @@ export const useMenuStore = defineStore('menu', () => {
   function updateMenuDataByIsNew(event: string): void {
     // 接口更新红点状态
     let curItem = null
-    if (['activity_sign_in_1', 'activity_center_notice'].includes(event)) {
+    if (
+      [
+        'activity_sign_in_1',
+        'activity_sign_mayday_2024',
+        'activity_center_notice',
+      ].includes(event)
+    ) {
       curItem = menuData.value.find((item) => item.value === event)
     } else if (['activity_sign_in_2', 'activity_sign_in_3'].includes(event)) {
       curItem = menuData.value

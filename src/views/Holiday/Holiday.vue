@@ -492,4 +492,3 @@ function handleSignin(): void {
   width: 150px;
 }
 </style>
-@/stores/menu

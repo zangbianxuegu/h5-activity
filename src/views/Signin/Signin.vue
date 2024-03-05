@@ -109,4 +109,3 @@ function handleNav(curItem: MenuItem): void {
   }
 }
 </style>
-@/stores/menu

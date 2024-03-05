@@ -520,4 +520,3 @@ function handleReward(status: string, rewardId: number): void {
 <script setup lang="ts"></script>
 
 <style scoped></style> -->
-@/stores/menu
