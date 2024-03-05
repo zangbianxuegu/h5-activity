@@ -74,10 +74,6 @@ export default function useResponsiveStyles(config: DesignConfig): {
       // 相当于是，我们并没有留设计比例的边距，而是充满主体宽度
       // 这个缩放系数就是在适配时宽度上应该放大的值
       factor.value = designMainWidth / designMainContentWidth
-      // factor.value = 1
-    }
-    if (factor.value > 1) {
-      factor.value = 1
     }
     document.documentElement.style.setProperty(
       '--scale-factor',

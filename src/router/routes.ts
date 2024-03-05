@@ -53,15 +53,6 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/sign-mayday-2',
-    name: 'SignMayday2',
-    component: () => import('@/views/SignMayday2'),
-    meta: {
-      title: '田月桑时春风雀跃',
-      module: 'activity_sign_mayday_2',
-    },
-  },
-  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),

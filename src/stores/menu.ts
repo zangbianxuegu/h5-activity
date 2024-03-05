@@ -46,14 +46,6 @@ export const useMenuStore = defineStore('menu', () => {
       children: [],
     },
     {
-      label: '田月桑时春风雀跃',
-      value: 'activity_sign_mayday_2',
-      routeName: 'SignMayday2',
-      isNew: false,
-      isClaimedReward: true,
-      children: [],
-    },
-    {
       label: '小光快报',
       value: 'activity_center_notice',
       routeName: 'Bulletin',

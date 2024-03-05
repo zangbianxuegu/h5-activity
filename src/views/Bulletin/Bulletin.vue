@@ -127,9 +127,9 @@ console.log('factor: ', factor.value)
 
 // px -> vw
 const calculatePxToViewport = (px: number): string => {
-  // const clientWidth = document.documentElement.clientWidth
-  // return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
-  return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
+  const clientWidth = document.documentElement.clientWidth
+  return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
+  // return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
 }
 
 // 样式对象转换

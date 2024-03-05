@@ -72,7 +72,11 @@ export const useActivityStore = defineStore('activity', () => {
     event: keyof EventData,
     newEventData: Event | Mayday2024Event,
   ): void {
-    eventData.value[event] = newEventData
+    if (event === 'activity_sign_mayday_2024') {
+      eventData.value[event] = newEventData as Mayday2024Event
+    } else {
+      eventData.value[event] = newEventData as Event
+    }
   }
 
   return {
