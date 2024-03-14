@@ -18,31 +18,7 @@
         <span class="nav-text">{{ item.label }}</span>
       </div>
     </div>
-    <ul class="text-white">
-      <!-- <li
-        class="w-full border text-center"
-        @click="
-          handleResetTaskValue('activity_sign_in_1', 'activity_sign_in_m1')
-        "
-      >
-        重置任务进度1
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetTaskValue('activity_sign_in_2', 'activity_sign_in_m2')
-        "
-      >
-        重置任务进度2
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetTaskValue('activity_sign_in_3', 'activity_sign_in_m3')
-        "
-      >
-        重置任务进度3
-      </li> -->
+    <!-- <ul class="text-white">
       <li
         class="w-full border text-center"
         @click="
@@ -67,7 +43,7 @@
       >
         重置任务进度劳动节2
       </li>
-      <!-- <li
+      <li
         class="w-full border text-center"
         @click="
           handleResetSpriteReward('activity_sign_in_1', 'activity_sign_in_m1')
@@ -90,7 +66,7 @@
         "
       >
         重置领奖数据3
-      </li> -->
+      </li>
       <li
         class="w-full border text-center"
         @click="
@@ -113,7 +89,7 @@
       >
         重置领奖数据劳动节2
       </li>
-      <!-- <li
+      <li
         class="w-full border text-center"
         @click="handleGmsResetWebRedDot('activity_sign_in_1')"
       >
@@ -130,32 +106,32 @@
         @click="handleGmsResetWebRedDot('activity_sign_in_3')"
       >
         重置红点3
-      </li> -->
+      </li>
       <li
         class="w-full border text-center"
         @click="handleGmsResetWebRedDot('activity_sign_mayday_2024')"
       >
         重置红点劳动节
       </li>
-      <!-- <li
+      <li
         class="w-full border text-center"
         @click="handleGmsResetWebRedDot('activity_center_notice')"
       >
         重置红点小光快报
-      </li> -->
-    </ul>
+      </li>
+    </ul> -->
   </div>
 </template>
 
 <script setup lang="ts">
-import { showToast } from 'vant'
+// import { showToast } from 'vant'
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-import {
-  resetTaskValue,
-  resetSpriteReward,
-  gmsResetWebRedDot,
-} from '@/utils/request'
+// import {
+//   resetTaskValue,
+//   resetSpriteReward,
+//   gmsResetWebRedDot,
+// } from '@/utils/request'
 import { useMenuStore } from '@/stores/menu'
 
 const router = useRouter()
@@ -202,42 +178,42 @@ function handleNav(curItem: MenuItem): void {
   })
 }
 
-// 重置任务进度（包括每日签到数据）
-function handleResetTaskValue(
-  event: string,
-  task: string,
-  clearDailyValue: string,
-): void {
-  resetTaskValue({ event, task, clearDailyValue })
-    .then(() => {
-      showToast('重置任务进度成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置任务进度（包括每日签到数据）
+// function handleResetTaskValue(
+//   event: string,
+//   task: string,
+//   clearDailyValue: string,
+// ): void {
+//   resetTaskValue({ event, task, clearDailyValue })
+//     .then(() => {
+//       showToast('重置任务进度成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 
-// 重置领奖数据
-function handleResetSpriteReward(event: string, task: string): void {
-  resetSpriteReward({ event, task })
-    .then(() => {
-      showToast('重置领奖数据成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置领奖数据
+// function handleResetSpriteReward(event: string, task: string): void {
+//   resetSpriteReward({ event, task })
+//     .then(() => {
+//       showToast('重置领奖数据成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 
-// 重置红点
-function handleGmsResetWebRedDot(event: string): void {
-  gmsResetWebRedDot({ event })
-    .then(() => {
-      showToast('重置红点成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// // 重置红点
+// function handleGmsResetWebRedDot(event: string): void {
+//   gmsResetWebRedDot({ event })
+//     .then(() => {
+//       showToast('重置红点成功')
+//     })
+//     .catch((error) => {
+//       showToast(error.message)
+//     })
+// }
 </script>
 
 <style scoped>
