@@ -185,7 +185,7 @@ const filterAndSortItems = (
 }
 
 // 轮播图数据
-const banners = filterAndSortItems('banner')
+const banners = computed(() => filterAndSortItems('banner').value?.slice(0, 6))
 // 固定位数据
 const fixeds = filterAndSortItems('fixed')
 // 侧边栏数据
