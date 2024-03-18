@@ -38,9 +38,10 @@ import {
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const route = useRoute()
+const router = useRouter()
 
 // 基本信息
 const baseStore = useBaseStore()
@@ -157,6 +158,10 @@ function getAllEvents(): void {
       const activeEvents = extractActiveEvents(res.data.event_data)
       // console.log('可用的活动数组 activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(menuData.value, activeEvents)
+      console.log('newMenuData: ', newMenuData)
+      if (newMenuData.length > 0) {
+        void router.replace({ name: newMenuData[0].routeName })
+      }
 
       // 活动时间
       const newActivityTime = activeEvents

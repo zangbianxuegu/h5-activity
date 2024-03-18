@@ -311,9 +311,13 @@ function getActivityData(): void {
       const shouldClaimedRewardCount = activityData[1].stages.filter(
         (stage) => stage <= activityData[1].value,
       ).length
+      // 是否已领奖须同时满足以下两个条件：
+      // - 任务1：签到获得的奖励已全部领取
+      // - 任务2：完签且领奖或者未完签且未领奖
       const isClaimedReward =
         activityData[1].award.filter((item) => item === 1).length ===
-          shouldClaimedRewardCount && activityData[0].award[0] === 1
+          shouldClaimedRewardCount &&
+        activityData[0].award[0] === activityData[0].value
       // 更新菜单数据 isClaimedReward
       console.log('menuStore: ', menuStore)
       menuStore.updateMenuDataByIsClaimedReward(
