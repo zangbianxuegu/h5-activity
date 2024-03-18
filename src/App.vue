@@ -129,24 +129,22 @@ function generateMenuData(
   const activeEventsMap = new Map(
     activeEvents.map((event) => [event.activity, event]),
   )
-
   return originalMenuItems.reduce<MenuItem[]>((activeMenu, menuItem) => {
     const event = activeEventsMap.get(menuItem.value)
-    if (event || menuItem.children) {
+    if (event || menuItem.children?.length) {
       const updatedMenuItem = { ...menuItem }
       if (event) {
         updatedMenuItem.isNew = event.isNew
         updatedMenuItem.isClaimedReward = event.isClaimedReward
+        activeMenu.push(updatedMenuItem)
       }
-      if (menuItem.children) {
+      if (menuItem.children?.length) {
         const activeChildren = generateMenuData(menuItem.children, activeEvents)
         if (activeChildren.length) {
           updatedMenuItem.children = activeChildren
-        } else {
-          delete updatedMenuItem.children
+          activeMenu.push(updatedMenuItem)
         }
       }
-      activeMenu.push(updatedMenuItem)
     }
     return activeMenu
   }, [])
@@ -159,7 +157,6 @@ function getAllEvents(): void {
       const activeEvents = extractActiveEvents(res.data.event_data)
       // console.log('可用的活动数组 activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(menuData.value, activeEvents)
-      // console.log('最终的菜单数据 newMenuData: ', newMenuData)
 
       // 活动时间
       const newActivityTime = activeEvents

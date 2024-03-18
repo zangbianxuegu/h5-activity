@@ -1,8 +1,19 @@
 import type { RouteRecordRaw } from 'vue-router'
+
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    redirect: '/holiday',
+    redirect: '/sign-mayday-2024',
+    // beforeEnter: async (_to, _from, next) => {
+    //   const { useMenuStore } = await import('@/stores/menu')
+    //   const menuStore = useMenuStore()
+    //   const menuData = menuStore.menuData
+    //   if (menuData.values.length > 0) {
+    //     next({ name: menuData[0].routeName })
+    //   } else {
+    //     next({ name: 'DefaultRouteName' })
+    //   }
+    // },
   },
   {
     path: '/holiday',
