@@ -38,10 +38,10 @@ import {
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 
 const route = useRoute()
-const router = useRouter()
+// const router = useRouter()
 
 // 基本信息
 const baseStore = useBaseStore()
@@ -81,6 +81,10 @@ function getBaseInfo(): void {
   getUserInfo()
     .then((res) => {
       console.log('App 页面获取基本信息 res: ', res)
+      const channel = res.channel
+      const appChannel = res.appChannel
+      updateBaseInfoItems({ channel })
+      updateBaseInfoItems({ appChannel })
       const tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,
@@ -159,9 +163,10 @@ function getAllEvents(): void {
       // console.log('可用的活动数组 activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(menuData.value, activeEvents)
       console.log('newMenuData: ', newMenuData)
-      if (newMenuData.length > 0) {
-        void router.replace({ name: newMenuData[0].routeName })
-      }
+      // TODO: 会导致每次刷新页面或返回（操作工具栏），到第一个活动页面
+      // if (newMenuData.length > 0) {
+      //   void router.replace({ name: newMenuData[0].routeName })
+      // }
 
       // 活动时间
       const newActivityTime = activeEvents

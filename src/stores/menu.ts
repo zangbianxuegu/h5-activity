@@ -6,37 +6,37 @@ import { showToast } from 'vant'
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
   const menuData = ref<MenuItem[]>([
-    {
-      label: '假日打卡',
-      value: 'activity_sign_in_1',
-      routeName: 'Holiday',
-      isNew: false,
-      isClaimedReward: true,
-      children: [],
-    },
-    {
-      label: '签到活动',
-      value: 'signin',
-      routeName: 'Signin',
-      isNew: false,
-      isClaimedReward: true,
-      children: [
-        {
-          label: '冬季签到',
-          value: 'activity_sign_in_2',
-          routeName: 'Winter',
-          isNew: false,
-          isClaimedReward: true,
-        },
-        {
-          label: '暑假签到',
-          value: 'activity_sign_in_3',
-          routeName: 'Summer',
-          isNew: false,
-          isClaimedReward: true,
-        },
-      ],
-    },
+    // {
+    //   label: '假日打卡',
+    //   value: 'activity_sign_in_1',
+    //   routeName: 'Holiday',
+    //   isNew: false,
+    //   isClaimedReward: true,
+    //   children: [],
+    // },
+    // {
+    //   label: '签到活动',
+    //   value: 'signin',
+    //   routeName: 'Signin',
+    //   isNew: false,
+    //   isClaimedReward: true,
+    //   children: [
+    //     {
+    //       label: '冬季签到',
+    //       value: 'activity_sign_in_2',
+    //       routeName: 'Winter',
+    //       isNew: false,
+    //       isClaimedReward: true,
+    //     },
+    //     {
+    //       label: '暑假签到',
+    //       value: 'activity_sign_in_3',
+    //       routeName: 'Summer',
+    //       isNew: false,
+    //       isClaimedReward: true,
+    //     },
+    //   ],
+    // },
     {
       label: '田月桑时春风雀跃',
       value: 'activity_sign_mayday_2024',

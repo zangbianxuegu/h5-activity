@@ -92,6 +92,7 @@ import { useBaseStore } from '@/stores/base'
 // 基本信息
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
+const currentChannel = baseStore.baseInfo.channel
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -150,8 +151,6 @@ if (currentTime) {
 } else {
   currentTime = new Date().getTime()
 }
-// 当前应用的渠道
-const currentChannel = 'netease'
 // 公告页面数据
 const bulletinData = ref<BulletinItem[] | null>(null)
 
@@ -164,11 +163,21 @@ const isEffective = (item: BulletinItem): boolean => {
 
 // 判断条目是否适用于当前渠道
 const isChannelApplicable = (item: BulletinItem): boolean => {
-  const channels = item.channel.split(',')
-  return channels.some((channel) => {
+  const channelsArr = item.channel.split(',')
+  const channelsObj: Record<string, number> = {}
+  channelsArr.forEach((channel) => {
     const [name, value] = channel.split(':')
-    return name === currentChannel && value === '1'
+    channelsObj[name.trim()] = parseInt(value, 10)
   })
+  const hasChannel = Object.prototype.hasOwnProperty.call(
+    channelsObj,
+    currentChannel,
+  )
+  const hasOther = Object.prototype.hasOwnProperty.call(channelsObj, 'other')
+  return (
+    (hasChannel && channelsObj[currentChannel] === 1) ||
+    (!hasChannel && hasOther && channelsObj.other === 1)
+  )
 }
 
 // 创建过滤和排序后的计算属性
