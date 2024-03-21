@@ -181,7 +181,7 @@ const curRewards: Ref<Rewards> = ref({
 })
 const rewardId = ref(1)
 // 获取活动数据的时间
-let activityFetchTime = 0
+// let activityFetchTime = 0
 
 const isVisited = Session.get('isVisitedHoliday')
 const bodyTransitionName = ref('')
@@ -233,7 +233,7 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  activityFetchTime = Date.now()
+  // activityFetchTime = Date.now()
   getPlayerMissionData({ event: 'activity_sign_in_1' })
     .then((res) => {
       const activityData: Event = res.data.event_data?.activity_sign_in_1[0]
@@ -292,18 +292,23 @@ function handleSignin(): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      // 设置获取活动数据时间间隔大于3s
-      const curTime = Date.now()
-      const timeElapsed = curTime - activityFetchTime
-      if (timeElapsed > 3500) {
-        getActivityData()
-      } else {
-        const delay = 3500 - timeElapsed
-        const timer = setTimeout(() => {
-          getActivityData()
-          clearTimeout(timer)
-        }, delay)
-      }
+      // 后端接口请求限制间隔 3s
+      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+      const value = activityData.value.value++
+      activityData.value.award[value] = 1
+      activityStore.updateEventData('activity_sign_in_1', activityData.value)
+      // // 设置获取活动数据时间间隔大于3s
+      // const curTime = Date.now()
+      // const timeElapsed = curTime - activityFetchTime
+      // if (timeElapsed > 3500) {
+      //   getActivityData()
+      // } else {
+      //   const delay = 3500 - timeElapsed
+      //   const timer = setTimeout(() => {
+      //     getActivityData()
+      //     clearTimeout(timer)
+      //   }, delay)
+      // }
     })
     .catch((error) => {
       showToast(error.message)

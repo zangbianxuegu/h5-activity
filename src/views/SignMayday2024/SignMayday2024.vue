@@ -216,7 +216,7 @@ const curRewards: Ref<Rewards> = ref({
   count: 1,
 })
 // 获取活动数据的时间
-let activityFetchTime = 0
+// let activityFetchTime = 0
 const REWARD_LIST = [
   {
     stage: 1,
@@ -302,7 +302,7 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  activityFetchTime = Date.now()
+  // activityFetchTime = Date.now()
   getPlayerMissionData({ event: 'activity_sign_mayday_2024' })
     .then((res) => {
       const activityData: Mayday2024Event =
@@ -338,20 +338,20 @@ function getActivityData(): void {
     })
 }
 
-// 设置获取活动数据时间间隔大于3s
-function getActivityDataDelayed(): void {
-  const curTime = Date.now()
-  const timeElapsed = curTime - activityFetchTime
-  if (timeElapsed > 3500) {
-    getActivityData()
-  } else {
-    const delay = 3500 - timeElapsed
-    const timer = setTimeout(() => {
-      getActivityData()
-      clearTimeout(timer)
-    }, delay)
-  }
-}
+// // 设置获取活动数据时间间隔大于3s
+// function getActivityDataDelayed(): void {
+//   const curTime = Date.now()
+//   const timeElapsed = curTime - activityFetchTime
+//   if (timeElapsed > 3500) {
+//     getActivityData()
+//   } else {
+//     const delay = 3500 - timeElapsed
+//     const timer = setTimeout(() => {
+//       getActivityData()
+//       clearTimeout(timer)
+//     }, delay)
+//   }
+// }
 
 // 签到
 function handleSignin(): void {
@@ -359,7 +359,17 @@ function handleSignin(): void {
   setPlayerTask({ task: 'activity_sign_mayday_2024_m1' })
     .then(() => {
       showToast('签到成功')
-      getActivityDataDelayed()
+      // getActivityDataDelayed()
+      // 后端接口请求限制间隔 3s
+      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+      const value = activityData.value[1].value++
+      if (value === 6) {
+        activityData.value[0].value = 1
+      }
+      activityStore.updateEventData(
+        'activity_sign_mayday_2024',
+        activityData.value,
+      )
     })
     .catch((error) => {
       showToast(error.message)
@@ -389,7 +399,19 @@ function handleReward(task: string, status: string, rewardId: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      getActivityDataDelayed()
+      // getActivityDataDelayed()
+      // 后端接口请求限制间隔 3s
+      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+      if (task === 'activity_sign_mayday_2024_m1') {
+        activityData.value[1].award[rewardId - 1] = 1
+      }
+      if (task === 'activity_sign_mayday_2024_m2') {
+        activityData.value[0].award[0] = 1
+      }
+      activityStore.updateEventData(
+        'activity_sign_mayday_2024',
+        activityData.value,
+      )
     })
     .catch((error) => {
       showToast(error.message)
