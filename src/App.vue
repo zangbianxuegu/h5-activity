@@ -30,7 +30,7 @@
     </div>
     <div
       v-if="isTest"
-      lass="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
+      class="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
     >
       测试地址
     </div>
