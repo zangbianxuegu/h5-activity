@@ -18,7 +18,7 @@ function handlePostMessageToNative({
     reqData: {
       notification_name: 'NT_NOTIFICATION_EXTEND',
       data:
-        type === 'userinfo'
+        type === 'userinfo' || type === 'update_red_dot'
           ? { type }
           : {
               type,
@@ -65,6 +65,22 @@ export function getUserInfo(): Promise<any> {
           resolve(res)
         } else {
           reject(new Error('获取用户信息出错'))
+        }
+      },
+    })
+  })
+}
+
+// 通知客户端更新红点
+export function updateRedDot(): Promise<any> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'update_red_dot',
+      handleRes: (res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(new Error('通知客户端更新红点出错'))
         }
       },
     })

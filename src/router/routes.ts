@@ -3,9 +3,18 @@ import type { RouteRecordRaw } from 'vue-router'
 export const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    // name: 'Home',
-    // component: () => import('@/views/Home'),
-    redirect: '/sign-mayday-2024',
+    name: 'Home',
+    component: () => import('@/views/Home'),
+    // redirect: '/season22-start',
+  },
+  {
+    path: '/season22-start',
+    name: 'Season22Start',
+    component: () => import('@/views/Season22Start'),
+    meta: {
+      title: '巢落大地筑梦共时',
+      module: 'activity_season22_start',
+    },
   },
   {
     path: '/holiday',

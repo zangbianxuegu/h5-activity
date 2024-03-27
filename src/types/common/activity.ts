@@ -25,7 +25,7 @@ export interface Event {
   value: number
   score: string
   is_eggy_reward: boolean
-  is_today_sign_in: boolean
+  is_today_sign_in?: boolean
   awarded_types: any[]
 }
 
@@ -45,6 +45,7 @@ export interface EventData {
   activity_sign_in_1: Event
   activity_sign_in_2: Event
   activity_sign_in_3: Event
+  activity_season22_start: Event[]
   activity_sign_mayday_2024: Mayday2024Event
 }
 

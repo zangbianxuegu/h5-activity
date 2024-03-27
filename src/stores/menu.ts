@@ -1,58 +1,44 @@
 import { defineStore } from 'pinia'
 import { type MenuItem } from '@/types'
-import { setWebRedDot } from '@/utils/request'
+import { setWebRedDot, updateRedDot } from '@/utils/request'
 import { showToast } from 'vant'
 
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
-  const menuData = ref<MenuItem[]>([
-    {
-      label: '假日打卡',
-      value: 'activity_sign_in_1',
-      routeName: 'Holiday',
-      isNew: false,
-      isClaimedReward: true,
-      children: [],
+  const menuData = ref<MenuItem[]>([])
+
+  function checkHasRedDot(items: MenuItem[]): boolean {
+    for (const item of items) {
+      if (item.isNew || !item.isClaimedReward) {
+        return true
+      }
+      if (item.children && item.children.length > 0) {
+        const areChildrenRedDot = checkHasRedDot(item.children)
+        if (areChildrenRedDot) {
+          return true
+        }
+      }
+    }
+    return false
+  }
+
+  const hasRedDot = computed(() => checkHasRedDot(menuData.value))
+
+  // 监控是否有红点，通知客户端进行更新
+  watch(
+    () => hasRedDot.value,
+    (newVal, oldVal) => {
+      console.log('newVal, oldVal: ', newVal, oldVal)
+      console.log('开始通知客户端更新红点')
+      updateRedDot()
+        .then((res) => {
+          console.log('通知客户端更新红点res: ', res)
+        })
+        .catch((error) => {
+          showToast(error.message)
+        })
     },
-    {
-      label: '签到活动',
-      value: 'signin',
-      routeName: 'Signin',
-      isNew: false,
-      isClaimedReward: true,
-      children: [
-        {
-          label: '冬季签到',
-          value: 'activity_sign_in_2',
-          routeName: 'Winter',
-          isNew: false,
-          isClaimedReward: true,
-        },
-        {
-          label: '暑假签到',
-          value: 'activity_sign_in_3',
-          routeName: 'Summer',
-          isNew: false,
-          isClaimedReward: true,
-        },
-      ],
-    },
-    {
-      label: '田月桑时春风雀跃',
-      value: 'activity_sign_mayday_2024',
-      routeName: 'SignMayday2024',
-      isNew: false,
-      isClaimedReward: true,
-      children: [],
-    },
-    {
-      label: '小光快报',
-      value: 'activity_center_notice',
-      routeName: 'Bulletin',
-      isNew: false,
-      isClaimedReward: true,
-    },
-  ])
+  )
 
   // 更新菜单数据
   function updateMenuData(newMenuData: MenuItem[]): void {
@@ -72,6 +58,7 @@ export const useMenuStore = defineStore('menu', () => {
     if (
       [
         'activity_sign_in_1',
+        'activity_season22_start',
         'activity_sign_mayday_2024',
         'activity_center_notice',
       ].includes(event)

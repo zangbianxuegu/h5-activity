@@ -62,6 +62,44 @@ export const useActivityStore = defineStore('activity', () => {
         awarded_types: [],
       },
     ],
+    activity_season22_start: [
+      {
+        task_id: 'collecting_season_candles',
+        stages: [15],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'login_days',
+        stages: [3],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'unlock_spirit',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_season22_start_m1',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+    ],
   })
 
   function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -70,10 +108,12 @@ export const useActivityStore = defineStore('activity', () => {
 
   function updateEventData(
     event: keyof EventData,
-    newEventData: Event | Mayday2024Event,
+    newEventData: Event | Mayday2024Event | Event[],
   ): void {
     if (event === 'activity_sign_mayday_2024') {
       eventData.value[event] = newEventData as Mayday2024Event
+    } else if (event === 'activity_season22_start') {
+      eventData.value[event] = newEventData as Event[]
     } else {
       eventData.value[event] = newEventData as Event
     }

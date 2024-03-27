@@ -22,6 +22,18 @@
       </router-view> -->
       <router-view></router-view>
     </main>
+    <div
+      v-if="isLocal"
+      class="fixed right-0 top-0 z-10 bg-blue-600 px-1 text-sm text-white"
+    >
+      本地地址
+    </div>
+    <div
+      v-if="isTest"
+      lass="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
+    >
+      测试地址
+    </div>
   </div>
 </template>
 
@@ -38,10 +50,16 @@ import {
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+
+const localUrl = 'https://10.227.198.175:5173'
+const testUrl =
+  'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
+const isLocal = ref(window.location.href.includes(localUrl))
+const isTest = ref(window.location.href.includes(testUrl))
 
 const route = useRoute()
-// const router = useRouter()
+const router = useRouter()
 
 // 基本信息
 const baseStore = useBaseStore()
@@ -50,7 +68,6 @@ const { updateBaseInfoItems } = baseStore
 
 // 菜单数据
 const menuStore = useMenuStore()
-const menuData = computed(() => menuStore.menuData)
 const { updateMenuData } = menuStore
 
 // 活动信息
@@ -126,15 +143,72 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
 }
 
+// 菜单初始值
+const initMenuItems: MenuItem[] = [
+  {
+    label: '巢落大地筑梦共时',
+    value: 'activity_season22_start',
+    routeName: 'Season22Start',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
+    label: '田月桑时春风雀跃',
+    value: 'activity_sign_mayday_2024',
+    routeName: 'SignMayday2024',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  // {
+  //   label: '假日打卡',
+  //   value: 'activity_sign_in_1',
+  //   routeName: 'Holiday',
+  //   isNew: false,
+  //   isClaimedReward: true,
+  //   children: [],
+  // },
+  // {
+  //   label: '签到活动',
+  //   value: 'signin',
+  //   routeName: 'Signin',
+  //   isNew: false,
+  //   isClaimedReward: true,
+  //   children: [
+  //     {
+  //       label: '冬季签到',
+  //       value: 'activity_sign_in_2',
+  //       routeName: 'Winter',
+  //       isNew: false,
+  //       isClaimedReward: true,
+  //     },
+  //     {
+  //       label: '暑假签到',
+  //       value: 'activity_sign_in_3',
+  //       routeName: 'Summer',
+  //       isNew: false,
+  //       isClaimedReward: true,
+  //     },
+  //   ],
+  // },
+  {
+    label: '小光快报',
+    value: 'activity_center_notice',
+    routeName: 'Bulletin',
+    isNew: false,
+    isClaimedReward: true,
+  },
+]
 // 生成菜单数据
 function generateMenuData(
-  originalMenuItems: MenuItem[],
+  menuItems: MenuItem[],
   activeEvents: Activity[],
 ): MenuItem[] {
   const activeEventsMap = new Map(
     activeEvents.map((event) => [event.activity, event]),
   )
-  return originalMenuItems.reduce<MenuItem[]>((activeMenu, menuItem) => {
+  return menuItems.reduce<MenuItem[]>((activeMenu, menuItem) => {
     const event = activeEventsMap.get(menuItem.value)
     if (event || menuItem.children?.length) {
       const updatedMenuItem = { ...menuItem }
@@ -160,13 +234,12 @@ function getAllEvents(): void {
   getPlayerMissionData({})
     .then((res) => {
       const activeEvents = extractActiveEvents(res.data.event_data)
-      // console.log('可用的活动数组 activeEvents: ', activeEvents)
-      const newMenuData = generateMenuData(menuData.value, activeEvents)
+      const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
-      // TODO: 会导致每次刷新页面或返回（操作工具栏），到第一个活动页面
-      // if (newMenuData.length > 0) {
-      //   void router.replace({ name: newMenuData[0].routeName })
-      // }
+      // fix: 会导致每次刷新页面或返回（操作工具栏），到第一个活动页面
+      if (newMenuData.length > 0 && route.path === '/') {
+        void router.replace({ name: newMenuData[0].routeName })
+      }
 
       // 活动时间
       const newActivityTime = activeEvents
