@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="mayday flex h-screen flex-col items-center justify-center">
-      <div class="mayday-wrapper">
+    <div class="mayday flex h-screen">
+      <div class="mayday-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -177,24 +177,6 @@ const designConfig: DesignConfig = {
 // 缩放系数
 const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
-
-// px -> vw
-// const calculatePxToViewport = (px: number): string => {
-//   const clientWidth = document.documentElement.clientWidth
-//   return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
-//   // return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
-// }
-
-// 样式对象转换
-// const generateDynamicStyles = (
-//   styleObj: Record<string, number>,
-// ): Record<string, string> => {
-//   const dynamicStyles: Record<string, string> = {}
-//   for (const [key, value] of Object.entries(styleObj)) {
-//     dynamicStyles[key] = calculatePxToViewport(value)
-//   }
-//   return dynamicStyles
-// }
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
@@ -439,12 +421,16 @@ function handleReward(task: string, status: string, rewardId: number): void {
   opacity: 0.2;
 }
 .mayday {
+  position: relative;
   width: 2100px;
 
-  &-wrapper {
-    position: relative;
-    width: calc(2040px * var(--scale-factor));
-    height: calc(1140px * var(--scale-factor));
+  &-main {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale-factor));
+    width: 2040px;
+    height: 1140px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -453,19 +439,19 @@ function handleReward(task: string, status: string, rewardId: number): void {
 }
 .header {
   position: relative;
-  left: calc(242px * var(--scale-factor));
-  top: calc(58px * var(--scale-factor));
+  left: 242px;
+  top: 58px;
 }
 .title {
   position: absolute;
-  width: calc(1125px * var(--scale-factor));
-  height: calc(342px * var(--scale-factor));
+  width: 1125px;
+  height: 342px;
   background-image: url('@/assets/images/sign-mayday-2024/title.png');
 }
 .date {
   position: absolute;
-  left: calc(560px * var(--scale-factor));
-  top: calc(78px * var(--scale-factor));
+  left: 560px;
+  top: 78px;
 
   &-text {
     font-size: 15px; /* px-to-viewport-ignore */
@@ -482,16 +468,16 @@ function handleReward(task: string, status: string, rewardId: number): void {
 }
 .signin {
   position: relative;
-  left: calc(288px * var(--scale-factor));
-  top: calc(432px * var(--scale-factor));
+  left: 288px;
+  top: 432px;
 }
 .signin-list {
-  width: calc(1000px * var(--scale-factor));
+  width: 1000px;
 }
 .signin-day {
-  margin: 0 calc(10px * var(--scale-factor)) calc(10px * var(--scale-factor)) 0;
-  width: calc(240px * var(--scale-factor));
-  height: calc(240px * var(--scale-factor));
+  margin: 0 10px 10px 0;
+  width: 240px;
+  height: 240px;
 }
 
 @for $i from 1 through 6 {
@@ -509,10 +495,10 @@ function handleReward(task: string, status: string, rewardId: number): void {
 }
 .completed-reward {
   position: absolute;
-  left: calc(1492px * var(--scale-factor));
-  top: calc(190px * var(--scale-factor));
-  width: calc(300px * var(--scale-factor));
-  height: calc(300px * var(--scale-factor));
+  left: 1492px;
+  top: 190px;
+  width: 300px;
+  height: 300px;
   &.wait {
     background-image: url('@/assets/images/sign-mayday-2024/completed-wait.png');
   }
@@ -525,9 +511,9 @@ function handleReward(task: string, status: string, rewardId: number): void {
 }
 .signin-days {
   position: absolute;
-  right: calc(320px * var(--scale-factor));
-  bottom: calc(176px * var(--scale-factor));
-  font-size: calc(38px * var(--scale-factor));
+  right: 320px;
+  bottom: 176px;
+  font-size: 38px;
   font-weight: 400;
   color: #fff;
 }

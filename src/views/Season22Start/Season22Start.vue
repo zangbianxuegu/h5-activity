@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="mayday flex h-screen flex-col items-center justify-center">
-      <div class="mayday-wrapper">
+    <div class="season22 flex h-screen">
+      <div class="season22-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -158,24 +158,6 @@ const designConfig: DesignConfig = {
 const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 
-// px -> vw
-// const calculatePxToViewport = (px: number): string => {
-//   const clientWidth = document.documentElement.clientWidth
-//   return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
-//   // return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
-// }
-
-// 样式对象转换
-// const generateDynamicStyles = (
-//   styleObj: Record<string, number>,
-// ): Record<string, string> => {
-//   const dynamicStyles: Record<string, string> = {}
-//   for (const [key, value] of Object.entries(styleObj)) {
-//     dynamicStyles[key] = calculatePxToViewport(value)
-//   }
-//   return dynamicStyles
-// }
-
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
@@ -274,7 +256,7 @@ function getActivityData(): void {
         .reverse()
       // 是否已领奖：所有任务已领奖
       const isClaimedReward = !activityData.some(
-        (item) => item.award[0] === 0 && item.value === item.stages[0],
+        (item) => item.award[0] === 0 && item.value >= item.stages[0],
       )
       // 更新菜单数据 isClaimedReward
       console.log('menuStore: ', menuStore)
@@ -356,13 +338,17 @@ function handleReward(task: string, status: string): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.mayday {
+.season22 {
+  position: relative;
   width: 2100px;
 
-  &-wrapper {
-    position: relative;
-    width: calc(2040px * var(--scale-factor));
-    height: calc(1140px * var(--scale-factor));
+  &-main {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(var(--scale-factor));
+    width: 2040px;
+    height: 1140px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
@@ -371,48 +357,48 @@ function handleReward(task: string, status: string): void {
 }
 .header {
   position: relative;
-  left: calc(430px * var(--scale-factor));
-  top: calc(186px * var(--scale-factor));
+  left: 430px;
+  top: 186px;
 }
 .title {
   position: absolute;
-  width: calc(1203px * var(--scale-factor));
-  height: calc(230px * var(--scale-factor));
+  width: 1203px;
+  height: 230px;
   background-image: url('@/assets/images/season22-start/title.png');
 }
 .date {
   position: absolute;
-  left: calc(956px * var(--scale-factor));
-  top: calc(-18px * var(--scale-factor));
+  left: 956px;
+  top: -18px;
 
   &-text {
     font-size: 15px; /* px-to-viewport-ignore */
     color: #fff;
-    width: calc(173px * var(--scale-factor));
-    height: calc(36px * var(--scale-factor));
+    width: 173px;
+    height: 36px;
     background-image: url('@/assets/images/season22-start/date.png');
   }
 
   &-help {
     margin-left: 12px;
     margin-top: -2px;
-    width: calc(47px * var(--scale-factor));
-    height: calc(47px * var(--scale-factor));
+    width: 47px;
+    height: 47px;
     background-image: url('@/assets/images/season22-start/help.png');
   }
 }
 .task-list {
   position: absolute;
-  left: calc(300px * var(--scale-factor));
-  top: calc(520px * var(--scale-factor));
+  left: 300px;
+  top: 520px;
 }
 .task-item {
-  width: calc(360px * var(--scale-factor));
-  height: calc(360px * var(--scale-factor));
+  width: 360px;
+  height: 360px;
 }
 .task-item2,
 .task-item3 {
-  margin-top: calc(90px * var(--scale-factor));
+  margin-top: 90px;
 }
 @for $i from 1 through 4 {
   .task-item#{$i} {
