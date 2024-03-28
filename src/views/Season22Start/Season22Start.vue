@@ -306,7 +306,7 @@ function handleReward(task: string, status: string): void {
       })
       activityStore.updateEventData('activity_season22_start', newActivityData)
       const isClaimedReward = !newActivityData.some(
-        (item) => item.award[0] === 0 && item.value === item.stages[0],
+        (item) => item.award[0] === 0 && item.value >= item.stages[0],
       )
       menuStore.updateMenuDataByIsClaimedReward(
         'activity_season22_start',
