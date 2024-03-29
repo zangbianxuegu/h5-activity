@@ -139,7 +139,12 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
       }
       return activeEvents
     }, [])
-    .sort((a, b) => b.startTime - a.startTime)
+    .sort((a, b) => {
+      // 如果是小光快报，让它排在最后
+      if (a.activity === 'activity_center_notice') return 1
+      if (b.activity === 'activity_center_notice') return -1
+      return b.startTime - a.startTime
+    })
 }
 
 // 菜单初始值
@@ -231,6 +236,7 @@ function getAllEvents(): void {
   getPlayerMissionData({})
     .then((res) => {
       const activeEvents = extractActiveEvents(res.data.event_data)
+      console.log('activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
       // 跳转到第一个活动页面
