@@ -123,8 +123,8 @@ function getBaseInfo(): void {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  return Object.entries(activitiesResponse).reduce<Activity[]>(
-    (activeEvents, [activityName, activityInfo]) => {
+  return Object.entries(activitiesResponse)
+    .reduce<Activity[]>((activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
         activeEvents.push({
           activity: activityName,
@@ -138,9 +138,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
         })
       }
       return activeEvents
-    },
-    [],
-  )
+    }, [])
+    .sort((a, b) => b.startTime - a.startTime)
 }
 
 // 菜单初始值
@@ -161,37 +160,37 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: true,
     children: [],
   },
-  // {
-  //   label: '假日打卡',
-  //   value: 'activity_sign_in_1',
-  //   routeName: 'Holiday',
-  //   isNew: false,
-  //   isClaimedReward: true,
-  //   children: [],
-  // },
-  // {
-  //   label: '签到活动',
-  //   value: 'signin',
-  //   routeName: 'Signin',
-  //   isNew: false,
-  //   isClaimedReward: true,
-  //   children: [
-  //     {
-  //       label: '冬季签到',
-  //       value: 'activity_sign_in_2',
-  //       routeName: 'Winter',
-  //       isNew: false,
-  //       isClaimedReward: true,
-  //     },
-  //     {
-  //       label: '暑假签到',
-  //       value: 'activity_sign_in_3',
-  //       routeName: 'Summer',
-  //       isNew: false,
-  //       isClaimedReward: true,
-  //     },
-  //   ],
-  // },
+  {
+    label: '假日打卡',
+    value: 'activity_sign_in_1',
+    routeName: 'Holiday',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
+    label: '签到活动',
+    value: 'signin',
+    routeName: 'Signin',
+    isNew: false,
+    isClaimedReward: true,
+    children: [
+      {
+        label: '冬季签到',
+        value: 'activity_sign_in_2',
+        routeName: 'Winter',
+        isNew: false,
+        isClaimedReward: true,
+      },
+      {
+        label: '暑假签到',
+        value: 'activity_sign_in_3',
+        routeName: 'Summer',
+        isNew: false,
+        isClaimedReward: true,
+      },
+    ],
+  },
   {
     label: '小光快报',
     value: 'activity_center_notice',
@@ -200,6 +199,7 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: true,
   },
 ]
+
 // 生成菜单数据
 function generateMenuData(
   menuItems: MenuItem[],
@@ -210,19 +210,16 @@ function generateMenuData(
   )
   return menuItems.reduce<MenuItem[]>((activeMenu, menuItem) => {
     const event = activeEventsMap.get(menuItem.value)
-    if (event || menuItem.children?.length) {
-      const updatedMenuItem = { ...menuItem }
-      if (event) {
-        updatedMenuItem.isNew = event.isNew
-        updatedMenuItem.isClaimedReward = event.isClaimedReward
+    const updatedMenuItem = { ...menuItem }
+    if (event) {
+      updatedMenuItem.isNew = event.isNew
+      updatedMenuItem.isClaimedReward = event.isClaimedReward
+      activeMenu.push(updatedMenuItem)
+    } else if (menuItem.children && menuItem.children.length > 0) {
+      const activeChildren = generateMenuData(menuItem.children, activeEvents)
+      if (activeChildren.length) {
+        updatedMenuItem.children = activeChildren
         activeMenu.push(updatedMenuItem)
-      }
-      if (menuItem.children?.length) {
-        const activeChildren = generateMenuData(menuItem.children, activeEvents)
-        if (activeChildren.length) {
-          updatedMenuItem.children = activeChildren
-          activeMenu.push(updatedMenuItem)
-        }
       }
     }
     return activeMenu
@@ -236,8 +233,14 @@ function getAllEvents(): void {
       const activeEvents = extractActiveEvents(res.data.event_data)
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
-      // fix: 会导致每次刷新页面或返回（操作工具栏），到第一个活动页面
-      if (newMenuData.length > 0 && route.path === '/') {
+      // 跳转到第一个活动页面
+      // - 进入首页
+      // - 活动未开启
+      if (
+        newMenuData.length > 0 &&
+        (route.path === '/' ||
+          !newMenuData.find((item) => item.routeName === route.name))
+      ) {
         void router.replace({ name: newMenuData[0].routeName })
       }
 
