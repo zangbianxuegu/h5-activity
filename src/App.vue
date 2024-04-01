@@ -52,6 +52,64 @@ import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
 import { useRoute, useRouter } from 'vue-router'
 
+// 菜单初始值
+const initMenuItems: MenuItem[] = [
+  {
+    label: '巢落大地筑梦共时',
+    value: 'activity_season22_start',
+    routeName: 'Season22Start',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
+    label: '田月桑时春风雀跃',
+    value: 'activity_sign_mayday_2024',
+    routeName: 'SignMayday2024',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
+    label: '假日打卡',
+    value: 'activity_sign_in_1',
+    routeName: 'Holiday',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
+    label: '签到活动',
+    value: 'signin',
+    routeName: 'Signin',
+    isNew: false,
+    isClaimedReward: true,
+    children: [
+      {
+        label: '冬季签到',
+        value: 'activity_sign_in_2',
+        routeName: 'Winter',
+        isNew: false,
+        isClaimedReward: true,
+      },
+      {
+        label: '暑假签到',
+        value: 'activity_sign_in_3',
+        routeName: 'Summer',
+        isNew: false,
+        isClaimedReward: true,
+      },
+    ],
+  },
+  {
+    label: '小光快报',
+    value: 'activity_center_notice',
+    routeName: 'Bulletin',
+    isNew: false,
+    isClaimedReward: true,
+  },
+]
+
 const localUrl = 'https://10.227.198.175:5173'
 const testUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
@@ -147,64 +205,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     })
 }
 
-// 菜单初始值
-const initMenuItems: MenuItem[] = [
-  {
-    label: '巢落大地筑梦共时',
-    value: 'activity_season22_start',
-    routeName: 'Season22Start',
-    isNew: false,
-    isClaimedReward: true,
-    children: [],
-  },
-  {
-    label: '田月桑时春风雀跃',
-    value: 'activity_sign_mayday_2024',
-    routeName: 'SignMayday2024',
-    isNew: false,
-    isClaimedReward: true,
-    children: [],
-  },
-  {
-    label: '假日打卡',
-    value: 'activity_sign_in_1',
-    routeName: 'Holiday',
-    isNew: false,
-    isClaimedReward: true,
-    children: [],
-  },
-  {
-    label: '签到活动',
-    value: 'signin',
-    routeName: 'Signin',
-    isNew: false,
-    isClaimedReward: true,
-    children: [
-      {
-        label: '冬季签到',
-        value: 'activity_sign_in_2',
-        routeName: 'Winter',
-        isNew: false,
-        isClaimedReward: true,
-      },
-      {
-        label: '暑假签到',
-        value: 'activity_sign_in_3',
-        routeName: 'Summer',
-        isNew: false,
-        isClaimedReward: true,
-      },
-    ],
-  },
-  {
-    label: '小光快报',
-    value: 'activity_center_notice',
-    routeName: 'Bulletin',
-    isNew: false,
-    isClaimedReward: true,
-  },
-]
-
 // 生成菜单数据
 function generateMenuData(
   menuItems: MenuItem[],
@@ -213,22 +213,46 @@ function generateMenuData(
   const activeEventsMap = new Map(
     activeEvents.map((event) => [event.activity, event]),
   )
-  return menuItems.reduce<MenuItem[]>((activeMenu, menuItem) => {
-    const event = activeEventsMap.get(menuItem.value)
-    const updatedMenuItem = { ...menuItem }
-    if (event) {
-      updatedMenuItem.isNew = event.isNew
-      updatedMenuItem.isClaimedReward = event.isClaimedReward
-      activeMenu.push(updatedMenuItem)
-    } else if (menuItem.children && menuItem.children.length > 0) {
-      const activeChildren = generateMenuData(menuItem.children, activeEvents)
-      if (activeChildren.length) {
-        updatedMenuItem.children = activeChildren
+  const filteredMenuItems = menuItems.reduce<MenuItem[]>(
+    (activeMenu, menuItem) => {
+      const event = activeEventsMap.get(menuItem.value)
+      const updatedMenuItem = { ...menuItem }
+      if (event) {
+        updatedMenuItem.isNew = event.isNew
+        updatedMenuItem.isClaimedReward = event.isClaimedReward
         activeMenu.push(updatedMenuItem)
+      } else if (menuItem.children && menuItem.children.length > 0) {
+        const activeChildren = generateMenuData(menuItem.children, activeEvents)
+        if (activeChildren.length) {
+          updatedMenuItem.children = activeChildren
+          activeMenu.push(updatedMenuItem)
+        }
       }
+      return activeMenu
+    },
+    [],
+  )
+
+  // 对菜单进行排序，确保顺序与 activeEvents 一致
+  function sortMenuItemsByActiveEventsOrder(menuItems: MenuItem[]): MenuItem[] {
+    return menuItems.sort((a, b) => {
+      const indexA = activeEvents.findIndex(
+        (event) => event.activity === a.value,
+      )
+      const indexB = activeEvents.findIndex(
+        (event) => event.activity === b.value,
+      )
+      return indexA - indexB
+    })
+  }
+  const sortedMenuItems = sortMenuItemsByActiveEventsOrder(filteredMenuItems)
+  sortedMenuItems.forEach((menuItem) => {
+    if (menuItem.children && menuItem.children.length > 0) {
+      menuItem.children = sortMenuItemsByActiveEventsOrder(menuItem.children) // 对子菜单也应用排序
     }
-    return activeMenu
-  }, [])
+  })
+
+  return sortedMenuItems
 }
 
 // 获取所有活动信息
