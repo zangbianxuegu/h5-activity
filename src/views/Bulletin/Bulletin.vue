@@ -70,6 +70,7 @@
               :alt="sidebar.name"
             />
             <span
+              v-if="sidebar.tag"
               class="sidebar-tag"
               :style="generateDynamicStyles({ fontSize: 34 })"
               >{{ sidebar.tag }}</span
@@ -196,7 +197,9 @@ const filterAndSortItems = (
 // 轮播图数据
 const banners = computed(() => filterAndSortItems('banner').value?.slice(0, 6))
 // 固定位数据
-const fixeds = filterAndSortItems('fixed')
+const fixeds = computed(
+  () => filterAndSortItems('fixed').value?.slice(0, 2).reverse(),
+)
 // 侧边栏数据
 const sidebars = filterAndSortItems('sidebar')
 

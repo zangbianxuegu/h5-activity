@@ -40,15 +40,15 @@
   },
   {
     "channel": "netease:1,nearme_vivo:1,oppo:1,xiaomi_app:1,huawei:1,uc_platform:1,bilibili_sdk:1,4399com:1,dtkj:1,app_store:1,other:1",
-    "description": null,
-    "effective_time": "2023-12-12 00:00:00",
-    "expired_time": "2024-12-31 23:59:59",
-    "id": 3,
-    "img_name": "sidebar2.jpg",
-    "link_url": "https://sky.163.com/news/activity/20231212/26691_1125229.html",
+    "description": "图片无效",
+    "effective_time": "2024-3-29 15:00:00",
+    "expired_time": "2024-5-28 23:59:59",
+    "id": 7,
+    "img_name": "sidebar41.png",
+    "link_url": "https://40239_1144166.html",
     "name": "sidebar2",
-    "priority": 3,
-    "tag": "创作活动",
+    "priority": 1.5,
+    "tag": "一二三四五六七八九",
     "type": "sidebar"
   },
   {
@@ -61,7 +61,7 @@
     "link_url": "https://sky.163.com/news/update/20231128/26690_1122373.html",
     "name": "sidebar3",
     "priority": 4,
-    "tag": "公告资讯",
+    "tag": null,
     "type": "sidebar"
   },
   {
