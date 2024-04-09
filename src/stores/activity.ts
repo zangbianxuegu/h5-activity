@@ -100,6 +100,62 @@ export const useActivityStore = defineStore('activity', () => {
         awarded_types: [],
       },
     ],
+    activity_sanrio_2024: [
+      {
+        task_id: 'activity_sanrio_2024_m1',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'collecting_event_candles',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_sanrio_2024_m3',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_sanrio_2024_m4',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_sanrio_2024_m5',
+        stages: [3],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_sanrio_2024_m6',
+        stages: [5],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+    ],
   })
 
   function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -112,7 +168,10 @@ export const useActivityStore = defineStore('activity', () => {
   ): void {
     if (event === 'activity_sign_mayday_2024') {
       eventData.value[event] = newEventData as Mayday2024Event
-    } else if (event === 'activity_season22_start') {
+    } else if (
+      event === 'activity_season22_start' ||
+      event === 'activity_sanrio_2024'
+    ) {
       eventData.value[event] = newEventData as Event[]
     } else {
       eventData.value[event] = newEventData as Event

@@ -506,6 +506,7 @@ export function webViewStatistics({
           resolve(res)
         } else {
           const errorMessage = handleErrMsgViewStatistics(res.code, res.msg)
+          console.log('errorMessage: ', errorMessage)
           reject(new Error(errorMessage))
         }
       },

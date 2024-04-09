@@ -346,7 +346,7 @@ function handleReward(status: string, rewardId: number): void {
     margin-top: -2px;
     width: 48px;
     height: 49px;
-    background-image: url('@/assets/images/signin/help.png');
+    background-image: url('@/assets/images/common/help.png');
   }
 }
 .main-content {

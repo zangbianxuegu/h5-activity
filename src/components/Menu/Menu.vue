@@ -1,18 +1,24 @@
 <template>
   <div>
-    <div v-for="item in computedMenuData" :key="item.label" class="">
+    <div v-for="item in computedMenuData" :key="item.label">
       <div
         :class="[
-          'nav-item item-center group flex items-center justify-center text-center',
+          'nav-item flex flex-row items-center text-center',
           'hover:cursor-pointer',
-          isMenuItemActive(item) ? 'nav-item--active' : '',
+          item.value === 'activity_sanrio_2024' ? 'nav-item-main' : '',
+          isMenuItemActive(item)
+            ? item.value === 'activity_sanrio_2024'
+              ? 'nav-item--active nav-item-main--active'
+              : 'nav-item--active'
+            : '',
           item.isNew || item.isClaimedReward === false ? 'nav-item--new' : '',
         ]"
         @click="handleNav(item)"
       >
         <img
           class="nav-icon"
-          src="@/assets/images/bulletin/nav-icon.png"
+          :class="{ 'nav-icon-sanrio': item.value === 'activity_sanrio_2024' }"
+          :src="handleMenuIcon(item)"
           alt="star"
         />
         <span class="nav-text">{{ item.label }}</span>
@@ -178,6 +184,13 @@ function handleNav(curItem: MenuItem): void {
   })
 }
 
+// 菜单导航 icon
+function handleMenuIcon(curItem: MenuItem): string {
+  return curItem.value === 'activity_sanrio_2024'
+    ? '/assets/images/common/nav-icon-sanrio.png'
+    : '/assets/images/common/nav-icon.png'
+}
+
 // // 重置任务进度（包括每日签到数据）
 // function handleResetTaskValue(
 //   event: string,
@@ -230,7 +243,7 @@ function handleNav(curItem: MenuItem): void {
     color: #fff7b0;
     font-weight: 500;
     text-shadow: 0 0 6px;
-    background-image: url('@/assets/images/bulletin/nav-bg.png');
+    background-image: url('@/assets/images/common/nav-bg.png');
     background-size: cover;
     background-repeat: no-repeat;
   }
@@ -248,13 +261,25 @@ function handleNav(curItem: MenuItem): void {
       background-color: rgb(184, 25, 26);
     }
   }
-}
-.nav-text {
-  width: 170px;
+
+  &-main {
+    color: #3b8395;
+
+    &--active {
+      color: #66e8ff;
+    }
+  }
 }
 .nav-icon {
-  margin-right: 60px;
+  margin: 0 44px;
   width: 49px;
   height: 52px;
+
+  &-sanrio {
+    margin: 0 20px;
+    padding: 0;
+    width: 94px;
+    height: 82px;
+  }
 }
 </style>

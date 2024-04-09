@@ -71,6 +71,14 @@ const initMenuItems: MenuItem[] = [
     children: [],
   },
   {
+    label: '大耳狗茶话会',
+    value: 'activity_sanrio_2024',
+    routeName: 'Sanrio2024',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
     label: '假日打卡',
     value: 'activity_sign_in_1',
     routeName: 'Holiday',
@@ -318,13 +326,13 @@ function formatDate(startTime: number, endTime: number): string {
 .page {
   width: 100%;
   height: 100%;
-  background-image: url('@/assets/images/bulletin/bg.jpg');
+  background-image: url('@/assets/images/common/bg.jpg');
 }
 .nav-sprite {
   width: 443px;
   height: 107px;
   line-height: 107px;
-  background-image: url('@/assets/images/bulletin/nav-sprite.png');
+  background-image: url('@/assets/images/common/nav-sprite.png');
   background-size: contain;
   background-position: center;
   font-size: 36px;

@@ -65,6 +65,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/sanrio-2024',
+    name: 'Sanrio2024',
+    component: () => import('@/views/Sanrio2024'),
+    meta: {
+      title: '大耳狗茶话会',
+      module: 'activity_sanrio_2024',
+    },
+  },
+  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),
