@@ -54,8 +54,7 @@
                 {{ item.title }}
               </li>
             </ul>
-            <!-- 任务5-6 -->
-            <!-- 累计任务 -->
+            <!-- 任务5-6（累计任务） -->
             <ul class="acc-task-list flex flex-row">
               <li
                 v-for="(item, index) in taskList.slice(4)"
@@ -114,13 +113,13 @@
           4、活动期间，与大耳狗在合影区拍照，即可领取<span
             class="text-[#ffcb4d]"
             >光能药剂</span
-          >×2。
+          >×2;
         </p>
         <p class="modal-text">
           5、活动期间，累计3天与大耳狗在合影区拍照，即可领取<span
             class="text-[#ffcb4d]"
             >蜡烛</span
-          >×2。
+          >×2;
         </p>
         <p class="modal-text">
           6、活动期间，累计5天拜访甜点工坊，即可领取<span class="text-[#ffcb4d]"
@@ -294,7 +293,6 @@ const taskList = computed(() => {
 
 onMounted(() => {
   try {
-    modalReward.value?.openModal()
     getActivityData()
   } catch (error) {
     console.error(error)

@@ -21,7 +21,11 @@
           :src="handleMenuIcon(item)"
           alt="star"
         />
-        <span class="nav-text">{{ item.label }}</span>
+        <span
+          class="nav-text text-left"
+          :class="{ 'nav-text-sanrio': item.value === 'activity_sanrio_2024' }"
+          >{{ item.label }}</span
+        >
       </div>
     </div>
     <!-- <ul class="text-white">
@@ -271,7 +275,7 @@ function handleMenuIcon(curItem: MenuItem): string {
   }
 }
 .nav-icon {
-  margin: 0 44px;
+  margin: 0 42px 0 43px;
   width: 49px;
   height: 52px;
 
@@ -280,6 +284,13 @@ function handleMenuIcon(curItem: MenuItem): string {
     padding: 0;
     width: 94px;
     height: 82px;
+  }
+}
+.nav-text {
+  width: 180px;
+
+  &-sanrio {
+    width: 300px;
   }
 }
 </style>

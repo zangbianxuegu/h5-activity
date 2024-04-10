@@ -5,7 +5,24 @@ import { showToast } from 'vant'
 
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
-  const menuData = ref<MenuItem[]>([])
+  const menuData = ref<MenuItem[]>([
+    // {
+    //   label: '大耳狗茶话会',
+    //   value: 'activity_sanrio_2024',
+    //   routeName: 'Sanrio2024',
+    //   isNew: false,
+    //   isClaimedReward: true,
+    //   children: [],
+    // },
+    // {
+    //   label: '田月桑时春风雀跃',
+    //   value: 'activity_sign_mayday_2024',
+    //   routeName: 'SignMayday2024',
+    //   isNew: false,
+    //   isClaimedReward: true,
+    //   children: [],
+    // },
+  ])
 
   function checkHasRedDot(items: MenuItem[]): boolean {
     for (const item of items) {
