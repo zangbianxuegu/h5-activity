@@ -130,7 +130,7 @@
     </activity-modal>
     <activity-modal
       ref="modalReward"
-      backgroundImage="/assets/images/common/modal-bg-sanrio.png"
+      :background-image="rewardModalBackgroundImage"
     >
       <template #content>
         <p class="modal-text">
@@ -223,6 +223,10 @@ const isVisited = ref(Local.get('isVisitedSanrio2024'))
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const rewardModalBackgroundImage = new URL(
+  '@/assets/images/common/modal-bg-sanrio.png',
+  import.meta.url,
+).href
 
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
@@ -293,6 +297,7 @@ const taskList = computed(() => {
 
 onMounted(() => {
   try {
+    modalReward.value?.openModal()
     getActivityData()
   } catch (error) {
     console.error(error)
