@@ -29,10 +29,16 @@
       本地地址
     </div>
     <div
-      v-if="isTest"
+      v-if="isGameDev"
       class="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
     >
-      测试地址
+      game_dev
+    </div>
+    <div
+      v-if="isGame"
+      class="fixed right-0 top-0 z-10 bg-green-600 px-1 text-sm text-white"
+    >
+      game
     </div>
   </div>
 </template>
@@ -119,10 +125,13 @@ const initMenuItems: MenuItem[] = [
 ]
 
 const localUrl = 'https://10.227.198.175:5173'
-const testUrl =
+const gameUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
+const gameDevUrl =
+  'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html'
 const isLocal = ref(window.location.href.includes(localUrl))
-const isTest = ref(window.location.href.includes(testUrl))
+const isGame = ref(window.location.href.includes(gameUrl))
+const isGameDev = ref(window.location.href.includes(gameDevUrl))
 
 const route = useRoute()
 const router = useRouter()

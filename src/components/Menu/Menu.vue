@@ -191,8 +191,9 @@ function handleNav(curItem: MenuItem): void {
 // 菜单导航 icon
 function handleMenuIcon(curItem: MenuItem): string {
   return curItem.value === 'activity_sanrio_2024'
-    ? '/assets/images/common/nav-icon-sanrio.png'
-    : '/assets/images/common/nav-icon.png'
+    ? new URL('../../assets/images/common/nav-icon-sanrio.png', import.meta.url)
+        .href
+    : new URL('../../assets/images/common/nav-icon.png', import.meta.url).href
 }
 
 // // 重置任务进度（包括每日签到数据）
