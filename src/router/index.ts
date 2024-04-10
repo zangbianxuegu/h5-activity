@@ -25,25 +25,18 @@ router.beforeEach((to, _, next) => {
   try {
     if (typeof module === 'string') {
       if (module !== 'activity_center_notice') {
-        console.log(111)
-
         webViewStatistics({ module })
           .then(() => {
             // console.log('日志数据上报成功. module: ' + module)
           })
           .catch((error) => {
-            console.log('error: ', error)
             showToast(error.message)
           })
       }
     }
   } catch (error) {
-    console.log('catch')
-
     console.log('webViewStatistics error: ', error)
   } finally {
-    console.log('finally')
-
     next()
   }
 })
