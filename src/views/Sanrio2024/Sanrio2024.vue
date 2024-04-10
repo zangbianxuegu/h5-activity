@@ -297,7 +297,6 @@ const taskList = computed(() => {
 
 onMounted(() => {
   try {
-    modalReward.value?.openModal()
     getActivityData()
   } catch (error) {
     console.error(error)
