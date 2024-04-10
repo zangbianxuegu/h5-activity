@@ -47,18 +47,18 @@ defineExpose({
 .modal {
   width: 1168px;
   height: 866px;
-  background-image: url('@/assets/images/signin/modal-bg.png');
+  background-image: url('@/assets/images/common/modal-bg.png');
 
   &-title {
     width: 113px;
     height: 66px;
-    background-image: url('@/assets/images/signin/modal-title.png');
+    background-image: url('@/assets/images/common/modal-title.png');
   }
 
   &-close {
     width: 81px;
     height: 81px;
-    background-image: url('@/assets/images/signin/modal-close.png');
+    background-image: url('@/assets/images/common/modal-close.png');
   }
 }
 </style>
