@@ -13,24 +13,52 @@ function handlePostMessageToNative({
   content,
   handleRes,
 }: PostMsgParams): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'ngwebview_notify_native',
-    reqData: {
-      notification_name: 'NT_NOTIFICATION_EXTEND',
-      data:
-        type === 'userinfo' || type === 'update_red_dot'
-          ? { type }
-          : {
-              type,
-              resource,
-              content: JSON.stringify(content),
-            },
-    },
-    callback: {
-      nativeCallback: function (respJSONString: string) {
-        handleResponse(resource, respJSONString, handleRes)
+  function waitForUniSDKJSBridge(callback: () => void): void {
+    if (window.UniSDKJSBridge) {
+      console.log('UniSDKJSBridge 直接可用')
+      callback()
+    } else {
+      let pollCount = 0 // 轮询次数计数
+      const startTime = new Date() // 记录轮询开始时间
+      console.log(
+        '开始轮询检查 UniSDKJSBridge 是否挂载：',
+        startTime.toLocaleTimeString(),
+      )
+      const intervalId = setInterval(() => {
+        pollCount++
+        if (window.UniSDKJSBridge) {
+          const endTime = new Date() // 记录成功时间
+          // 打印挂载成功的时间和轮询次数
+          console.log(
+            `UniSDKJSBridge 成功挂载于: ${endTime.toLocaleTimeString()}，经过 ${pollCount} 次轮询`,
+          )
+          clearInterval(intervalId)
+          callback()
+        }
+      }, 100)
+    }
+  }
+  // 轮询等待 UniSDKJSBridge 挂载成功
+  waitForUniSDKJSBridge(() => {
+    window.UniSDKJSBridge.postMsgToNative({
+      methodId: 'ngwebview_notify_native',
+      reqData: {
+        notification_name: 'NT_NOTIFICATION_EXTEND',
+        data:
+          type === 'userinfo' || type === 'update_red_dot'
+            ? { type }
+            : {
+                type,
+                resource,
+                content: JSON.stringify(content),
+              },
       },
-    },
+      callback: {
+        nativeCallback: function (respJSONString: string) {
+          handleResponse(resource, respJSONString, handleRes)
+        },
+      },
+    })
   })
 }
 

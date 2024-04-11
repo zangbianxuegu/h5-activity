@@ -283,6 +283,7 @@ function getAllEvents(): void {
       // 跳转到第一个活动页面
       // - 进入首页
       // - 活动未开启
+      console.log('route: ', route)
       if (
         newMenuData.length > 0 &&
         (route.path === '/' ||
