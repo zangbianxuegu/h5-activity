@@ -74,6 +74,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/nature-2024',
+    name: 'Nature2024',
+    component: () => import('@/views/Nature2024'),
+    meta: {
+      title: '予光千缕碧浪万顷',
+      module: 'activity_nature_2024',
+    },
+  },
+  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),

@@ -85,6 +85,14 @@ const initMenuItems: MenuItem[] = [
     children: [],
   },
   {
+    label: '予光千缕碧浪万顷',
+    value: 'activity_nature_2024',
+    routeName: 'Nature2024',
+    isNew: false,
+    isClaimedReward: true,
+    children: [],
+  },
+  {
     label: '假日打卡',
     value: 'activity_sign_in_1',
     routeName: 'Holiday',

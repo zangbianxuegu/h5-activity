@@ -156,6 +156,45 @@ export const useActivityStore = defineStore('activity', () => {
         awarded_types: [],
       },
     ],
+    // 海洋节/自然日
+    activity_nature_2024: [
+      {
+        task_id: 'activity_nature_2024_m1',
+        stages: [2000000, 4000000, 6000000, 8000000, 10000000],
+        award: [0, 0, 0, 0, 0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_nature_2024_m2',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'collecting_event_candles',
+        stages: [10],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+      {
+        task_id: 'activity_nature_2024_m4',
+        stages: [1],
+        award: [0],
+        value: 0,
+        score: '',
+        is_eggy_reward: false,
+        awarded_types: [],
+      },
+    ],
   })
 
   function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -170,7 +209,8 @@ export const useActivityStore = defineStore('activity', () => {
       eventData.value[event] = newEventData as Mayday2024Event
     } else if (
       event === 'activity_season22_start' ||
-      event === 'activity_sanrio_2024'
+      event === 'activity_sanrio_2024' ||
+      event === 'activity_nature_2024'
     ) {
       eventData.value[event] = newEventData as Event[]
     } else {

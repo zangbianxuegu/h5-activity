@@ -26,6 +26,7 @@ function handlePostMessageToNative({
       )
       const intervalId = setInterval(() => {
         pollCount++
+        console.log('pollCount: ', pollCount)
         if (window.UniSDKJSBridge) {
           const endTime = new Date() // 记录成功时间
           // 打印挂载成功的时间和轮询次数
@@ -34,6 +35,9 @@ function handlePostMessageToNative({
           )
           clearInterval(intervalId)
           callback()
+        }
+        if (pollCount >= 3) {
+          clearInterval(intervalId)
         }
       }, 100)
     }
