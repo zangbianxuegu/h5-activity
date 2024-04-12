@@ -21,16 +21,55 @@
           </div>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <!-- 主任务 -->
-          <div class="main-box">
-            <div class="main-task">
-              <ul class="task-list flex flex-row flex-wrap">
+          <div>
+            <!-- 主任务 -->
+            <div class="main-box">
+              <div class="main-task">
+                <ul class="task-list flex flex-row flex-wrap">
+                  <li
+                    v-for="(item, index) in taskList"
+                    :key="item.stage"
+                    :class="[
+                      'task-item bg-contain bg-center bg-no-repeat',
+                      `task1-${index + 1}`,
+                      `${item.status}`,
+                    ]"
+                    @click="handleReward(item.name, item.status)"
+                  >
+                    <p class="task-text">
+                      <span>{{ Number(item.stage) / 10000 }}</span>
+                      <span class="task-text-unit">万</span>
+                    </p>
+                  </li>
+                </ul>
+                <!-- 进度 -->
+                <div class="progress">
+                  <div class="progress-inner">
+                    <div
+                      :class="[
+                        'progress-wave-mask',
+                        `progress-wave-mask-${progress}`,
+                      ]"
+                    >
+                      <div ref="progressWave" class="progress-wave"></div>
+                    </div>
+                    <div
+                      ref="progressConch"
+                      :class="['progress-conch', `progress-conch-${progress}`]"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- 其他任务 -->
+            <div class="sub-task">
+              <ul class="sub-task-list flex flex-row flex-wrap">
                 <li
-                  v-for="(item, index) in taskList"
+                  v-for="(item, index) in subTaskList"
                   :key="item.name"
                   :class="[
-                    'task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                    `task-item${index + 1}`,
+                    'sub-task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    `sub-task-item${index + 1}`,
                     `${item.status}`,
                   ]"
                   @click="handleReward(item.name, item.status)"
@@ -38,16 +77,6 @@
                   {{ item.title }}
                 </li>
               </ul>
-              <!-- 进度 -->
-              <div class="progress">
-                <div class="progress-inner">
-                  <div class="progress-wave-mask">
-                    <div class="progress-wave"></div>
-                  </div>
-
-                  <div class="progress-conch"></div>
-                </div>
-              </div>
             </div>
           </div>
         </Transition>
@@ -55,33 +84,51 @@
           <template #content>
             <p class="modal-text">
               <span class="font-semibold">活动时间：</span
-              >2024年4月25日~2024年5月1日
+              >2024年5月28日~2024年6月10日
             </p>
             <p class="modal-text">
               <span class="font-semibold">活动内容：</span>
             </p>
             <p class="modal-text">
-              1、活动期间，完成第一个季节任务，即可领取<span
+              1、全服污染物清除数量达到200万次，即可领取<span
                 class="text-[#ffcb4d]"
-                >秋千</span
+                >呼吸药剂</span
               >×2；
             </p>
             <p class="modal-text">
-              2、活动期间，获得一件新季节外观，即可领取<span
-                class="text-[#ffcb4d]"
-                >彩虹尾迹</span
+              2、全服污染物清除数量达到400万次，获得<span class="text-[#ffcb4d]"
+                >海蓝波浪发型试用魔法</span
               >×2；
             </p>
             <p class="modal-text">
-              3、活动期间，累计登录3天，即可领取<span class="text-[#ffcb4d]"
-                >蜡烛</span
+              3、全服污染物清除数量达到600万次，获得<span class="text-[#ffcb4d]"
+                >璀璨之星</span
               >×2；
             </p>
             <p class="modal-text">
-              4、活动期间，收集15根季节蜡烛，即可领取<span
+              4、全服污染物清除数量达到800万次，获得<span class="text-[#ffcb4d]"
+                >筑巢季蜡烛</span
+              >×2；
+            </p>
+            <p class="modal-text">
+              5、全服污染物清除数量达到1000万次，获得<span
                 class="text-[#ffcb4d]"
-                >爱心</span
-              >×2。
+                >体型重塑</span
+              >×2；
+            </p>
+            <p class="modal-text">
+              6、活动期间，清除一次污染物，可获得
+              <span class="text-[#ffcb4d]">蜡烛</span>×1；
+            </p>
+            <p class="modal-text">
+              7、活动期间，收集10个珍珠代币，可获得
+
+              <span class="text-[#ffcb4d]">蜡烛</span>×1；
+            </p>
+            <p class="modal-text">
+              8、活动期间，用珍珠代币兑换任意一件自然日外观，可获得
+
+              <span class="text-[#ffcb4d]">爱心</span>×2。
             </p>
           </template>
         </activity-modal>
@@ -124,15 +171,21 @@ interface Rewards {
 }
 
 interface RewardsName {
-  swing: string
-  trail_rainbow: string
+  breath_potion: string
+  outfit_hair_naturewater: string
+  glow: string
+  season_candle: string
+  resize_potion: string
   candles: string
   heart: string
 }
 
 const rewardsText: RewardsName = {
-  swing: '秋千',
-  trail_rainbow: '彩虹尾迹',
+  breath_potion: '呼吸药剂',
+  outfit_hair_naturewater: '海蓝波浪发型试用魔法',
+  glow: '璀璨之星',
+  season_candle: '筑巢季蜡烛',
+  resize_potion: '体型重塑',
   candles: '蜡烛',
   heart: '爱心',
 }
@@ -183,35 +236,80 @@ const activityData = computed(
   () => activityStore.eventData.activity_nature_2024,
 )
 const curRewards: Ref<Rewards> = ref({
-  name: 'swing',
-  count: 1,
+  name: 'breath_potion',
+  count: 2,
 })
 const TASK_LIST = [
   {
     name: 'activity_nature_2024_m1',
-    title: '完成第一个季节任务',
+    title: '全服污染物清除数量200万',
+    stage: 1,
     status: 'wait',
   },
   {
-    name: 'activity_nature_2024_m2',
-    title: '获得一件新季节外观',
+    name: 'activity_nature_2024_m1',
+    title: '全服污染物清除数量400万',
+    stage: 2,
     status: 'wait',
   },
   {
-    name: 'login_days',
-    title: '累计登录3天',
+    name: 'activity_nature_2024_m1',
+    title: '全服污染物清除数量600万',
+    stage: 3,
     status: 'wait',
   },
   {
-    name: 'collecting_season_candles',
-    title: '收集15季节蜡烛',
+    name: 'activity_nature_2024_m1',
+    title: '全服污染物清除数量800万',
+    stage: 4,
+    status: 'wait',
+  },
+  {
+    name: 'activity_nature_2024_m1',
+    title: '全服污染物清除数量1000万',
+    stage: 5,
     status: 'wait',
   },
 ]
-// 任务列表数据
+// 主任务列表状态
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[index]
+    const activity = activityData.value[0]
+    return {
+      ...item,
+      value: activity.value,
+      stage: activity.stages[index],
+      status:
+        activity.award[index] === 1
+          ? 'redeemed'
+          : activity.award[index] === 0 &&
+            activity.value >= activity.stages[index]
+          ? 'can'
+          : 'wait',
+    }
+  })
+})
+const SUB_TASK_LIST = [
+  {
+    name: 'activity_nature_2024_m2',
+    title: '清除一次污染物',
+    status: 'wait',
+  },
+  {
+    name: 'collecting_event_candles',
+    title: '收集10个珍珠代币',
+    status: 'wait',
+  },
+  {
+    name: 'activity_nature_2024_m4',
+    title: '用珍珠代币兑换一件自然日外观',
+    status: 'wait',
+  },
+]
+// 其他任务列表数据
+const subTaskList = computed(() => {
+  return SUB_TASK_LIST.map((item, index) => {
+    const activity = activityData.value[index + 1]
     return {
       ...item,
       status:
@@ -224,6 +322,24 @@ const taskList = computed(() => {
   })
 })
 
+const progress = computed(() => {
+  let val = activityData.value[0].value
+  if (val < 2000000) {
+    val = 0
+  } else if (val >= 2000000 && val < 4000000) {
+    val = 1
+  } else if (val >= 4000000 && val < 6000000) {
+    val = 2
+  } else if (val >= 6000000 && val < 8000000) {
+    val = 3
+  } else if (val >= 8000000 && val < 10000000) {
+    val = 4
+  } else if (val >= 10000000) {
+    val = 5
+  }
+  return val
+})
+
 const isVisited = Session.get('isVisitedNature2024')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -234,8 +350,17 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
+const progressWave = ref<HTMLDivElement | null>(null)
+const progressConch = ref<HTMLDivElement | null>(null)
 onMounted(() => {
   try {
+    if (progressConch.value) {
+      progressConch.value.addEventListener('animationstart', () => {
+        if (progressWave.value) {
+          progressWave.value.classList.add('active')
+        }
+      })
+    }
     getActivityData()
   } catch (error) {
     console.error(error)
@@ -265,6 +390,7 @@ function getActivityData(): void {
       const activityData: Event[] = res.data.event_data?.activity_nature_2024
         .slice()
         .reverse()
+      // activityData[0].value = 6000000
       // 是否已领奖：所有任务已领奖
       const isClaimedReward = !activityData.some(
         (item) => item.award[0] === 0 && item.value >= item.stages[0],
@@ -417,7 +543,6 @@ function handleReward(task: string, status: string): void {
     position: relative;
     width: 1437px;
     height: 79px;
-    overflow: hidden;
     background-repeat: no-repeat;
     background-position: left center;
     background-size: cover;
@@ -431,58 +556,174 @@ function handleReward(task: string, status: string): void {
     background-position: left center;
     background-size: cover;
     background-image: url('@/assets/images/nature-2024/wave.png');
+    opacity: 0;
+    &.active {
+      opacity: 1;
+      transition: opacity 1s;
+    }
 
     &-mask {
-      width: 40%;
       height: 79px;
       overflow: hidden;
+
+      &-1 {
+        width: 140px;
+      }
+
+      &-2 {
+        width: 420px;
+      }
+
+      &-3 {
+        width: 700px;
+      }
+
+      &-4 {
+        width: 980px;
+      }
+
+      &-5 {
+        width: 1473px;
+      }
     }
   }
 
   &-conch {
     position: absolute;
     will-change: transform;
-    bottom: -8px;
+    bottom: -10px;
     width: 95px;
     height: 96px;
     background-repeat: no-repeat;
     background-size: contain;
     background-image: url('@/assets/images/nature-2024/conch.png');
-    animation: moveRight 2s ease-out forwards;
+
+    &-1 {
+      left: 0;
+      animation: moveRight1 1s ease-out forwards;
+    }
+
+    &-2 {
+      left: 100px;
+      animation: moveRight2 1s ease-out forwards;
+    }
+
+    &-3 {
+      left: 380px;
+      animation: moveRight3 1s ease-out forwards;
+    }
+
+    &-4 {
+      left: 660px;
+      animation: moveRight4 1s ease-out forwards;
+    }
+
+    &-5 {
+      left: 940px;
+      animation: moveRight5 1s ease-out forwards;
+    }
   }
 }
-@keyframes moveRight {
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes moveRight1 {
   from {
     transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translate3d(calc(20% - 45px), 0, 0);
+    transform: translate3d(100px, 0, 0);
+  }
+}
+@keyframes moveRight2 {
+  from {
+    transform: translate3d(100px, 0, 0);
+  }
+  to {
+    transform: translate3d(280px, 0, 0);
+  }
+}
+@keyframes moveRight3 {
+  from {
+    transform: translate3d(100px, 0, 0);
+  }
+  to {
+    transform: translate3d(280px, 0, 0);
+  }
+}
+@keyframes moveRight4 {
+  from {
+    transform: translate3d(100px, 0, 0);
+  }
+  to {
+    transform: translate3d(280px, 0, 0);
+  }
+}
+@keyframes moveRight5 {
+  from {
+    transform: translate3d(100px, 0, 0);
+  }
+  to {
+    transform: translate3d(280px, 0, 0);
   }
 }
 
 .task-list {
   position: absolute;
-  left: 300px;
-  top: 520px;
+  left: 20px;
+  top: 150px;
 }
 .task-item {
-  width: 360px;
-  height: 360px;
+  margin: 0 -26px;
+  width: 332px;
+  height: 240px;
 }
-.task-item2,
-.task-item3 {
-  margin-top: 90px;
-}
-@for $i from 1 through 4 {
-  .task-item#{$i} {
+@for $i from 1 through 5 {
+  .task1-#{$i} {
     &.wait {
-      background-image: url('@/assets/images/nature-2024/task#{$i}-wait.png');
+      background-image: url('@/assets/images/nature-2024/task1-#{$i}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/nature-2024/task#{$i}-can.png');
+      background-image: url('@/assets/images/nature-2024/task1-#{$i}-can.png');
     }
     &.redeemed {
-      background-image: url('@/assets/images/nature-2024/task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/nature-2024/task1-#{$i}-redeemed.png');
+    }
+  }
+}
+.task-text {
+  margin-top: 240px;
+  text-align: center;
+  font-size: 46px;
+  color: #fff;
+  &-unit {
+    font-size: 28px;
+  }
+}
+.sub-task {
+  position: absolute;
+  left: 420px;
+  bottom: 50px;
+}
+.sub-task-item {
+  width: 500px;
+  height: 150px;
+}
+@for $i from 1 through 3 {
+  .sub-task-item#{$i} {
+    &.wait {
+      background-image: url('@/assets/images/nature-2024/task#{$i + 1}-wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/nature-2024/task#{$i + 1}-can.png');
+    }
+    &.redeemed {
+      background-image: url('@/assets/images/nature-2024/task#{$i + 1}-redeemed.png');
     }
   }
 }
