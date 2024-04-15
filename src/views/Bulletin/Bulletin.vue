@@ -208,11 +208,14 @@ const fetchData = async (): Promise<void> => {
   try {
     const res = await fetch('./activity_center.json')
     const data = await res.json()
+    if (!data || data.length === 0) {
+      showToast('网络连接异常，请稍后重试')
+      return
+    }
     bulletinData.value = data
-    console.log('data: ', data)
   } catch (error) {
     console.error('Error fetching JSON:', error)
-    // Implement user-friendly error handling here
+    showToast('网络连接异常，请稍后重试')
   }
 }
 onMounted(() => {

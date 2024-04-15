@@ -7,11 +7,12 @@
         <Menu></Menu>
       </div>
       <div class="nav-sprite flex">
-        <a
+        <!-- <a
           class="nav-sprite-text"
           :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
           >前往精灵>></a
-        >
+        > -->
+        <div class="nav-sprite-text" @click="handleToSprite">前往精灵>></div>
       </div>
     </nav>
     <main class="flex items-center justify-center">
@@ -176,6 +177,19 @@ onMounted(() => {
   }
 })
 
+let tokenParams: {
+  game_uid: string
+  uid: string
+  map: string
+  return_buff: string
+  os: string
+} = {
+  game_uid: '',
+  uid: '',
+  map: '',
+  return_buff: '',
+  os: '',
+}
 // 获取基本信息
 function getBaseInfo(): void {
   getUserInfo()
@@ -185,23 +199,34 @@ function getBaseInfo(): void {
       const appChannel = res.appChannel
       updateBaseInfoItems({ channel })
       updateBaseInfoItems({ appChannel })
-      const tokenParams = {
+      tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,
         map: res.map,
         return_buff: res.return_buff,
         os: res.os,
       }
-      return getJinglingToken(tokenParams)
-    })
-    .then((res) => {
-      const token = res.data.token
-      console.log('App 页面获取 token: ', token)
-      updateBaseInfoItems({ token })
     })
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+// 前往精灵
+function handleToSprite(): void {
+  if (token.value) {
+    window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token.value}`
+  } else {
+    getJinglingToken(tokenParams)
+      .then((res) => {
+        const val = res.data.token
+        updateBaseInfoItems({ token: val })
+        window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${val}`
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
+  }
 }
 
 // 抽取有效的活动信息
@@ -288,6 +313,10 @@ function getAllEvents(): void {
       console.log('activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
+      if (!newMenuData || newMenuData.length === 0) {
+        showToast('网络连接异常，请稍后重试')
+        return
+      }
       // 跳转到第一个活动页面：
       // - 进入首页 /
       // - 活动未开启
