@@ -197,6 +197,7 @@ const TASK_LIST = [
     status: 'wait',
   },
 ]
+const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
@@ -251,9 +252,15 @@ function handleSrc(name: string): string {
 function getActivityData(): void {
   getPlayerMissionData({ event: 'activity_season22_start' })
     .then((res) => {
-      const activityData: Event[] = res.data.event_data?.activity_season22_start
-        .slice()
-        .reverse()
+      // 获取数据并按照 TASK_LIST 的顺序进行排序
+      const activityData: Event[] =
+        res.data.event_data?.activity_season22_start.sort(
+          (a: Event, b: Event) => {
+            const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
+            const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
+            return orderA - orderB
+          },
+        )
       // 是否已领奖：所有任务已领奖
       const isClaimedReward = !activityData.some(
         (item) => item.award[0] === 0 && item.value >= item.stages[0],

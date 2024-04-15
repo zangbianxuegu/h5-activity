@@ -288,15 +288,23 @@ function getAllEvents(): void {
       console.log('activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
-      // 跳转到第一个活动页面
-      // - 进入首页
+      // 跳转到第一个活动页面：
+      // - 进入首页 /
       // - 活动未开启
-      console.log('route: ', route)
+
+      // fix: 有可能 route.path === '/'，而 route.name === undefined
+      // 在修改活动页面比如Nature2024.vue，然后刷新页面时发生（MuMu模拟器）
+      // 注意 route 作为对象不能实时的反应状态信息
+      // console.log('route: ', route)
+      // console.log('route.name: ', route.name)
+      // console.log('route.path: ', route.path)
       if (
         newMenuData.length > 0 &&
-        (route.path === '/' ||
-          !newMenuData.find((item) => item.routeName === route.name))
+        ((route.path === '/' && route.name === 'Home') ||
+          (route.name !== undefined &&
+            !newMenuData.find((item) => item.routeName === route.name)))
       ) {
+        // console.log('开始 router replace')
         void router.replace({ name: newMenuData[0].routeName })
       }
 

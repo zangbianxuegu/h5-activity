@@ -157,7 +157,7 @@ function handleErrMsgToken(code: number, msg: string): string {
     },
   }
 
-  const defaultErrorMessage = '获取玩家任务进度失败'
+  const defaultErrorMessage = '获取精灵token失败'
   return (
     errorMessages[code]?.[msg] ||
     errorMessages[code]?.default ||

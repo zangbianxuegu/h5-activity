@@ -23,8 +23,8 @@ app.use(router)
 app.mount('#app')
 
 // eslint-disable-next-line no-new
-new VConsole()
-// if (process.env.NODE_ENV !== 'production') {
-//   // eslint-disable-next-line no-new
-//   new VConsole()
-// }
+// new VConsole()
+if (process.env.NODE_ENV !== 'production') {
+  // eslint-disable-next-line no-new
+  new VConsole()
+}

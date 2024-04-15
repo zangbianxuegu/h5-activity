@@ -34,7 +34,7 @@
                       `task1-${index + 1}`,
                       `${item.status}`,
                     ]"
-                    @click="handleReward(item.name, item.status)"
+                    @click="handleReward(item.name, item.status, index + 1)"
                   >
                     <p class="task-text">
                       <span>{{ Number(item.stage) / 10000 }}</span>
@@ -72,7 +72,7 @@
                     `sub-task-item${index + 1}`,
                     `${item.status}`,
                   ]"
-                  @click="handleReward(item.name, item.status)"
+                  @click="handleReward(item.name, item.status, 1)"
                 >
                   {{ item.title }}
                 </li>
@@ -322,8 +322,27 @@ const subTaskList = computed(() => {
   })
 })
 
+const ALL_TASK_LIST = [
+  {
+    name: 'activity_nature_2024_m1',
+  },
+  {
+    name: 'activity_nature_2024_m2',
+  },
+  {
+    name: 'collecting_event_candles',
+  },
+  {
+    name: 'activity_nature_2024_m4',
+  },
+]
+
+const taskOrderMap = new Map(
+  ALL_TASK_LIST.map((task, index) => [task.name, index]),
+)
+
 const progress = computed(() => {
-  let val = activityData.value[0].value
+  let val = Math.abs(Number(activityData.value[0].value))
   if (val < 2000000) {
     val = 0
   } else if (val >= 2000000 && val < 4000000) {
@@ -387,14 +406,33 @@ function handleSrc(name: string): string {
 function getActivityData(): void {
   getPlayerMissionData({ event: 'activity_nature_2024' })
     .then((res) => {
+      // 获取数据并按照 ALL_TASK_LIST 的顺序进行排序
       const activityData: Event[] = res.data.event_data?.activity_nature_2024
-        .slice()
-        .reverse()
-      // activityData[0].value = 6000000
+        .sort((a: Event, b: Event) => {
+          const orderA = taskOrderMap.get(a.task_id) ?? ALL_TASK_LIST.length
+          const orderB = taskOrderMap.get(b.task_id) ?? ALL_TASK_LIST.length
+          return orderA - orderB
+        })
+        .map((item: Event) => {
+          return {
+            ...item,
+            value: Math.abs(Number(item.value)),
+          }
+        })
       // 是否已领奖：所有任务已领奖
-      const isClaimedReward = !activityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
+      // - 任务1：主任务获得的奖励已全部领取
+      // - 任务2：其他任务已领奖（不存在可领奖但未领奖任务）
+      const shouldM1ClaimedRewardCount = activityData[0].stages.filter(
+        (stage) => stage <= activityData[0].value,
+      ).length
+      const isM1ClaimedReward =
+        activityData[0].award.filter((item) => item === 1).length ===
+        shouldM1ClaimedRewardCount
+      const isClaimedReward =
+        isM1ClaimedReward &&
+        !activityData.some(
+          (item) => item.award[0] === 0 && item.value >= item.stages[0],
+        )
       // 更新菜单数据 isClaimedReward
       console.log('menuStore: ', menuStore)
       menuStore.updateMenuDataByIsClaimedReward(
@@ -412,7 +450,7 @@ function getActivityData(): void {
 }
 
 // 领奖
-function handleReward(task: string, status: string): void {
+function handleReward(task: string, status: string, rewardId: number): void {
   if (status === 'redeemed') {
     showToast('已领奖')
     return
@@ -424,7 +462,7 @@ function handleReward(task: string, status: string): void {
   claimMissionReward({
     event: 'activity_nature_2024',
     task,
-    rewardId: 1,
+    rewardId,
   })
     .then((res) => {
       const rewards = res.data.rewards
@@ -433,18 +471,28 @@ function handleReward(task: string, status: string): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      // 后端接口请求限制间隔 3s
-      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+      // 分别对主任务和其他任务处理显示
       const newActivityData = activityData.value.map((item) => {
-        return {
-          ...item,
-          award: item.task_id === task ? [1] : item.award,
+        const newItem = { ...item }
+        if (task === 'activity_nature_2024_m1') {
+          newItem.award[rewardId - 1] = 1
+        } else if (item.task_id === task) {
+          newItem.award = [1]
         }
+        return newItem
       })
       activityStore.updateEventData('activity_nature_2024', newActivityData)
-      const isClaimedReward = !newActivityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
+      const shouldM1ClaimedRewardCount = newActivityData[0].stages.filter(
+        (stage) => stage <= newActivityData[0].value,
+      ).length
+      const isM1ClaimedReward =
+        newActivityData[0].award.filter((item) => item === 1).length ===
+        shouldM1ClaimedRewardCount
+      const isClaimedReward =
+        isM1ClaimedReward &&
+        !newActivityData.some(
+          (item) => item.award[0] === 0 && item.value >= item.stages[0],
+        )
       menuStore.updateMenuDataByIsClaimedReward(
         'activity_nature_2024',
         isClaimedReward,
@@ -565,6 +613,8 @@ function handleReward(task: string, status: string): void {
     &-mask {
       height: 79px;
       overflow: hidden;
+      // mask-image: linear-gradient(to right, #3262a5 95%, transparent);
+      mask-image: linear-gradient(to right, black 95%, transparent);
 
       &-1 {
         width: 140px;
@@ -589,6 +639,7 @@ function handleReward(task: string, status: string): void {
   }
 
   &-conch {
+    // display: none;
     position: absolute;
     will-change: transform;
     bottom: -10px;
