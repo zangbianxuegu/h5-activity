@@ -472,9 +472,9 @@ function handleReward(task: string, status: string, rewardId: number): void {
         count: Number(Object.values(rewards)[0]),
       }
       // 分别对主任务和其他任务处理显示
-      const newActivityData = activityData.value.map((item) => {
+      const newActivityData = activityData.value.map((item, index) => {
         const newItem = { ...item }
-        if (task === 'activity_nature_2024_m1') {
+        if (task === 'activity_nature_2024_m1' && index === 0) {
           newItem.award[rewardId - 1] = 1
         } else if (item.task_id === task) {
           newItem.award = [1]
