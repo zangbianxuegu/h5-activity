@@ -96,35 +96,35 @@
         <p class="modal-text">
           1、活动期间，与沏茶师打个招呼，即可领取<span class="text-[#ffcb4d]"
             >小不点</span
-          >×2；
+          >*2；
         </p>
         <p class="modal-text">
           2、活动期间，拾取1次肉桂卷代币，即可领取<span class="text-[#ffcb4d]"
             >元气满满</span
-          >×2；
+          >*2；
         </p>
         <p class="modal-text">
           3、活动期间，与陌生人坐在甜品桌上聊天，即可领取<span
             class="text-[#ffcb4d]"
             >传信纸船</span
-          >×2；
+          >*2；
         </p>
         <p class="modal-text">
           4、活动期间，与大耳狗在合影区拍照，即可领取<span
             class="text-[#ffcb4d]"
             >光能药剂</span
-          >×2;
+          >*2;
         </p>
         <p class="modal-text">
           5、活动期间，累计3天与大耳狗在合影区拍照，即可领取<span
             class="text-[#ffcb4d]"
             >蜡烛</span
-          >×2;
+          >*2;
         </p>
         <p class="modal-text">
           6、活动期间，累计5天拜访甜点工坊，即可领取<span class="text-[#ffcb4d]"
             >爱心</span
-          >×2。
+          >*2。
         </p>
       </template>
     </activity-modal>

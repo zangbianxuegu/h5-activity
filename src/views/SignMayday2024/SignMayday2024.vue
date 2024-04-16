@@ -56,31 +56,43 @@
           <template #content>
             <p class="modal-text">
               <span class="font-semibold">活动时间：</span
-              >2023年11月16日~2023年11月29日
+              >2024年5月1日~2024年5月7日
             </p>
             <p class="modal-text">
               <span class="font-semibold">活动内容：</span>
             </p>
             <p class="modal-text">
-              1、在云峰的活动区域内点播一次歌曲，即可领取<span
-                class="text-[#ffcb4d]"
-                >畅谈长桌</span
-              >×2；
+              1、累计签到1天，即可领取<span class="text-[#ffcb4d]"
+                >元气满满</span
+              >；
             </p>
             <p class="modal-text">
-              2、点赞一首别人点播的歌曲，即可领取<span class="text-[#ffcb4d]"
-                >秋千</span
-              >×2；
+              2、累计签到2天，即可领取<span class="text-[#ffcb4d]"
+                >光能药剂</span
+              >；
             </p>
             <p class="modal-text">
-              3、使用一次古典音乐桌椅魔法，即可领取<span class="text-[#ffcb4d]"
-                >篝火</span
-              >×2；
+              3、累计签到3天，即可领取<span class="text-[#ffcb4d]"
+                >彩虹尾迹</span
+              >；
             </p>
             <p class="modal-text">
-              4、活动期间累计点播10次歌曲，即可领取<span class="text-[#ffcb4d]"
+              4、累计签到4天，即可领取<span class="text-[#ffcb4d]"
+                >璀璨之星</span
+              >；
+            </p>
+            <p class="modal-text">
+              5、累计签到5天，即可领取<span class="text-[#ffcb4d]">篝火</span>；
+            </p>
+            <p class="modal-text">
+              6、累计签到6天，即可领取<span class="text-[#ffcb4d]"
+                >体型重塑</span
+              >；
+            </p>
+            <p class="modal-text">
+              7、活动期间完签，即可额外领取<span class="text-[#ffcb4d]"
                 >爱心</span
-              >×2。
+              >*2。
             </p>
           </template>
         </activity-modal>

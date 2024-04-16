@@ -93,42 +93,42 @@
               1、全服污染物清除数量达到200万次，即可领取<span
                 class="text-[#ffcb4d]"
                 >呼吸药剂</span
-              >×2；
+              >*2；
             </p>
             <p class="modal-text">
               2、全服污染物清除数量达到400万次，获得<span class="text-[#ffcb4d]"
                 >海蓝波浪发型试用魔法</span
-              >×2；
+              >*2；
             </p>
             <p class="modal-text">
               3、全服污染物清除数量达到600万次，获得<span class="text-[#ffcb4d]"
                 >璀璨之星</span
-              >×2；
+              >*2；
             </p>
             <p class="modal-text">
               4、全服污染物清除数量达到800万次，获得<span class="text-[#ffcb4d]"
                 >筑巢季蜡烛</span
-              >×2；
+              >*2；
             </p>
             <p class="modal-text">
               5、全服污染物清除数量达到1000万次，获得<span
                 class="text-[#ffcb4d]"
                 >体型重塑</span
-              >×2；
+              >*2；
             </p>
             <p class="modal-text">
               6、活动期间，清除一次污染物，可获得
-              <span class="text-[#ffcb4d]">蜡烛</span>×1；
+              <span class="text-[#ffcb4d]">蜡烛</span>*1；
             </p>
             <p class="modal-text">
               7、活动期间，收集10个珍珠代币，可获得
 
-              <span class="text-[#ffcb4d]">蜡烛</span>×1；
+              <span class="text-[#ffcb4d]">蜡烛</span>*1；
             </p>
             <p class="modal-text">
               8、活动期间，用珍珠代币兑换任意一件自然日外观，可获得
 
-              <span class="text-[#ffcb4d]">爱心</span>×2。
+              <span class="text-[#ffcb4d]">爱心</span>*2。
             </p>
           </template>
         </activity-modal>
