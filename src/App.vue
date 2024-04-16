@@ -175,7 +175,7 @@ onMounted(() => {
     getAllEvents()
     getBaseInfo()
   } catch (error) {
-    console.error(error)
+    // console.error(error)
   }
 })
 
