@@ -54,6 +54,7 @@ import {
   getUserInfo,
   getJinglingToken,
 } from '@/utils/request'
+import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
@@ -145,9 +146,10 @@ const isGameDev = ref(window.location.href.includes(gameDevUrl))
 const route = useRoute()
 const router = useRouter()
 
+const token = Session.get('jinglingToken')
+
 // 基本信息
 const baseStore = useBaseStore()
-const token = computed(() => baseStore.baseInfo.token)
 const { updateBaseInfoItems } = baseStore
 
 // 菜单数据
@@ -214,13 +216,13 @@ function getBaseInfo(): void {
 
 // 前往精灵
 function handleToSprite(): void {
-  if (token.value) {
-    window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token.value}`
+  if (token) {
+    window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`
   } else {
     getJinglingToken(tokenParams)
       .then((res) => {
         const val = res.data.token
-        updateBaseInfoItems({ token: val })
+        Session.set('jinglingToken', val)
         window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${val}`
       })
       .catch((error) => {
