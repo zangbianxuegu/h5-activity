@@ -361,7 +361,6 @@ function getAllEvents(): void {
     })
     .catch((error) => {
       console.log('app.vue', error)
-
       showToast(error.message)
     })
 }
