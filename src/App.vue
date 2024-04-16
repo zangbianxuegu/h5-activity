@@ -196,7 +196,6 @@ let tokenParams: {
 function getBaseInfo(): void {
   getUserInfo()
     .then((res) => {
-      console.log('App 页面获取基本信息 res: ', res)
       const channel = res.channel
       const appChannel = res.appChannel
       updateBaseInfoItems({ channel })
@@ -312,7 +311,6 @@ function getAllEvents(): void {
   getPlayerMissionData({})
     .then((res) => {
       const activeEvents = extractActiveEvents(res.data.event_data)
-      console.log('activeEvents: ', activeEvents)
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
       if (!newMenuData || newMenuData.length === 0) {
