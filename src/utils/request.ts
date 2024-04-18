@@ -230,7 +230,7 @@ function handleErrMsgPlayerMission(code: number, msg: string): string {
     },
     401: {
       'inactive event': '活动未开启',
-      'repeat request': '请求频繁',
+      'repeat request': '请求过于频繁，请稍后再试',
     },
     500: {
       default: '服务器内部发生错误',

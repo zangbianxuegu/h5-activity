@@ -229,7 +229,7 @@ onMounted(() => {
 function handleWebViewStatistics(module: string): void {
   webViewStatistics({ module })
     .then(() => {
-      showToast('日志数据上报成功')
+      // showToast('日志数据上报成功')
     })
     .catch((error) => {
       showToast(error.message)
