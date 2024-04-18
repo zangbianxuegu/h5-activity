@@ -52,25 +52,25 @@
             <p class="modal-text">
               1、活动期间，完成第一个季节任务，即可领取<span
                 class="text-[#ffcb4d]"
-                >秋千</span
-              >*2；
+                >秋千*2</span
+              >；
             </p>
             <p class="modal-text">
               2、活动期间，获得一件新季节外观，即可领取<span
                 class="text-[#ffcb4d]"
-                >彩虹尾迹</span
-              >*2；
+                >彩虹尾迹*2</span
+              >；
             </p>
             <p class="modal-text">
               3、活动期间，累计登录3天，即可领取<span class="text-[#ffcb4d]"
-                >蜡烛</span
-              >*2；
+                >蜡烛*2</span
+              >；
             </p>
             <p class="modal-text">
               4、活动期间，收集15根季节蜡烛，即可领取<span
                 class="text-[#ffcb4d]"
-                >爱心</span
-              >*2。
+                >爱心*2</span
+              >。
             </p>
           </template>
         </activity-modal>

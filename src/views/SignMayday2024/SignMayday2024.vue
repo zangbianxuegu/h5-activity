@@ -91,8 +91,8 @@
             </p>
             <p class="modal-text">
               7、活动期间完签，即可额外领取<span class="text-[#ffcb4d]"
-                >爱心</span
-              >*2。
+                >爱心*2</span
+              >。
             </p>
           </template>
         </activity-modal>
