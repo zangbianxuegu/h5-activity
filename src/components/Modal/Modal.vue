@@ -23,7 +23,7 @@
           标题
         </h2>
       </div>
-      <div class="modal-content my-4 box-border px-2">
+      <div class="modal-content my-4 px-2">
         <slot name="content"></slot>
       </div>
       <div class="modal-footer">
@@ -77,8 +77,8 @@ defineExpose({
   }
 
   &-content {
-    padding-bottom: 50px;
-    height: 560px;
+    padding-bottom: 80px;
+    height: 600px;
     overflow-y: scroll;
     mask-image: linear-gradient(to bottom, black 80%, transparent);
   }
