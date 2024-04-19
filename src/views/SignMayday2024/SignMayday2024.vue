@@ -22,22 +22,16 @@
           <div class="signin flex">
             <ul class="signin-list flex flex-row flex-wrap" ref="daysList">
               <li
-                v-for="(item, index) in rewardList"
+                v-for="(item, index) in taskList"
                 :key="item.stage"
                 :class="[
                   'signin-day overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
                   `signin-day${item.stage}`,
                   `${item.status}`,
                 ]"
-                @click="
-                  handleReward(
-                    'activity_sign_mayday_2024_m1',
-                    item.status,
-                    index + 1,
-                  )
-                "
+                @click="handleReward(item.name, item.status, index + 1)"
               >
-                {{ item }}
+                {{ item.title }}
               </li>
             </ul>
           </div>
@@ -51,7 +45,7 @@
             handleReward('activity_sign_mayday_2024_m2', completedStatus, 1)
           "
         ></div>
-        <p class="signin-days">已签到 {{ activityData[1].value }} 天</p>
+        <p class="signin-days">已签到 {{ activityData[0].value }} 天</p>
         <activity-modal ref="modalHelp">
           <template #content>
             <p class="modal-text">
@@ -126,7 +120,7 @@ import {
   setPlayerTask,
   claimMissionReward,
 } from '@/utils/request'
-import { type Mayday2024Event, type DesignConfig } from '@/types'
+import { type Event, type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
@@ -211,54 +205,80 @@ const curRewards: Ref<Rewards> = ref({
 })
 // 获取活动数据的时间
 // let activityFetchTime = 0
-const REWARD_LIST = [
+const TASK_LIST = [
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第一天',
     stage: 1,
     status: 'wait',
   },
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第二天',
     stage: 2,
     status: 'wait',
   },
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第三天',
     stage: 3,
     status: 'wait',
   },
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第四天',
     stage: 4,
     status: 'wait',
   },
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第五天',
     stage: 5,
     status: 'wait',
   },
   {
+    name: 'activity_sign_mayday_2024_m1',
+    title: '第六天',
     stage: 6,
     status: 'wait',
   },
 ]
-// 奖励列表状态
-const rewardList = computed(() => {
-  return REWARD_LIST.map((item, index) => {
+// 主任务列表状态
+const taskList = computed(() => {
+  return TASK_LIST.map((item, index) => {
+    const activity = activityData.value[0]
     return {
       ...item,
       status:
-        activityData.value[1].award[index] === 1
+        activity.award[index] === 1
           ? 'redeemed'
-          : item.stage > activityData.value[1].value
-          ? 'wait'
-          : 'can',
+          : activity.award[index] === 0 &&
+            activity.value >= activity.stages[index]
+          ? 'can'
+          : 'wait',
     }
   })
 })
 // 完签奖励状态
 const completedStatus = computed(() => {
-  return activityData.value[0].award[0] === 1
+  return activityData.value[1].award[0] === 1
     ? 'redeemed'
-    : activityData.value[1].value < 6
-    ? 'wait'
-    : 'can'
+    : activityData.value[0].value >= 6
+    ? 'can'
+    : 'wait'
 })
+// 所有任务列表
+const ALL_TASK_LIST = [
+  {
+    name: 'activity_sign_mayday_2024_m1',
+  },
+  {
+    name: 'activity_sign_mayday_2024_m2',
+  },
+]
+const taskOrderMap = new Map(
+  ALL_TASK_LIST.map((task, index) => [task.name, index]),
+)
 
 const isVisited = Session.get('isVisitedMayday2024')
 const bodyTransitionName = ref('')
@@ -299,30 +319,22 @@ function getActivityData(): void {
   // activityFetchTime = Date.now()
   getPlayerMissionData({ event: 'activity_sign_mayday_2024' })
     .then((res) => {
-      const activityData: Mayday2024Event =
-        res.data.event_data?.activity_sign_mayday_2024
-      isTodaySignIn.value = Boolean(activityData[1].is_today_sign_in)
-      const shouldClaimedRewardCount = activityData[1].stages.filter(
-        (stage) => stage <= activityData[1].value,
-      ).length
-      // 是否已领奖须同时满足以下两个条件：
-      // - 任务1：签到获得的奖励已全部领取
-      // - 任务2：完签且领奖或者未完签且未领奖
-      const isClaimedReward =
-        activityData[1].award.filter((item) => item === 1).length ===
-          shouldClaimedRewardCount &&
-        activityData[0].award[0] === activityData[0].value
-      // 更新菜单数据 isClaimedReward
-      console.log('menuStore: ', menuStore)
-      menuStore.updateMenuDataByIsClaimedReward(
-        'activity_sign_mayday_2024',
-        isClaimedReward,
-      )
-      // 更新缓存活动数据
+      // 获取数据并按照 ALL_TASK_LIST 的顺序进行排序
+      const activityData: Event[] =
+        res.data.event_data?.activity_sign_mayday_2024.sort(
+          (a: Event, b: Event) => {
+            const orderA = taskOrderMap.get(a.task_id) ?? ALL_TASK_LIST.length
+            const orderB = taskOrderMap.get(b.task_id) ?? ALL_TASK_LIST.length
+            return orderA - orderB
+          },
+        )
+      isTodaySignIn.value = Boolean(activityData[0].is_today_sign_in)
+      // 1、更新活动数据
       activityStore.updateEventData('activity_sign_mayday_2024', activityData)
-      // console.log('signin activityStore', activityStore)
+      // 2、更新红点
+      updateMenuStore()
       // 开始签到
-      if (!isTodaySignIn.value && activityData[1].value < 6) {
+      if (!isTodaySignIn.value && activityData[0].value < 6) {
         handleSignin()
       }
     })
@@ -356,14 +368,17 @@ function handleSignin(): void {
       // getActivityDataDelayed()
       // 后端接口请求限制间隔 3s
       // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-      const value = activityData.value[1].value++
+      // 1、更新活动数据
+      const value = activityData.value[0].value++
       if (value === 6) {
-        activityData.value[0].value = 1
+        activityData.value[1].value = 1
       }
       activityStore.updateEventData(
         'activity_sign_mayday_2024',
         activityData.value,
       )
+      // 2、更新红点
+      updateMenuStore()
     })
     .catch((error) => {
       showToast(error.message)
@@ -396,20 +411,44 @@ function handleReward(task: string, status: string, rewardId: number): void {
       // getActivityDataDelayed()
       // 后端接口请求限制间隔 3s
       // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+      // 1、更新活动数据
       if (task === 'activity_sign_mayday_2024_m1') {
-        activityData.value[1].award[rewardId - 1] = 1
+        activityData.value[0].award[rewardId - 1] = 1
       }
       if (task === 'activity_sign_mayday_2024_m2') {
-        activityData.value[0].award[0] = 1
+        activityData.value[1].award[0] = 1
       }
       activityStore.updateEventData(
         'activity_sign_mayday_2024',
         activityData.value,
       )
+      // 2、更新红点
+      updateMenuStore()
     })
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+// 更新菜单（更新红点）
+function updateMenuStore(): void {
+  // 是否已领奖须同时满足以下两个条件：
+  // - 任务1：签到获得的奖励已全部领取
+  // - 任务2：完签且领奖或者未完签且未领奖
+  const shouldClaimedRewardCount = activityData.value[0].stages.filter(
+    (stage) => stage <= activityData.value[0].value,
+  ).length
+  const isClaimedReward =
+    activityData.value[0].award.filter((item) => item === 1).length ===
+      shouldClaimedRewardCount &&
+    !(
+      activityData.value[1].award[0] === 0 &&
+      activityData.value[1].value >= activityData.value[1].stages[0]
+    )
+  menuStore.updateMenuDataByIsClaimedReward(
+    'activity_sign_mayday_2024',
+    isClaimedReward,
+  )
 }
 </script>
 

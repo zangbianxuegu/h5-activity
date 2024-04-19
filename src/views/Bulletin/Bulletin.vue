@@ -251,9 +251,6 @@ function handleItemClick(item: BulletinItem): void {
   width: 2100px;
   /* overflow: hidden; */
 }
-.test {
-  border: 1px solid red;
-}
 .swipe {
   overflow: hidden;
   width: calc(1260px * var(--scale-factor));

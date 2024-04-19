@@ -27,26 +27,15 @@ export interface Event {
   is_eggy_reward: boolean
   is_today_sign_in?: boolean
   awarded_types: any[]
+  task_names?: string[]
 }
 
-export interface CompletedEvent {
-  task_id: string
-  stages: number[]
-  award: number[]
-  value: number
-  score: string
-  is_eggy_reward: boolean
-  awarded_types: any[]
-  task_names: string[]
-}
-
-export type Mayday2024Event = [CompletedEvent, Event]
 export interface EventData {
   activity_sign_in_1: Event
   activity_sign_in_2: Event
   activity_sign_in_3: Event
-  activity_sign_mayday_2024: Mayday2024Event
   activity_season22_start: Event[]
+  activity_sign_mayday_2024: Event[]
   activity_sanrio_2024: Event[]
   activity_nature_2024: Event[]
 }

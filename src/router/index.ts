@@ -281,7 +281,7 @@ function getAllEvents(to: RouteLocationNormalized): void {
       }
     })
     .catch((error) => {
-      console.log('router index', error)
+      console.log('router index getPlayerMissionData', error)
       showToast(error.message)
     })
 }

@@ -1,10 +1,5 @@
 import { defineStore } from 'pinia'
-import {
-  type ActivityTime,
-  type Event,
-  type Mayday2024Event,
-  type EventData,
-} from '@/types'
+import { type ActivityTime, type Event, type EventData } from '@/types'
 
 export const useActivityStore = defineStore(
   'activity',
@@ -42,17 +37,8 @@ export const useActivityStore = defineStore(
         is_today_sign_in: false,
         awarded_types: [],
       },
+      // 劳动节签到活动
       activity_sign_mayday_2024: [
-        {
-          task_id: 'activity_sign_mayday_2024_m2',
-          stages: [1],
-          award: [0],
-          value: 0,
-          score: '',
-          is_eggy_reward: false,
-          awarded_types: [],
-          task_names: ['activity_sign_mayday_2024_m1'],
-        },
         {
           task_id: 'activity_sign_mayday_2024_m1',
           stages: [1, 2, 3, 4, 5, 6],
@@ -63,7 +49,18 @@ export const useActivityStore = defineStore(
           is_today_sign_in: false,
           awarded_types: [],
         },
+        {
+          task_id: 'activity_sign_mayday_2024_m2',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          task_names: ['activity_sign_mayday_2024_m1'],
+        },
       ],
+      // 筑巢季季初活跃活动
       activity_season22_start: [
         {
           task_id: 'collecting_season_candles',
@@ -102,6 +99,7 @@ export const useActivityStore = defineStore(
           awarded_types: [],
         },
       ],
+      // 三丽鸥联动活动
       activity_sanrio_2024: [
         {
           task_id: 'activity_sanrio_2024_m1',
@@ -205,12 +203,11 @@ export const useActivityStore = defineStore(
 
     function updateEventData(
       event: keyof EventData,
-      newEventData: Event | Mayday2024Event | Event[],
+      newEventData: Event | Event[],
     ): void {
-      if (event === 'activity_sign_mayday_2024') {
-        eventData.value[event] = newEventData as Mayday2024Event
-      } else if (
+      if (
         event === 'activity_season22_start' ||
+        event === 'activity_sign_mayday_2024' ||
         event === 'activity_sanrio_2024' ||
         event === 'activity_nature_2024'
       ) {
