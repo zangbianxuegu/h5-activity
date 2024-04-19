@@ -426,7 +426,7 @@ function getActivityData(): void {
         (stage) => stage <= activityData[0].value,
       ).length
       const isM1ClaimedReward =
-        activityData[0].award.filter((item) => item === 1).length ===
+        activityData[0].award.filter((item) => item === 1).length >=
         shouldM1ClaimedRewardCount
       const isClaimedReward =
         isM1ClaimedReward &&

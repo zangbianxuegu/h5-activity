@@ -439,7 +439,7 @@ function updateMenuStore(): void {
     (stage) => stage <= activityData.value[0].value,
   ).length
   const isClaimedReward =
-    activityData.value[0].award.filter((item) => item === 1).length ===
+    activityData.value[0].award.filter((item) => item === 1).length >=
       shouldClaimedRewardCount &&
     !(
       activityData.value[1].award[0] === 0 &&
