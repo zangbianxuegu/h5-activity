@@ -56,11 +56,14 @@ const gameUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
 const gameDevUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html'
+const prodUrl = 'https://sky.h5.163.com/game/'
 const isLocal = ref(window.location.href.includes(localUrl))
 const isGame = ref(window.location.href.includes(gameUrl))
 const isGameDev = ref(window.location.href.includes(gameDevUrl))
-
-const token = Session.get('jinglingToken')
+const isProd = ref(window.location.href.includes(prodUrl))
+const jinglingUrl = isProd.value
+  ? 'https://gmsdk.gameyw.netease.com/sprite/index'
+  : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
 
 // 基本信息
 const baseStore = useBaseStore()
@@ -110,14 +113,15 @@ function getBaseInfo(): void {
 
 // 前往精灵
 function handleToSprite(): void {
+  const token = Session.get('jinglingToken')
   if (token) {
-    window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`
+    window.location.href = `${jinglingUrl}?token=${token}`
   } else {
     getJinglingToken(tokenParams)
       .then((res) => {
         const val = res.data.token
-        Session.set('jinglingToken', val)
-        window.location.href = `https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${val}`
+        Session.set('jinglingToken', val, 5 * 60 * 1000)
+        window.location.href = `${jinglingUrl}?token=${val}`
       })
       .catch((error) => {
         showToast(error.message)
