@@ -48,7 +48,6 @@
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
 import { getUserInfo, getJinglingToken } from '@/utils/request'
-import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 
 const localUrl = 'https://10.227.198.175:5173'
@@ -113,20 +112,14 @@ function getBaseInfo(): void {
 
 // 前往精灵
 function handleToSprite(): void {
-  const token = Session.get('jinglingToken')
-  if (token) {
-    window.location.href = `${jinglingUrl}?token=${token}`
-  } else {
-    getJinglingToken(tokenParams)
-      .then((res) => {
-        const val = res.data.token
-        Session.set('jinglingToken', val, 2 * 60 * 60 * 1000)
-        window.location.href = `${jinglingUrl}?token=${val}`
-      })
-      .catch((error) => {
-        showToast(error.message)
-      })
-  }
+  getJinglingToken(tokenParams)
+    .then((res) => {
+      const val = res.data.token
+      window.location.href = `${jinglingUrl}?token=${val}`
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 </script>
 
