@@ -120,7 +120,7 @@ function handleToSprite(): void {
     getJinglingToken(tokenParams)
       .then((res) => {
         const val = res.data.token
-        Session.set('jinglingToken', val, 5 * 60 * 1000)
+        Session.set('jinglingToken', val, 2 * 60 * 60 * 1000)
         window.location.href = `${jinglingUrl}?token=${val}`
       })
       .catch((error) => {
