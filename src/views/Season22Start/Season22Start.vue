@@ -13,7 +13,7 @@
               <div
                 class="date-text overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
               >
-                {{ activityTime }}
+                4.25-5.1
               </div>
               <div
                 class="date-help bg-contain bg-center bg-no-repeat"
@@ -163,10 +163,6 @@ const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
-// 活动时间字符串
-const activityTime = computed(
-  () => activityStore.activityTime.activity_season22_start,
-)
 // 活动数据
 const activityData = computed(
   () => activityStore.eventData.activity_season22_start,

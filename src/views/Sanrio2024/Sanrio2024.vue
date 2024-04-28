@@ -32,7 +32,7 @@
                 大耳狗茶话会
               </h1>
               <div class="date flex items-center align-middle">
-                <div class="date-text">{{ activityTime }}</div>
+                <div class="date-text">4.28-5.18</div>
                 <div
                   class="date-help bg-contain bg-center bg-no-repeat"
                   @click="handleHelp"
@@ -231,10 +231,6 @@ const rewardModalBackgroundImage = new URL(
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 
-// 活动时间字符串
-const activityTime = computed(
-  () => activityStore.activityTime.activity_sanrio_2024,
-)
 // 活动数据
 const activityData = computed(
   () => activityStore.eventData.activity_sanrio_2024,
