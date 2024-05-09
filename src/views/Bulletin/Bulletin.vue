@@ -7,18 +7,20 @@
           class="swipe border-r-10"
           :autoplay="3000"
           indicator-color="white"
-          :style="generateDynamicStyles({ width: 1260, height: 712 })"
+          :style="generateDynamicStyles({ width: 1260 + 4, height: 712 + 4 })"
         >
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a
+              class="bulletin-item"
               :href="banner.link_url || 'javascript:void(0)'"
-              @click="handleItemClick(banner)"
+              @click="handleItemClick(banner, $event)"
             >
               <img
                 :src="`./images/${banner.img_name}`"
-                class="border-r-10 w-full"
+                class="img-border img-effect w-full"
                 :alt="banner.name"
               />
+              <div class="overlay"></div>
             </a>
           </van-swipe-item>
         </van-swipe>
@@ -29,20 +31,25 @@
         >
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
             <a
+              class="bulletin-item"
               :href="fixed.link_url || 'javascript:void(0)'"
-              @click="handleItemClick(fixed)"
+              @click="handleItemClick(fixed, $event)"
             >
               <img
                 :src="`./images/${fixed.img_name}`"
-                class="w-full"
+                class="img-effect w-full"
                 :alt="fixed.name"
               />
+              <div class="overlay"></div>
             </a>
           </p>
         </div>
       </div>
       <!-- 列表 -->
-      <div class="sidebar flex" :style="generateDynamicStyles({ width: 1620 })">
+      <div
+        class="sidebar flex"
+        :style="generateDynamicStyles({ width: 1620 + 12 })"
+      >
         <div
           v-for="(sidebar, index) in sidebars"
           :key="sidebar.id"
@@ -50,23 +57,24 @@
           :style="
             index === (sidebars && sidebars.length - 1)
               ? generateDynamicStyles({
-                  width: 520,
-                  height: 294,
+                  width: 520 + 4,
+                  height: 294 + 4,
                 })
               : generateDynamicStyles({
-                  width: 520,
-                  height: 294,
+                  width: 520 + 4,
+                  height: 294 + 4,
                   marginRight: 30,
                 })
           "
         >
           <a
-            :href="sidebar.link_url || 'javascript:void(0)'"
-            @click="handleItemClick(sidebar)"
+            class="bulletin-item"
+            href="javascript:void(0)"
+            @click="handleItemClick(sidebar, $event)"
           >
             <img
               :src="`./images/${sidebar.img_name}`"
-              class="border-r-10 w-full"
+              class="img-border w-full"
               :alt="sidebar.name"
             />
             <span
@@ -75,6 +83,7 @@
               :style="generateDynamicStyles({ fontSize: 34 })"
               >{{ sidebar.tag }}</span
             >
+            <div class="overlay"></div>
           </a>
         </div>
       </div>
@@ -101,13 +110,14 @@ const DESIGN_WIDTH = 2560
 const DESIGN_HEIGHT = 1200
 // 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
 // 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_BULLETIN_WIDTH = 2100 - 60
+// 0509 update 图片增加 2px 边框，整体高度增加 8px，宽度增加 12px
+const DESIGN_BULLETIN_WIDTH = 2100 - 60 + 12
 // 设计稿主体高，同宽。
-const DESIGN_BULLETIN_HEIGHT = 1200 - 60
+const DESIGN_BULLETIN_HEIGHT = 1200 - 60 + 8
 // 设计稿主体内容宽
-const DESIGN_BULLETIN_CONTENT_WIDTH = 1620
+const DESIGN_BULLETIN_CONTENT_WIDTH = 1620 + 12
 // 设计稿主体内容高
-const DESIGN_BULLETIN_CONTENT_HEIGHT = 1036
+const DESIGN_BULLETIN_CONTENT_HEIGHT = 1036 + 8
 // 设计稿主体内容宽高比
 const DESIGN_BULLETIN_CONTENT_RATIO =
   DESIGN_BULLETIN_CONTENT_WIDTH / DESIGN_BULLETIN_CONTENT_HEIGHT
@@ -237,11 +247,23 @@ function handleWebViewStatistics(module: string): void {
 }
 
 // 点击事件
-function handleItemClick(item: BulletinItem): void {
+function handleItemClick(item: BulletinItem, event): void {
+  const overlay = event.currentTarget.querySelector('.overlay')
+  overlay.style.opacity = 1
+  overlay.addEventListener(
+    'transitionend',
+    (e) => {
+      if (e.propertyName === 'opacity' && item.link_url) {
+        window.location.href = item.link_url
+      } else {
+        showToast('敬请期待')
+      }
+    },
+    { once: true },
+  )
+
   if (item.link_url) {
     handleWebViewStatistics(item.name)
-  } else {
-    showToast('敬请期待')
   }
 }
 </script>
@@ -290,5 +312,24 @@ function handleItemClick(item: BulletinItem): void {
     background: #3ac2ee;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.13);
   }
+}
+.bulletin-item {
+  position: relative;
+  display: block;
+}
+.overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(2, 4, 52, 0.3);
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+.img-border {
+  border: 2px solid #62638f;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.75);
 }
 </style>
