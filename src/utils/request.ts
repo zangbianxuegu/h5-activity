@@ -5,6 +5,7 @@ import {
   type EventData,
 } from '@/types'
 import throttle from 'lodash.throttle'
+import { Session } from '@/utils/storage'
 
 // Web 与 客户端通信
 function handlePostMessageToNative({
@@ -205,7 +206,27 @@ export function getPlayerMissionData({
   event?: keyof EventData
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
+    const now = Date.now()
     if (event) {
+      const cachedData = Session.get('activity')?.eventData[event]
+      const lastFetchTime = parseInt(Session.get(`lastFetchTime-${event}`)) || 0
+      const isFetched = Session.get(`isFetched-${event}`)
+      // 有缓存数据。但是不能依靠这个判断是否应该使用缓存数据，因为 Pinia 中设置了初始值
+      // 当前活动是否缓存过
+      // 距离上一次请求小于 3500
+      if (cachedData && isFetched && now - lastFetchTime < 3500) {
+        const res = {
+          code: 200,
+          data: {
+            event_data: {
+              [event]: cachedData,
+            },
+          },
+          msg: 'ok',
+        }
+        resolve(res)
+        return
+      }
       let throttledFetch = throttledFetchMap[event]
       if (!throttledFetch) {
         throttledFetch = throttle(fetchPlayerMissionData, 3500, {
@@ -213,6 +234,10 @@ export function getPlayerMissionData({
         })
         throttledFetchMap[event] = throttledFetch
       }
+      // 存储请求时间
+      Session.set(`lastFetchTime-${event}`, now.toString())
+      // 存储是否请求过
+      Session.set(`isFetched-${event}`, true)
       throttledFetch({ event }, resolve, reject)
     } else {
       fetchPlayerMissionData({ event }, resolve, reject)
