@@ -12,8 +12,6 @@ dist
 dist-ssr
 build
 *.local
-src/components.d.ts
-src/auto-import.d.ts
 
 # Editor directories and files
 .vscode/*
