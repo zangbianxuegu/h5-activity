@@ -70,6 +70,7 @@ const { updateBaseInfoItems } = baseStore
 
 onMounted(() => {
   try {
+    handleShowNavigationBar()
     getBaseInfo()
   } catch (error) {
     console.error(error)
@@ -89,6 +90,17 @@ let tokenParams: {
   return_buff: '',
   os: '',
 }
+
+// 显示导航栏
+function handleShowNavigationBar(): void {
+  window.UniSDKJSBridge.postMsgToNative({
+    methodId: 'navigation_bar_func',
+    reqData: {
+      action: 'show',
+    },
+  })
+}
+
 // 获取基本信息
 function getBaseInfo(): void {
   getUserInfo()
