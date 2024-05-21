@@ -91,4 +91,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activity_center_notice',
     },
   },
+  {
+    path: '/dragon-boat-2024',
+    name: 'DragonBoat2024',
+    component: () => import('@/views/DragonBoat2024'),
+    meta: {
+      title: '击鼓行舟 粽香十里',
+      module: 'activity_dragonboat_2024',
+    },
+  },
 ]
