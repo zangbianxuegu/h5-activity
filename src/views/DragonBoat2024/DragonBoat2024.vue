@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="season22 flex h-screen">
-      <div class="season22-main">
+    <div class="dragon-boat-2024 flex h-screen">
+      <div class="dragon-boat-2024-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -46,6 +46,7 @@
               'task-item5 overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
               `${finishAllTask.status}`,
             ]"
+            @click="handleReward(finishAllTask.name, finishAllTask.status)"
           ></div>
         </Transition>
         <activity-modal ref="modalHelp">
@@ -127,16 +128,18 @@ interface Rewards {
 }
 
 interface RewardsName {
-  swing: string
-  trail_rainbow: string
+  outfit_prop_DragonBoat: string
+  message_boat: string
   candles: string
+  resize_potion: string
   heart: string
 }
 
 const rewardsText: RewardsName = {
-  swing: '秋千',
-  trail_rainbow: '彩虹尾迹',
+  outfit_prop_DragonBoat: '【击鼓行舟】魔法',
+  message_boat: '传信纸船',
   candles: '蜡烛',
+  resize_potion: '体型重塑',
   heart: '爱心',
 }
 
@@ -177,45 +180,43 @@ const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
-// 活动时间字符串
-// const activityTime = computed(
-//   () => activityStore.activityTime.activity_season22_start,
-// )
+
 // 活动数据
 const activityData = computed(
-  () => activityStore.eventData.activity_season22_start,
+  () => activityStore.eventData.activity_dragonboat_2024,
 )
 const curRewards: Ref<Rewards> = ref({
-  name: 'swing',
+  name: 'outfit_prop_DragonBoat',
   count: 1,
 })
 const TASK_LIST = [
   {
-    name: 'activity_season22_start_m1',
+    name: 'use_consumables',
     title: '使用1次击鼓行舟魔法',
     status: 'wait',
   },
   {
-    name: 'activity_season22_start_m2',
+    name: 'activity_dragonboat_2024_m2',
     title: '欣赏1次先祖行舟表演',
     status: 'wait',
   },
   {
-    name: 'login_days',
+    name: 'finish_daily_quests',
     title: '完成全部每日任务',
     status: 'wait',
   },
   {
-    name: 'collecting_season_candles',
+    name: 'login_days',
     title: '累计登录3天',
     status: 'wait',
   },
   {
-    name: 'collecting_season_candles',
+    name: 'activity_dragonboat_2024_m5',
     title: '完成全部活动任务',
     status: 'wait',
   },
 ]
+const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
@@ -223,9 +224,9 @@ const taskList = computed(() => {
     return {
       ...item,
       status:
-        activity?.award[0] === 1
+        activity.award[0] === 1
           ? 'redeemed'
-          : activity?.award[0] === 0 && activity?.value >= activity?.stages[0]
+          : activity.award[0] === 0 && activity.value >= activity.stages[0]
           ? 'can'
           : 'wait',
     }
@@ -236,7 +237,7 @@ const finishAllTask = computed(() => {
   return taskList.value[taskList.value.length - 1]
 })
 
-const isVisited = Session.get('isVisitedSeason22Start')
+const isVisited = Session.get('isVisitedDragonBoat2024Start')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 const mainTransitionName = ref('')
@@ -252,7 +253,7 @@ onMounted(() => {
   } catch (error) {
     console.error(error)
   }
-  Session.set('isVisitedSeason22Start', true)
+  Session.set('isVisitedDragonBoat2024Start', true)
 })
 
 // 显示帮助
@@ -263,7 +264,7 @@ function handleHelp(): void {
 // 处理 img src
 function handleSrc(name: string): string {
   const imgSrc = new URL(
-    `../../assets/images/season22-start/reward-${name}.png`,
+    `../../assets/images/dragon-boat-2024/reward-${name}.png`,
     import.meta.url,
   ).href
 
@@ -272,27 +273,31 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: 'activity_season22_start' })
+  getPlayerMissionData({ event: 'activity_dragonboat_2024' })
     .then((res) => {
-      const activityData: Event[] = res.data.event_data?.activity_season22_start
-        .slice()
-        .reverse()
+      // 获取数据并按照 TASK_LIST 的顺序进行排序
+      const activityData: Event[] =
+        res.data.event_data?.activity_dragonboat_2024.sort(
+          (a: Event, b: Event) => {
+            const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
+            const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
+            return orderA - orderB
+          },
+        )
+
       // 是否已领奖：所有任务已领奖
       const isClaimedReward = !activityData.some(
         (item) => item.award[0] === 0 && item.value >= item.stages[0],
       )
       // 更新菜单数据 isClaimedReward
-      console.log('menuStore: ', menuStore)
       menuStore.updateMenuDataByIsClaimedReward(
-        'activity_season22_start',
+        'activity_dragonboat_2024',
         isClaimedReward,
       )
       // 更新缓存活动数据
-      activityStore.updateEventData('activity_season22_start', activityData)
-      console.log('activityStore: ', activityStore)
+      activityStore.updateEventData('activity_dragonboat_2024', activityData)
     })
     .catch((error) => {
-      console.log('season22start.vue', error)
       showToast(error.message)
     })
 }
@@ -308,7 +313,7 @@ function handleReward(task: string, status: string): void {
     return
   }
   claimMissionReward({
-    event: 'activity_season22_start',
+    event: 'activity_dragonboat_2024',
     task,
     rewardId: 1,
   })
@@ -327,12 +332,12 @@ function handleReward(task: string, status: string): void {
           award: item.task_id === task ? [1] : item.award,
         }
       })
-      activityStore.updateEventData('activity_season22_start', newActivityData)
+      activityStore.updateEventData('activity_dragonboat_2024', newActivityData)
       const isClaimedReward = !newActivityData.some(
         (item) => item.award[0] === 0 && item.value >= item.stages[0],
       )
       menuStore.updateMenuDataByIsClaimedReward(
-        'activity_season22_start',
+        'activity_dragonboat_2024',
         isClaimedReward,
       )
     })
@@ -361,7 +366,7 @@ function handleReward(task: string, status: string): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.season22 {
+.dragon-boat-2024 {
   position: relative;
   width: 2100px;
 
@@ -395,7 +400,7 @@ function handleReward(task: string, status: string): void {
       top: 90px;
       width: 47px;
       height: 47px;
-      background-image: url('@/assets/images/season22-start/help.png');
+      background-image: url('@/assets/images/dragon-boat-2024/help.png');
     }
   }
 }
@@ -418,14 +423,26 @@ function handleReward(task: string, status: string): void {
       background-image: url('@/assets/images/dragon-boat-2024/task#{$i}-wait.png');
     }
     &.can {
+      transform: scale(1.14);
+      margin-bottom: 12px;
       background-image: url('@/assets/images/dragon-boat-2024/task#{$i}-can.png');
     }
     &.redeemed {
+      transform: scale(1.05);
+      margin-bottom: 12px;
       background-image: url('@/assets/images/dragon-boat-2024/task#{$i}-redeemed.png');
     }
     @if $i == 4 {
-      scale: 0.88;
-      margin-bottom: 30px;
+      transform: scale(0.89);
+      margin-bottom: 32px;
+      &.can {
+        transform: scale(1.2);
+        margin-bottom: 38px;
+      }
+      &.redeemed {
+        transform: scale(1);
+        margin-bottom: 38px;
+      }
     }
     @if $i == 5 {
       position: absolute;

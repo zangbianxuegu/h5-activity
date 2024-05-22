@@ -92,7 +92,7 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/dragon-boat-2024',
+    path: '/dragonboat-2024',
     name: 'DragonBoat2024',
     component: () => import('@/views/DragonBoat2024'),
     meta: {

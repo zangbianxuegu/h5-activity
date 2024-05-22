@@ -195,6 +195,54 @@ export const useActivityStore = defineStore(
           awarded_types: [],
         },
       ],
+      // 击鼓行舟棕香十里活动
+      activity_dragonboat_2024: [
+        {
+          task_id: 'use_consumables',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'activity_dragonboat_2024_m2',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'finish_daily_quests',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'login_days',
+          stages: [3],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'activity_dragonboat_2024_m5',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+      ],
     })
 
     function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -209,7 +257,8 @@ export const useActivityStore = defineStore(
         event === 'activity_season22_start' ||
         event === 'activity_sign_mayday_2024' ||
         event === 'activity_sanrio_2024' ||
-        event === 'activity_nature_2024'
+        event === 'activity_nature_2024' ||
+        event === 'activity_dragonboat_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
