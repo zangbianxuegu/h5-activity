@@ -387,24 +387,23 @@ function handleReward(task: string, status: string): void {
   position: relative;
   left: 0px;
   top: 0px;
-  & > .title {
-    position: absolute;
-    left: 120px;
-    top: 100px;
-    width: 1136px;
-    height: 370px;
-    background-image: url('@/assets/images/dragon-boat-2024/title.png');
-    & > .date-help {
-      position: absolute;
-      right: 36px;
-      top: 90px;
-      width: 47px;
-      height: 47px;
-      background-image: url('@/assets/images/dragon-boat-2024/help.png');
-    }
-  }
 }
-
+.title {
+  position: absolute;
+  left: 120px;
+  top: 100px;
+  width: 1136px;
+  height: 370px;
+  background-image: url('@/assets/images/dragon-boat-2024/title.png');
+}
+.date-help {
+  position: absolute;
+  right: 36px;
+  top: 90px;
+  width: 47px;
+  height: 47px;
+  background-image: url('@/assets/images/common/help.png');
+}
 .task-list {
   position: absolute;
   left: 149px;
