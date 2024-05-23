@@ -107,8 +107,10 @@ function getBaseInfo(): void {
     .then((res) => {
       const channel = res.channel
       const appChannel = res.appChannel
+      const returnBuff = res.return_buff
       updateBaseInfoItems({ channel })
       updateBaseInfoItems({ appChannel })
+      updateBaseInfoItems({ returnBuff })
       tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,

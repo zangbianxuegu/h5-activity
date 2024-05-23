@@ -175,7 +175,13 @@ function isMenuItemActive(item: MenuItem): boolean {
     return (
       item.value === module ||
       (item.value === 'signin' &&
-        ['activity_sign_in_2', 'activity_sign_in_3'].includes(module))
+        ['activity_sign_in_2', 'activity_sign_in_3'].includes(module)) ||
+      (item.value === 'activity_return_buff' &&
+        [
+          'activity_return_buff_reunion',
+          'activity_return_buff_setout',
+          'activity_return_buff_together',
+        ].includes(module))
     )
   }
   return false

@@ -56,6 +56,45 @@ export const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/return-buff',
+    name: 'ReturnBuff',
+    redirect: '/return-buff/reunion',
+    component: () => import('@/views/ReturnBuff'),
+    meta: {
+      title: '天空王国回归指南',
+      module: 'activity_return_buff',
+    },
+    children: [
+      {
+        path: 'reunion',
+        name: 'Reunion',
+        component: () => import('@/views/ReturnBuff/Reunion'),
+        meta: {
+          title: '重逢',
+          module: 'activity_return_buff_reunion',
+        },
+      },
+      {
+        path: 'setout',
+        name: 'Setout',
+        component: () => import('@/views/ReturnBuff/Setout'),
+        meta: {
+          title: '启程',
+          module: 'activity_return_buff_setout',
+        },
+      },
+      {
+        path: 'together',
+        name: 'Together',
+        component: () => import('@/views/ReturnBuff/Together'),
+        meta: {
+          title: '同行',
+          module: 'activity_return_buff_together',
+        },
+      },
+    ],
+  },
+  {
     path: '/sign-mayday-2024',
     name: 'SignMayday2024',
     component: () => import('@/views/SignMayday2024'),
