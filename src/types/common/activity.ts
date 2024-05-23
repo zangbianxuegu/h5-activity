@@ -3,6 +3,7 @@ export interface BaseInfo {
   channel: string
   appChannel: string
   token: string
+  returnBuff: string
 }
 
 export interface Activity {

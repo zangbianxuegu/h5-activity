@@ -128,7 +128,7 @@ export const useMenuStore = defineStore('menu', () => {
   ): void {
     menuData.value = menuData.value.map((item) => {
       if (
-        item.value === 'signin' &&
+        item.value === 'activity_return_buff' &&
         item.children &&
         item.children.length > 0
       ) {

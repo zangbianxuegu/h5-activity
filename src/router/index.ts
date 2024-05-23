@@ -42,7 +42,15 @@ router.beforeEach((to, _, next) => {
   // 日志数据上报
   try {
     if (typeof module === 'string') {
-      if (module !== 'activity_center_notice') {
+      if (
+        ![
+          'activity_center_notice',
+          'activity_return_buff',
+          'activity_return_buff_reunion',
+          'activity_return_buff_setout',
+          'activity_return_buff_together',
+        ].includes(module)
+      ) {
         webViewStatistics({ module })
           .then(() => {
             // console.log('日志数据上报成功. module: ' + module)
@@ -65,10 +73,7 @@ router.afterEach((to, from) => {
   const menuData = computed(() => menuStore.menuData)
   console.log('menuData.value: ', menuData.value)
   if (menuData.value.length > 0) {
-    if (
-      to.path === '/' ||
-      !menuData.value.find((item) => item.routeName === to.name)
-    ) {
+    if (to.path === '/' || !hasMenuItem(menuData.value, to)) {
       console.log('开始 router replace')
       void router.replace({ name: menuData.value[0].routeName })
     }
@@ -76,6 +81,23 @@ router.afterEach((to, from) => {
     getAllEvents(to)
   }
 })
+
+function hasMenuItem(menuData: MenuItem[], to: any): boolean {
+  let res = false
+  menuData.forEach((item) => {
+    if (item.routeName === to.name) {
+      res = true
+    }
+    if (item.children && item.children.length > 0) {
+      item.children.forEach((child) => {
+        if (child.routeName === to.name) {
+          res = true
+        }
+      })
+    }
+  })
+  return res
+}
 
 // 菜单初始值
 const initMenuItems: MenuItem[] = [
@@ -143,6 +165,36 @@ const initMenuItems: MenuItem[] = [
     ],
   },
   {
+    label: '天空王国回归指南',
+    value: 'activity_return_buff',
+    routeName: 'ReturnBuff',
+    isNew: false,
+    isClaimedReward: true,
+    children: [
+      {
+        label: '重逢',
+        value: 'activity_return_buff_reunion',
+        routeName: 'Reunion',
+        isNew: false,
+        isClaimedReward: true,
+      },
+      {
+        label: '启程',
+        value: 'activity_return_buff_setout',
+        routeName: 'Setout',
+        isNew: false,
+        isClaimedReward: true,
+      },
+      {
+        label: '同行',
+        value: 'activity_return_buff_together',
+        routeName: 'Together',
+        isNew: false,
+        isClaimedReward: true,
+      },
+    ],
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
@@ -153,8 +205,8 @@ const initMenuItems: MenuItem[] = [
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  return Object.entries(activitiesResponse)
-    .reduce<Activity[]>((activeEvents, [activityName, activityInfo]) => {
+  const res = Object.entries(activitiesResponse).reduce<Activity[]>(
+    (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
         activeEvents.push({
           activity: activityName,
@@ -168,13 +220,26 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
         })
       }
       return activeEvents
-    }, [])
-    .sort((a, b) => {
-      // 如果是小光快报，让它排在最后
-      if (a.activity === 'activity_center_notice') return 1
-      if (b.activity === 'activity_center_notice') return -1
-      return b.startTime - a.startTime
+    },
+    [],
+  )
+  const baseStore = useBaseStore()
+  const returnBuff = baseStore.baseInfo.returnBuff
+  if (returnBuff === 'true') {
+    res.unshift({
+      activity: 'activity_return_buff',
+      startTime: 0,
+      endTime: 0,
+      isNew: false,
+      isClaimedReward: true,
     })
+  }
+  return res.sort((a, b) => {
+    // 如果是小光快报，让它排在最后
+    if (a.activity === 'activity_center_notice') return 1
+    if (b.activity === 'activity_center_notice') return -1
+    return b.startTime - a.startTime
+  })
 }
 
 // 生成菜单数据
@@ -251,8 +316,7 @@ function getAllEvents(to: RouteLocationNormalized): void {
 
       if (
         newMenuData.length > 0 &&
-        (to.path === '/' ||
-          !newMenuData.find((item) => item.routeName === to.name))
+        (to.path === '/' || !hasMenuItem(newMenuData, to))
       ) {
         console.log('初始 router replace')
         void router.replace({ name: newMenuData[0].routeName })

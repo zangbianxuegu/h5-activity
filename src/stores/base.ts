@@ -8,6 +8,7 @@ export const useBaseStore = defineStore('base', () => {
     channel: '',
     appChannel: '',
     token: '',
+    returnBuff: 'true',
   })
 
   function updateBaseInfo(newBaseInfo: BaseInfo): void {
