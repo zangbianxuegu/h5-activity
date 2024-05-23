@@ -214,7 +214,9 @@ const fixeds = computed(
   () => filterAndSortItems('fixed').value?.slice(0, 2).reverse(),
 )
 // 侧边栏数据
-const sidebars = filterAndSortItems('sidebar')
+const sidebars = computed(
+  () => filterAndSortItems('sidebar').value?.slice(0, 3),
+)
 
 // 获取 JSON 数据
 const fetchData = async (): Promise<void> => {
@@ -309,7 +311,6 @@ function handleItemEvent(item: BulletinItem, event: MouseEvent): void {
   margin-top: 30px;
   /* width: 1620px;
   height: 294px; */
-  overflow-x: scroll;
 
   &-item {
     position: relative;
