@@ -40,17 +40,20 @@ export const useMenuStore = defineStore('menu', () => {
   }
 
   const hasRedDot = computed(() => checkHasRedDot(menuData.value))
+  let isFirstLoad = true
 
   // 监控是否有红点，通知客户端进行更新
   watch(
     () => hasRedDot.value,
     (newVal, oldVal) => {
-      console.log('newVal, oldVal: ', newVal, oldVal)
-      console.log('开始通知客户端更新红点')
+      if (isFirstLoad) {
+        isFirstLoad = false
+        return
+      }
+      console.log('oldVal hasRedDot: ', oldVal)
+      console.log('newVal hasRedDot: ', newVal)
       updateRedDot()
-        .then((res) => {
-          console.log('通知客户端更新红点res: ', res)
-        })
+        .then((_) => {})
         .catch((error) => {
           showToast(error.message)
         })
