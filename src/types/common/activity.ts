@@ -38,6 +38,7 @@ export interface EventData {
   activity_sign_mayday_2024: Event[]
   activity_sanrio_2024: Event[]
   activity_nature_2024: Event[]
+  activity_dragonboat_2024: Event[]
 }
 
 export interface MenuItem {

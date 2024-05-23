@@ -149,6 +149,13 @@ const initMenuItems: MenuItem[] = [
     isNew: false,
     isClaimedReward: true,
   },
+  {
+    label: '击鼓行舟 粽香十里',
+    value: 'activity_dragonboat_2024',
+    routeName: 'DragonBoat2024',
+    isNew: false,
+    isClaimedReward: true,
+  },
 ]
 
 // 抽取有效的活动信息
