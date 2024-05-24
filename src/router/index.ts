@@ -235,7 +235,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   if (returnBuff === 'true') {
     res.unshift({
       activity: 'activity_return_buff',
-      startTime: 0,
+      startTime: 9999999999,
       endTime: 0,
       isNew: false,
       isClaimedReward: true,
