@@ -122,6 +122,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/childrens-day-2024',
+    name: 'ChildrensDay2024',
+    component: () => import('@/views/ChildrensDay2024'),
+    meta: {
+      title: '剪刀石头布！',
+      module: 'activity_childrens_day_2024',
+    },
+  },
+  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),

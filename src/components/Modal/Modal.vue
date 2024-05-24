@@ -35,6 +35,7 @@
 
 <script setup lang="ts">
 const isOpen = ref(false)
+const emit = defineEmits(['close'])
 
 const openModal = (): void => {
   isOpen.value = true
@@ -42,6 +43,7 @@ const openModal = (): void => {
 
 const closeModal = (): void => {
   isOpen.value = false
+  emit('close')
 }
 
 defineProps({

@@ -73,7 +73,6 @@ function handleResponse(
   respJSONString: string,
   handleRes: (data: any) => void,
 ): void {
-  console.log('客户端返回 Response JSON String: ', respJSONString)
   const reg = /"web_response":"({.*?})"/
   const match = respJSONString.match(reg)
   let res: Response | null = null
@@ -82,8 +81,7 @@ function handleResponse(
     const resStr = match[1].replace(/\\/g, '')
     res = JSON.parse(resStr)
   }
-
-  console.log('接口：', resource, res)
+  console.log(resource, res)
   handleRes(res)
 }
 

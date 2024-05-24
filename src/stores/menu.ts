@@ -82,6 +82,7 @@ export const useMenuStore = defineStore('menu', () => {
         'activity_sanrio_2024',
         'activity_sign_mayday_2024',
         'activity_nature_2024',
+        'activity_childrens_day_2024',
         'activity_center_notice',
         'activity_dragonboat_2024',
       ].includes(event)

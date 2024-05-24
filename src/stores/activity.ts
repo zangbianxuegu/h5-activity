@@ -243,6 +243,81 @@ export const useActivityStore = defineStore(
           awarded_types: [],
         },
       ],
+      // 儿童节 2024
+      activity_childrens_day_2024: [
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm1',
+          stages: [3],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm2',
+          stages: [1],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm3',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm4',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm5',
+          stages: [1],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm6',
+          stages: [3],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm7',
+          stages: [1],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_childrens_day_2024_qm_settlement',
+          stages: [0],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+      ],
     })
 
     function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -258,7 +333,8 @@ export const useActivityStore = defineStore(
         event === 'activity_sign_mayday_2024' ||
         event === 'activity_sanrio_2024' ||
         event === 'activity_nature_2024' ||
-        event === 'activity_dragonboat_2024'
+        event === 'activity_dragonboat_2024' ||
+        event === 'activity_childrens_day_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {

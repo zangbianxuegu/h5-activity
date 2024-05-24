@@ -8,6 +8,7 @@ import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
 // import basicSsl from '@vitejs/plugin-basic-ssl'
 import mkcert from 'vite-plugin-mkcert'
+import legacy from '@vitejs/plugin-legacy'
 
 export default defineConfig({
   root: './src/',
@@ -34,6 +35,7 @@ export default defineConfig({
     }),
     // basicSsl(),
     mkcert(),
+    legacy(),
   ],
   resolve: {
     alias: {

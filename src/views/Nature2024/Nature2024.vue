@@ -105,7 +105,7 @@
             </p>
             <p class="modal-text">
               4、全服污染物清除数量达到800万次，获得<span class="text-[#ffcb4d]"
-                >筑巢季蜡烛*2</span
+                >海蓝尾迹*2</span
               >；
             </p>
             <p class="modal-text">
@@ -116,12 +116,12 @@
             </p>
             <p class="modal-text">
               6、活动期间，清除一次污染物，可获得
-              <span class="text-[#ffcb4d]">蜡烛*1</span>；
+              <span class="text-[#ffcb4d]">海蓝尾迹*1</span>；
             </p>
             <p class="modal-text">
               7、活动期间，收集10个珍珠代币，可获得
 
-              <span class="text-[#ffcb4d]">蜡烛*1</span>；
+              <span class="text-[#ffcb4d]">彩虹尾迹*1</span>；
             </p>
             <p class="modal-text">
               8、活动期间，用珍珠代币兑换任意一件自然日外观，可获得
@@ -140,11 +140,7 @@
               >：
             </p>
             <div class="mt-10 flex items-center justify-center">
-              <img
-                class="modal-reward"
-                :src="handleSrc(String(curRewards.name))"
-                alt="reward"
-              />
+              <img class="modal-reward" :src="rewardImageSrc" alt="reward" />
             </div>
           </template>
         </activity-modal>
@@ -172,9 +168,9 @@ interface RewardsName {
   breath_potion: string
   outfit_hair_naturewater: string
   glow: string
-  season_candle: string
+  trail_aquamarine: string
   resize_potion: string
-  candles: string
+  trail_rainbow: string
   heart: string
 }
 
@@ -182,9 +178,9 @@ const rewardsText: RewardsName = {
   breath_potion: '呼吸药剂',
   outfit_hair_naturewater: '海蓝波浪发型试用魔法',
   glow: '璀璨之星',
-  season_candle: '筑巢季蜡烛',
+  trail_aquamarine: '海蓝尾迹',
   resize_potion: '体型重塑',
-  candles: '蜡烛',
+  trail_rainbow: '彩虹尾迹',
   heart: '爱心',
 }
 
@@ -233,6 +229,8 @@ const curRewards: Ref<Rewards> = ref({
   name: 'breath_potion',
   count: 2,
 })
+const isRewardImageLoaded = ref(false)
+const rewardImageSrc = ref('')
 const TASK_LIST = [
   {
     name: 'activity_nature_2024_m1',
@@ -396,6 +394,17 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
+// 预加载图片
+function preLoadImage(src: string): Promise<void> {
+  return new Promise<void>((resolve) => {
+    const img = new Image()
+    img.src = src
+    img.onload = () => {
+      resolve()
+    }
+  })
+}
+
 // 获取任务进度
 function getActivityData(): void {
   getPlayerMissionData({ event: 'activity_nature_2024' })
@@ -458,13 +467,19 @@ function handleReward(task: string, status: string, rewardId: number): void {
     task,
     rewardId,
   })
-    .then((res) => {
+    .then(async (res) => {
       const rewards = res.data.rewards
-      modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
+      // 让图片先加载再展示
+      isRewardImageLoaded.value = false
+      rewardImageSrc.value = handleSrc(String(curRewards.value.name))
+      await preLoadImage(rewardImageSrc.value)
+      isRewardImageLoaded.value = true
+      modalReward.value?.openModal()
+
       // 分别对主任务和其他任务处理显示
       const newActivityData = activityData.value.map((item, index) => {
         const newItem = { ...item }
