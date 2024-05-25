@@ -249,7 +249,7 @@ const rewardMap = {
   ],
 }
 
-const curRewards = ref(rewardMap.return_buff_sprite_extra)
+const curRewards = ref(rewardMap.return_buff_sprite_level1)
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -579,6 +579,15 @@ function handleReward(type: string, status: string): void {
   letter-spacing: 1px;
 }
 .reward-list {
+  &-1 {
+    width: 80%;
+    .reward-item {
+      height: 300px;
+    }
+    .reward-img {
+      width: 200px;
+    }
+  }
   &-2 {
     width: 80%;
     .reward-item {
