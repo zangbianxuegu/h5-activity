@@ -270,6 +270,7 @@ function handleMenuIcon(curItem: MenuItem): string {
       height: 20px;
       border-radius: 20px;
       background-color: rgb(184, 25, 26);
+      animation: pulse 1.5s infinite;
     }
   }
 
@@ -279,6 +280,20 @@ function handleMenuIcon(curItem: MenuItem): string {
     &--active {
       color: #66e8ff;
     }
+  }
+}
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 .nav-icon {
