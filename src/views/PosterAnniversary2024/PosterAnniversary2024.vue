@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="dragon-boat-2024 flex h-screen">
-      <div class="dragon-boat-2024-main"></div>
+    <div class="poster-anniversary-2024 flex h-screen">
+      <div class="poster-anniversary-2024-main"></div>
     </div>
   </Transition>
 </template>
@@ -65,7 +65,7 @@ bodyTransitionName.value = 'fade-in-body'
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.dragon-boat-2024 {
+.poster-anniversary-2024 {
   position: relative;
   width: 2100px;
 
