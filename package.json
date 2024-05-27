@@ -11,7 +11,8 @@
     "prepare": "husky install",
     "lint:create": "eslint --init",
     "lint:fix": "eslint --fix --ext .js,.jsx,.ts,.tsx,.vue src",
-    "prettier:format": "prettier \"src/**/*.{vue,js,ts}\" --write"
+    "prettier:format": "prettier \"src/**/*.{vue,js,ts}\" --write",
+    "commitlint": "commitlint --config commitlint.config.js -e -V"
   },
   "dependencies": {
     "@vitejs/plugin-legacy": "^5.4.0",
