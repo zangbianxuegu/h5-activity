@@ -79,7 +79,7 @@
             >；
           </p>
           <p class="modal-text">
-            2、解锁每日回归任务，完成后即可回到精灵领取对应奖励；
+            2、解锁每日回归任务，完成后即可回到活动页面领取对应奖励；
           </p>
           <p class="modal-text">
             3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
@@ -136,11 +136,13 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { showToast } from 'vant'
 import { getReturnBuffData, claimReturnBuffReward } from '@/utils/request'
 import { type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 // import { useMenuStore } from '@/stores/menu'
+import { useBaseStore } from '@/stores/base'
 import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
@@ -288,6 +290,12 @@ const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // const menuStore = useMenuStore()
 
+// 当前时间
+const baseStore = useBaseStore()
+const currentTime = computed(() => baseStore.baseInfo.currentTime)
+// 回流第几天
+let currentDay = 1
+
 const activityData = ref({
   return_time: 1715296688,
   return_award: false,
@@ -365,7 +373,9 @@ const taskList = computed(() => {
     return {
       ...item,
       status:
-        activity.award[index] === '1'
+        currentDay < index + 1
+          ? 'locked'
+          : activity.award[index] === '1'
           ? 'redeemed'
           : activity.award[index] === '0' && activity.mission[index] === '1'
           ? 'can'
@@ -432,6 +442,9 @@ function getActivityData(): void {
   getReturnBuffData({ page: 1 })
     .then((res) => {
       activityData.value = res.data
+      const returnDate = dayjs.unix(res.data.return_time).startOf('day')
+      const currentDate = dayjs.unix(currentTime.value).startOf('day')
+      currentDay = currentDate.diff(returnDate, 'day') + 1
       // 更新红点
       // menuStore.updateMenuDataByIsClaimedReward(
       //   'activity_return_buff_reunion',
@@ -445,12 +458,15 @@ function getActivityData(): void {
 
 // 领奖
 function handleReward(type: string, status: string): void {
-  if (status === 'redeemed') {
-    showToast('已领奖')
+  if (status === 'locked') {
+    showToast('请等待任务开启')
     return
   }
   if (status === 'wait') {
-    showToast('还未完成任务')
+    showToast('请在游戏中完成这个任务')
+    return
+  }
+  if (status === 'redeemed') {
     return
   }
   claimReturnBuffReward({
@@ -524,6 +540,9 @@ function handleReward(type: string, status: string): void {
 }
 @for $i from 1 through 7 {
   .task-item#{$i} {
+    &.locked {
+      background-image: url('@/assets/images/return-buff/reunion/task#{$i}-locked.png');
+    }
     &.wait {
       background-image: url('@/assets/images/return-buff/reunion/task#{$i}-wait.png');
     }
