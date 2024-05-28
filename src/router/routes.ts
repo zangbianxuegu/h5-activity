@@ -149,7 +149,7 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/poster_anniversary_2024',
+    path: '/poster-anniversary-2024',
     name: 'PosterAnniversary2024',
     component: () => import('@/views/PosterAnniversary2024'),
     meta: {
