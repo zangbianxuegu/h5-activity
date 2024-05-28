@@ -79,7 +79,7 @@ bodyTransitionName.value = 'fade-in-body'
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/poster_anniversary_2024/bg.jpg');
+    background-image: url('@/assets/images/poster-anniversary-2024/bg.jpg');
   }
 }
 </style>
