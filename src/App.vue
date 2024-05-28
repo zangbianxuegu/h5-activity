@@ -172,6 +172,13 @@ const initMenuItems: MenuItem[] = [
     ],
   },
   {
+    label: '成为派对新星吧！',
+    value: 'activity_anniversary_warmup_2024',
+    routeName: 'AnniversaryWarmup2024',
+    isNew: false,
+    isClaimedReward: true,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

@@ -11,5 +11,7 @@ declare module 'vue' {
     RouterView: (typeof import('vue-router'))['RouterView']
     VanLoading: (typeof import('vant/es'))['Loading']
     VanOverlay: (typeof import('vant/es'))['Overlay']
+    VanSwipe: (typeof import('vant/es'))['Swipe']
+    VanSwipeItem: (typeof import('vant/es'))['SwipeItem']
   }
 }

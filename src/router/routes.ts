@@ -131,21 +131,30 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/bulletin',
-    name: 'Bulletin',
-    component: () => import('@/views/Bulletin'),
-    meta: {
-      title: '小光快报',
-      module: 'activity_center_notice',
-    },
-  },
-  {
     path: '/dragonboat-2024',
     name: 'DragonBoat2024',
     component: () => import('@/views/DragonBoat2024'),
     meta: {
       title: '击鼓行舟 粽香十里',
       module: 'activity_dragonboat_2024',
+    },
+  },
+  {
+    path: '/anniversary-warmup-2024',
+    name: 'AnniversaryWarmup2024',
+    component: () => import('@/views/AnniversaryWarmup2024'),
+    meta: {
+      title: '成为派对新星吧',
+      module: 'activity_anniversary_warmup_2024',
+    },
+  },
+  {
+    path: '/bulletin',
+    name: 'Bulletin',
+    component: () => import('@/views/Bulletin'),
+    meta: {
+      title: '小光快报',
+      module: 'activity_center_notice',
     },
   },
 ]

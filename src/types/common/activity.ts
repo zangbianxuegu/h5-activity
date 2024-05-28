@@ -24,7 +24,7 @@ export interface Event {
   value: number
   score: string
   is_eggy_reward: boolean
-  is_today_sign_in?: boolean
+  is_today_sign_in?: boolean | number
   awarded_types: any[]
   task_names?: string[]
 }
@@ -39,6 +39,7 @@ export interface EventData {
   activity_nature_2024: Event[]
   activity_childrens_day_2024: Event[]
   activity_dragonboat_2024: Event[]
+  activity_anniversary_warmup_2024: Event[]
 }
 
 export interface MenuItem {
