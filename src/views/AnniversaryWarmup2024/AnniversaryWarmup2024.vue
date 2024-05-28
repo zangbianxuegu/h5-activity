@@ -164,7 +164,7 @@ const rewardMap = {
   ],
   activity_anniversary_warmup_2024_m4: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
     {
@@ -174,7 +174,7 @@ const rewardMap = {
   ],
   activity_anniversary_warmup_2024_m5: [
     {
-      name: '爱心*1',
+      name: '爱心*2',
       img: 'heart',
     },
     {
