@@ -318,6 +318,56 @@ export const useActivityStore = defineStore(
           award: [0],
         },
       ],
+      // 周年庆预热 2024
+      activity_anniversary_warmup_2024: [
+        {
+          value: 0,
+          task_id: 'activity_anniversary_warmup_2024_m1',
+          stages: [1],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_anniversary_warmup_2024_m2',
+          stages: [1],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_anniversary_warmup_2024_m3',
+          stages: [8],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_anniversary_warmup_2024_m4',
+          stages: [3],
+          score: '',
+          is_today_sign_in: 0,
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activity_anniversary_warmup_2024_m5',
+          stages: [5],
+          score: '',
+          is_today_sign_in: 0,
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+      ],
     })
 
     function updateActivityTime(newActivityTime: ActivityTime): void {
@@ -334,7 +384,8 @@ export const useActivityStore = defineStore(
         event === 'activity_sanrio_2024' ||
         event === 'activity_nature_2024' ||
         event === 'activity_dragonboat_2024' ||
-        event === 'activity_childrens_day_2024'
+        event === 'activity_childrens_day_2024' ||
+        event === 'activity_anniversary_warmup_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
