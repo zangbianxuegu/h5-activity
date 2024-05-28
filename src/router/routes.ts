@@ -140,6 +140,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/poster_anniversary_2024',
+    name: 'PosterAnniversary2024',
+    component: () => import('@/views/PosterAnniversary2024'),
+    meta: {
+      title: '欢聚周年 畅享派对',
+      module: 'activity_poster_anniversary_2024',
+    },
+  },
+  {
     path: '/anniversary-warmup-2024',
     name: 'AnniversaryWarmup2024',
     component: () => import('@/views/AnniversaryWarmup2024'),
