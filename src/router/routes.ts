@@ -148,4 +148,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activity_dragonboat_2024',
     },
   },
+  {
+    path: '/poster_anniversary_2024',
+    name: 'PosterAnniversary2024',
+    component: () => import('@/views/PosterAnniversary2024'),
+    meta: {
+      title: '欢聚周年 畅享派对',
+      module: 'activity_poster_anniversary_2024',
+    },
+  },
 ]
