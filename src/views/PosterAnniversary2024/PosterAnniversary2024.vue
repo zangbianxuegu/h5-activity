@@ -36,6 +36,7 @@ import xgjnh from '@/assets/images/poster-anniversary-2024/xgjnh.png'
 import jnhhd from '@/assets/images/poster-anniversary-2024/jnhhd.png'
 import mmjdzhfl from '@/assets/images/poster-anniversary-2024/mmjdzhfl.png'
 import title from '@/assets/images/poster-anniversary-2024/title.png'
+import { Local } from '@/utils/storage'
 
 const titleImg = reactive({
   src: title,
@@ -137,22 +138,51 @@ const cancelBreatheImg = (
   imgDom.removeEventListener('animationend', listener, false)
 }
 
-onMounted(() => {
+const removeEventListener = (): void => {
+  imgList.forEach((img) => {
+    const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
+    imgDom.removeEventListener('animationend', listener, false)
+  })
+}
+
+interface Timer {
+  type: 'timeout' | 'interval'
+  timer: NodeJS.Timeout
+}
+
+const timerList: Timer[] = []
+const startAnimate = (): void => {
   const timeoutStart = 1500
   let endTimeout = 0
-  imgList.forEach((img, index) => {
-    endTimeout = timeoutStart + index * 500
-    setTimeout(() => {
-      img.show = true
-    }, endTimeout)
-  })
-  setTimeout(() => {
-    titleImg.class.push('animate__tada')
-  }, endTimeout + 500)
+  if (!Local.get('posterAnniversary2024IsNotFirstLoad')) {
+    // 开启活动img动画
+    imgList.forEach((img, index) => {
+      endTimeout = timeoutStart + index * 500
+      const timer = setTimeout(() => {
+        img.show = true
+        timerList.push({
+          type: 'timeout',
+          timer,
+        })
+      }, endTimeout)
+      Local.set('posterAnniversary2024IsNotFirstLoad', true)
+    })
+  } else {
+    imgList.forEach((e) => (e.show = true))
+  }
+  // 开启活动title动画
 
-  setTimeout(() => {
+  const titleAnimateTimer = setTimeout(() => {
+    titleImg.class.push('animate__tada')
+    timerList.push({
+      type: 'timeout',
+      timer: titleAnimateTimer,
+    })
+  }, endTimeout + 500)
+  // 开启活动img呼吸动画
+  const breatheAnimateTimer = setTimeout(() => {
     const alreadyBreatheList: number[] = []
-    setInterval(() => {
+    const breatheAnimateIntervalTimer = setInterval(() => {
       let randomNumber = Math.floor(Math.random() * 8)
       // 一轮轮流不重复
       while (alreadyBreatheList.includes(randomNumber)) {
@@ -167,14 +197,34 @@ onMounted(() => {
         alreadyBreatheList.splice(0, alreadyBreatheList.length)
       }
     }, 2000)
+    timerList.push({
+      type: 'timeout',
+      timer: breatheAnimateTimer,
+    })
+    timerList.push({
+      type: 'interval',
+      timer: breatheAnimateIntervalTimer,
+    })
   }, endTimeout + 500)
+}
+
+const clearTimer = (): void => {
+  timerList.forEach((timer): void => {
+    if (timer.type === 'timeout') {
+      clearTimeout(timer.timer)
+    } else if (timer.type === 'interval') {
+      clearInterval(timer.timer)
+    }
+  })
+}
+
+onMounted(() => {
+  startAnimate()
 })
 
 onBeforeUnmount(() => {
-  imgList.forEach((img) => {
-    const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
-    imgDom.removeEventListener('animationend', listener, false)
-  })
+  removeEventListener()
+  clearTimer()
 })
 
 // 设计稿宽
