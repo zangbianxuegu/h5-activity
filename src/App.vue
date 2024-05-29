@@ -9,13 +9,27 @@
       <div class="menu overflow-y-scroll">
         <Menu></Menu>
       </div>
-      <div class="nav-sprite flex">
-        <!-- <a
-          class="nav-sprite-text"
-          :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
-          >前往精灵>></a
-        > -->
-        <div class="nav-sprite-text" @click="handleToSprite">前往精灵>></div>
+      <div>
+        <a
+          v-if="!isProd"
+          class="nav-debug mb-4 flex w-full justify-center py-2"
+          href="https://10.227.198.175:5173/pages/debug/index.html"
+          >前往调试 https</a
+        >
+        <a
+          v-if="!isProd"
+          class="nav-debug mb-4 flex w-full justify-center py-2"
+          href="http://10.227.198.175:5173/pages/debug/index.html"
+          >前往调试 http</a
+        >
+        <div class="nav-sprite flex">
+          <!-- <a
+            class="nav-sprite-text"
+            :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
+            >前往精灵>></a
+          > -->
+          <div class="nav-sprite-text" @click="handleToSprite">前往精灵>></div>
+        </div>
       </div>
     </nav>
     <main class="flex items-center justify-center">
@@ -505,5 +519,9 @@ function getAllEvents(): void {
     width: 100%;
     height: 100%;
   }
+}
+.nav-debug {
+  font-size: 40px;
+  color: rgba(255, 255, 255, 0.6);
 }
 </style>

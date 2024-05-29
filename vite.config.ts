@@ -63,7 +63,7 @@ export default defineConfig({
       input: {
         entry: resolve(__dirname, 'src/index.html'),
         signin: resolve(__dirname, 'src/pages/signin/index.html'),
-        about: resolve(__dirname, 'src/pages/about/index.html'),
+        debug: resolve(__dirname, 'src/pages/debug/index.html'),
       },
       output: {
         assetFileNames: 'assets/[name]-[hash].[ext]', // 静态资源
