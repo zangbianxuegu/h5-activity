@@ -72,7 +72,6 @@ const subMenuData = computed(
 
 const router = useRouter()
 const route = useRoute()
-console.log('route123: ', route)
 
 // 判断当前菜单是否选中 isActive
 function isMenuItemActive(item: MenuItem): boolean {
