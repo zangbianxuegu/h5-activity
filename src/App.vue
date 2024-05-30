@@ -200,13 +200,6 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: true,
   },
   {
-    label: '闲适安居 筑巢小憩',
-    value: 'activity_season22_sprint',
-    routeName: 'Season22Sprint',
-    isNew: false,
-    isClaimedReward: false,
-  },
-  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

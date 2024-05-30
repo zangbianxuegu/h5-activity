@@ -40,7 +40,6 @@ export interface EventData {
   activity_childrens_day_2024: Event[]
   activity_dragonboat_2024: Event[]
   activity_anniversary_warmup_2024: Event[]
-  activity_season22_sprint: Event[]
 }
 
 export type EventDataKeys = keyof EventData

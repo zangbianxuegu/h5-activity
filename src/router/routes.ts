@@ -166,13 +166,4 @@ export const routes: RouteRecordRaw[] = [
       module: 'activity_center_notice',
     },
   },
-  {
-    path: '/season22-sprint',
-    name: 'Season22Sprint',
-    component: () => import('@/views/Season22Sprint'),
-    meta: {
-      title: '闲适安居 筑巢小憩',
-      module: 'activity_season22_sprint',
-    },
-  },
 ]
