@@ -11,16 +11,10 @@
       </div>
       <div>
         <a
-          v-if="!isProd"
+          v-if="isGameDev || isGame"
           class="nav-debug mb-4 flex w-full justify-center py-2"
-          href="https://10.227.198.175:5173/pages/debug/index.html"
-          >前往调试 https</a
-        >
-        <a
-          v-if="!isProd"
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          href="http://10.227.198.175:5173/pages/debug/index.html"
-          >前往调试 http</a
+          href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
+          >前往调试</a
         >
         <div class="nav-sprite flex">
           <!-- <a
