@@ -251,9 +251,9 @@ type Activities = Record<string, ActivityData>
 
 onMounted(() => {
   try {
-    handleShowNavigationBar()
     getAllEvents()
     getBaseInfo()
+    handleShowNavigationBar()
   } catch (error) {
     // console.error(error)
   }
@@ -275,12 +275,14 @@ let tokenParams: {
 
 // 显示导航栏
 function handleShowNavigationBar(): void {
-  window.UniSDKJSBridge.postMsgToNative({
-    methodId: 'navigation_bar_func',
-    reqData: {
-      action: 'show',
-    },
-  })
+  if (window.UniSDKJSBridge) {
+    window.UniSDKJSBridge.postMsgToNative({
+      methodId: 'navigation_bar_func',
+      reqData: {
+        action: 'show',
+      },
+    })
+  }
 }
 
 // 获取基本信息
@@ -413,6 +415,7 @@ watch(
     console.log('new route name: ', newVal)
     if (newVal === 'Home' && oldVal === undefined) {
       const menuData = computed(() => menuStore.menuData)
+      console.log('menuData: ', menuData.value)
       if (menuData.value && menuData.value.length > 0) {
         console.log('watch 开始 router replace')
         void router.replace({ name: menuData.value[0].routeName })
