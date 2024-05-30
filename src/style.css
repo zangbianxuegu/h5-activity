@@ -22,6 +22,15 @@ body {
   opacity: 0;
 }
 
+.modal-text {
+  font-size: 40px;
+  color: #454545;
+
+  &-blue {
+    color: #4db6da;
+  }
+}
+
 /* #app {
   width: 100vw;
   height: 100vh;

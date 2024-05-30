@@ -507,14 +507,6 @@ function handleReward(task: string, status: string): void {
     background-image: url('@/assets/images/anniversary-warmup-2024/star-active.png');
   }
 }
-.modal-text {
-  font-size: 40px;
-  color: #454545;
-
-  &-blue {
-    color: #4db6da;
-  }
-}
 .reward-box {
   text-align: center;
 }
