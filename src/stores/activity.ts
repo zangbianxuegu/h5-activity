@@ -1,5 +1,11 @@
 import { defineStore } from 'pinia'
-import { type ActivityTime, type Event, type EventData } from '@/types'
+import type {
+  EventData,
+  EventDataKeys,
+  EventDataKeysToObject,
+  ActivityTime,
+  Event,
+} from '@/types'
 
 export const useActivityStore = defineStore(
   'activity',
@@ -368,7 +374,57 @@ export const useActivityStore = defineStore(
           award: [0],
         },
       ],
+      activity_season22_sprint: [
+        {
+          task_id: 'activity_season22_sprint_m1',
+          stages: [1],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'collecting_candles',
+          stages: [50],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'login_days',
+          stages: [5],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+        {
+          task_id: 'activity_season22_sprint_m4',
+          stages: [3],
+          award: [0],
+          value: 0,
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+        },
+      ],
     })
+
+    // 设置eventDataKeys
+    let eventDataKeys: EventDataKeys[]
+    const activeEventName: EventDataKeysToObject =
+      {} as unknown as EventDataKeysToObject
+    function setEventDataKeys(): void {
+      eventDataKeys = Object.keys(eventData.value) as EventDataKeys[]
+      eventDataKeys.forEach((e: EventDataKeys) => {
+        activeEventName[e] = e
+      })
+    }
+    setEventDataKeys()
 
     function updateActivityTime(newActivityTime: ActivityTime): void {
       activityTime.value = newActivityTime
@@ -385,7 +441,8 @@ export const useActivityStore = defineStore(
         event === 'activity_nature_2024' ||
         event === 'activity_dragonboat_2024' ||
         event === 'activity_childrens_day_2024' ||
-        event === 'activity_anniversary_warmup_2024'
+        event === 'activity_anniversary_warmup_2024' ||
+        event === 'activity_season22_sprint'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
@@ -398,6 +455,7 @@ export const useActivityStore = defineStore(
       eventData,
       updateActivityTime,
       updateEventData,
+      activeEventName,
     }
   },
   {
