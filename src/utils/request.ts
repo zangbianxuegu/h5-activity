@@ -18,6 +18,12 @@ function handlePostMessageToNative({
     if (window.UniSDKJSBridge) {
       console.log('UniSDKJSBridge 直接可用')
       callback()
+      window.UniSDKJSBridge.postMsgToNative({
+        methodId: 'navigation_bar_func',
+        reqData: {
+          action: 'show',
+        },
+      })
     } else {
       let pollCount = 0 // 轮询次数计数
       const startTime = new Date() // 记录轮询开始时间
@@ -36,6 +42,12 @@ function handlePostMessageToNative({
           )
           clearInterval(intervalId)
           callback()
+          window.UniSDKJSBridge.postMsgToNative({
+            methodId: 'navigation_bar_func',
+            reqData: {
+              action: 'show',
+            },
+          })
         }
         if (pollCount >= 3) {
           clearInterval(intervalId)
