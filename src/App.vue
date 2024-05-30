@@ -187,7 +187,7 @@ const initMenuItems: MenuItem[] = [
   },
   {
     label: '欢聚周年 畅享派对',
-    value: 'poster_anniversary_2024',
+    value: 'activitycenter_poster_anniversary_2024',
     routeName: 'PosterAnniversary2024',
     isNew: false,
     isClaimedReward: true,
@@ -198,6 +198,13 @@ const initMenuItems: MenuItem[] = [
     routeName: 'AnniversaryWarmup2024',
     isNew: false,
     isClaimedReward: true,
+  },
+  {
+    label: '闲适安居 筑巢小憩',
+    value: 'activity_season22_sprint',
+    routeName: 'Season22Sprint',
+    isNew: false,
+    isClaimedReward: false,
   },
   {
     label: '小光快报',

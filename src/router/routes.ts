@@ -145,7 +145,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/PosterAnniversary2024'),
     meta: {
       title: '欢聚周年 畅享派对',
-      module: 'poster_anniversary_2024',
+      module: 'activitycenter_poster_anniversary_2024',
     },
   },
   {
@@ -164,6 +164,15 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '小光快报',
       module: 'activity_center_notice',
+    },
+  },
+  {
+    path: '/season22-sprint',
+    name: 'Season22Sprint',
+    component: () => import('@/views/Season22Sprint'),
+    meta: {
+      title: '闲适安居 筑巢小憩',
+      module: 'activity_season22_sprint',
     },
   },
 ]
