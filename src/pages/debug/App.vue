@@ -44,6 +44,12 @@
         >
           prod
         </a>
+        <a
+          href="https://10.227.199.103:5173/"
+          class="btn rounded px-4 py-2 text-center text-white"
+        >
+          cc dev
+        </a>
       </div>
     </div>
   </div>
