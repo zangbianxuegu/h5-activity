@@ -51,7 +51,7 @@
           <template #content>
             <p class="modal-text">
               <span class="font-semibold">活动时间：</span
-              >2024年6月21号~2024年6月28号
+              >2024年6月21日~2024年6月28日
             </p>
             <p class="modal-text">
               <span class="font-semibold">活动内容：</span>
@@ -505,6 +505,14 @@ function handleReward(task: string, status: string): void {
 
   &.active {
     background-image: url('@/assets/images/anniversary-warmup-2024/star-active.png');
+  }
+}
+.modal-text {
+  font-size: 40px;
+  color: #454545;
+
+  &-blue {
+    color: #4db6da;
   }
 }
 .reward-box {
