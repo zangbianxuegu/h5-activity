@@ -15,12 +15,12 @@
     "commitlint": "commitlint --config commitlint.config.js -e -V"
   },
   "dependencies": {
-    "@vitejs/plugin-legacy": "^5.4.0",
     "axios": "^1.5.1",
     "dayjs": "^1.11.10",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vant": "^4.6.8",
+    "vite": "^5.2.12",
     "vue": "^3.3.4"
   },
   "devDependencies": {
@@ -33,6 +33,7 @@
     "@typescript-eslint/eslint-plugin": "^6.7.3",
     "@typescript-eslint/parser": "^6.7.3",
     "@vant/auto-import-resolver": "^1.0.1",
+    "@vitejs/plugin-legacy": "^5.4.0",
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.15",
     "eslint": "^8.50.0",
@@ -60,7 +61,6 @@
     "unplugin-vue-components": "^0.25.2",
     "vconsole": "^3.15.1",
     "vh-check": "^2.0.5",
-    "vite": "^4.4.5",
     "vite-plugin-compression": "^0.5.1",
     "vite-plugin-mkcert": "^1.17.3",
     "vue-eslint-parser": "^9.3.1",

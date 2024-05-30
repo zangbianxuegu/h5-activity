@@ -35,7 +35,10 @@ export default defineConfig({
     }),
     // basicSsl(),
     mkcert(),
-    legacy(),
+    legacy({
+      targets: ['ios >= 9', 'android >= 4.2', 'chrome > 30', '> 1%'],
+      additionalLegacyPolyfills: ['regenerator-runtime/runtime'],
+    }),
   ],
   resolve: {
     alias: {
@@ -55,7 +58,6 @@ export default defineConfig({
   build: {
     target: 'es2015',
     outDir: resolve(__dirname, 'build'),
-    minify: 'esbuild',
     assetsInlineLimit: 4096,
     sourcemap: false,
     emptyOutDir: true,
@@ -69,7 +71,6 @@ export default defineConfig({
         assetFileNames: 'assets/[name]-[hash].[ext]', // 静态资源
         chunkFileNames: 'js/[name]-[hash].js', // 代码分割中产生的 chunk
         entryFileNames: 'js/[name]-[hash].js', // 指定 chunks 的入口文件
-        compact: true,
         manualChunks: (id: string) => {
           if (id.includes('node_modules')) {
             return id
