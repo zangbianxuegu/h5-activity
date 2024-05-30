@@ -187,7 +187,7 @@ const initMenuItems: MenuItem[] = [
   },
   {
     label: '欢聚周年 畅享派对',
-    value: 'poster_anniversary_2024',
+    value: 'activitycenter_poster_anniversary_2024',
     routeName: 'PosterAnniversary2024',
     isNew: false,
     isClaimedReward: true,
