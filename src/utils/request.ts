@@ -241,6 +241,10 @@ function fetchPlayerMissionData(
         if (res.code === 200) {
           resolve(res)
           _resolve()
+          if (!event) {
+            // 存储数据
+            Session.set('allEvents', res)
+          }
         } else {
           const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
           reject(new Error(errorMessage))
@@ -349,7 +353,15 @@ export function getPlayerMissionData({
         reject(err)
       })
     } else {
-      fetchPlayerMissionData({ event, token }, resolve, reject).catch((err) => {
+      const cachedAllEvents = Session.get('allEvents')
+      const lastFetchTime = parseInt(Session.get('lastFetchTimeAllEvents')) || 0
+      if (cachedAllEvents && now - lastFetchTime < 3500) {
+        resolve(cachedAllEvents)
+        return
+      }
+      // 存储请求时间
+      Session.set('lastFetchTimeAllEvents', now.toString())
+      fetchPlayerMissionData({ event }, resolve, reject).catch((err) => {
         reject(err)
       })
     }
