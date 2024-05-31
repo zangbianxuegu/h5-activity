@@ -479,7 +479,7 @@ function getAllEvents(): void {
       }
     })
     .catch((error) => {
-      console.log('app.vue', error)
+      isLoading.value = false
       showToast(error.message)
     })
 }
