@@ -458,8 +458,8 @@ const taskList = computed(() => {
             award[index] === '1'
               ? 'redeemed'
               : mission[index] === '1'
-              ? 'can'
-              : 'wait',
+                ? 'can'
+                : 'wait',
         }
       }),
     }
@@ -471,8 +471,8 @@ const normalExtraStatus = computed(() => {
   return activityData.value.award.return_buff_normal_extra[0] === '1'
     ? 'redeemed'
     : activityData.value.mission.return_buff_normal_extra[0] === '1'
-    ? 'can'
-    : 'wait'
+      ? 'can'
+      : 'wait'
 })
 
 // 已完成任务数量

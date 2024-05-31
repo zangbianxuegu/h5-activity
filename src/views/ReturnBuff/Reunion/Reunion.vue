@@ -366,8 +366,8 @@ const taskList = computed(() => {
         status: activity.extra_award
           ? 'redeemed'
           : activity.mission.every((item) => item === '1')
-          ? 'can'
-          : 'wait',
+            ? 'can'
+            : 'wait',
       }
     }
     return {
@@ -376,10 +376,10 @@ const taskList = computed(() => {
         currentDay < index + 1
           ? 'locked'
           : activity.award[index] === '1'
-          ? 'redeemed'
-          : activity.award[index] === '0' && activity.mission[index] === '1'
-          ? 'can'
-          : 'wait',
+            ? 'redeemed'
+            : activity.award[index] === '0' && activity.mission[index] === '1'
+              ? 'can'
+              : 'wait',
     }
   })
 })

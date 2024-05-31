@@ -285,8 +285,8 @@ const taskList = computed(() => {
         activity.award[0] === 1
           ? 'redeemed'
           : activity.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
+            ? 'can'
+            : 'wait',
     }
   })
 })

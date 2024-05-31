@@ -249,9 +249,9 @@ const taskList = computed(() => {
         activity.award[index] === 1
           ? 'redeemed'
           : activity.award[index] === 0 &&
-            activity.value >= activity.stages[index]
-          ? 'can'
-          : 'wait',
+              activity.value >= activity.stages[index]
+            ? 'can'
+            : 'wait',
     }
   })
 })
@@ -260,8 +260,8 @@ const completedStatus = computed(() => {
   return activityData.value[1].award[0] === 1
     ? 'redeemed'
     : activityData.value[0].value >= 6
-    ? 'can'
-    : 'wait'
+      ? 'can'
+      : 'wait'
 })
 // 所有任务列表
 const ALL_TASK_LIST = [

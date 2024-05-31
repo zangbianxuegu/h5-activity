@@ -218,8 +218,8 @@ const rewardList = computed(() => {
         activityData.value.award[index] === 1
           ? 'redeemed'
           : item.stage > activityData.value.value
-          ? 'wait'
-          : 'can',
+            ? 'wait'
+            : 'can',
     }
   })
 })

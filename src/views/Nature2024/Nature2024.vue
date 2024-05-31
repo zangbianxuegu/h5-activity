@@ -275,9 +275,9 @@ const taskList = computed(() => {
         activity.award[index] === 1
           ? 'redeemed'
           : activity.award[index] === 0 &&
-            activity.value >= activity.stages[index]
-          ? 'can'
-          : 'wait',
+              activity.value >= activity.stages[index]
+            ? 'can'
+            : 'wait',
     }
   })
 })
@@ -308,8 +308,8 @@ const subTaskList = computed(() => {
         activity.award[0] === 1
           ? 'redeemed'
           : activity.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
+            ? 'can'
+            : 'wait',
     }
   })
 })

@@ -210,12 +210,12 @@ const filterAndSortItems = (
 // 轮播图数据
 const banners = computed(() => filterAndSortItems('banner').value?.slice(0, 6))
 // 固定位数据
-const fixeds = computed(
-  () => filterAndSortItems('fixed').value?.slice(0, 2).reverse(),
+const fixeds = computed(() =>
+  filterAndSortItems('fixed').value?.slice(0, 2).reverse(),
 )
 // 侧边栏数据
-const sidebars = computed(
-  () => filterAndSortItems('sidebar').value?.slice(0, 3),
+const sidebars = computed(() =>
+  filterAndSortItems('sidebar').value?.slice(0, 3),
 )
 
 // 获取 JSON 数据
