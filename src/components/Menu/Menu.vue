@@ -17,15 +17,13 @@
       >
         <img
           class="nav-icon"
-          :class="{ 'nav-icon-sanrio': item.value === 'activity_sanrio_2024' }"
+          :class="getNavIconClass(item)"
           :src="handleMenuIcon(item)"
           alt="star"
         />
-        <span
-          class="nav-text text-left"
-          :class="{ 'nav-text-sanrio': item.value === 'activity_sanrio_2024' }"
-          >{{ item.label }}</span
-        >
+        <span class="nav-text text-left" :class="getNavTextClass(item)">{{
+          item.label
+        }}</span>
       </div>
     </div>
     <!-- <ul class="text-white">
@@ -196,10 +194,54 @@ function handleNav(curItem: MenuItem): void {
 
 // 菜单导航 icon
 function handleMenuIcon(curItem: MenuItem): string {
-  return curItem.value === 'activity_sanrio_2024'
-    ? new URL('../../assets/images/common/nav-icon-sanrio.png', import.meta.url)
-        .href
-    : new URL('../../assets/images/common/nav-icon.png', import.meta.url).href
+  const curItemValue = curItem.value
+  let icon = new URL('../../assets/images/common/nav-icon.png', import.meta.url)
+    .href
+  if (curItemValue === 'activity_sanrio_2024') {
+    icon = new URL(
+      '../../assets/images/common/nav-icon-sanrio.png',
+      import.meta.url,
+    ).href
+  } else if (curItemValue === 'activitycenter_poster_anniversary_2024') {
+    icon = new URL(
+      '../../assets/images/common/nav-icon-cake.png',
+      import.meta.url,
+    ).href
+  }
+  return icon
+}
+
+const getNavIconClass = (menu: MenuItem): string[] => {
+  const classList = []
+  const menuValue = menu.value
+  const navIconPrefix = 'nav-icon'
+  const menuIconMap = new Map()
+  menuIconMap.set('activity_sanrio_2024', `${navIconPrefix}-sanrio`)
+  menuIconMap.set(
+    'activitycenter_poster_anniversary_2024',
+    `${navIconPrefix}-poster-anniversary-2024`,
+  )
+  const mapValue = menuIconMap.get(menuValue)
+  if (mapValue) {
+    classList.push(mapValue)
+  }
+  return classList
+}
+const getNavTextClass = (menu: MenuItem): string[] => {
+  const classList = []
+  const menuValue = menu.value
+  const navIconPrefix = 'nav-text'
+  const menuIconMap = new Map()
+  menuIconMap.set('activity_sanrio_2024', `${navIconPrefix}-sanrio`)
+  menuIconMap.set(
+    'activitycenter_poster_anniversary_2024',
+    `${navIconPrefix}-poster-anniversary-2024`,
+  )
+  const mapValue = menuIconMap.get(menuValue)
+  if (mapValue) {
+    classList.push(mapValue)
+  }
+  return classList
 }
 
 // // 重置任务进度（包括每日签到数据）
@@ -307,12 +349,22 @@ function handleMenuIcon(curItem: MenuItem): string {
     width: 94px;
     height: 82px;
   }
+  &-poster-anniversary-2024 {
+    margin: 0 20px;
+    padding: 0;
+    width: 91px;
+    height: 70px;
+  }
 }
 .nav-text {
   width: 180px;
 
   &-sanrio {
     width: 300px;
+  }
+  &-poster-anniversary-2024 {
+    color: #7afaff;
+    line-height: 1;
   }
 }
 </style>
