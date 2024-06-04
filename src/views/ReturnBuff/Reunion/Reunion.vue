@@ -45,7 +45,7 @@
             <button
               v-if="!activityData.return_award"
               type="button"
-              class="btn bg-contain bg-center bg-no-repeat indent-[-9999px]"
+              class="btn bg-transparent bg-contain bg-center bg-no-repeat indent-[-9999px]"
               :class="{ disabled: activityData.return_award }"
               :disabled="activityData.return_award"
               @click="

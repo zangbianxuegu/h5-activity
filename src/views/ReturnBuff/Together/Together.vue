@@ -20,7 +20,7 @@
           <div class="main-box bg-contain bg-center bg-no-repeat"></div>
           <button
             type="button"
-            class="btn bg-contain bg-center bg-no-repeat indent-[-9999px]"
+            class="btn bg-transparent bg-contain bg-center bg-no-repeat indent-[-9999px]"
             @click="handleToSpriteQA"
           >
             查看精灵攻略
