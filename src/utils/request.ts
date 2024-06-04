@@ -114,7 +114,7 @@ function handleResponse(
   respJSONString: string,
   handleRes: (data: any) => void,
 ): Promise<ServeResponse> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const reg = /"web_response":"({.*?})"/
     const match = respJSONString.match(reg)
     let res: ServeResponse = null
