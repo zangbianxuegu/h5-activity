@@ -49,12 +49,6 @@ export type EventDataKeysToObject = {
   [k in keyof EventData]: EventDataKeys
 }
 
-export type EventDataKeys = keyof EventData
-
-export type EventDataKeysToObject = {
-  [k in keyof EventData]: EventDataKeys
-}
-
 export interface MenuItem {
   label: string
   value: string
