@@ -14,7 +14,6 @@
               class="bulletin-item"
               :href="banner.link_url || 'javascript:void(0)'"
               @click="handleItemClick(banner, $event)"
-              @touchend="handleItemTouchEnd(banner, $event)"
             >
               <img
                 :src="`./images/${banner.img_name}`"
@@ -35,7 +34,6 @@
               class="bulletin-item"
               :href="fixed.link_url || 'javascript:void(0)'"
               @click="handleItemClick(fixed, $event)"
-              @touchend="handleItemTouchEnd(fixed, $event)"
             >
               <img
                 :src="`./images/${fixed.img_name}`"
@@ -73,7 +71,6 @@
             class="bulletin-item"
             href="javascript:void(0)"
             @click="handleItemClick(sidebar, $event)"
-            @touchend="handleItemTouchEnd(sidebar, $event)"
           >
             <img
               :src="`./images/${sidebar.img_name}`"
@@ -253,37 +250,25 @@ function handleWebViewStatistics(module: string): void {
 
 // 点击事件
 function handleItemClick(item: BulletinItem, event: MouseEvent): void {
-  handleItemEvent(item, event)
-}
-
-// 触摸事件
-function handleItemTouchEnd(item: BulletinItem, event: TouchEvent): void {
-  handleItemEvent(item, event as unknown as MouseEvent) // 由于handleEvent期望MouseEvent，需要类型断言，这是常见的处理方式之一
-}
-
-function handleItemEvent(item: BulletinItem, event: MouseEvent): void {
-  if (!(event as any).handled) {
-    ;(event as any).handled = true
-    const overlay = (
-      event.currentTarget as HTMLElement
-    ).querySelector<HTMLElement>('.overlay')
-    if (overlay) {
-      overlay.style.opacity = '1'
-      overlay.addEventListener(
-        'transitionend',
-        (e: TransitionEvent) => {
-          if (e.propertyName === 'opacity' && item.link_url) {
-            window.location.href = item.link_url
-          } else {
-            showToast('敬请期待')
-          }
-        },
-        { once: true },
-      )
-    }
-    if (item.link_url) {
-      handleWebViewStatistics(item.name)
-    }
+  const overlay = (
+    event.currentTarget as HTMLElement
+  ).querySelector<HTMLElement>('.overlay')
+  if (overlay) {
+    overlay.style.opacity = '1'
+    overlay.addEventListener(
+      'transitionend',
+      (e: TransitionEvent) => {
+        if (e.propertyName === 'opacity' && item.link_url) {
+          window.location.href = item.link_url
+        } else {
+          showToast('敬请期待')
+        }
+      },
+      { once: true },
+    )
+  }
+  if (item.link_url) {
+    handleWebViewStatistics(item.name)
   }
 }
 </script>
