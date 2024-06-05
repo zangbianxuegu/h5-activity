@@ -12,8 +12,6 @@ export interface Response {
   data: any
 }
 
-export type ServeResponse = Response | null
-
 export interface PostMsgParams {
   type: string
   resource?: string

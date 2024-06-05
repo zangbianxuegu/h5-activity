@@ -1,20 +1,11 @@
-import type {
-  TokenParams,
-  PostMsgParams,
-  Response,
-  ServeResponse,
-  EventData,
+import {
+  type TokenParams,
+  type PostMsgParams,
+  type Response,
+  type EventData,
 } from '@/types'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
-
-function postMsgToNative(msg: {
-  methodId: string
-  reqData: any
-  [key: string]: any
-}): void {
-  window.UniSDKJSBridge.postMsgToNative(msg)
-}
 
 // Web 与 客户端通信
 function handlePostMessageToNative({
@@ -22,110 +13,88 @@ function handlePostMessageToNative({
   resource,
   content,
   handleRes,
-}: PostMsgParams): Promise<void> {
-  return new Promise((resolve, reject) => {
-    function waitForUniSDKJSBridge(callback: () => void): void {
-      if (window.UniSDKJSBridge) {
-        console.log('UniSDKJSBridge 直接可用')
-        callback()
-        postMsgToNative({
-          methodId: 'navigation_bar_func',
-          reqData: {
-            action: 'show',
-          },
-        })
-        resolve()
-      } else {
-        let pollCount = 0 // 轮询次数计数
-        const startTime = new Date() // 记录轮询开始时间
-        console.log(
-          '开始轮询检查 UniSDKJSBridge 是否挂载：',
-          startTime.toLocaleTimeString(),
-        )
-        const intervalId = setInterval(() => {
-          pollCount++
-          console.log('pollCount: ', pollCount)
-          if (window.UniSDKJSBridge) {
-            const endTime = new Date() // 记录成功时间
-            // 打印挂载成功的时间和轮询次数
-            console.log(
-              `UniSDKJSBridge 成功挂载于: ${endTime.toLocaleTimeString()}，经过 ${pollCount} 次轮询`,
-            )
-            clearInterval(intervalId)
-            callback()
-            postMsgToNative({
-              methodId: 'navigation_bar_func',
-              reqData: {
-                action: 'show',
-              },
-            })
-            resolve()
-          }
-          if (pollCount >= 3) {
-            clearInterval(intervalId)
-            reject(new Error('nativeError：UniSDKJSBridge mount fail!'))
-          }
-        }, 100)
-      }
-    }
-
-    function logRequestInfo(response: ServeResponse): void {
-      console.log(
-        '请求类型:',
-        type,
-        '请求地址：',
-        resource,
-        '请求参数：',
-        content,
-        '服务返回信息：',
-        response,
-      )
-    }
-
-    // 轮询等待 UniSDKJSBridge 挂载成功
-    waitForUniSDKJSBridge(() => {
-      postMsgToNative({
-        methodId: 'ngwebview_notify_native',
+}: PostMsgParams): void {
+  function waitForUniSDKJSBridge(callback: () => void): void {
+    if (window.UniSDKJSBridge) {
+      console.log('UniSDKJSBridge 直接可用')
+      callback()
+      window.UniSDKJSBridge.postMsgToNative({
+        methodId: 'navigation_bar_func',
         reqData: {
-          notification_name: 'NT_NOTIFICATION_EXTEND',
-          data:
-            type === 'userinfo' || type === 'update_red_dot'
-              ? { type }
-              : {
-                  type,
-                  resource,
-                  content: JSON.stringify(content),
-                },
-        },
-        callback: {
-          nativeCallback: function (respJSONString: string) {
-            void handleResponse(respJSONString, handleRes).then((res) => {
-              logRequestInfo(res)
-            })
-          },
+          action: 'show',
         },
       })
+    } else {
+      let pollCount = 0 // 轮询次数计数
+      const startTime = new Date() // 记录轮询开始时间
+      console.log(
+        '开始轮询检查 UniSDKJSBridge 是否挂载：',
+        startTime.toLocaleTimeString(),
+      )
+      const intervalId = setInterval(() => {
+        pollCount++
+        console.log('pollCount: ', pollCount)
+        if (window.UniSDKJSBridge) {
+          const endTime = new Date() // 记录成功时间
+          // 打印挂载成功的时间和轮询次数
+          console.log(
+            `UniSDKJSBridge 成功挂载于: ${endTime.toLocaleTimeString()}，经过 ${pollCount} 次轮询`,
+          )
+          clearInterval(intervalId)
+          callback()
+          window.UniSDKJSBridge.postMsgToNative({
+            methodId: 'navigation_bar_func',
+            reqData: {
+              action: 'show',
+            },
+          })
+        }
+        if (pollCount >= 3) {
+          clearInterval(intervalId)
+        }
+      }, 100)
+    }
+  }
+  // 轮询等待 UniSDKJSBridge 挂载成功
+  waitForUniSDKJSBridge(() => {
+    window.UniSDKJSBridge.postMsgToNative({
+      methodId: 'ngwebview_notify_native',
+      reqData: {
+        notification_name: 'NT_NOTIFICATION_EXTEND',
+        data:
+          type === 'userinfo' || type === 'update_red_dot'
+            ? { type }
+            : {
+                type,
+                resource,
+                content: JSON.stringify(content),
+              },
+      },
+      callback: {
+        nativeCallback: function (respJSONString: string) {
+          handleResponse(resource, respJSONString, handleRes)
+        },
+      },
     })
   })
 }
 
 // 处理客户端响应
 function handleResponse(
+  resource: string | undefined,
   respJSONString: string,
   handleRes: (data: any) => void,
-): Promise<ServeResponse> {
-  return new Promise((resolve) => {
-    const reg = /"web_response":"({.*?})"/
-    const match = respJSONString.match(reg)
-    let res: ServeResponse = null
+): void {
+  const reg = /"web_response":"({.*?})"/
+  const match = respJSONString.match(reg)
+  let res: Response | null = null
 
-    if (match) {
-      const resStr = match[1].replace(/\\/g, '')
-      res = JSON.parse(resStr)
-    }
-    handleRes(res)
-    resolve(res)
-  })
+  if (match) {
+    const resStr = match[1].replace(/\\/g, '')
+    res = JSON.parse(resStr)
+  }
+  console.log(resource, res)
+  handleRes(res)
 }
 
 // 获取用户信息，仅与客户端通信 Web <-> APP
@@ -141,9 +110,6 @@ export function getUserInfo(): Promise<any> {
           reject(new Error('获取用户信息出错'))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -160,9 +126,6 @@ export function updateRedDot(): Promise<any> {
           reject(new Error('通知客户端更新红点出错'))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -185,9 +148,6 @@ export function getJinglingToken(tokenParams: TokenParams): Promise<Response> {
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -226,29 +186,23 @@ function fetchPlayerMissionData(
   { event }: { event?: keyof EventData },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
-): Promise<void> {
-  return new Promise((_resolve, _reject): void => {
-    handlePostMessageToNative({
-      type: 'protocol',
-      resource: '/internal/jingling/get_player_mission_data',
-      content: {
-        source_token: '',
-        source_id: '',
-        event,
-      },
-      handleRes: (res) => {
-        if (res.code === 200) {
-          resolve(res)
-          _resolve()
-        } else {
-          const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
-          reject(new Error(errorMessage))
-        }
-      },
-    }).catch((err) => {
-      console.log(err)
-      _reject(err)
-    })
+): void {
+  handlePostMessageToNative({
+    type: 'protocol',
+    resource: '/internal/jingling/get_player_mission_data',
+    content: {
+      source_token: '',
+      source_id: '',
+      event,
+    },
+    handleRes: (res) => {
+      if (res.code === 200) {
+        resolve(res)
+      } else {
+        const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
+        reject(new Error(errorMessage))
+      }
+    },
   })
 }
 
@@ -294,13 +248,9 @@ export function getPlayerMissionData({
       Session.set(`lastFetchTime-${event}`, now.toString())
       // 存储是否请求过
       Session.set(`isFetched-${event}`, true)
-      throttledFetch({ event }, resolve, reject).catch((err: any) => {
-        reject(err)
-      })
+      throttledFetch({ event }, resolve, reject)
     } else {
-      fetchPlayerMissionData({ event }, resolve, reject).catch((err) => {
-        reject(err)
-      })
+      fetchPlayerMissionData({ event }, resolve, reject)
     }
   })
 }
@@ -356,9 +306,6 @@ export function setPlayerTask({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -411,9 +358,6 @@ export function claimMissionReward({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -468,9 +412,6 @@ export function setWebRedDot({ event }: { event: string }): Promise<Response> {
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -523,9 +464,6 @@ export function resetTaskValue({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -573,9 +511,6 @@ export function resetSpriteReward({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -616,9 +551,6 @@ export function gmsResetWebRedDot({ event }: { event: string }): Promise<any> {
           reject(new Error('重置红点失败'))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -645,9 +577,6 @@ export function webViewStatistics({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -694,9 +623,6 @@ export function getReturnBuffData({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
@@ -741,9 +667,6 @@ export function claimReturnBuffReward({
           reject(new Error(errorMessage))
         }
       },
-    }).catch((err) => {
-      console.log(err)
-      reject(err)
     })
   })
 }
