@@ -237,6 +237,12 @@ onMounted(() => {
   })
 })
 
+window.addEventListener('pageshow', (event) => {
+  if (event.persisted) {
+    window.location.reload()
+  }
+})
+
 // 日志数据上报
 function handleWebViewStatistics(module: string): void {
   webViewStatistics({ module })
