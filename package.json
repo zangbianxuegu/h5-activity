@@ -63,6 +63,7 @@
     "vconsole": "^3.15.1",
     "vh-check": "^2.0.5",
     "vite-plugin-compression": "^0.5.1",
+    "vite-plugin-imagemin": "^0.6.1",
     "vite-plugin-mkcert": "^1.17.3",
     "vue-eslint-parser": "^9.3.1",
     "vue-loader": "^17.3.0",
