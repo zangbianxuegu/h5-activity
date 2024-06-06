@@ -158,6 +158,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/anniversary-visit-2024',
+    name: 'AnniversaryVisit2024',
+    component: () => import('@/views/AnniversaryVisit2024'),
+    meta: {
+      title: '巡光嘉年华',
+      module: 'activity_anniversary_visit_2024',
+    },
+  },
+  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),
