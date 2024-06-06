@@ -81,7 +81,7 @@ defineExpose({
   &-content {
     padding-bottom: 80px;
     height: 600px;
-    overflow-y: scroll;
+    overflow-y: auto;
     mask-image: linear-gradient(to bottom, black 80%, transparent);
   }
 }

@@ -37,7 +37,7 @@
           <template #content>
             <p class="modal-text">
               <span class="font-semibold">活动时间：</span
-              >2024年7月12日~2024年7月18日
+              >2024年7月11日~2024年7月17日
             </p>
             <p class="modal-text">
               <span class="font-semibold">活动内容：</span>
@@ -68,19 +68,30 @@
         </activity-modal>
         <activity-modal ref="modalReward">
           <template #content>
-            <p class="modal-text">
-              恭喜你获得
-              <span class="modal-text-blue"
-                >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                {{ curRewards.count }}</span
-              >：
-            </p>
-            <div class="mt-10 flex items-center justify-center">
-              <img
-                class="modal-reward"
-                :src="handleSrc(String(curRewards.name))"
-                alt="reward"
-              />
+            <div v-if="rewardModalType === 'defaultType'">
+              <p class="modal-text">
+                恭喜你获得
+                <span class="modal-text-blue"
+                  >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                  {{ curRewards.count }}</span
+                >：
+              </p>
+              <div class="mt-10 flex items-center justify-center">
+                <img
+                  class="modal-reward"
+                  :src="handleSrc(String(curRewards.name))"
+                  alt="reward"
+                />
+              </div>
+            </div>
+            <div v-else>
+              <p class="modal-text">领取奖励说明：</p>
+              <p class="modal-text mt-1">
+                2024年7月25日<span class="text-[#ffcb4d]">新版本更新后</span
+                >，可在游戏内通过<span class="text-[#ffcb4d]">邮件</span
+                >领取<span class="text-[#ffcb4d]">季节蜡烛*6</span
+                >，感谢您的参与！
+              </p>
             </div>
           </template>
         </activity-modal>
@@ -117,6 +128,9 @@ const rewardsText: RewardsName = {
   heart: '爱心',
   season_candle: '新赛季季节蜡烛',
 }
+
+// delayType任务4是发延迟奖品，奖品弹窗形式有所区别
+const rewardModalType = ref<'defaultType' | 'delayType'>('defaultType')
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -288,11 +302,16 @@ function handleReward(task: string, status: string): void {
   })
     .then((res) => {
       const rewards = res.data.rewards
-      modalReward.value?.openModal()
-      curRewards.value = {
-        name: Object.keys(rewards)[0],
-        count: Number(Object.values(rewards)[0]),
+      if (task === 'activity_season22_sprint_m4') {
+        rewardModalType.value = 'delayType'
+      } else {
+        rewardModalType.value = 'defaultType'
+        curRewards.value = {
+          name: Object.keys(rewards)[0],
+          count: Number(Object.values(rewards)[0]),
+        }
       }
+      modalReward.value?.openModal()
       // 后端接口请求限制间隔 3s
       // 优化用户体验，不再延时请求接口，直接前端更新数据展示
       const newActivityData = activityData.value.map((item) => {
@@ -355,9 +374,9 @@ function handleReward(task: string, status: string): void {
 .title {
   position: absolute;
   left: 448px;
-  bottom: 50px;
-  width: 1170px;
-  height: 253px;
+  top: 840px;
+  width: 1166px;
+  height: 267px;
   background-image: url('@/assets/images/season22-sprint/title.png');
 }
 .date-help {
@@ -398,7 +417,7 @@ function handleReward(task: string, status: string): void {
     }
     @if $i == 4 {
       top: 402px;
-      right: 318px;
+      left: 1356px;
     }
   }
 }
