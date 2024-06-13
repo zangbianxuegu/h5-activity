@@ -163,7 +163,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AnniversaryVisit2024'),
     meta: {
       title: '巡光嘉年华',
-      module: 'activity_anniversary_visit_2024',
+      module: 'activitycenter_anniversary_visit_2024',
     },
   },
   {

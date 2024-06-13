@@ -14,77 +14,85 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-list-container">
-            <div
-              class="tag-clock overflow-hidden bg-contain bg-center bg-no-repeat"
-            ></div>
-            <ul
-              class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
-            >
-              <li
-                v-for="(item, index) in taskList.slice(0, 8)"
-                :key="item.name"
-                :class="[
-                  'task-item bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                  `task-item${index + 1}`,
-                  `${item.status}`,
-                ]"
-                @click="handleReward(item.name, item.status)"
+          <div class="task-main">
+            <div class="task-list-container">
+              <div
+                class="tag-clock overflow-hidden bg-contain bg-center bg-no-repeat"
+              ></div>
+              <ul
+                class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
               >
-                {{ item.title }}
-                <div
-                  class="task-star-container"
-                  v-if="![0, 1, 2].includes(index)"
+                <li
+                  v-for="(item, index) in taskList.slice(0, 8)"
+                  :key="item.name"
+                  :class="[
+                    'task-item bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    `task-item${index + 1}`,
+                    `${item.status}`,
+                  ]"
+                  @click="handleReward(item.name, item.status)"
                 >
+                  {{ item.title }}
                   <div
-                    v-for="(star, starIndex) in item.starCountCan"
-                    :key="starIndex"
-                    class="task-star task-star-can overflow-hidden bg-contain bg-center bg-no-repeat"
-                  ></div>
-                  <div
-                    v-for="(star, starIndex) in item.starCount -
-                    item.starCountCan"
-                    :key="starIndex"
-                    class="task-star task-star-wait overflow-hidden bg-contain bg-center bg-no-repeat"
-                  ></div>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </Transition>
-        <Transition>
-          <div>
-            <div
-              class="tag-everyday-task overflow-hidden bg-contain bg-center bg-no-repeat"
-            ></div>
-            <div
-              class="tag-ereryday-task-start-line overflow-hidden bg-contain bg-center bg-no-repeat"
-            ></div>
-            <ul>
-              <li
-                v-for="(task, index) in taskList.slice(8, 10)"
-                :key="task.name"
+                    class="task-star-container"
+                    v-if="![0, 1, 2].includes(index)"
+                  >
+                    <div
+                      v-for="(_, starIndex) in item.starCountCan"
+                      :key="starIndex"
+                      class="task-star task-star-can overflow-hidden bg-contain bg-center bg-no-repeat"
+                    ></div>
+                    <div
+                      v-for="(_, starIndex) in item.starCount -
+                      item.starCountCan"
+                      :key="starIndex"
+                      class="task-star task-star-wait overflow-hidden bg-contain bg-center bg-no-repeat"
+                    ></div>
+                  </div>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <div
+                class="tag-everyday-task overflow-hidden bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                class="tag-everyday-task-start-line overflow-hidden bg-contain bg-center bg-no-repeat"
+              ></div>
+              <ul>
+                <li
+                  v-for="(task, index) in taskList.slice(8, 10)"
+                  :key="task.name"
+                  :class="[
+                    'task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    `task-item${index + 9}`,
+                    `${task.status}`,
+                  ]"
+                  @click="handleReward(task.name, task.status)"
+                >
+                  {{ task.title }}
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p
+                class="task-tips overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+              >
+                完成8个打开集章任务，参与抽取TGC专属斗篷
+              </p>
+              <div
                 :class="[
-                  'task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                  `task-item${index + 9}`,
-                  `${task.status}`,
+                  'activity-btn overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                  `${taskList[10].status}`,
                 ]"
-                @click="handleReward(task.name, task.status)"
-              ></li>
-            </ul>
+                @click="handleReward(taskList[10].name, taskList[10].status)"
+              >
+                参与抽奖
+              </div>
+            </div>
           </div>
         </Transition>
-        <Transition>
-          <div class="">
-            <div
-              class="task-tips overflow-hidden bg-contain bg-center bg-no-repeat"
-            ></div>
-            <div
-              ref="activityBtn"
-              class="activity-btn overflow-hidden bg-contain bg-center bg-no-repeat"
-            ></div>
-          </div>
-        </Transition>
+        <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
             <p class="modal-text">
@@ -160,12 +168,15 @@
             <p class="modal-text">
               <span class="font-semibold">抽奖活动：</span>
             </p>
-            <p class="modal-text">活动期间，完成八个打卡任务后可以参与抽奖；</p>
+            <p class="modal-text">
+              1、活动期间，完成八个打卡任务后可以参与抽奖；
+            </p>
             <p class="modal-text">
               2、中奖名单将于2024年7月19日当天在官网公布，敬请留意！
             </p>
           </template>
         </activity-modal>
+        <!-- 领奖弹框 -->
         <activity-modal ref="modalReward">
           <template #content>
             <p class="modal-text">
@@ -182,6 +193,14 @@
                 alt="reward"
               />
             </div>
+          </template>
+        </activity-modal>
+        <!-- 抽奖弹框 -->
+        <activity-modal ref="modalLottery">
+          <template #content>
+            <p class="modal-text m-4 p-4">
+              您已成功参与抽奖，中奖名单将于2024年7月19日当天在官网公布，敬请留意！
+            </p>
           </template>
         </activity-modal>
       </div>
@@ -205,11 +224,11 @@ interface Rewards {
 }
 
 interface RewardsName {
-  fireworks2: string
+  fireworks_token: string
 }
 
 const rewardsText: RewardsName = {
-  fireworks2: '礼花',
+  fireworks_token: '礼花',
 }
 
 // 设计稿宽
@@ -246,91 +265,93 @@ console.log('factor: ', factor.value)
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalLottery = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 
 const EVENT_NAME: EventDataKeys =
-  activityStore.activeEventName.activity_anniversary_visit_2024
+  activityStore.activeEventName.activitycenter_anniversary_visit_2024
 
 // 活动数据
 const activityData = computed(
   () => activityStore.eventData[EVENT_NAME] as Event[],
 )
 const curRewards: Ref<Rewards> = ref({
-  name: 'resize_potion',
-  count: 1,
+  name: 'fireworks_token',
+  count: 60,
 })
 const TASK_LIST = [
   {
-    name: 'activity_anniversary_visit_2024_m1',
+    name: 'activitycenter_anniversary_visit_2024_m1',
     title: '参与1次嘉年华球赛',
     status: 'wait',
     starCount: 0,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m2',
+    name: 'activitycenter_anniversary_visit_2024_m2',
     title: '参与1次先祖巡游',
     status: 'wait',
     starCount: 0,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m3',
+    name: 'activitycenter_anniversary_visit_2024_m3',
     title: '欣赏1次嘉年华烟花',
     status: 'wait',
     starCount: 0,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m4',
+    name: 'activitycenter_anniversary_visit_2024_m4',
     title: '累计2天与嘉年华的小狗互动',
     status: 'wait',
     starCount: 2,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m5',
+    name: 'activitycenter_anniversary_visit_2024_m5',
     title: '累计2天在档案馆查看编年史',
     status: 'wait',
     starCount: 2,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m6',
+    name: 'activitycenter_anniversary_visit_2024_m6',
     title: '累计2天在艺术馆观看艺术展',
     status: 'wait',
     starCount: 2,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m7',
+    name: 'activitycenter_anniversary_visit_2024_m7',
     title: '累计3天在冥想之地感受宁静',
     status: 'wait',
     starCount: 3,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m8',
+    name: 'activitycenter_anniversary_visit_2024_m8',
     title: '累计3天前往嘉年华影院观',
     status: 'wait',
     starCount: 3,
     starCountCan: 0,
   },
   {
-    name: 'activity_anniversary_visit_2024_m9',
+    name: 'activitycenter_anniversary_visit_2024_m9',
     title: '在云巢冥想加入嘉年华',
     status: 'wait',
-    starCount: 0,
-    starCountCan: 0,
   },
   {
     name: 'collecting_event_candles',
     title: '在云巢收集一个星星代币',
     status: 'wait',
-    starCount: 0,
-    starCountCan: 0,
+  },
+  {
+    name: 'activitycenter_anniversary_visit_2024_m11',
+    title: '参与抽奖',
+    status: 'wait',
   },
 ]
 const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
@@ -341,18 +362,19 @@ const taskList = computed(() => {
     return {
       ...item,
       starCount: activity.stages[0],
-      starCountCan: activity.value,
+      starCountCan:
+        activity.value > activity.stages[0]
+          ? activity.stages[0]
+          : activity.value,
       status:
         activity.award[0] === 1
           ? 'redeemed'
           : activity.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
+            ? 'can'
+            : 'wait',
     }
   })
 })
-
-const activityBtn = ref()
 
 const sessionIsVisitedKey = 'isVisitedAnniversaryVisit2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -367,8 +389,6 @@ if (!isVisited) {
 
 onMounted(() => {
   try {
-    // const imgName = 'lottery-wait'
-    // activityBtn.value.style.backgroundImage = `url("/assets/images/anniversary-visit-2024/${imgName}.png")`
     getActivityData()
   } catch (error) {
     console.error(error)
@@ -397,14 +417,13 @@ function getActivityData(): void {
     .then((res) => {
       // 获取数据并按照 TASK_LIST 的顺序进行排序
       const activityData: Event[] =
-        res.data.event_data?.activity_anniversary_visit_2024.sort(
+        res.data.event_data?.activitycenter_anniversary_visit_2024.sort(
           (a: Event, b: Event) => {
             const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
             const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
             return orderA - orderB
           },
         )
-
       // 是否已领奖：所有任务已领奖
       const isClaimedReward = !activityData.some(
         (item) => item.award[0] === 0 && item.value >= item.stages[0],
@@ -424,46 +443,56 @@ function getActivityData(): void {
 
 // 领奖
 function handleReward(task: string, status: string): void {
-  if (status === 'redeemed') {
-    showToast('已领奖')
-    return
-  }
-  if (status === 'wait') {
-    showToast('还未完成任务')
-    return
-  }
-  claimMissionReward({
-    event: EVENT_NAME,
-    task,
-    rewardId: 1,
-  })
-    .then((res) => {
-      const rewards = res.data.rewards
-      modalReward.value?.openModal()
-      curRewards.value = {
-        name: 'fireworks2',
-        count: Number(Object.values(rewards)[0]),
-      }
-      // 后端接口请求限制间隔 3s
-      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-      const newActivityData = activityData.value.map((item) => {
-        return {
-          ...item,
-          award: item.task_id === task ? [1] : item.award,
+  // 抽奖
+  if (task === taskList.value[10].name) {
+    if (status === 'wait') {
+      showToast('还未完成任务')
+      return
+    }
+    if (status === 'redeemed') {
+      modalLottery.value?.openModal()
+      return
+    }
+    claimMissionReward({
+      event: EVENT_NAME,
+      task,
+      rewardId: 1,
+    })
+      .then((_) => {
+        taskList.value[10].status = 'redeemed'
+        modalLottery.value?.openModal()
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
+  } else {
+    // 领奖
+    if (status === 'redeemed') {
+      showToast('已领奖')
+      return
+    }
+    if (status === 'wait') {
+      showToast('还未完成任务')
+      return
+    }
+    claimMissionReward({
+      event: EVENT_NAME,
+      task,
+      rewardId: 1,
+    })
+      .then((res) => {
+        getActivityData()
+        const rewards = res.data.rewards
+        modalReward.value?.openModal()
+        curRewards.value = {
+          name: 'fireworks_token',
+          count: Number(Object.values(rewards)[0]),
         }
       })
-      activityStore.updateEventData(EVENT_NAME, newActivityData)
-      const isClaimedReward = !newActivityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
-      menuStore.updateMenuDataByIsClaimedReward(
-        EVENT_NAME as string,
-        isClaimedReward,
-      )
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+      .catch((error) => {
+        showToast(error.message)
+      })
+  }
 }
 </script>
 
@@ -518,9 +547,6 @@ function handleReward(task: string, status: string): void {
   height: 47px;
   top: 123px;
   left: 503px;
-}
-.task-list-container {
-  // position: relative;
 }
 .tag-clock {
   position: absolute;
@@ -602,13 +628,13 @@ function handleReward(task: string, status: string): void {
   height: 82px;
   background-image: url('@/assets/images/anniversary-visit-2024/tag-everyday-task.png');
 }
-.tag-ereryday-task-start-line {
+.tag-everyday-task-start-line {
   position: absolute;
   top: 469px;
   left: 1557px;
   width: 376px;
   height: 43px;
-  background-image: url('@/assets/images/anniversary-visit-2024/tag-ereryday-task-start-line.png');
+  background-image: url('@/assets/images/anniversary-visit-2024/tag-everyday-task-start-line.png');
 }
 .task-tips {
   position: absolute;
@@ -625,7 +651,18 @@ function handleReward(task: string, status: string): void {
   left: 968px;
   width: 413px;
   height: 132px;
-  background-image: url('@/assets/images/anniversary-visit-2024/lottery-wait.png');
+
+  &.wait {
+    background-image: url('@/assets/images/anniversary-visit-2024/lottery-wait.png');
+  }
+
+  &.can {
+    background-image: url('@/assets/images/anniversary-visit-2024/lottery-can.png');
+  }
+
+  &.redeemed {
+    background-image: url('@/assets/images/anniversary-visit-2024/lottery-soon.png');
+  }
 }
 .modal-text {
   font-size: 40px;

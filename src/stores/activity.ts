@@ -375,10 +375,10 @@ export const useActivityStore = defineStore(
         },
       ],
       // 周年庆嘉年华
-      activity_anniversary_visit_2024: [
+      activitycenter_anniversary_visit_2024: [
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m1',
+          task_id: 'activitycenter_anniversary_visit_2024_m1',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -387,7 +387,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m2',
+          task_id: 'activitycenter_anniversary_visit_2024_m2',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -396,7 +396,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m3',
+          task_id: 'activitycenter_anniversary_visit_2024_m3',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -405,7 +405,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m4',
+          task_id: 'activitycenter_anniversary_visit_2024_m4',
           stages: [2],
           score: '',
           is_today_sign_in: 0,
@@ -415,7 +415,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m5',
+          task_id: 'activitycenter_anniversary_visit_2024_m5',
           stages: [2],
           score: '',
           is_today_sign_in: 0,
@@ -425,7 +425,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m6',
+          task_id: 'activitycenter_anniversary_visit_2024_m6',
           stages: [2],
           score: '',
           is_today_sign_in: 0,
@@ -435,7 +435,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m7',
+          task_id: 'activitycenter_anniversary_visit_2024_m7',
           stages: [3],
           score: '',
           is_today_sign_in: 0,
@@ -445,7 +445,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m8',
+          task_id: 'activitycenter_anniversary_visit_2024_m8',
           stages: [3],
           score: '',
           is_today_sign_in: 0,
@@ -455,7 +455,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_visit_2024_m9',
+          task_id: 'activitycenter_anniversary_visit_2024_m9',
           stages: [5],
           score: '',
           is_today_sign_in: 0,
@@ -472,6 +472,15 @@ export const useActivityStore = defineStore(
           is_eggy_reward: false,
           awarded_types: [],
           award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_anniversary_visit_2024_m11',
+          stages: [8],
+          score: '',
+          award: [0],
+          is_eggy_reward: false,
+          awarded_types: [],
         },
       ],
     })
@@ -504,7 +513,7 @@ export const useActivityStore = defineStore(
         event === 'activity_dragonboat_2024' ||
         event === 'activity_childrens_day_2024' ||
         event === 'activity_anniversary_warmup_2024' ||
-        event === 'activity_anniversary_visit_2024'
+        event === 'activitycenter_anniversary_visit_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {

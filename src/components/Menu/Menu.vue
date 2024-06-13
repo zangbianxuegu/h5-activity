@@ -207,7 +207,7 @@ function handleMenuIcon(curItem: MenuItem): string {
       '../../assets/images/common/nav-icon-cake.png',
       import.meta.url,
     ).href
-  } else if (curItemValue === 'activity_anniversary_visit_2024') {
+  } else if (curItemValue === 'activitycenter_anniversary_visit_2024') {
     icon = new URL(
       '../../assets/images/common/nav-icon-small-cake.png',
       import.meta.url,
@@ -227,7 +227,7 @@ const getNavIconClass = (menu: MenuItem): string[] => {
     `${navIconPrefix}-poster-anniversary-2024`,
   )
   menuIconMap.set(
-    'activity_anniversary_visit_2024',
+    'activitycenter_anniversary_visit_2024',
     `${navIconPrefix}-anniversary-visit-2024`,
   )
   const mapValue = menuIconMap.get(menuValue)

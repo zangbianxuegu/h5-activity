@@ -195,7 +195,7 @@ const initMenuItems: MenuItem[] = [
   },
   {
     label: '巡光嘉年华',
-    value: 'activity_anniversary_visit_2024',
+    value: 'activitycenter_anniversary_visit_2024',
     routeName: 'AnniversaryVisit2024',
     isNew: false,
     isClaimedReward: true,
