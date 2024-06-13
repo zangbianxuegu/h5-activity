@@ -15,6 +15,7 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <div class="task-main">
+            <!-- 打卡集章 -->
             <div class="task-list-container">
               <div
                 class="tag-clock overflow-hidden bg-contain bg-center bg-no-repeat"
@@ -52,6 +53,7 @@
                 </li>
               </ul>
             </div>
+            <!-- 每日任务 -->
             <div>
               <div
                 class="tag-everyday-task overflow-hidden bg-contain bg-center bg-no-repeat"
@@ -64,16 +66,24 @@
                   v-for="(task, index) in taskList.slice(8, 10)"
                   :key="task.name"
                   :class="[
-                    'task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    'task-item overflow-hidden bg-contain bg-center bg-no-repeat ',
                     `task-item${index + 9}`,
                     `${task.status}`,
                   ]"
-                  @click="handleReward(task.name, task.status)"
                 >
-                  {{ task.title }}
+                  <div
+                    :class="[
+                      'task-daily-item z-10 indent-[-9999px]',
+                      `task-daily-item${index}`,
+                    ]"
+                    @click="handleReward(task.name, task.status)"
+                  >
+                    {{ task.title }}
+                  </div>
                 </li>
               </ul>
             </div>
+            <!-- 抽奖 -->
             <div>
               <p
                 class="task-tips overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
@@ -601,6 +611,17 @@ function handleReward(task: string, status: string): void {
       top: 606px;
     }
   }
+}
+.task-daily-item {
+  position: absolute;
+  width: 542px;
+  height: 150px;
+}
+.task-daily-item0 {
+  top: 97px;
+}
+.task-daily-item1 {
+  top: 85px;
 }
 .task-star-container {
   position: absolute;
