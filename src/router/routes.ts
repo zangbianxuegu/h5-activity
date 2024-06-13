@@ -175,4 +175,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activity_season22_sprint',
     },
   },
+  {
+    path: '/anniversary-store-2024',
+    name: 'AnniversaryStore2024',
+    component: () => import('@/views/AnniversaryStore2024'),
+    meta: {
+      title: '成为星星收藏家',
+      module: 'activity_anniversary_store_2024',
+    },
+  },
 ]
