@@ -6,61 +6,83 @@
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           >
-            巡光嘉年华
+            成为星星收藏家
             <div
               class="date-help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
             ></div>
           </h1>
         </Transition>
-        <Transition>
-          <div>
-            <div class="paster1 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster2 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster3 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster4 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster5 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster6 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster7 bg-contain bg-center bg-no-repeat"></div>
-          </div>
-        </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-list-container">
-            <ul
-              class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
-            >
-              <li
-                v-for="(item, index) in taskList"
-                :key="item.name"
-                :class="[
-                  'task-item bg-contain bg-center bg-no-repeat',
-                  `task-item${index + 1}`,
-                  `${item.status}`,
-                ]"
-                @click="handleReward(item.name, item.status)"
-              >
-                <!-- {{ item.title }} -->
-                <span :class="['task-condition', `task-condition${index + 1}`]"
-                  >{{ item.condition
-                  }}<span class="unit">{{
-                    index + 1 !== 5 ? '万' : '亿'
-                  }}</span></span
-                >
-              </li>
-            </ul>
-            <div class="progress-bar-wait bg-contain bg-center bg-no-repeat">
+          <div>
+            <div class="poster-box">
               <div
-                class="progress-bar-star bg-contain bg-center bg-no-repeat"
-                :class="[`progress-bar-star-${currentProgress}`]"
+                v-if="currentProgress >= 1"
+                class="poster poster-repellant_krill animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 1"
+                class="poster poster-balloon animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 2"
+                class="poster poster-blue animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 2"
+                class="poster poster-dog animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 3"
+                class="poster poster-forefather animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 4"
+                class="poster poster-chen animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                v-if="currentProgress >= 5"
+                class="poster poster-sky animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
               ></div>
             </div>
-            <div
-              class="progress-bar-already-finish"
-              :class="[`progress-bar-already-finish-${currentProgress}`]"
-            >
+            <div class="task-list-container">
+              <ul
+                class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center indent-[-9999px]"
+              >
+                <li
+                  v-for="(item, index) in taskList"
+                  :key="item.name"
+                  :class="[
+                    'task-item bg-contain bg-center bg-no-repeat',
+                    `task-item${index + 1}`,
+                    `${item.status}`,
+                  ]"
+                  @click="handleReward(item.name, item.status, index + 1)"
+                >
+                  {{ item.title }}
+                  <span
+                    :class="['task-condition', `task-condition${index + 1}`]"
+                    >{{ item.condition
+                    }}<span class="unit">{{
+                      index + 1 !== 5 ? '万' : '亿'
+                    }}</span></span
+                  >
+                </li>
+              </ul>
+              <div class="progress-bar-wait bg-contain bg-center bg-no-repeat">
+                <div
+                  class="progress-bar-star bg-contain bg-center bg-no-repeat"
+                  :class="[`progress-bar-star-${currentProgress}`]"
+                ></div>
+              </div>
               <div
-                class="progress-bar-finish bg-contain bg-center bg-no-repeat"
-              ></div>
+                class="progress-bar-already-finish"
+                :class="[`progress-bar-already-finish-${currentProgress}`]"
+              >
+                <div
+                  class="progress-bar-finish bg-contain bg-center bg-no-repeat"
+                ></div>
+              </div>
             </div>
           </div>
         </Transition>
@@ -81,7 +103,7 @@
             <p class="modal-text">
               1、全服玩家获得星星代币数量达到2000w，即可领取<span
                 class="text-[#ffcb4d]"
-                >浪漫烟花*3</span
+                >浪漫烟花魔法*3</span
               >；
             </p>
             <p class="modal-text">
@@ -106,7 +128,7 @@
               5、全服玩家获得星星代币数量达到1亿，即可领取<span
                 class="text-[#ffcb4d]"
                 >爱心*3</span
-              >；
+              >。
             </p>
           </template>
         </activity-modal>
@@ -150,17 +172,17 @@ interface Rewards {
 
 interface RewardsName {
   fireworks: string
-  cake: string
-  rainbow: string
-  bigCake: string
+  birthdaycake_medium: string
+  trail_rainbow: string
+  birthdaycake_large: string
   heart: string
 }
 
 const rewardsText: RewardsName = {
   fireworks: '浪漫烟花',
-  cake: '生日蛋糕',
-  rainbow: '彩虹尾迹',
-  bigCake: '生日庆典大蛋糕',
+  birthdaycake_medium: '生日蛋糕',
+  trail_rainbow: '彩虹尾迹',
+  birthdaycake_large: '生日庆典大蛋糕',
   heart: '爱心',
 }
 
@@ -203,7 +225,7 @@ const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 
 const EVENT_NAME: EventDataKeys =
-  activityStore.activeEventName.activity_anniversary_server_2024
+  activityStore.activeEventName.activitycenter_anniversary_server_2024
 
 // 活动数据
 const activityData = computed(
@@ -211,58 +233,58 @@ const activityData = computed(
 )
 const curRewards: Ref<Rewards> = ref({
   name: 'fireworks',
-  count: 1,
+  count: 3,
 })
 const TASK_LIST = [
   {
-    name: 'activity_anniversary_server_2024_m1',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到2000w',
     status: 'wait',
     condition: '2000',
   },
   {
-    name: 'activity_anniversary_server_2024_m2',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到4000w',
     status: 'wait',
     condition: '4000',
   },
   {
-    name: 'activity_anniversary_server_2024_m3',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到6000w',
     status: 'wait',
     condition: '6000',
   },
   {
-    name: 'activity_anniversary_server_2024_m4',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到8000w',
     status: 'wait',
     condition: '8000',
   },
   {
-    name: 'activity_anniversary_server_2024_m4',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到1亿',
     status: 'wait',
     condition: '1',
   },
 ]
-const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[index]
+    const activity = activityData.value[0]
     return {
       ...item,
       status:
-        activity?.award[0] === 1
+        activity.award[index] === 1
           ? 'redeemed'
-          : activity?.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
+          : activity.award[index] === 0 &&
+              activity.value >= activity.stages[index]
+            ? 'can'
+            : 'wait',
     }
   })
 })
 
-const sessionIsVisitedKey = 'isVisitedAnniversaryVisit2024'
+const sessionIsVisitedKey = 'isVisitedAnniversaryServer2024'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -277,6 +299,7 @@ if (!isVisited) {
 const currentProgress = computed(() => {
   return taskList.value.filter((e) => e.status !== 'wait').length
 })
+console.log('currentProgress: ', currentProgress.value)
 
 onMounted(() => {
   try {
@@ -306,20 +329,14 @@ function handleSrc(name: string): string {
 function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
-      // 获取数据并按照 TASK_LIST 的顺序进行排序
-      const activityData: Event[] =
-        res.data.event_data?.activity_season22_sprint.sort(
-          (a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
-            const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
-            return orderA - orderB
-          },
-        )
-
+      const activityData: Event[] = res.data.event_data?.[EVENT_NAME]
       // 是否已领奖：所有任务已领奖
-      const isClaimedReward = !activityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
+      const shouldClaimedRewardCount = activityData[0].stages.filter(
+        (stage) => stage <= activityData[0].value,
+      ).length
+      const isClaimedReward =
+        activityData[0].award.filter((item) => item === 1).length >=
+        shouldClaimedRewardCount
       // 更新菜单数据 isClaimedReward
       menuStore.updateMenuDataByIsClaimedReward(
         EVENT_NAME as string,
@@ -334,7 +351,7 @@ function getActivityData(): void {
 }
 
 // 领奖
-function handleReward(task: string, status: string): void {
+function handleReward(task: string, status: string, rewardId: number): void {
   if (status === 'redeemed') {
     showToast('已领奖')
     return
@@ -346,31 +363,16 @@ function handleReward(task: string, status: string): void {
   claimMissionReward({
     event: EVENT_NAME,
     task,
-    rewardId: 1,
+    rewardId,
   })
     .then((res) => {
+      getActivityData()
       const rewards = res.data.rewards
       modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      // 后端接口请求限制间隔 3s
-      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-      const newActivityData = activityData.value.map((item) => {
-        return {
-          ...item,
-          award: item.task_id === task ? [1] : item.award,
-        }
-      })
-      activityStore.updateEventData(EVENT_NAME, newActivityData)
-      const isClaimedReward = !newActivityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
-      menuStore.updateMenuDataByIsClaimedReward(
-        EVENT_NAME as string,
-        isClaimedReward,
-      )
     })
     .catch((error) => {
       showToast(error.message)
@@ -431,17 +433,6 @@ $progress-bar-star-width: 181px;
   height: 47px;
   top: 0px;
   left: 839px;
-}
-.task-list-container {
-  // position: relative;
-}
-.tag-clock {
-  position: absolute;
-  top: 106px;
-  left: 83px;
-  width: 158px;
-  height: 82px;
-  background-image: url('@/assets/images/anniversary-server-2024/tag-clock.png');
 }
 .task-item {
   width: 280px;
@@ -575,7 +566,7 @@ $progress-bar-star-width: 181px;
   width: 0;
   height: 65px;
   background-image: url('@/assets/images/anniversary-server-2024/progress-bar-star.png');
-  z-index: 9999;
+  z-index: 5;
   transform: scale(1, 0.7);
   &-1 {
     animation: progressStarSlide1 1s ease-out forwards;
@@ -650,61 +641,58 @@ $progress-bar-star-width: 181px;
   }
 }
 
-.paster1 {
+.poster {
   position: absolute;
+}
+
+.poster-repellant_krill {
   top: 344px;
   left: 8px;
   width: 508px;
   height: 448px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster1.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-repellant_krill.png');
 }
-.paster2 {
-  position: absolute;
+.poster-blue {
   top: 325px;
   left: 451px;
   width: 280px;
   height: 395px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster2.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-blue.png');
 }
-.paster3 {
-  position: absolute;
+.poster-sky {
   top: 424px;
   left: 727px;
   width: 373px;
   height: 295px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster3.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-sky.png');
 }
-.paster4 {
-  position: absolute;
+.poster-chen {
   top: 269px;
   left: 1086px;
   width: 378px;
   height: 459px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster4.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-chen.png');
 }
-.paster5 {
-  position: absolute;
+.poster-forefather {
   top: 269px;
   left: 1453px;
   width: 299px;
   height: 450px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster5.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-forefather.png');
 }
-.paster6 {
-  position: absolute;
+.poster-balloon {
   top: 446px;
   left: 1800px;
   width: 177px;
   height: 254px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster6.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-balloon.png');
 }
-.paster7 {
-  position: absolute;
+.poster-dog {
   top: 698px;
   left: 1559px;
   width: 97px;
   height: 149px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster7.png');
+  background-image: url('@/assets/images/anniversary-server-2024/poster-dog.png');
   transform: scaleX(-1);
 }
 .modal-text {

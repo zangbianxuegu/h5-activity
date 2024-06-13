@@ -202,6 +202,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '成为星星收藏家',
+    value: 'activitycenter_anniversary_server_2024',
+    routeName: 'AnniversaryServer2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

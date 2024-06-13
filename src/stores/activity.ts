@@ -412,10 +412,10 @@ export const useActivityStore = defineStore(
           awarded_types: [],
         },
       ],
-      activity_anniversary_server_2024: [
+      activitycenter_anniversary_server_2024: [
         {
           value: 0,
-          task_id: 'activity_anniversary_server_2024_m1',
+          task_id: 'activitycenter_anniversary_server_2024_m1',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -424,7 +424,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_server_2024_m2',
+          task_id: 'activitycenter_anniversary_server_2024_m2',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -433,7 +433,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_server_2024_m3',
+          task_id: 'activitycenter_anniversary_server_2024_m3',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -442,7 +442,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_server_2024_m4',
+          task_id: 'activitycenter_anniversary_server_2024_m4',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -451,7 +451,7 @@ export const useActivityStore = defineStore(
         },
         {
           value: 0,
-          task_id: 'activity_anniversary_server_2024_m5',
+          task_id: 'activitycenter_anniversary_server_2024_m5',
           stages: [1],
           score: '',
           is_eggy_reward: false,
@@ -490,7 +490,7 @@ export const useActivityStore = defineStore(
         event === 'activity_childrens_day_2024' ||
         event === 'activity_anniversary_warmup_2024' ||
         event === 'activity_season22_sprint' ||
-        event === 'activity_anniversary_server_2024'
+        event === 'activitycenter_anniversary_server_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
