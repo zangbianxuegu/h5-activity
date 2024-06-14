@@ -1,168 +1,188 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="anniversary-server-2024 flex h-screen">
-      <div class="anniversary-server-2024-main">
+    <div class="anniversary flex h-screen">
+      <div class="anniversary-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1
-            class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-          >
-            嘉年华商店
+          <div class="header flex">
+            <h1
+              class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+            >
+              嘉年华商店
+            </h1>
             <div
-              class="date-help bg-contain bg-center bg-no-repeat"
+              class="help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
             ></div>
-          </h1>
-        </Transition>
-        <Transition>
-          <div>
-            <div class="paster1 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster2 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster3 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster4 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster5 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster6 bg-contain bg-center bg-no-repeat"></div>
-            <div class="paster7 bg-contain bg-center bg-no-repeat"></div>
           </div>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-list-container">
-            <ul
-              class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
-            >
+          <section>
+            <!-- 礼花总数 -->
+            <div class="fireworks flex items-center">
+              <img
+                class="fireworks-icon"
+                src="@/assets/images/anniversary-store-2024/star.png"
+                alt="star"
+              />
+              <span>{{ activityData.token_info.fireworks_token }}</span>
+            </div>
+            <!-- 商品列表 -->
+            <ul class="store-list flex flex-row flex-wrap">
               <li
-                v-for="(item, index) in taskList"
-                :key="item.name"
+                v-for="(item, index) in storeList"
+                :key="item.id"
                 :class="[
-                  'task-item bg-contain bg-center bg-no-repeat',
-                  `task-item${index + 1}`,
-                  `${item.status}`,
+                  'store-item bg-contain bg-center bg-no-repeat',
+                  `store-${index + 1}`,
+                  item.remaining_amount > 0 ? 'can' : 'wait',
                 ]"
-                @click="handleReward(item.name, item.status)"
+                @click="handleExchange(item)"
               >
-                <!-- {{ item.title }} -->
-                <span :class="['task-condition', `task-condition${index + 1}`]"
-                  >{{ item.condition
-                  }}<span class="unit">{{
-                    index + 1 !== 5 ? '万' : '亿'
-                  }}</span></span
-                >
+                <p class="exchange">
+                  <span>可兑换：</span
+                  ><span class="exchange-count">{{
+                    item.remaining_amount
+                  }}</span>
+                </p>
               </li>
             </ul>
-            <div class="progress-bar-wait bg-contain bg-center bg-no-repeat">
-              <div
-                class="progress-bar-star bg-contain bg-center bg-no-repeat"
-                :class="[`progress-bar-star-${currentProgress}`]"
-              ></div>
-            </div>
-            <div
-              class="progress-bar-already-finish"
-              :class="[`progress-bar-already-finish-${currentProgress}`]"
-            >
-              <div
-                class="progress-bar-finish bg-contain bg-center bg-no-repeat"
-              ></div>
-            </div>
-          </div>
+          </section>
         </Transition>
-        <activity-modal ref="modalHelp">
-          <template #content>
-            <p class="modal-text">
-              <span class="font-semibold">活动时间：</span
-              >2024年6月29日~2024年7月14日
-            </p>
-            <p class="modal-text">
-              <span class="font-semibold">活动内容：</span>
-            </p>
-            <p class="modal-text">
-              <span
-                >活动期间统计全服玩家获得星星代币的数量，达成进度后所有玩家均可领取进度奖励：</span
-              >
-            </p>
-            <p class="modal-text">
-              1、全服玩家获得星星代币数量达到2000w，即可领取<span
-                class="text-[#ffcb4d]"
-                >浪漫烟花*3</span
-              >；
-            </p>
-            <p class="modal-text">
-              2、全服玩家获得星星代币数量达到4000w，即可领取<span
-                class="text-[#ffcb4d]"
-                >生日蛋糕*3</span
-              >；
-            </p>
-            <p class="modal-text">
-              3、全服玩家获得星星代币数量达到6000w，即可领取<span
-                class="text-[#ffcb4d]"
-                >彩虹尾迹*3</span
-              >；
-            </p>
-            <p class="modal-text">
-              4、全服玩家获得星星代币数量达到8000w，即可领取<span
-                class="text-[#ffcb4d]"
-                >生日庆典大蛋糕*3</span
-              >；
-            </p>
-            <p class="modal-text">
-              5、全服玩家获得星星代币数量达到1亿，即可领取<span
-                class="text-[#ffcb4d]"
-                >爱心*3</span
-              >；
-            </p>
-          </template>
-        </activity-modal>
-        <activity-modal ref="modalReward">
-          <template #content>
-            <p class="modal-text">
-              恭喜你获得
-              <span class="modal-text-blue"
-                >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                {{ curRewards.count }}</span
-              >：
-            </p>
-            <div class="mt-10 flex items-center justify-center">
-              <img
-                class="modal-reward"
-                :src="handleSrc(String(curRewards.name))"
-                alt="reward"
-              />
-            </div>
-          </template>
-        </activity-modal>
+        <footer class="footer">
+          7月15日0:00未使用的礼花将被清零，请及时兑换奖励！
+        </footer>
       </div>
+      <!-- 活动规则说明 -->
+      <activity-modal ref="modalHelp">
+        <template #content>
+          <p class="modal-text">
+            <span class="font-semibold">活动时间：</span
+            >2024年6月29日~2024年7月14日
+          </p>
+          <p class="modal-text">
+            <span class="font-semibold">活动内容：</span>
+          </p>
+          <p class="modal-text">
+            活动期间内，玩家可使用获得的礼花积分兑换物品，物品拥有兑换次数限制：
+          </p>
+          <p class="modal-text">1、使用100积分可兑换1个爱心，最多可兑换3个；</p>
+          <p class="modal-text">
+            2、使用200积分可兑换1个周年庆抱枕试用魔法，最多可兑换3个；
+          </p>
+          <p class="modal-text">
+            3、使用60积分可兑换1个共享空间，最多可兑换3个；
+          </p>
+          <p class="modal-text">
+            4、使用60积分可兑换1个留影蜡烛，最多可兑换3个；
+          </p>
+          <p class="modal-text">
+            5、使用60积分可兑换1个筑巢季蜡烛，最多可兑换5个；
+          </p>
+          <p class="modal-text">
+            6、使用30积分可兑换1个浪漫烟花魔法，最多可兑换20个。
+          </p>
+        </template>
+      </activity-modal>
+      <!-- 兑换弹框 -->
+      <activity-modal ref="modalReward" class="reward-box">
+        <template #content>
+          <p class="reward-title mt-4">是否兑换“{{ curRewards[0].name }}”</p>
+          <div class="flex items-center justify-around">
+            <ul
+              :class="[
+                'reward-list mt-6 flex w-full items-center justify-around',
+                `reward-list_${curRewards.length}`,
+              ]"
+            >
+              <li
+                class="reward-item flex flex-col items-center justify-between"
+                v-for="item in curRewards"
+                :key="item.img"
+              >
+                <div class="reward-img-wrap flex items-center justify-center">
+                  <img
+                    class="reward-img"
+                    :src="handleSrc(item.img)"
+                    alt="reward"
+                  />
+                </div>
+              </li>
+            </ul>
+          </div>
+        </template>
+        <template #footer>
+          <div class="relative z-10 -mt-10 flex justify-around">
+            <button
+              class="btn btn-cancel rounded-md text-white"
+              type="button"
+              @click="handleCancel"
+            >
+              我再想想
+            </button>
+            <button
+              class="btn btn-confirm rounded-md text-white"
+              type="button"
+              @click="handleConfirm"
+            >
+              确认
+            </button>
+          </div>
+        </template>
+      </activity-modal>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { Event, DesignConfig, EventDataKeys } from '@/types'
+import { getPlayerMissionData } from '@/utils/request'
+import { purchaseSpriteToken } from '@/apis/purchase'
+import { type StoreItem, type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
-import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/activity'
+import { useActivityStore } from '@/stores/anniversaryStore2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
-interface Rewards {
-  name: string
-  count: number
+const rewardMap = {
+  0: [
+    {
+      name: '爱心',
+      img: 'heart',
+    },
+  ],
+  1: [
+    {
+      name: '周年庆抱枕魔法',
+      img: 'outfit_prop_birthdayoreo',
+    },
+  ],
+  2: [
+    {
+      name: '共享空间',
+      img: 'sharedspace_candle',
+    },
+  ],
+  3: [
+    {
+      name: '留影蜡烛',
+      img: 'recording_candle',
+    },
+  ],
+  4: [
+    {
+      name: '筑巢季蜡烛',
+      img: 'season_candle',
+    },
+  ],
+  5: [
+    {
+      name: '浪漫烟花',
+      img: 'fireworks',
+    },
+  ],
 }
 
-interface RewardsName {
-  fireworks: string
-  cake: string
-  rainbow: string
-  bigCake: string
-  heart: string
-}
-
-const rewardsText: RewardsName = {
-  fireworks: '浪漫烟花',
-  cake: '生日蛋糕',
-  rainbow: '彩虹尾迹',
-  bigCake: '生日庆典大蛋糕',
-  heart: '爱心',
-}
+const curRewards = ref(rewardMap['0'])
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -199,71 +219,17 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-const menuStore = useMenuStore()
 const activityStore = useActivityStore()
-
-const EVENT_NAME: EventDataKeys =
-  activityStore.activeEventName.activity_anniversary_store_2024
-
 // 活动数据
-const activityData = computed(
-  () => activityStore.eventData[EVENT_NAME] as Event[],
-)
-const curRewards: Ref<Rewards> = ref({
-  name: 'fireworks',
-  count: 1,
-})
-const TASK_LIST = [
-  {
-    name: 'activity_anniversary_server_2024_m1',
-    title: '全服玩家获得星星代币数量达到2000w',
-    status: 'wait',
-    condition: '2000',
-  },
-  {
-    name: 'activity_anniversary_server_2024_m2',
-    title: '全服玩家获得星星代币数量达到4000w',
-    status: 'wait',
-    condition: '4000',
-  },
-  {
-    name: 'activity_anniversary_server_2024_m3',
-    title: '全服玩家获得星星代币数量达到6000w',
-    status: 'wait',
-    condition: '6000',
-  },
-  {
-    name: 'activity_anniversary_server_2024_m4',
-    title: '全服玩家获得星星代币数量达到8000w',
-    status: 'wait',
-    condition: '8000',
-  },
-  {
-    name: 'activity_anniversary_server_2024_m4',
-    title: '全服玩家获得星星代币数量达到1亿',
-    status: 'wait',
-    condition: '1',
-  },
-]
-const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
-// 任务列表数据
-const taskList = computed(() => {
-  return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[index]
-    return {
-      ...item,
-      status:
-        activity?.award[0] === 1
-          ? 'redeemed'
-          : activity?.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
-    }
-  })
-})
+const activityData = computed(() => activityStore.activityData)
 
-const sessionIsVisitedKey = 'isVisitedAnniversaryVisit2024'
-const isVisited = Session.get(sessionIsVisitedKey)
+// 商店列表状态
+const storeList = computed(() => {
+  return activityData.value.sprite_exchange_store.store_list
+})
+const curItem = ref<StoreItem>({ remaining_amount: 3, price: 100, id: 0 })
+
+const isVisited = Session.get('isVisitedAnniversaryStore2024')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 const mainTransitionName = ref('')
@@ -273,18 +239,13 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
-// 当前任务的完成进度
-const currentProgress = computed(() => {
-  return taskList.value.filter((e) => e.status !== 'wait').length
-})
-
 onMounted(() => {
   try {
     getActivityData()
   } catch (error) {
     console.error(error)
   }
-  Session.set(sessionIsVisitedKey, true)
+  Session.set('isVisitedAnniversaryStore2024', true)
 })
 
 // 显示帮助
@@ -304,73 +265,68 @@ function handleSrc(name: string): string {
 
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: EVENT_NAME })
+  getPlayerMissionData({ event: 'activitycenter_anniversary_store_2024' })
     .then((res) => {
-      // 获取数据并按照 TASK_LIST 的顺序进行排序
-      const activityData: Event[] =
-        res.data.event_data?.activity_season22_sprint.sort(
-          (a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
-            const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
-            return orderA - orderB
-          },
-        )
-
-      // 是否已领奖：所有任务已领奖
-      const isClaimedReward = !activityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
-      // 更新菜单数据 isClaimedReward
-      menuStore.updateMenuDataByIsClaimedReward(
-        EVENT_NAME as string,
-        isClaimedReward,
-      )
       // 更新缓存活动数据
-      activityStore.updateEventData(EVENT_NAME, activityData)
+      activityStore.updateActivityData(res.data)
     })
     .catch((error) => {
       showToast(error.message)
     })
 }
 
-// 领奖
-function handleReward(task: string, status: string): void {
-  if (status === 'redeemed') {
-    showToast('已领奖')
+// 兑换奖励
+function handleExchange(item: StoreItem): void {
+  if (item.remaining_amount <= 0) {
     return
   }
-  if (status === 'wait') {
-    showToast('还未完成任务')
-    return
-  }
-  claimMissionReward({
-    event: EVENT_NAME,
-    task,
-    rewardId: 1,
+  curRewards.value = rewardMap[item.id as keyof typeof rewardMap]
+  modalReward.value?.openModal()
+  curItem.value = item
+}
+
+// 取消
+function handleCancel(): void {
+  modalReward.value?.closeModal()
+}
+
+// 确认
+function handleConfirm(): void {
+  purchaseSpriteToken({
+    id: Number(curItem.value.id),
+    remainingAmount: curItem.value.remaining_amount,
+    storeCurrencyCount: activityData.value.token_info.fireworks_token,
+    storeEvent: 'activitycenter_anniversary_store_2024',
   })
     .then((res) => {
-      const rewards = res.data.rewards
-      modalReward.value?.openModal()
-      curRewards.value = {
-        name: Object.keys(rewards)[0],
-        count: Number(Object.values(rewards)[0]),
+      // code = 200 的错误
+      const errorMap = {
+        fail: '兑换失败',
+        'not enough store currency': '货币不足',
+        'old data': '当前货币数量或者库存数量参数和实际不同',
+        'exceed limit': '剩余可兑换数量不足',
       }
-      // 后端接口请求限制间隔 3s
-      // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-      const newActivityData = activityData.value.map((item) => {
-        return {
-          ...item,
-          award: item.task_id === task ? [1] : item.award,
-        }
-      })
-      activityStore.updateEventData(EVENT_NAME, newActivityData)
-      const isClaimedReward = !newActivityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
+      if (res.msg !== 'ok') {
+        showToast(errorMap[res.msg as keyof typeof errorMap])
+        return
+      }
+      modalReward.value?.closeModal()
+      showToast('兑换奖励成功')
+      // 更新活动数据
+      const result = (res as any).result
+      activityData.value.token_info.fireworks_token = result.token_count
+      const storeList = activityData.value.sprite_exchange_store.store_list.map(
+        (item) => {
+          return {
+            ...item,
+            remaining_amount:
+              item.id === result.id
+                ? result.remaining_amount
+                : item.remaining_amount,
+          }
+        },
       )
-      menuStore.updateMenuDataByIsClaimedReward(
-        EVENT_NAME as string,
-        isClaimedReward,
-      )
+      activityData.value.sprite_exchange_store.store_list = storeList
     })
     .catch((error) => {
       showToast(error.message)
@@ -379,8 +335,6 @@ function handleReward(task: string, status: string): void {
 </script>
 
 <style lang="scss" scoped>
-$progress-bar-star-tail-half-width: 17px;
-$progress-bar-star-width: 181px;
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
@@ -399,7 +353,7 @@ $progress-bar-star-width: 181px;
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.anniversary-server-2024 {
+.anniversary {
   position: relative;
   width: 2100px;
 
@@ -413,309 +367,129 @@ $progress-bar-star-width: 181px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/anniversary-server-2024/bg.jpg');
+    background-image: url('@/assets/images/anniversary-store-2024/bg.jpg');
   }
+}
+.header {
+  position: relative;
+  left: 657px;
+  top: 57px;
+  width: 732px;
 }
 .title {
-  position: absolute;
-  left: 262px;
-  top: 40px;
-  width: 896px;
-  height: 255px;
-  background-image: url('@/assets/images/anniversary-server-2024/title.png');
+  width: 732px;
+  height: 529px;
+  background-image: url('@/assets/images/anniversary-store-2024/title.png');
 }
-.date-help {
+.help {
   position: absolute;
-  border-radius: 50%;
-  width: 47px;
-  height: 47px;
-  top: 0px;
-  left: 839px;
+  right: 27px;
+  top: 92px;
+  width: 45px;
+  height: 45px;
+  background-image: url('@/assets/images/anniversary-store-2024/help.png');
 }
-.task-list-container {
-  // position: relative;
-}
-.tag-clock {
+.store-list {
   position: absolute;
-  top: 106px;
-  left: 83px;
-  width: 158px;
-  height: 82px;
-  background-image: url('@/assets/images/anniversary-server-2024/tag-clock.png');
+  left: 50%;
+  top: 475px;
+  transform: translate(-50%);
+  width: 1740px;
+  height: 464px;
 }
-.task-item {
-  width: 280px;
-  height: 247px;
-  position: absolute;
-  top: 728px;
-  color: #fff;
-  text-align: center;
-  .task-condition {
-    position: absolute;
-    top: 343px;
-    left: 140px;
-    transform: translate(-50%, -50%);
-    font-size: 40px;
-    .unit {
-      font-size: 20px;
-    }
+.store-item {
+  position: relative;
+  margin-right: 30px;
+  width: 265px;
+  height: 464px;
+
+  &:last-of-type {
+    margin-right: 0;
   }
 }
-@for $i from 1 through 5 {
-  .task-item#{$i} {
+@for $i from 1 through 6 {
+  .store-#{$i} {
     &.wait {
-      background-image: url('@/assets/images/anniversary-server-2024/task#{$i}-wait.png');
+      background-image: url('@/assets/images/anniversary-store-2024/task#{$i}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/anniversary-server-2024/task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/anniversary-server-2024/task#{$i}-redeemed.png');
-    }
-
-    @if $i == 1 {
-      left: 180px;
-    } @else if $i == 2 {
-      left: 536px;
-    } @else if $i == 3 {
-      left: 918px;
-    } @else if $i == 4 {
-      left: 1288px;
-    } @else if $i == 5 {
-      left: 1658px;
+      background-image: url('@/assets/images/anniversary-store-2024/task#{$i}-can.png');
     }
   }
 }
-.task-condition {
+.exchange {
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
+  text-align: center;
+  font-size: 34px;
   color: #fff;
+  &.active {
+    color: #e4d492;
+  }
+}
+.fireworks {
+  position: absolute;
+  right: 160px;
+  top: 356px;
+  width: 204px;
+  height: 52px;
+  border-radius: 52px;
+  line-height: 52px;
+  font-size: 40px;
+  font-weight: 500;
+  color: #fff;
+  background: rgba(59, 143, 194, 0.77);
+  &-icon {
+    margin: 0 20px;
+    width: 48px;
+    height: 47px;
+  }
+}
+.footer {
+  position: absolute;
+  left: 50%;
+  bottom: 72px;
+  text-align: center;
+  font-size: 40px;
+  color: #fff;
+  transform: translateX(-50%);
+}
+.btn {
+  width: 340px;
+  height: 94px;
+
+  &-cancel {
+    background: #74d2ee;
+  }
+  &-confirm {
+    background: #ffcb4d;
+  }
+}
+.reward-box {
   text-align: center;
 }
-
-.progress-bar-wait {
-  position: absolute;
-  top: 974px;
-  left: 160px;
-  width: 1718px;
-  height: 65px;
-  background-image: url('@/assets/images/anniversary-server-2024/progress-bar-wait.png');
-  overflow: hidden;
-}
-.progress-bar-already-finish {
-  position: absolute;
-  top: 974px;
-  left: 160px;
-  width: 0;
-  // width: 165px;
-  overflow: hidden;
-  &-1 {
-    animation: alreadyFinishWidth1 1s ease-out forwards;
-  }
-  &-2 {
-    animation: alreadyFinishWidth2 1s ease-out forwards;
-  }
-  &-3 {
-    animation: alreadyFinishWidth3 1s ease-out forwards;
-  }
-  &-4 {
-    animation: alreadyFinishWidth4 1s ease-out forwards;
-  }
-  &-5 {
-    animation: alreadyFinishWidth5 1.05s ease-out forwards;
-  }
-  .progress-bar-finish {
-    width: 1727px;
-    height: 65px;
-    background-image: url('@/assets/images/anniversary-server-2024/progress-bar-finish.png');
-  }
-}
-@keyframes alreadyFinishWidth1 {
-  from {
-    width: 0;
-  }
-  to {
-    width: 165px;
-  }
-}
-@keyframes alreadyFinishWidth2 {
-  from {
-    width: 165px;
-  }
-  to {
-    width: 530px;
-  }
-}
-@keyframes alreadyFinishWidth3 {
-  from {
-    width: 530px;
-  }
-  to {
-    width: 909px;
-  }
-}
-@keyframes alreadyFinishWidth4 {
-  from {
-    width: 909px;
-  }
-  to {
-    width: 1271px;
-  }
-}
-@keyframes alreadyFinishWidth5 {
-  from {
-    width: 1271px;
-  }
-  to {
-    width: 1727px;
-  }
-}
-.progress-bar-star {
-  position: absolute;
-  top: 0px;
-  left: 0;
-  width: 0;
-  height: 65px;
-  background-image: url('@/assets/images/anniversary-server-2024/progress-bar-star.png');
-  z-index: 9999;
-  transform: scale(1, 0.7);
-  &-1 {
-    animation: progressStarSlide1 1s ease-out forwards;
-  }
-  &-2 {
-    width: $progress-bar-star-width;
-    animation: progressStarSlide2 1s ease-out forwards;
-  }
-  &-3 {
-    width: $progress-bar-star-width;
-    animation: progressStarSlide3 1s ease-out forwards;
-  }
-  &-4 {
-    width: $progress-bar-star-width;
-    animation: progressStarSlide4 1s ease-out forwards;
-  }
-  &-5 {
-    width: $progress-bar-star-width;
-    animation: progressStarSlide5 1s ease-out forwards;
-  }
-}
-@keyframes progressStarSlide1 {
-  from {
-    width: 0;
-  }
-  to {
-    width: $progress-bar-star-width;
-  }
-}
-@keyframes progressStarSlide2 {
-  from {
-    left: 0px;
-  }
-  to {
-    left: calc(
-      530px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-}
-@keyframes progressStarSlide3 {
-  from {
-    left: calc(
-      530px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-  to {
-    left: calc(
-      909px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-}
-@keyframes progressStarSlide4 {
-  from {
-    left: calc(
-      909px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-  to {
-    left: calc(
-      1271px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-}
-@keyframes progressStarSlide5 {
-  from {
-    left: calc(
-      1271px - $progress-bar-star-width + $progress-bar-star-tail-half-width
-    );
-  }
-  to {
-    left: calc(1727px - $progress-bar-star-width);
-  }
-}
-
-.paster1 {
-  position: absolute;
-  top: 344px;
-  left: 8px;
-  width: 508px;
-  height: 448px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster1.png');
-}
-.paster2 {
-  position: absolute;
-  top: 325px;
-  left: 451px;
-  width: 280px;
-  height: 395px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster2.png');
-}
-.paster3 {
-  position: absolute;
-  top: 424px;
-  left: 727px;
-  width: 373px;
-  height: 295px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster3.png');
-}
-.paster4 {
-  position: absolute;
-  top: 269px;
-  left: 1086px;
-  width: 378px;
-  height: 459px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster4.png');
-}
-.paster5 {
-  position: absolute;
-  top: 269px;
-  left: 1453px;
-  width: 299px;
-  height: 450px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster5.png');
-}
-.paster6 {
-  position: absolute;
-  top: 446px;
-  left: 1800px;
-  width: 177px;
-  height: 254px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster6.png');
-}
-.paster7 {
-  position: absolute;
-  top: 698px;
-  left: 1559px;
-  width: 97px;
-  height: 149px;
-  background-image: url('@/assets/images/anniversary-server-2024/paster7.png');
-  transform: scaleX(-1);
-}
-.modal-text {
+.reward-title {
   font-size: 40px;
   color: #454545;
-
-  &-blue {
-    color: #4db6da;
+  letter-spacing: 1px;
+}
+.reward-list {
+  &_1 {
+    width: 80%;
+    .reward-item {
+      height: 200px;
+    }
+    .reward-img {
+      width: 200px;
+    }
   }
 }
-.modal-reward {
-  width: 150px;
+.reward-img {
+  width: 100px;
+}
+.reward-img-wrap {
+  width: 100%;
+  height: 200px;
 }
 </style>

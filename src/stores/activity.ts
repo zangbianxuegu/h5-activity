@@ -412,44 +412,6 @@ export const useActivityStore = defineStore(
           awarded_types: [],
         },
       ],
-      activity_anniversary_store_2024: [
-        {
-          task_id: 'activity_season22_sprint_m1',
-          stages: [1],
-          award: [0],
-          value: 0,
-          score: '',
-          is_eggy_reward: false,
-          awarded_types: [],
-        },
-        {
-          task_id: 'collecting_candles',
-          stages: [50],
-          award: [0],
-          value: 0,
-          score: '',
-          is_eggy_reward: false,
-          awarded_types: [],
-        },
-        {
-          task_id: 'login_days',
-          stages: [5],
-          award: [0],
-          value: 0,
-          score: '',
-          is_eggy_reward: false,
-          awarded_types: [],
-        },
-        {
-          task_id: 'activity_season22_sprint_m4',
-          stages: [3],
-          award: [0],
-          value: 0,
-          score: '',
-          is_eggy_reward: false,
-          awarded_types: [],
-        },
-      ],
     })
 
     // 设置eventDataKeys
@@ -480,8 +442,7 @@ export const useActivityStore = defineStore(
         event === 'activity_dragonboat_2024' ||
         event === 'activity_childrens_day_2024' ||
         event === 'activity_anniversary_warmup_2024' ||
-        event === 'activity_season22_sprint' ||
-        event === 'activity_anniversary_store_2024'
+        event === 'activity_season22_sprint'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
