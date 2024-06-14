@@ -90,6 +90,7 @@ export const useMenuStore = defineStore('menu', () => {
         'activity_season22_sprint',
         'activitycenter_anniversary_visit_2024',
         'activitycenter_anniversary_server_2024',
+        'activitycenter_anniversary_store_2024',
       ].includes(event)
     ) {
       curItem = menuData.value.find((item) => item.value === event)

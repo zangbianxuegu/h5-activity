@@ -216,6 +216,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '嘉年华商店',
+    value: 'activitycenter_anniversary_store_2024',
+    routeName: 'AnniversaryStore2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

@@ -158,15 +158,6 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/anniversary-visit-2024',
-    name: 'AnniversaryVisit2024',
-    component: () => import('@/views/AnniversaryVisit2024'),
-    meta: {
-      title: '巡光嘉年华',
-      module: 'activitycenter_anniversary_visit_2024',
-    },
-  },
-  {
     path: '/bulletin',
     name: 'Bulletin',
     component: () => import('@/views/Bulletin'),
@@ -185,12 +176,30 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/anniversary-visit-2024',
+    name: 'AnniversaryVisit2024',
+    component: () => import('@/views/AnniversaryVisit2024'),
+    meta: {
+      title: '巡光嘉年华',
+      module: 'activitycenter_anniversary_visit_2024',
+    },
+  },
+  {
     path: '/anniversary-server-2024',
     name: 'AnniversaryServer2024',
     component: () => import('@/views/AnniversaryServer2024'),
     meta: {
       title: '成为星星收藏家',
       module: 'activitycenter_anniversary_server_2024',
+    },
+  },
+  {
+    path: '/anniversary-store-2024',
+    name: 'AnniversaryStore2024',
+    component: () => import('@/views/AnniversaryStore2024'),
+    meta: {
+      title: '嘉年华商店',
+      module: 'activitycenter_anniversary_store_2024',
     },
   },
 ]

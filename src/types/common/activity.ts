@@ -51,6 +51,12 @@ export type EventDataKeysToObject = {
   [k in keyof EventData]: EventDataKeys
 }
 
+// 活动事件名
+// 在这里添加……
+export type EventName =
+  | keyof EventData
+  | 'activitycenter_anniversary_store_2024'
+
 export interface MenuItem {
   label: string
   value: string
