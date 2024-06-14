@@ -184,4 +184,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activity_season22_sprint',
     },
   },
+  {
+    path: '/anniversary-server-2024',
+    name: 'AnniversaryServer2024',
+    component: () => import('@/views/AnniversaryServer2024'),
+    meta: {
+      title: '成为星星收藏家',
+      module: 'activitycenter_anniversary_server_2024',
+    },
+  },
 ]
