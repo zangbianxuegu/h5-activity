@@ -68,6 +68,7 @@ import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
 import { useRoute, useRouter } from 'vue-router'
+import { getErrorCustom, isErrorCustom } from './utils/error'
 
 // 菜单初始值
 const initMenuItems: MenuItem[] = [
@@ -192,6 +193,13 @@ const initMenuItems: MenuItem[] = [
     routeName: 'AnniversaryWarmup2024',
     isNew: false,
     isClaimedReward: true,
+  },
+  {
+    label: '闲适安居 筑巢小憩',
+    value: 'activity_season22_sprint',
+    routeName: 'Season22Sprint',
+    isNew: false,
+    isClaimedReward: false,
   },
   {
     label: '巡光嘉年华',
@@ -489,7 +497,14 @@ function getAllEvents(): void {
     })
     .catch((error) => {
       isLoading.value = false
-      showToast(error.message)
+      const errorMessage = error.message
+      if (isErrorCustom(errorMessage)) {
+        // 自定义异常的处理的实例化获取和输出
+        const errorCustom = getErrorCustom(errorMessage)
+        showToast(errorCustom.getErrorMessage())
+      } else {
+        showToast(error.message)
+      }
     })
 }
 </script>

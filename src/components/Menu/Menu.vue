@@ -379,7 +379,6 @@ const getNavTextClass = (menu: MenuItem): string[] => {
   }
   &-poster-anniversary-2024 {
     color: #7afaff;
-    line-height: 1;
   }
 }
 </style>

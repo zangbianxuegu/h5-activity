@@ -122,27 +122,39 @@ const imgList = reactive<Img[]>([
 let listener: (this: HTMLElement, ev: AnimationEvent) => any
 const breatheAnimate = ['animate__animated', 'animate__pulse']
 const startBreatheImg = (img: Img): void => {
-  img.class = img.class.concat(breatheAnimate)
-  const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
-  listener = () => {
-    cancelBreatheImg(img, listener)
+  try {
+    img.class = img.class.concat(breatheAnimate)
+    const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
+    listener = () => {
+      cancelBreatheImg(img, listener)
+    }
+    imgDom?.addEventListener('animationend', listener)
+  } catch (error) {
+    console.log('startBreatheImg error', error)
   }
-  imgDom.addEventListener('animationend', listener)
 }
 const cancelBreatheImg = (
   img: Img,
   listener: (this: HTMLElement, ev: AnimationEvent) => any,
 ): void => {
-  img.class = img.class.filter((e) => !breatheAnimate.includes(e))
-  const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
-  imgDom.removeEventListener('animationend', listener, false)
+  try {
+    img.class = img.class.filter((e) => !breatheAnimate.includes(e))
+    const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
+    imgDom?.removeEventListener('animationend', listener, false)
+  } catch (error) {
+    console.log('cancelBreatheImg error', error)
+  }
 }
 
 const removeEventListener = (): void => {
-  imgList.forEach((img) => {
-    const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
-    imgDom.removeEventListener('animationend', listener, false)
-  })
+  try {
+    imgList.forEach((img) => {
+      const imgDom = document.getElementsByClassName(img.key)[0] as HTMLElement
+      imgDom?.removeEventListener('animationend', listener, false)
+    })
+  } catch (error) {
+    console.log('removeEventListener error', error)
+  }
 }
 
 interface Timer {
@@ -151,9 +163,9 @@ interface Timer {
 }
 
 const timerList: Timer[] = []
+let endTimeout = 0
 const startAnimate = (): void => {
   const timeoutStart = 1500
-  let endTimeout = 0
   if (!Local.get('posterAnniversary2024IsNotFirstLoad')) {
     // 开启活动img动画
     imgList.forEach((img, index) => {
@@ -216,6 +228,7 @@ const clearTimer = (): void => {
       clearInterval(timer.timer)
     }
   })
+  timerList.splice(0)
 }
 
 onMounted(() => {
@@ -223,8 +236,12 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
-  removeEventListener()
   clearTimer()
+  removeEventListener()
+  // 解决页面卸载后才生效的定时器
+  setTimeout(() => {
+    clearTimer()
+  }, endTimeout + 500)
 })
 
 // 设计稿宽

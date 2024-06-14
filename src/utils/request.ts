@@ -7,7 +7,7 @@ import type {
 } from '@/types'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
-
+import { setErrorCustom } from './error'
 function postMsgToNative(msg: {
   methodId: string
   reqData: any
@@ -63,7 +63,7 @@ function handlePostMessageToNative({
           }
           if (pollCount >= 3) {
             clearInterval(intervalId)
-            reject(new Error('nativeError：UniSDKJSBridge mount fail!'))
+            reject(setErrorCustom('nativeError', 'UniSDKJSBridge mount fail!'))
           }
         }, 100)
       }
