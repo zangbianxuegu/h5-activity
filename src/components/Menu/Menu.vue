@@ -207,6 +207,11 @@ function handleMenuIcon(curItem: MenuItem): string {
       '../../assets/images/common/nav-icon-cake.png',
       import.meta.url,
     ).href
+  } else if (curItemValue === 'activitycenter_anniversary_visit_2024') {
+    icon = new URL(
+      '../../assets/images/common/nav-icon-small-cake.png',
+      import.meta.url,
+    ).href
   }
   return icon
 }
@@ -220,6 +225,10 @@ const getNavIconClass = (menu: MenuItem): string[] => {
   menuIconMap.set(
     'activitycenter_poster_anniversary_2024',
     `${navIconPrefix}-poster-anniversary-2024`,
+  )
+  menuIconMap.set(
+    'activitycenter_anniversary_visit_2024',
+    `${navIconPrefix}-anniversary-visit-2024`,
   )
   const mapValue = menuIconMap.get(menuValue)
   if (mapValue) {
@@ -354,6 +363,12 @@ const getNavTextClass = (menu: MenuItem): string[] => {
     padding: 0;
     width: 91px;
     height: 70px;
+  }
+  &-anniversary-visit-2024 {
+    margin: 0 20px;
+    padding: 0;
+    width: 84px;
+    height: 67px;
   }
 }
 .nav-text {
