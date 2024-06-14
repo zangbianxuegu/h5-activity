@@ -41,7 +41,6 @@ export interface EventData {
   activity_dragonboat_2024: Event[]
   activity_anniversary_warmup_2024: Event[]
   activity_season22_sprint: Event[]
-  activity_anniversary_store_2024: Event[]
 }
 
 export type EventDataKeys = keyof EventData
@@ -49,6 +48,12 @@ export type EventDataKeys = keyof EventData
 export type EventDataKeysToObject = {
   [k in keyof EventData]: EventDataKeys
 }
+
+// 活动事件名
+// 在这里添加……
+export type EventName =
+  | keyof EventData
+  | 'activitycenter_anniversary_store_2024'
 
 export interface MenuItem {
   label: string

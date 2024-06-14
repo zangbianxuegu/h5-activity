@@ -181,7 +181,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/AnniversaryStore2024'),
     meta: {
       title: '成为星星收藏家',
-      module: 'activity_anniversary_store_2024',
+      module: 'activitycenter_anniversary_store_2024',
     },
   },
 ]
