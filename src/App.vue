@@ -202,6 +202,20 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '巡光嘉年华',
+    value: 'activitycenter_anniversary_visit_2024',
+    routeName: 'AnniversaryVisit2024',
+    isNew: false,
+    isClaimedReward: true,
+  },
+  {
+    label: '成为星星收藏家',
+    value: 'activitycenter_anniversary_server_2024',
+    routeName: 'AnniversaryServer2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '嘉年华商店',
     value: 'activitycenter_anniversary_store_2024',
     routeName: 'AnniversaryStore2024',
@@ -443,6 +457,8 @@ function getAllEvents(): void {
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
+      console.log('activeEvents', activeEvents)
+
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
       if (!newMenuData || newMenuData.length === 0) {
