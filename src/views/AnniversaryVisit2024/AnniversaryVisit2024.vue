@@ -122,49 +122,49 @@
             <p class="modal-text">
               1、活动期间，参与1次嘉年华球赛，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >60礼花积分</span
+                >60礼花</span
               >；
             </p>
             <p class="modal-text">
               2、活动期间，参与1次先祖巡游，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >60礼花积分</span
+                >60礼花</span
               >；
             </p>
             <p class="modal-text">
               3、活动期间，欣赏1次嘉年华烟花表演，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >60礼花积分</span
+                >60礼花</span
               >；
             </p>
             <p class="modal-text">
               4、活动期间，累计2天与嘉年华的小狗互动，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >80礼花积分</span
+                >80礼花</span
               >；
             </p>
             <p class="modal-text">
               5、活动期间，累计2天在档案馆查看编年史，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >80礼花积分</span
+                >80礼花</span
               >；
             </p>
             <p class="modal-text">
               6、活动期间，累计2天在艺术馆观看艺术展，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >80礼花积分</span
+                >80礼花</span
               >；
             </p>
             <p class="modal-text">
               7、活动期间，累计3天在冥想之地感受宁静，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >100礼花积分</span
+                >100礼花</span
               >；
             </p>
             <p class="modal-text">
               8、活动期间，累计3天前往嘉年华影院观看特别放映，即可解锁印章并获取<span
                 class="text-[#ffcb4d]"
-                >100礼花积分</span
+                >100礼花</span
               >。
             </p>
             <p class="modal-text">
@@ -173,13 +173,13 @@
             <p class="modal-text">
               1、活动期间，每日在云巢冥想加入嘉年华，即可获取<span
                 class="text-[#ffcb4d]"
-                >50积分</span
+                >50礼花</span
               >；
             </p>
             <p class="modal-text">
               2、活动期间，每日在云巢收集一个星星代币，即可获取<span
                 class="text-[#ffcb4d]"
-                >50积分</span
+                >50礼花</span
               >。
             </p>
             <p class="modal-text">
