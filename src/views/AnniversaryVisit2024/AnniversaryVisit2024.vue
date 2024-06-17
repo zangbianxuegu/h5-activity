@@ -110,6 +110,13 @@
               >2024年6月29日~2024年7月14日
             </p>
             <p class="modal-text">
+              <span class="font-semibold">嘉年华限时活动时间：</span>
+            </p>
+            <p class="modal-text">1、嘉年华球赛：每个偶数小时，0~12分</p>
+            <p class="modal-text">2、小狗派对：每个偶数小时，15~27分</p>
+            <p class="modal-text">3、先祖巡游：每个偶数小时，30~45分</p>
+            <p class="modal-text">4、嘉年华烟花大会：每个偶数小时，44~60分</p>
+            <p class="modal-text">
               <span class="font-semibold">印章任务：</span>
             </p>
             <p class="modal-text">
@@ -380,8 +387,8 @@ const taskList = computed(() => {
         activity.award[0] === 1
           ? 'redeemed'
           : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
+          ? 'can'
+          : 'wait',
     }
   })
 })
