@@ -1,6 +1,24 @@
 import type { Response } from '@/types'
 import { handlePostMessageToNative } from '@/utils/request'
 
+/**
+ * @param token_count 礼花剩余数
+ * @param remaining_amount 礼品剩余数
+ */
+export interface PurchaseSpriteTokenRes {
+  code: number
+  msg: string
+  data: {
+    token_name: string
+    token_count: number
+    start_time: number
+    end_time: number
+    current_time: number
+    remaining_amount: number
+    id: number
+  }
+}
+
 // 兑换奖励
 export function purchaseSpriteToken({
   id,
@@ -23,7 +41,7 @@ export function purchaseSpriteToken({
         store_currency_count: storeCurrencyCount,
         store_event: storeEvent,
       },
-      handleRes: (res) => {
+      handleRes: (res: PurchaseSpriteTokenRes) => {
         if (res.code === 200) {
           resolve(res)
         } else {

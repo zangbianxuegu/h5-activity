@@ -458,6 +458,22 @@ function getActivityData(): void {
     })
 }
 
+function updateActivityDataRewardStatusNoRequest(task: string): void {
+  // 后端接口请求限制间隔 3s
+  // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+  const newActivityData = activityData.value.map((item) => {
+    return {
+      ...item,
+      award: item.task_id === task ? [1] : item.award,
+    }
+  })
+  activityStore.updateEventData(EVENT_NAME, newActivityData)
+  const isClaimedReward = !newActivityData.some(
+    (item) => item.award[0] === 0 && item.value >= item.stages[0],
+  )
+  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
+}
+
 // 领奖
 function handleReward(task: string, status: string): void {
   // 抽奖
@@ -476,7 +492,7 @@ function handleReward(task: string, status: string): void {
       rewardId: 1,
     })
       .then((_) => {
-        taskList.value[10].status = 'redeemed'
+        updateActivityDataRewardStatusNoRequest(task)
         modalLottery.value?.openModal()
       })
       .catch((error) => {
@@ -498,13 +514,13 @@ function handleReward(task: string, status: string): void {
       rewardId: 1,
     })
       .then((res) => {
-        getActivityData()
         const rewards = res.data.rewards
         modalReward.value?.openModal()
         curRewards.value = {
           name: 'fireworks_token',
           count: Number(Object.values(rewards)[0]),
         }
+        updateActivityDataRewardStatusNoRequest(task)
       })
       .catch((error) => {
         showToast(error.message)

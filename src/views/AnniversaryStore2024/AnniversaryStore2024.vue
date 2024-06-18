@@ -136,7 +136,11 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData } from '@/utils/request'
-import { purchaseSpriteToken } from '@/apis/purchase'
+import {
+  type PurchaseSpriteTokenRes,
+  purchaseSpriteToken,
+} from '@/apis/purchase'
+
 import { type StoreItem, type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
@@ -298,7 +302,7 @@ function handleConfirm(): void {
     storeCurrencyCount: activityData.value.token_info.fireworks_token,
     storeEvent: 'activitycenter_anniversary_store_2024',
   })
-    .then((res) => {
+    .then((res: PurchaseSpriteTokenRes) => {
       // code = 200 的错误
       const errorMap = {
         fail: '兑换失败',
@@ -313,7 +317,7 @@ function handleConfirm(): void {
       modalReward.value?.closeModal()
       showToast('兑换奖励成功')
       // 更新活动数据
-      const result = (res as any).result
+      const result = res.data
       activityData.value.token_info.fireworks_token = result.token_count
       const storeList = activityData.value.sprite_exchange_store.store_list.map(
         (item) => {
