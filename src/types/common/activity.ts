@@ -17,18 +17,29 @@ export interface Activity {
 export type ActivityTimeItem = Pick<Activity, 'startTime' | 'endTime'>
 export type ActivityTime = Record<string, ActivityTimeItem>
 
+// 任务项类型
 export interface Event {
   task_id: string
   stages: number[]
   award: number[]
   value: number
   score: string
-  is_eggy_reward: boolean
+  is_eggy_reward?: boolean
   is_today_sign_in?: boolean | number
   awarded_types: any[]
   task_names?: string[]
 }
 
+type SingleEventData<K extends EventName> = {
+  [P in K]: Event[]
+}
+// 活动数据类型
+export interface ActivityData<K extends EventName> {
+  event_data: SingleEventData<K>
+  current_time: number
+}
+
+// 所有活动集合，已废除
 export interface EventData {
   activity_sign_in_1: Event
   activity_sign_in_2: Event
@@ -56,6 +67,8 @@ export type EventDataKeysToObject = {
 export type EventName =
   | keyof EventData
   | 'activitycenter_anniversary_store_2024'
+  | 'activitycenter_main_friendship_2024'
+  | 'activitycenter_store_friendship_2024'
 
 export interface MenuItem {
   label: string

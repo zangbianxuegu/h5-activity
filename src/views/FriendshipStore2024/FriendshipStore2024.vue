@@ -7,7 +7,7 @@
             <h1
               class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
             >
-              嘉年华商店
+              养分补给
             </h1>
             <div
               class="help bg-contain bg-center bg-no-repeat"
@@ -17,19 +17,16 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <!-- 礼花总数 -->
-            <div class="fireworks flex items-center">
-              <img
-                class="fireworks-icon"
-                src="@/assets/images/anniversary-store-2024/star.png"
-                alt="star"
-              />
-              <span>{{ activityData.token_info.fireworks_token }}</span>
+            <!-- 阳光总数 -->
+            <div
+              class="sunlight flex items-center bg-contain bg-center bg-no-repeat"
+            >
+              <span>{{ activityDataStore.token_info.sunlight_token }}</span>
             </div>
-            <!-- 商品列表 -->
+            <!-- 商品列表-一般兑换 -->
             <ul class="store-list flex flex-row flex-wrap">
               <li
-                v-for="(item, index) in storeList"
+                v-for="(item, index) in storeList.slice(0, 6)"
                 :key="item.id"
                 :class="[
                   'store-item bg-contain bg-center bg-no-repeat',
@@ -46,10 +43,48 @@
                 </p>
               </li>
             </ul>
+            <!-- 商品列表-特殊兑换 -->
+            <ul class="store-list-special">
+              <li
+                v-for="(item, index) in storeList.slice(6, 8)"
+                :key="item.id"
+                :class="[
+                  'store-item-special bg-contain bg-center bg-no-repeat',
+                  `store-${index + 7}`,
+                  item.remaining_amount > 0 ? 'can' : 'wait',
+                ]"
+                @click="handleExchange(item)"
+              >
+                <p class="exchange">
+                  <span>可兑换：</span
+                  ><span class="exchange-count">{{
+                    item.remaining_amount
+                  }}</span>
+                </p>
+                <div
+                  v-if="hasLock(item, index)"
+                  class="overlay flex items-center justify-center"
+                >
+                  <div
+                    class="overlay-wrap mt-5 flex flex-col items-center justify-between text-center"
+                  >
+                    <img
+                      class="overlay-icon"
+                      src="@/assets/images/friendship-store-2024/lock.png"
+                      alt="lock"
+                    />
+                    <p class="overlay-text" v-if="index === 0">
+                      向友葵成长至第二阶段
+                    </p>
+                    <p class="overlay-text" v-else>向友葵成长至第四阶段</p>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </section>
         </Transition>
-        <footer class="footer">
-          7月15日0:00未使用的礼花将被清零，请及时兑换奖励！
+        <footer class="footer bg-no-repeat">
+          8月28日0:00未使用的阳光将被清零，请及时兑换奖励！
         </footer>
       </div>
       <!-- 活动规则说明 -->
@@ -57,29 +92,26 @@
         <template #content>
           <p class="modal-text">
             <span class="font-semibold">活动时间：</span
-            >2024年6月29日~2024年7月14日
+            >2024年7月17日~2024年8月27日
           </p>
           <p class="modal-text">
             <span class="font-semibold">活动内容：</span>
           </p>
           <p class="modal-text">
-            活动期间内，玩家可使用获得的礼花兑换物品，物品拥有兑换次数限制：
-          </p>
-          <p class="modal-text">1、使用100礼花可兑换1个爱心，最多可兑换3个；</p>
-          <p class="modal-text">
-            2、使用100礼花可兑换1个周年庆抱枕试用魔法，最多可兑换3个；
-          </p>
-          <p class="modal-text">
-            3、使用60礼花可兑换1个共享空间，最多可兑换3个；
+            1、活动期间，通过每日礼物、每日任务、每周惊喜可获得<span
+              class="text-[#ffcb4d]"
+              >阳光</span
+            >；
           </p>
           <p class="modal-text">
-            4、使用60礼花可兑换1个留影蜡烛，最多可兑换3个；
+            2、使用阳光可呵护向友葵（每次固定消耗100点），向友葵成长至四个阶段时可解锁对应的奖励；
           </p>
+          <p class="modal-text">3、使用阳光可在养分补给页面兑换各种道具；</p>
           <p class="modal-text">
-            5、使用60礼花可兑换1个筑巢季蜡烛，最多可兑换5个；
-          </p>
-          <p class="modal-text">
-            6、使用30礼花可兑换1个浪漫烟花魔法，最多可兑换20个。
+            4、当向友葵成长至第二阶段和第四阶段时，养分补给页面会解锁<span
+              class="text-[#ffcb4d]"
+              >有友节专属外观兑换</span
+            >，可使用<span class="text-[#ffcb4d]">爱心</span>进行兑换。
           </p>
         </template>
       </activity-modal>
@@ -136,15 +168,12 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData } from '@/utils/request'
-import {
-  type PurchaseSpriteTokenRes,
-  purchaseSpriteToken,
-} from '@/apis/purchase'
-
+import { purchaseSpriteToken } from '@/apis/purchase'
 import { type StoreItem, type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
-import { useActivityStore } from '@/stores/anniversaryStore2024'
+import { useActivityStore as useStoreFriendshipStore } from '@/stores/friendshipStore2024'
+import { useActivityStore as useStoreFriendshipMain } from '@/stores/friendshipMain2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
 const rewardMap = {
@@ -156,32 +185,44 @@ const rewardMap = {
   ],
   1: [
     {
-      name: '周年庆抱枕魔法',
-      img: 'outfit_prop_birthdayoreo',
+      name: '体型重塑',
+      img: 'resize_potion',
     },
   ],
   2: [
     {
-      name: '共享空间',
-      img: 'sharedspace_candle',
+      name: '向日葵花盘装扮魔法',
+      img: 'outfit_horn_sunflower_headwear',
     },
   ],
   3: [
     {
-      name: '留影蜡烛',
-      img: 'recording_candle',
+      name: '秋千',
+      img: 'swing',
     },
   ],
   4: [
     {
-      name: '筑巢季蜡烛',
-      img: 'season_candle',
+      name: '元气满满',
+      img: 'energy',
     },
   ],
   5: [
     {
-      name: '浪漫烟花',
-      img: 'fireworks',
+      name: '随机颜色尾迹',
+      img: 'trail_random',
+    },
+  ],
+  6: [
+    {
+      name: '向日葵发饰',
+      img: 'CharSkyKid_Horn_SunflowerHeadband',
+    },
+  ],
+  7: [
+    {
+      name: '有友向日葵',
+      img: 'CharSkyKid_Prop_Sunflower',
     },
   ],
 }
@@ -223,17 +264,29 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-const activityStore = useActivityStore()
+const storeFriendshipStore = useStoreFriendshipStore()
+const storeFriendshipMain = useStoreFriendshipMain()
 // 活动数据
-const activityData = computed(() => activityStore.activityData)
-
+const activityDataStore = computed(() => storeFriendshipStore.activityData)
+const activityDataMain = computed(() => storeFriendshipMain.activityData)
 // 商店列表状态
 const storeList = computed(() => {
-  return activityData.value.sprite_exchange_store.store_list
+  return activityDataStore.value.sprite_exchange_store.store_list
 })
-const curItem = ref<StoreItem>({ remaining_amount: 3, price: 100, id: 0 })
+// 当前兑换项
+const curItem = ref<StoreItem>({ remaining_amount: 5, price: 100, id: 0 })
+// 向日葵成长进度
+const progress = computed(() => {
+  const stages =
+    activityDataMain.value.event_data.activitycenter_main_friendship_2024[0]
+      .stages
+  const value =
+    activityDataMain.value.event_data.activitycenter_main_friendship_2024[0]
+      .value
+  return stages.filter((item: number) => item <= value).length
+})
 
-const isVisited = Session.get('isVisitedAnniversaryStore2024')
+const isVisited = Session.get('isVisitedFriendshipStore2024')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 const mainTransitionName = ref('')
@@ -246,10 +299,11 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
+    getFriendshipMainData()
   } catch (error) {
     console.error(error)
   }
-  Session.set('isVisitedAnniversaryStore2024', true)
+  Session.set('isVisitedFriendshipStore2024', true)
 })
 
 // 显示帮助
@@ -267,12 +321,34 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
+// 是否未解锁状态
+function hasLock(item: StoreItem, index: number): boolean {
+  if (item.remaining_amount === 0) {
+    return false
+  }
+  if (index === 0) {
+    return progress.value < 2
+  } else {
+    return progress.value < 4
+  }
+}
+
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: 'activitycenter_anniversary_store_2024' })
+  getPlayerMissionData({ event: 'activitycenter_store_friendship_2024' })
     .then((res) => {
-      // 更新缓存活动数据
-      activityStore.updateActivityData(res.data)
+      storeFriendshipStore.updateActivityData(res.data)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+// 获取向日葵的成长进度
+function getFriendshipMainData(): void {
+  getPlayerMissionData({ event: 'activitycenter_main_friendship_2024' })
+    .then((res) => {
+      storeFriendshipMain.updateActivityData(res.data)
     })
     .catch((error) => {
       showToast(error.message)
@@ -282,6 +358,14 @@ function getActivityData(): void {
 // 兑换奖励
 function handleExchange(item: StoreItem): void {
   if (item.remaining_amount <= 0) {
+    return
+  }
+  // 商品7
+  if (item.id === 6 && progress.value < 2) {
+    return
+  }
+  // 商品8
+  if (item.id === 7 && progress.value < 4) {
     return
   }
   curRewards.value = rewardMap[item.id as keyof typeof rewardMap]
@@ -299,13 +383,16 @@ function handleConfirm(): void {
   purchaseSpriteToken({
     id: Number(curItem.value.id),
     remainingAmount: curItem.value.remaining_amount,
-    storeCurrencyCount: activityData.value.token_info.fireworks_token as number,
-    storeEvent: 'activitycenter_anniversary_store_2024',
+    storeCurrencyCount:
+      curItem.value.id < 6
+        ? (activityDataStore.value.token_info.sunlight_token as number)
+        : activityDataStore.value.currency_info.heart,
+    storeEvent: 'activitycenter_store_friendship_2024',
   })
-    .then((res: PurchaseSpriteTokenRes) => {
+    .then((res) => {
       // code = 200 的错误
       const errorMap = {
-        fail: '兑换失败',
+        fail: '服务器错误',
         'not enough store currency': '货币不足',
         'old data': '当前货币数量或者库存数量参数和实际不同',
         'exceed limit': '剩余可兑换数量不足',
@@ -318,9 +405,11 @@ function handleConfirm(): void {
       showToast('兑换奖励成功')
       // 更新活动数据
       const result = res.data
-      activityData.value.token_info.fireworks_token = result.token_count
-      const storeList = activityData.value.sprite_exchange_store.store_list.map(
-        (item) => {
+      if (curItem.value.id < 6) {
+        activityDataStore.value.token_info.sunlight_token = result.token_count
+      }
+      const storeList =
+        activityDataStore.value.sprite_exchange_store.store_list.map((item) => {
           return {
             ...item,
             remaining_amount:
@@ -328,9 +417,8 @@ function handleConfirm(): void {
                 ? result.remaining_amount
                 : item.remaining_amount,
           }
-        },
-      )
-      activityData.value.sprite_exchange_store.store_list = storeList
+        })
+      activityDataStore.value.sprite_exchange_store.store_list = storeList
     })
     .catch((error) => {
       showToast(error.message)
@@ -371,93 +459,126 @@ function handleConfirm(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/anniversary-store-2024/bg.jpg');
+    background-image: url('@/assets/images/friendship-store-2024/bg.jpg');
   }
 }
 .header {
   position: relative;
-  left: 657px;
-  top: 57px;
-  width: 732px;
+  left: 33px;
+  top: 199px;
+  width: 667px;
 }
 .title {
-  width: 732px;
-  height: 529px;
-  background-image: url('@/assets/images/anniversary-store-2024/title.png');
+  width: 667px;
+  height: 358px;
+  background-image: url('@/assets/images/friendship-store-2024/title.png');
 }
 .help {
   position: absolute;
-  right: 27px;
-  top: 92px;
-  width: 45px;
-  height: 45px;
-  background-image: url('@/assets/images/anniversary-store-2024/help.png');
+  right: 106px;
+  top: -31px;
+  width: 63px;
+  height: 91px;
+  background-image: url('@/assets/images/friendship-store-2024/help.png');
 }
 .store-list {
   position: absolute;
-  left: 50%;
-  top: 475px;
-  transform: translate(-50%);
-  width: 1740px;
-  height: 464px;
+  left: 716px;
+  top: 208px;
+  width: 873px;
+  height: 774px;
 }
 .store-item {
   position: relative;
-  margin-right: 30px;
-  width: 265px;
-  height: 464px;
-
-  &:last-of-type {
-    margin-right: 0;
-  }
+  margin: 0 36px 33px 0;
+  width: 255px;
+  height: 354px;
 }
-@for $i from 1 through 6 {
+.store-list-special {
+  position: absolute;
+  left: 1589px;
+  top: 170px;
+  width: 837px;
+  height: 774px;
+}
+.store-item-special {
+  position: relative;
+  width: 281px;
+  height: 392px;
+  margin-bottom: 33px;
+}
+@for $i from 1 through 8 {
   .store-#{$i} {
     &.wait {
-      background-image: url('@/assets/images/anniversary-store-2024/task#{$i}-wait.png');
+      background-image: url('@/assets/images/friendship-store-2024/task#{$i}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/anniversary-store-2024/task#{$i}-can.png');
+      background-image: url('@/assets/images/friendship-store-2024/task#{$i}-can.png');
     }
   }
 }
 .exchange {
   position: absolute;
-  bottom: 15px;
+  bottom: 6px;
   width: 100%;
   text-align: center;
   font-size: 34px;
+  line-height: 1;
   color: #fff;
   &.active {
     color: #e4d492;
   }
 }
-.fireworks {
+.overlay {
   position: absolute;
-  right: 160px;
-  top: 356px;
-  width: 204px;
-  height: 52px;
-  border-radius: 52px;
-  line-height: 52px;
-  font-size: 40px;
-  font-weight: 500;
-  color: #fff;
-  background: rgba(59, 143, 194, 0.77);
-  &-icon {
-    margin: 0 20px;
-    width: 48px;
-    height: 47px;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.3);
+
+  &-wrap {
+    width: 180px;
+    height: 136px;
   }
+
+  &-icon {
+    width: 40px;
+    height: 55px;
+  }
+
+  &-text {
+    color: #fff;
+    font-size: 30px;
+    line-height: 36px;
+  }
+}
+.sunlight {
+  position: absolute;
+  left: 22px;
+  top: 23px;
+  padding: 0 20px 0 110px;
+  width: 296px;
+  height: 82px;
+  line-height: 82px;
+  font-size: 45px;
+  font-weight: 500;
+  color: #7b6d8d;
+  background-image: url('@/assets/images/friendship-store-2024/sunlight-bg.png');
 }
 .footer {
   position: absolute;
-  left: 50%;
-  bottom: 72px;
+  right: 120px;
+  bottom: 44px;
+  padding-right: 40px;
+  height: 81px;
+  line-height: 81px;
   text-align: center;
-  font-size: 40px;
+  font-size: 34px;
   color: #fff;
-  transform: translateX(-50%);
+  background-size: 43px 81px;
+  background-position: right center;
+  background-image: url('@/assets/images/friendship-store-2024/star.png');
 }
 .btn {
   width: 340px;

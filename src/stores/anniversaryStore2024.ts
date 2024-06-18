@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import type { AnniversaryStore2024 } from '@/types'
 
 export const useActivityStore = defineStore(
-  'anniversaryStore2024',
+  'activitycenter_anniversary_store_2024',
   () => {
     // 活动数据
     const activityData = ref<AnniversaryStore2024>({

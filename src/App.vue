@@ -223,6 +223,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '养分补给',
+    value: 'activitycenter_store_friendship_2024',
+    routeName: 'FriendshipStore2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

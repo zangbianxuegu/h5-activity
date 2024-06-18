@@ -202,4 +202,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_anniversary_store_2024',
     },
   },
+  {
+    path: '/friendship-store-2024',
+    name: 'FriendshipStore2024',
+    component: () => import('@/views/FriendshipStore2024'),
+    meta: {
+      title: '养分补给',
+      module: 'activitycenter_store_friendship_2024',
+    },
+  },
 ]

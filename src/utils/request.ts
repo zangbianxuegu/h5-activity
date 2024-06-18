@@ -267,8 +267,14 @@ export function getPlayerMissionData({
       // TODO
       // 拆分 activity 的全局状态管理。
       // 兼容之前的活动，等待 stores/activity.ts 中保存的活动全部下架之后，只需要保留 if 中的逻辑
-      if (event === 'activitycenter_anniversary_store_2024') {
-        const cachedData = Session.get('anniversaryStore2024')?.activityData
+      if (
+        [
+          'activitycenter_anniversary_store_2024',
+          'activitycenter_main_friendship_2024',
+          'activitycenter_store_friendship_2024',
+        ].includes(event)
+      ) {
+        const cachedData = Session.get(event)?.activityData
         const lastFetchTime =
           parseInt(Session.get(`lastFetchTime-${event}`)) || 0
         if (cachedData && now - lastFetchTime < 3500) {
