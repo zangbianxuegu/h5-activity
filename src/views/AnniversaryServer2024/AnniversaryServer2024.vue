@@ -349,6 +349,22 @@ function getActivityData(): void {
     })
 }
 
+function updateActivityDataRewardStatusNoRequest(task: string): void {
+  // 后端接口请求限制间隔 3s
+  // 优化用户体验，不再延时请求接口，直接前端更新数据展示
+  const newActivityData = activityData.value.map((item) => {
+    return {
+      ...item,
+      award: item.task_id === task ? [1] : item.award,
+    }
+  })
+  activityStore.updateEventData(EVENT_NAME, newActivityData)
+  const isClaimedReward = !newActivityData.some(
+    (item) => item.award[0] === 0 && item.value >= item.stages[0],
+  )
+  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
+}
+
 // 领奖
 function handleReward(task: string, status: string, rewardId: number): void {
   if (status === 'redeemed') {
@@ -365,7 +381,7 @@ function handleReward(task: string, status: string, rewardId: number): void {
     rewardId,
   })
     .then((res) => {
-      getActivityData()
+      updateActivityDataRewardStatusNoRequest(task)
       const rewards = res.data.rewards
       modalReward.value?.openModal()
       curRewards.value = {
