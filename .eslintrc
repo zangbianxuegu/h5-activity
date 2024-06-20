@@ -26,6 +26,7 @@
     "extraFileExtensions": [".vue"],
     "parser": "@typescript-eslint/parser"
   },
+  "ignorePatterns": ["imagemin.mjs"],
   "plugins": ["vue", "@typescript-eslint"],
   "rules": {
     "semi": [2, "never"], // 禁止尾部使用分号“ ; ”
