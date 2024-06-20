@@ -144,7 +144,10 @@ async function generateFiles() {
       if (content) {
         if (tinyMap.get(filePath).ratio < 0) {
           await fs.writeFile(filePath, content)
-          cache[filePath] = Date.now()
+          const stats = await fs.stat(filePath)
+          const mtimeMs = stats.mtimeMs
+          // cache[filePath] = Date.now()
+          cache[filePath] = mtimeMs
         } else {
           // 存在压缩之后反而变大的情况，这种情况不覆盖原图，但会记录到缓存表中，且记录的时间戳是旧文件自己的时间戳
           cache[filePath] = tinyMap.get(filePath).mtimeMs
