@@ -6,7 +6,6 @@ import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from '@vant/auto-import-resolver'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
-import viteImagemin from 'vite-plugin-imagemin'
 // import basicSsl from '@vitejs/plugin-basic-ssl'
 import mkcert from 'vite-plugin-mkcert'
 import legacy from '@vitejs/plugin-legacy'
@@ -33,18 +32,6 @@ export default defineConfig({
       threshold: 1024 * 500,
       ext: '.gz',
       deleteOriginFile: false,
-    }),
-    viteImagemin({
-      optipng: {
-        optimizationLevel: 7,
-      },
-      pngquant: {
-        quality: [0.8, 0.9],
-        speed: 4,
-      },
-      mozjpeg: {
-        quality: 80,
-      },
     }),
     // basicSsl(),
     mkcert(),
