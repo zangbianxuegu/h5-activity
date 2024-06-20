@@ -211,4 +211,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_store_friendship_2024',
     },
   },
+  {
+    path: '/friendship-poster-2024',
+    name: 'FriendshipPoster2024',
+    component: () => import('@/views/FriendshipPoster2024'),
+    meta: {
+      title: '有友共享',
+      module: 'activitycenter_poster_friendship_2024',
+    },
+  },
 ]

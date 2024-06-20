@@ -230,6 +230,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '有友共享',
+    value: 'activitycenter_poster_friendship_2024',
+    routeName: 'FriendshipPoster2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
