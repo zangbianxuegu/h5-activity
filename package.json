@@ -90,7 +90,7 @@
       "npm run prettier:format"
     ],
     "{!(package)*.json,.!(browserslist)*rc}": [
-      "prettier --write--parser json"
+      "prettier --write --parser json"
     ],
     "package.json": [
       "npm run prettier:format"
