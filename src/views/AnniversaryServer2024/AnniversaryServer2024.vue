@@ -242,25 +242,25 @@ const TASK_LIST = [
     condition: '2000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m1',
+    name: 'activitycenter_anniversary_server_2024_m2',
     title: '全服玩家获得星星代币数量达到4000w',
     status: 'wait',
     condition: '4000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m1',
+    name: 'activitycenter_anniversary_server_2024_m3',
     title: '全服玩家获得星星代币数量达到6000w',
     status: 'wait',
     condition: '6000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m1',
+    name: 'activitycenter_anniversary_server_2024_m4',
     title: '全服玩家获得星星代币数量达到8000w',
     status: 'wait',
     condition: '8000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m1',
+    name: 'activitycenter_anniversary_server_2024_m5',
     title: '全服玩家获得星星代币数量达到1亿',
     status: 'wait',
     condition: '1',
@@ -269,14 +269,13 @@ const TASK_LIST = [
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[0]
+    const activity = activityData.value[index]
     return {
       ...item,
       status:
-        activity.award[index] === 1
+        activity.award[0] === 1
           ? 'redeemed'
-          : activity.award[index] === 0 &&
-            activity.value >= activity.stages[index]
+          : activity.award[0] === 0 && activity.value >= activity.stages[index]
           ? 'can'
           : 'wait',
     }
@@ -298,7 +297,6 @@ if (!isVisited) {
 const currentProgress = computed(() => {
   return taskList.value.filter((e) => e.status !== 'wait').length
 })
-console.log('currentProgress: ', currentProgress.value)
 
 onMounted(() => {
   try {
