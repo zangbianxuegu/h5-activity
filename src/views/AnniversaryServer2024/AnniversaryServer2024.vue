@@ -242,25 +242,25 @@ const TASK_LIST = [
     condition: '2000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m2',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到4000w',
     status: 'wait',
     condition: '4000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m3',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到6000w',
     status: 'wait',
     condition: '6000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m4',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到8000w',
     status: 'wait',
     condition: '8000',
   },
   {
-    name: 'activitycenter_anniversary_server_2024_m5',
+    name: 'activitycenter_anniversary_server_2024_m1',
     title: '全服玩家获得星星代币数量达到1亿',
     status: 'wait',
     condition: '1',
@@ -269,13 +269,14 @@ const TASK_LIST = [
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[index]
+    const activity = activityData.value[0]
     return {
       ...item,
       status:
-        activity.award[0] === 1
+        activity.award[index] === 1
           ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[index]
+          : activity.award[index] === 0 &&
+            activity.value >= activity.stages[index]
           ? 'can'
           : 'wait',
     }
@@ -347,19 +348,13 @@ function getActivityData(): void {
     })
 }
 
-function updateActivityDataRewardStatusNoRequest(task: string): void {
+function updateActivityDataRewardStatusNoRequest(rewardId: number): void {
   // 后端接口请求限制间隔 3s
   // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-  const newActivityData = activityData.value.map((item) => {
-    return {
-      ...item,
-      award: item.task_id === task ? [1] : item.award,
-    }
-  })
+  const newActivityData = JSON.parse(JSON.stringify(activityData.value))
+  newActivityData[0].award[rewardId - 1] = 1
   activityStore.updateEventData(EVENT_NAME, newActivityData)
-  const isClaimedReward = !newActivityData.some(
-    (item) => item.award[0] === 0 && item.value >= item.stages[0],
-  )
+  const isClaimedReward = newActivityData[0].award.every((e: number) => e === 1)
   menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
 }
 
@@ -379,7 +374,7 @@ function handleReward(task: string, status: string, rewardId: number): void {
     rewardId,
   })
     .then((res) => {
-      updateActivityDataRewardStatusNoRequest(task)
+      updateActivityDataRewardStatusNoRequest(rewardId)
       const rewards = res.data.rewards
       modalReward.value?.openModal()
       curRewards.value = {
