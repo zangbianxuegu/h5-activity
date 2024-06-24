@@ -284,6 +284,13 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '多彩汇云间',
+    value: 'activitycenter_rainbow2_2024',
+    routeName: 'Rainbow22024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

@@ -533,6 +533,80 @@ export const useActivityStore = defineStore(
           award: [0, 0, 0, 0, 0],
         },
       ],
+      activitycenter_rainbow2_2024: [
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m1',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m2',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m3',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m4',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m5',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m6',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m7',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+        {
+          value: 0,
+          task_id: 'activitycenter_rainbow_2024_m8',
+          stages: [2],
+          score: '',
+          is_eggy_reward: false,
+          awarded_types: [],
+          award: [0],
+        },
+      ],
     })
 
     // 设置eventDataKeys
@@ -565,7 +639,8 @@ export const useActivityStore = defineStore(
         event === 'activity_anniversary_warmup_2024' ||
         event === 'activity_season22_sprint' ||
         event === 'activitycenter_anniversary_visit_2024' ||
-        event === 'activitycenter_anniversary_server_2024'
+        event === 'activitycenter_anniversary_server_2024' ||
+        event === 'activitycenter_rainbow2_2024'
       ) {
         eventData.value[event] = newEventData as Event[]
       } else {
