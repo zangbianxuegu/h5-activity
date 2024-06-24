@@ -485,7 +485,7 @@ function handleConfirm(): void {
   position: absolute;
   left: 716px;
   top: 208px;
-  width: 873px;
+  width: 874px;
   height: 774px;
 }
 .store-item {

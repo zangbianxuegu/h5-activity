@@ -223,6 +223,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '向友葵的成长日记',
+    value: 'activitycenter_main_friendship_2024',
+    routeName: 'FriendshipMain2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '养分补给',
     value: 'activitycenter_store_friendship_2024',
     routeName: 'FriendshipStore2024',

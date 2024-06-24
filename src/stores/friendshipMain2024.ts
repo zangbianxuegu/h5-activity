@@ -11,7 +11,7 @@ export const useActivityStore = defineStore(
       event_data: {
         activitycenter_main_friendship_2024: [
           {
-            value: 2400,
+            value: 0,
             task_id: 'activitycenter_main_friendship_2024_m1',
             stages: [600, 1200, 1800, 2400],
             score: '',

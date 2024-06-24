@@ -203,6 +203,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/friendship-main-2024',
+    name: 'FriendshipMain2024',
+    component: () => import('@/views/FriendshipMain2024'),
+    meta: {
+      title: '向友葵的成长日记',
+      module: 'activitycenter_main_friendship_2024',
+    },
+  },
+  {
     path: '/friendship-store-2024',
     name: 'FriendshipStore2024',
     component: () => import('@/views/FriendshipStore2024'),
