@@ -35,6 +35,7 @@ type SingleEventData<K extends EventName> = {
 }
 // 活动数据类型
 export interface ActivityData<K extends EventName> {
+  token_count?: string
   event_data: SingleEventData<K>
   current_time: number
 }

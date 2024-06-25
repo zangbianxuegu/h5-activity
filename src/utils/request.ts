@@ -223,7 +223,7 @@ const throttledFetchMap: {
 
 // 原始的获取玩家任务数据的函数，没有应用节流
 function fetchPlayerMissionData(
-  { event }: { event?: EventName },
+  { event, token }: { event?: EventName; token?: string },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
 ): Promise<void> {
@@ -235,6 +235,7 @@ function fetchPlayerMissionData(
         source_token: '',
         source_id: '',
         event,
+        token,
       },
       handleRes: (res) => {
         if (res.code === 200) {
@@ -258,8 +259,10 @@ function fetchPlayerMissionData(
 // 所以设置为 3500
 export function getPlayerMissionData({
   event,
+  token,
 }: {
   event?: EventName
+  token?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     const now = Date.now()
@@ -272,6 +275,12 @@ export function getPlayerMissionData({
           'activitycenter_anniversary_store_2024',
           'activitycenter_main_friendship_2024',
           'activitycenter_store_friendship_2024',
+          'activitycenter_week1_friendship_2024',
+          'activitycenter_week2_friendship_2024',
+          'activitycenter_week3_friendship_2024',
+          'activitycenter_week4_friendship_2024',
+          'activitycenter_week5_friendship_2024',
+          'activitycenter_week6_friendship_2024',
         ].includes(event)
       ) {
         const cachedData = Session.get(event)?.activityData
@@ -319,11 +328,11 @@ export function getPlayerMissionData({
       Session.set(`lastFetchTime-${event}`, now.toString())
       // 存储是否请求过
       Session.set(`isFetched-${event}`, true)
-      throttledFetch({ event }, resolve, reject).catch((err: any) => {
+      throttledFetch({ event, token }, resolve, reject).catch((err: any) => {
         reject(err)
       })
     } else {
-      fetchPlayerMissionData({ event }, resolve, reject).catch((err) => {
+      fetchPlayerMissionData({ event, token }, resolve, reject).catch((err) => {
         reject(err)
       })
     }

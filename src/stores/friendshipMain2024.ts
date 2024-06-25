@@ -8,6 +8,7 @@ export const useActivityStore = defineStore(
     const activityData = ref<
       ActivityData<'activitycenter_main_friendship_2024'>
     >({
+      token_count: '0',
       event_data: {
         activitycenter_main_friendship_2024: [
           {

@@ -18,7 +18,7 @@
         <Transition appear :name="mainTransitionName" mode="out-in">
           <main>
             <!-- 阳光数量 -->
-            <div class="sunlight">300</div>
+            <div class="sunlight">{{ mainTaskData.token_count }}</div>
             <!-- 每日任务 -->
             <div
               :class="[
@@ -26,7 +26,9 @@
                 `daily-task-${dailyTask.week}`,
                 `${dailyTask.status}`,
               ]"
-              @click="handleDailyTask"
+              @click="
+                handleReward(dailyTask.value, dailyTask.status, 1, 'daily')
+              "
             >
               <h2>每日任务</h2>
               <p>{{ dailyTask.title }}</p>
@@ -35,7 +37,13 @@
             <div class="sunflower-box">
               <div ref="sunflower" class="sunflower bg-contain"></div>
               <div
-                class="sunflower-sunlight bg-contain"
+                v-if="isUsingSunlightsEnabled"
+                :class="[
+                  'sunflower-sunlight bg-contain',
+                  {
+                    active: (Number(mainTaskData.token_count) || 0) >= 100,
+                  },
+                ]"
                 @click="handleUsingSunlight"
               >
                 <p class="sunflower-text">-100</p>
@@ -65,7 +73,9 @@
                     `task-item${index + 1}`,
                     `${item.status}`,
                   ]"
-                  @click="handleReward(item.value, item.status)"
+                  @click="
+                    handleReward(item.value, item.status, item.id, 'main')
+                  "
                 >
                   <p class="task-text">{{ item.stage }}</p>
                 </li>
@@ -106,17 +116,51 @@
           </p>
         </template>
       </activity-modal>
+      <!-- 奖励弹框 -->
+      <activity-modal ref="modalReward" class="reward-box">
+        <template #content>
+          <p class="reward-title mt-4">恭喜你获得活动奖励</p>
+          <div class="flex items-center justify-around">
+            <ul
+              :class="[
+                'reward-list mt-6 flex w-full items-center justify-around',
+                `reward-list_${curRewards.length}`,
+              ]"
+            >
+              <li
+                class="reward-item flex flex-col items-center justify-between"
+                v-for="item in curRewards"
+                :key="item.img"
+              >
+                <div class="reward-img-wrap flex items-center justify-center">
+                  <img
+                    class="reward-img"
+                    :src="handleSrc(item.img)"
+                    alt="reward"
+                  />
+                </div>
+                <p class="reward-name">{{ item.name }}</p>
+              </li>
+            </ul>
+          </div>
+        </template>
+      </activity-modal>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { type DesignConfig } from '@/types'
+import type { Event, DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
-import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
+import {
+  getPlayerMissionData,
+  claimMissionReward,
+  setPlayerTask,
+} from '@/utils/request'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
+import { useMenuStore } from '@/stores/menu'
 import { useActivityStore as useStoreFriendshipMain } from '@/stores/friendshipMain2024'
 import { useActivityStore as useStoreFriendshipWeek1 } from '@/stores/friendshipWeek12024'
 
@@ -152,7 +196,9 @@ const designConfig: DesignConfig = {
 const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const sunflower = ref<HTMLDivElement | null>(null)
+const menuStore = useMenuStore()
 const storeFriendshipMain = useStoreFriendshipMain()
 const storeFriendshipWeek1 = useStoreFriendshipWeek1()
 const mainTaskData = computed(() => storeFriendshipMain.activityData)
@@ -168,7 +214,46 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
-// 每日任务
+const rewardMap = {
+  activitycenter_main_friendship_2024_m1_1: [
+    {
+      name: '向日葵花盘装扮魔法*3',
+      img: 'outfit_horn_sunflower_headwear',
+    },
+  ],
+  activitycenter_main_friendship_2024_m1_2: [
+    {
+      name: '盆栽台灯*1',
+      img: 'CharSkyKid_Prop_SunflowerLamp',
+    },
+  ],
+  activitycenter_main_friendship_2024_m1_3: [
+    {
+      name: '爱心*3',
+      img: 'heart',
+    },
+  ],
+  activitycenter_main_friendship_2024_m1_4: [
+    {
+      name: '向日葵屏风*1',
+      img: 'CharSkyKid_Prop_SunflowerScreen',
+    },
+  ],
+  activitycenter_week1_friendship_2024_m1: [
+    {
+      name: '阳光*50',
+      img: 'sunlight_token',
+    },
+  ],
+  activitycenter_week1_friendship_2024_m2: [
+    {
+      name: '阳光*50',
+      img: 'sunlight_token',
+    },
+  ],
+}
+const curRewards = ref(rewardMap.activitycenter_main_friendship_2024_m1_1)
+
 const DAILY_TASK_LIST = [
   {
     title: '收获1株双生向日葵',
@@ -183,6 +268,7 @@ const DAILY_TASK_LIST = [
     status: 'wait',
   },
 ]
+// 每日任务
 const dailyTask = computed(() => {
   const daily =
     dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0]
@@ -193,8 +279,8 @@ const dailyTask = computed(() => {
     daily.award[0] === 1 ? 'redeemed' : daily.value >= 1 ? 'can' : 'wait'
   return res
 })
+console.log('dailyTask: ', dailyTask.value)
 
-// 向日葵进度任务
 const MAIN_TASK_LIST = [
   {
     id: 1,
@@ -225,6 +311,7 @@ const MAIN_TASK_LIST = [
     status: 'wait',
   },
 ]
+// 向日葵进度任务
 const mainTaskList = computed(() => {
   const main =
     mainTaskData.value.event_data.activitycenter_main_friendship_2024[0]
@@ -252,15 +339,24 @@ const progress = computed(() => {
   percentage = Math.round(percentage)
   return percentage + '%'
 })
+// 是否可以使用阳光
+const isUsingSunlightsEnabled = computed(
+  () =>
+    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].value <
+    2400,
+)
 // 是否在使用阳光
 const isUsingSunlight = ref(false)
+// 周任务排序
+const taskOrderMap = new Map(
+  dailyTaskData.value.event_data.activitycenter_week1_friendship_2024.map(
+    (task, index) => [task.task_id, index],
+  ),
+)
 
 onMounted(() => {
   try {
     getActivityData()
-    setTimeout(() => {
-      mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].value = 400
-    }, 2000)
   } catch (error) {
     console.error(error)
   }
@@ -273,18 +369,46 @@ function handleHelp(): void {
 }
 
 // 处理 img src
-// function handleSrc(name: string): string {
-//   const imgSrc = new URL(
-//     `../../assets/images/common/reward/reward-${name}.png`,
-//     import.meta.url,
-//   ).href
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../assets/images/common/reward/reward-${name}.png`,
+    import.meta.url,
+  ).href
 
-//   return imgSrc
-// }
+  return imgSrc
+}
+
+// 设置红点
+function setRedDot(): void {
+  const dailyValue =
+    dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0].value
+  const dailyAward =
+    dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0].award
+  const mainStages =
+    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].stages
+  const mainValue =
+    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].value
+  const mainAward =
+    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].award
+  const shouldClaimedRewardCount = mainStages.filter(
+    (stage) => stage <= mainValue,
+  ).length
+  const isClaimedReward =
+    mainAward.filter((item) => item === 1).length >= shouldClaimedRewardCount &&
+    !(dailyValue >= 1 && dailyAward[0] === 0)
+  menuStore.updateMenuDataByIsClaimedReward(
+    'activitycenter_main_friendship_2024',
+    isClaimedReward,
+  )
+}
 
 // 获取任务进度
 function getActivityData(): void {
-  getPlayerMissionData({ event: 'activitycenter_main_friendship_2024' })
+  // 主任务
+  getPlayerMissionData({
+    event: 'activitycenter_main_friendship_2024',
+    token: 'sunlight_token',
+  })
     .then((res) => {
       storeFriendshipMain.updateActivityData(res.data)
     })
@@ -292,37 +416,79 @@ function getActivityData(): void {
       showToast(error.message)
     })
 
+  // 周任务
   getPlayerMissionData({ event: 'activitycenter_week1_friendship_2024' })
     .then((res) => {
-      storeFriendshipWeek1.updateActivityData(res.data)
+      const data = res.data
+      const newDailyTaskData = {
+        ...data,
+        event_data: {
+          activitycenter_week1_friendship_2024:
+            data.event_data.activitycenter_week1_friendship_2024.sort(
+              (a: Event, b: Event) => {
+                const orderA = taskOrderMap.get(a.task_id) ?? 4
+                const orderB = taskOrderMap.get(b.task_id) ?? 4
+                return orderA - orderB
+              },
+            ),
+        },
+      }
+      storeFriendshipWeek1.updateActivityData(newDailyTaskData)
     })
     .catch((error) => {
       showToast(error.message)
     })
-}
 
-// 每日任务
-function handleDailyTask(): void {
-  if (dailyTask.value.status === 'redeemed') {
-    return
-  }
-  if (dailyTask.value.status === 'wait') {
-    showToast('还未完成任务')
-  }
+  // 设置红点
+  setRedDot()
 }
 
 // 使用阳光
 function handleUsingSunlight(): void {
+  if (Number(mainTaskData.value.token_count || 0) < 100) {
+    showToast('阳光数量不足')
+    return
+  }
   isUsingSunlight.value = true
   sunflower.value?.classList.add('sunflower-animate')
   setTimeout(() => {
     isUsingSunlight.value = false
     sunflower.value?.classList.remove('sunflower-animate')
   }, 2000)
+  setPlayerTask({ task: 'activitycenter_main_friendship_2024_m1', value: 100 })
+    .then((res) => {
+      const { token_count: tokenCount, task_value: taskValue } =
+        res.data.activitycenter_main_friendship_2024.data
+      const newMainTaskData = {
+        ...mainTaskData.value,
+        token_count: tokenCount,
+        event_data: {
+          activitycenter_main_friendship_2024: [
+            {
+              ...mainTaskData.value.event_data
+                .activitycenter_main_friendship_2024[0],
+              value: taskValue,
+            },
+          ],
+        },
+      }
+      // 更新页面数据
+      storeFriendshipMain.updateActivityData(newMainTaskData)
+      // 设置红点
+      setRedDot()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 // 领奖
-function handleReward(task: string, status: string): void {
+function handleReward(
+  task: string,
+  status: string,
+  rewardId: number,
+  type: string,
+): void {
   if (status === 'redeemed') {
     return
   }
@@ -330,13 +496,42 @@ function handleReward(task: string, status: string): void {
     showToast('还未完成任务')
     return
   }
+  let event
+  if (type === 'daily') {
+    event = task.split('_m1')[0]
+  } else {
+    event = 'activitycenter_main_friendship_2024'
+  }
   claimMissionReward({
-    event: 'activitycenter_main_friendship_2024',
+    event,
     task,
-    rewardId: 1,
+    rewardId,
   })
-    .then((res) => {
-      console.log('领奖 res: ', res)
+    .then(async (res) => {
+      console.log('reward res: ', res)
+      const rewardKey = type === 'daily' ? task : `${task}_${rewardId}`
+      curRewards.value = rewardMap[rewardKey as keyof typeof rewardMap]
+      modalReward.value?.openModal()
+
+      // 更新页面数据
+      const dailyAward =
+        dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0]
+          .award
+      const mainAward =
+        mainTaskData.value.event_data.activitycenter_main_friendship_2024[0]
+          .award
+      if (type === 'daily') {
+        dailyAward[0] = 1
+        storeFriendshipWeek1.updateActivityData(dailyTaskData.value)
+        // 更新阳光数量
+        mainTaskData.value.token_count = res.data.token_count
+        storeFriendshipMain.updateActivityData(mainTaskData.value)
+      } else {
+        mainAward[rewardId - 1] = 1
+        storeFriendshipMain.updateActivityData(mainTaskData.value)
+      }
+      // 设置红点
+      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
@@ -432,10 +627,17 @@ function handleReward(task: string, status: string): void {
     position: absolute;
     left: 102px;
     top: 25px;
-    width: 186px;
-    height: 189px;
+    width: 181px;
+    height: 181px;
     cursor: pointer;
     background-image: url('@/assets/images/friendship-main-2024/sunlight-circle.png');
+
+    &.active {
+      animation: breathe 2s infinite alternate;
+      width: 186px;
+      height: 189px;
+      background-image: url('@/assets/images/friendship-main-2024/sunlight-circle-active.png');
+    }
   }
 
   &-text {
@@ -482,7 +684,7 @@ function handleReward(task: string, status: string): void {
     &.can {
       background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-can.png');
     }
-    &.can {
+    &.redeemed {
       background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-redeemed.png');
     }
   }
@@ -546,11 +748,67 @@ function handleReward(task: string, status: string): void {
     transition: width 2s ease;
   }
 }
+.reward-box {
+  text-align: center;
+}
+.reward-title {
+  font-size: 40px;
+  color: #454545;
+  letter-spacing: 1px;
+}
+.reward-list {
+  &_1 {
+    width: 80%;
+    .reward-item {
+      height: 300px;
+    }
+    .reward-img {
+      width: 200px;
+    }
+  }
+  &_2 {
+    width: 80%;
+    .reward-item {
+      width: 50%;
+    }
+  }
+  &_3 {
+    width: 100%;
+    .reward-item {
+      width: calc(100% / 3);
+    }
+  }
+}
+.reward-item {
+  height: 260px;
+}
+.reward-img {
+  width: 100px;
+}
+.reward-img-wrap {
+  width: 100%;
+  height: 200px;
+}
+.reward-name {
+  font-size: 30px;
+  color: #666;
+}
 @keyframes scaleMove {
   0% {
     transform: scale(1);
   }
   30% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes breathe {
+  0% {
+    transform: scale(1);
+  }
+  50% {
     transform: scale(1.05);
   }
   100% {
