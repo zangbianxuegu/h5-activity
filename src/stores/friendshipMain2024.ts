@@ -13,6 +13,14 @@ export const useActivityStore = defineStore(
         activitycenter_main_friendship_2024: [
           {
             value: 0,
+            task_id: 'activitycenter_week1_friendship_2024_m1',
+            stages: [1],
+            score: '',
+            awarded_types: [],
+            award: [0],
+          },
+          {
+            value: 0,
             task_id: 'activitycenter_main_friendship_2024_m1',
             stages: [600, 1200, 1800, 2400],
             score: '',

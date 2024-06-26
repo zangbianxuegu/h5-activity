@@ -2,14 +2,14 @@ import { defineStore } from 'pinia'
 import type { ActivityData } from '@/types'
 
 export const useActivityStore = defineStore(
-  'activitycenter_week1_friendship_2024', // 须与活动事件名一致
+  'activitycenter_week_friendship_2024', // 须与活动事件名一致
   () => {
     // 活动数据
     const activityData = ref<
-      ActivityData<'activitycenter_week1_friendship_2024'>
+      ActivityData<'activitycenter_week_friendship_2024'>
     >({
       event_data: {
-        activitycenter_week1_friendship_2024: [
+        activitycenter_week_friendship_2024: [
           {
             value: 0,
             task_id: 'activitycenter_week1_friendship_2024_m1',
@@ -37,7 +37,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_week1_friendship_2024_m4',
-            stages: [2],
+            stages: [3],
             score: '',
             awarded_types: [],
             award: [0],
@@ -48,7 +48,7 @@ export const useActivityStore = defineStore(
     })
     // 更新活动数据
     function updateActivityData(
-      newEventData: ActivityData<'activitycenter_week1_friendship_2024'>,
+      newEventData: ActivityData<'activitycenter_week_friendship_2024'>,
     ): void {
       activityData.value = newEventData
     }

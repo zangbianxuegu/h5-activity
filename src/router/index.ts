@@ -2,6 +2,7 @@ import { showToast } from 'vant'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './routes'
 import { useMenuStore } from '@/stores/menu'
+import { useBaseStore } from '@/stores/base'
 import { webViewStatistics } from '@/utils/request'
 
 const router = createRouter({
@@ -9,17 +10,37 @@ const router = createRouter({
   routes,
 })
 
-router.beforeEach((to) => {
+router.beforeEach((to, _, next) => {
   const title = to?.meta?.title
+  const baseStore = useBaseStore()
   if (title) {
     document.title = title as string
+  }
+  // 如果 App 接口还未成功
+  if (baseStore.baseInfo.currentFriendshipWeek === 0) {
+    const unwatch = watch(
+      () => baseStore.baseInfo.currentFriendshipWeek,
+      (newVal) => {
+        if (newVal) {
+          unwatch() // 确保只执行一次
+          next()
+        }
+      },
+    )
+  } else {
+    next()
   }
 })
 
 router.afterEach((to, from) => {
   console.log('afterEach from: ', from)
   console.log('afterEach to: ', to)
-  const module = to?.meta?.module
+  const baseStore = useBaseStore()
+  const currentFriendshipWeek = baseStore.baseInfo.currentFriendshipWeek
+  let module = to?.meta?.module
+  if (module === 'activitycenter_week_friendship_2024') {
+    module = `activitycenter_week${currentFriendshipWeek}_friendship_2024`
+  }
   const menuStore = useMenuStore()
   // 更新菜单数据 isActive
   if (module && typeof module === 'string') {

@@ -5,6 +5,7 @@ export const useBaseStore = defineStore('base', () => {
   // 基本信息
   const baseInfo: Ref<BaseInfo> = ref({
     currentTime: 0,
+    currentFriendshipWeek: 0,
     channel: '',
     appChannel: '',
     token: '',

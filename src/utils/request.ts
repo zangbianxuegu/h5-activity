@@ -283,7 +283,23 @@ export function getPlayerMissionData({
           'activitycenter_week6_friendship_2024',
         ].includes(event)
       ) {
-        const cachedData = Session.get(event)?.activityData
+        let cachedData
+        if (
+          [
+            'activitycenter_week1_friendship_2024',
+            'activitycenter_week2_friendship_2024',
+            'activitycenter_week3_friendship_2024',
+            'activitycenter_week4_friendship_2024',
+            'activitycenter_week5_friendship_2024',
+            'activitycenter_week6_friendship_2024',
+          ].includes(event)
+        ) {
+          cachedData = Session.get(
+            'activitycenter_week_friendship_2024',
+          )?.activityData
+        } else {
+          cachedData = Session.get(event)?.activityData
+        }
         const lastFetchTime =
           parseInt(Session.get(`lastFetchTime-${event}`)) || 0
         if (cachedData && now - lastFetchTime < 3500) {

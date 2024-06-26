@@ -96,6 +96,10 @@ export const useMenuStore = defineStore('menu', () => {
         'activitycenter_sign_friendship_2024',
         'activitycenter_week1_friendship_2024',
         'activitycenter_week2_friendship_2024',
+        'activitycenter_week3_friendship_2024',
+        'activitycenter_week4_friendship_2024',
+        'activitycenter_week5_friendship_2024',
+        'activitycenter_week6_friendship_2024',
         'activitycenter_poster_friendship_2024',
       ].includes(event)
     ) {

@@ -18,7 +18,7 @@
         <Transition appear :name="mainTransitionName" mode="out-in">
           <main>
             <!-- 阳光数量 -->
-            <div class="sunlight">{{ mainTaskData.token_count }}</div>
+            <div class="sunlight">{{ activityData.token_count }}</div>
             <!-- 每日任务 -->
             <div
               :class="[
@@ -41,7 +41,7 @@
                 :class="[
                   'sunflower-sunlight bg-contain',
                   {
-                    active: (Number(mainTaskData.token_count) || 0) >= 100,
+                    active: (Number(activityData.token_count) || 0) >= 100,
                   },
                 ]"
                 @click="handleUsingSunlight"
@@ -151,7 +151,7 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import type { Event, DesignConfig } from '@/types'
+import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import {
   getPlayerMissionData,
@@ -161,8 +161,7 @@ import {
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore as useStoreFriendshipMain } from '@/stores/friendshipMain2024'
-import { useActivityStore as useStoreFriendshipWeek1 } from '@/stores/friendshipWeek12024'
+import { useActivityStore } from '@/stores/friendshipMain2024'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -199,10 +198,14 @@ const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const sunflower = ref<HTMLDivElement | null>(null)
 const menuStore = useMenuStore()
-const storeFriendshipMain = useStoreFriendshipMain()
-const storeFriendshipWeek1 = useStoreFriendshipWeek1()
-const mainTaskData = computed(() => storeFriendshipMain.activityData)
-const dailyTaskData = computed(() => storeFriendshipWeek1.activityData)
+const storeFriendshipMain = useActivityStore()
+const activityData = computed(() => storeFriendshipMain.activityData)
+const dailyTaskData = computed(
+  () => activityData.value.event_data.activitycenter_main_friendship_2024[0],
+)
+const mainTaskData = computed(
+  () => activityData.value.event_data.activitycenter_main_friendship_2024[1],
+)
 
 const isVisited = Session.get('isVisitedFriendshipMain2024')
 const bodyTransitionName = ref('')
@@ -270,16 +273,18 @@ const DAILY_TASK_LIST = [
 ]
 // 每日任务
 const dailyTask = computed(() => {
-  const daily =
-    dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0]
   const res =
-    DAILY_TASK_LIST.find((item) => item.value === daily.task_id) ||
-    DAILY_TASK_LIST[0]
+    DAILY_TASK_LIST.find(
+      (item) => item.value === dailyTaskData.value.task_id,
+    ) || DAILY_TASK_LIST[0]
   res.status =
-    daily.award[0] === 1 ? 'redeemed' : daily.value >= 1 ? 'can' : 'wait'
+    dailyTaskData.value.award[0] === 1
+      ? 'redeemed'
+      : dailyTaskData.value.value >= 1
+        ? 'can'
+        : 'wait'
   return res
 })
-console.log('dailyTask: ', dailyTask.value)
 
 const MAIN_TASK_LIST = [
   {
@@ -313,11 +318,9 @@ const MAIN_TASK_LIST = [
 ]
 // 向日葵进度任务
 const mainTaskList = computed(() => {
-  const main =
-    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0]
   return MAIN_TASK_LIST.map((item, index) => {
-    const award = main.award[index]
-    const value = main.value
+    const award = mainTaskData.value.award[index]
+    const value = mainTaskData.value.value
     return {
       ...item,
       status: award === 1 ? 'redeemed' : value >= item.stage ? 'can' : 'wait',
@@ -326,11 +329,7 @@ const mainTaskList = computed(() => {
 })
 // 进度
 const progress = computed(() => {
-  let percentage =
-    (mainTaskData.value.event_data.activitycenter_main_friendship_2024[0]
-      .value /
-      2400) *
-    100
+  let percentage = (mainTaskData.value.value / 2400) * 100
   if (percentage < 0) {
     percentage = 0
   } else if (percentage > 100) {
@@ -340,19 +339,9 @@ const progress = computed(() => {
   return percentage + '%'
 })
 // 是否可以使用阳光
-const isUsingSunlightsEnabled = computed(
-  () =>
-    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].value <
-    2400,
-)
+const isUsingSunlightsEnabled = computed(() => mainTaskData.value.value < 2400)
 // 是否在使用阳光
 const isUsingSunlight = ref(false)
-// 周任务排序
-const taskOrderMap = new Map(
-  dailyTaskData.value.event_data.activitycenter_week1_friendship_2024.map(
-    (task, index) => [task.task_id, index],
-  ),
-)
 
 onMounted(() => {
   try {
@@ -380,16 +369,11 @@ function handleSrc(name: string): string {
 
 // 设置红点
 function setRedDot(): void {
-  const dailyValue =
-    dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0].value
-  const dailyAward =
-    dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0].award
-  const mainStages =
-    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].stages
-  const mainValue =
-    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].value
-  const mainAward =
-    mainTaskData.value.event_data.activitycenter_main_friendship_2024[0].award
+  const dailyValue = dailyTaskData.value.value
+  const dailyAward = dailyTaskData.value.award
+  const mainStages = mainTaskData.value.stages
+  const mainValue = mainTaskData.value.value
+  const mainAward = mainTaskData.value.award
   const shouldClaimedRewardCount = mainStages.filter(
     (stage) => stage <= mainValue,
   ).length
@@ -411,41 +395,17 @@ function getActivityData(): void {
   })
     .then((res) => {
       storeFriendshipMain.updateActivityData(res.data)
+      // 设置红点
+      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
     })
-
-  // 周任务
-  getPlayerMissionData({ event: 'activitycenter_week1_friendship_2024' })
-    .then((res) => {
-      const data = res.data
-      const newDailyTaskData = {
-        ...data,
-        event_data: {
-          activitycenter_week1_friendship_2024:
-            data.event_data.activitycenter_week1_friendship_2024.sort(
-              (a: Event, b: Event) => {
-                const orderA = taskOrderMap.get(a.task_id) ?? 4
-                const orderB = taskOrderMap.get(b.task_id) ?? 4
-                return orderA - orderB
-              },
-            ),
-        },
-      }
-      storeFriendshipWeek1.updateActivityData(newDailyTaskData)
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-
-  // 设置红点
-  setRedDot()
 }
 
 // 使用阳光
 function handleUsingSunlight(): void {
-  if (Number(mainTaskData.value.token_count || 0) < 100) {
+  if (Number(activityData.value.token_count || 0) < 100) {
     showToast('阳光数量不足')
     return
   }
@@ -459,21 +419,13 @@ function handleUsingSunlight(): void {
     .then((res) => {
       const { token_count: tokenCount, task_value: taskValue } =
         res.data.activitycenter_main_friendship_2024.data
-      const newMainTaskData = {
-        ...mainTaskData.value,
-        token_count: tokenCount,
-        event_data: {
-          activitycenter_main_friendship_2024: [
-            {
-              ...mainTaskData.value.event_data
-                .activitycenter_main_friendship_2024[0],
-              value: taskValue,
-            },
-          ],
-        },
-      }
+      // 阳光数量
+      activityData.value.token_count = tokenCount
+      // main value
+      activityData.value.event_data.activitycenter_main_friendship_2024[1].value =
+        taskValue
       // 更新页面数据
-      storeFriendshipMain.updateActivityData(newMainTaskData)
+      storeFriendshipMain.updateActivityData(activityData.value)
       // 设置红点
       setRedDot()
     })
@@ -514,22 +466,18 @@ function handleReward(
       modalReward.value?.openModal()
 
       // 更新页面数据
-      const dailyAward =
-        dailyTaskData.value.event_data.activitycenter_week1_friendship_2024[0]
-          .award
-      const mainAward =
-        mainTaskData.value.event_data.activitycenter_main_friendship_2024[0]
-          .award
       if (type === 'daily') {
-        dailyAward[0] = 1
-        storeFriendshipWeek1.updateActivityData(dailyTaskData.value)
+        // daily 领奖
+        activityData.value.event_data.activitycenter_main_friendship_2024[0].award[0] = 1
         // 更新阳光数量
-        mainTaskData.value.token_count = res.data.token_count
-        storeFriendshipMain.updateActivityData(mainTaskData.value)
+        activityData.value.token_count = res.data.token_count
       } else {
-        mainAward[rewardId - 1] = 1
-        storeFriendshipMain.updateActivityData(mainTaskData.value)
+        // main 领奖
+        activityData.value.event_data.activitycenter_main_friendship_2024[1].award[
+          rewardId - 1
+        ] = 1
       }
+      storeFriendshipMain.updateActivityData(activityData.value)
       // 设置红点
       setRedDot()
     })

@@ -142,6 +142,16 @@ import { type MenuItem } from '@/types'
 // } from '@/utils/request'
 import { useMenuStore } from '@/stores/menu'
 
+// 有友节周任务
+const activityFriendshipList = [
+  'activitycenter_week1_friendship_2024',
+  'activitycenter_week2_friendship_2024',
+  'activitycenter_week3_friendship_2024',
+  'activitycenter_week4_friendship_2024',
+  'activitycenter_week5_friendship_2024',
+  'activitycenter_week6_friendship_2024',
+]
+
 const router = useRouter()
 const route = useRoute()
 
@@ -172,6 +182,8 @@ function isMenuItemActive(item: MenuItem): boolean {
   if (module && typeof module === 'string') {
     return (
       item.value === module ||
+      (activityFriendshipList.includes(item.value) &&
+        module === 'activitycenter_week_friendship_2024') || // 有友节周任务
       (item.value === 'signin' &&
         ['activity_sign_in_2', 'activity_sign_in_3'].includes(module)) ||
       (item.value === 'activity_return_buff' &&
@@ -187,6 +199,9 @@ function isMenuItemActive(item: MenuItem): boolean {
 
 // 菜单点击事件
 function handleNav(curItem: MenuItem): void {
+  if (isMenuItemActive(curItem)) {
+    return
+  }
   void router.push({ name: curItem.routeName }).catch((err) => {
     console.error('Failed to navigate: ', err)
   })

@@ -212,6 +212,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/friendship-week-2024',
+    name: 'FriendshipWeek2024',
+    component: () => import('@/views/FriendshipWeek2024'),
+    meta: {
+      title: '每周惊喜',
+      module: 'activitycenter_week_friendship_2024', // 此处 module 需要动态修改
+    },
+  },
+  {
     path: '/friendship-store-2024',
     name: 'FriendshipStore2024',
     component: () => import('@/views/FriendshipStore2024'),
