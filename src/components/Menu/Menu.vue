@@ -5,7 +5,7 @@
         :class="[
           'nav-item flex flex-row items-center text-center',
           'hover:cursor-pointer',
-          item.value === 'activity_sanrio_2024' ? 'nav-item-main' : '',
+          isMainNavItem(item) ? 'nav-item-main' : '',
           isMenuItemActive(item)
             ? item.value === 'activity_sanrio_2024'
               ? 'nav-item--active nav-item-main--active'
@@ -197,6 +197,14 @@ function isMenuItemActive(item: MenuItem): boolean {
   return false
 }
 
+function isMainNavItem(item: MenuItem): boolean {
+  return [
+    'activity_sanrio_2024',
+    'activitycenter_poster_anniversary_2024',
+    'activitycenter_main_friendship_2024',
+  ].includes(item.value)
+}
+
 // 菜单点击事件
 function handleNav(curItem: MenuItem): void {
   if (isMenuItemActive(curItem)) {
@@ -209,63 +217,60 @@ function handleNav(curItem: MenuItem): void {
 
 // 菜单导航 icon
 function handleMenuIcon(curItem: MenuItem): string {
-  const curItemValue = curItem.value
-  let icon = new URL('../../assets/images/common/nav-icon.png', import.meta.url)
-    .href
-  if (curItemValue === 'activity_sanrio_2024') {
-    icon = new URL(
-      '../../assets/images/common/nav-icon-sanrio.png',
-      import.meta.url,
-    ).href
-  } else if (curItemValue === 'activitycenter_poster_anniversary_2024') {
-    icon = new URL(
-      '../../assets/images/common/nav-icon-cake.png',
-      import.meta.url,
-    ).href
-  } else if (curItemValue === 'activitycenter_anniversary_visit_2024') {
-    icon = new URL(
-      '../../assets/images/common/nav-icon-small-cake.png',
-      import.meta.url,
-    ).href
+  const defaultIcon = new URL(
+    '../../assets/images/common/nav-icon.png',
+    import.meta.url,
+  ).href
+  const activitySanrio2024 = new URL(
+    '../../assets/images/common/nav-icon-sanrio.png',
+    import.meta.url,
+  ).href
+  const activitycenterPosterAnniversary2024 = new URL(
+    '../../assets/images/common/nav-icon-cake.png',
+    import.meta.url,
+  ).href
+  const activitycenterAnniversaryVisit2024 = new URL(
+    '../../assets/images/common/nav-icon-small-cake.png',
+    import.meta.url,
+  ).href
+  const activitycenterFriendship2024 = new URL(
+    '../../assets/images/common/nav-icon-sunflower.png',
+    import.meta.url,
+  ).href
+  const menuIconMap: Record<string, string> = {
+    activity_sanrio_2024: activitySanrio2024,
+    activitycenter_poster_anniversary_2024: activitycenterPosterAnniversary2024,
+    activitycenter_anniversary_visit_2024: activitycenterAnniversaryVisit2024,
+    activitycenter_friendship_2024: activitycenterFriendship2024,
   }
-  return icon
+  let key = curItem.value
+  if (key.includes('friendship_2024')) {
+    key = 'activitycenter_friendship_2024'
+  }
+  return menuIconMap[key] || defaultIcon
 }
 
-const getNavIconClass = (menu: MenuItem): string[] => {
-  const classList = []
-  const menuValue = menu.value
+function getNavIconClass(curItem: MenuItem): string[] {
   const navIconPrefix = 'nav-icon'
-  const menuIconMap = new Map()
-  menuIconMap.set('activity_sanrio_2024', `${navIconPrefix}-sanrio`)
-  menuIconMap.set(
-    'activitycenter_poster_anniversary_2024',
-    `${navIconPrefix}-poster-anniversary-2024`,
-  )
-  menuIconMap.set(
-    'activitycenter_anniversary_visit_2024',
-    `${navIconPrefix}-anniversary-visit-2024`,
-  )
-  const mapValue = menuIconMap.get(menuValue)
-  if (mapValue) {
-    classList.push(mapValue)
+  const menuIconMap: Record<string, string> = {
+    activity_sanrio_2024: `${navIconPrefix}-sanrio`,
+    activitycenter_poster_anniversary_2024: `${navIconPrefix}-poster-anniversary-2024`,
+    activitycenter_anniversary_visit_2024: `${navIconPrefix}-anniversary-visit-2024`,
+    activitycenter_friendship_2024: `${navIconPrefix}-friendship-2024`,
   }
-  return classList
+  let key = curItem.value
+  if (key.includes('friendship_2024')) {
+    key = 'activitycenter_friendship_2024'
+  }
+  return menuIconMap[key] ? [menuIconMap[key]] : []
 }
-const getNavTextClass = (menu: MenuItem): string[] => {
-  const classList = []
-  const menuValue = menu.value
-  const navIconPrefix = 'nav-text'
-  const menuIconMap = new Map()
-  menuIconMap.set('activity_sanrio_2024', `${navIconPrefix}-sanrio`)
-  menuIconMap.set(
-    'activitycenter_poster_anniversary_2024',
-    `${navIconPrefix}-poster-anniversary-2024`,
-  )
-  const mapValue = menuIconMap.get(menuValue)
-  if (mapValue) {
-    classList.push(mapValue)
+
+function getNavTextClass(curItem: MenuItem): string[] {
+  const navTextPrefix = 'nav-text'
+  const menuTextMap: Record<string, string> = {
+    activity_sanrio_2024: `${navTextPrefix}-sanrio`,
   }
-  return classList
+  return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
 }
 
 // // 重置任务进度（包括每日签到数据）
@@ -385,15 +390,18 @@ const getNavTextClass = (menu: MenuItem): string[] => {
     width: 84px;
     height: 67px;
   }
+  &-friendship-2024 {
+    margin: 0 20px;
+    padding: 0;
+    width: 73px;
+    height: 89px;
+  }
 }
 .nav-text {
   width: 180px;
 
   &-sanrio {
     width: 300px;
-  }
-  &-poster-anniversary-2024 {
-    color: #7afaff;
   }
 }
 </style>

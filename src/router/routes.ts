@@ -221,6 +221,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/friendship-sign-2024',
+    name: 'FriendshipSign2024',
+    component: () => import('@/views/FriendshipSign2024'),
+    meta: {
+      title: '养分补给',
+      module: 'activitycenter_sign_friendship_2024',
+    },
+  },
+  {
     path: '/friendship-store-2024',
     name: 'FriendshipStore2024',
     component: () => import('@/views/FriendshipStore2024'),

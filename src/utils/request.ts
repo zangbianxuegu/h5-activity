@@ -275,6 +275,7 @@ export function getPlayerMissionData({
           'activitycenter_anniversary_store_2024',
           'activitycenter_main_friendship_2024',
           'activitycenter_store_friendship_2024',
+          'activitycenter_sign_friendship_2024',
           'activitycenter_week1_friendship_2024',
           'activitycenter_week2_friendship_2024',
           'activitycenter_week3_friendship_2024',
@@ -437,10 +438,12 @@ export function claimMissionReward({
   task,
   event,
   rewardId,
+  expect,
 }: {
   task: string
   event: string
   rewardId: number
+  expect?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
@@ -452,6 +455,7 @@ export function claimMissionReward({
         task,
         event,
         reward_id: rewardId,
+        expect,
       },
       handleRes: (res) => {
         if (res.code === 200) {

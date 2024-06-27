@@ -17,7 +17,10 @@ router.beforeEach((to, _, next) => {
     document.title = title as string
   }
   // 如果 App 接口还未成功
-  if (baseStore.baseInfo.currentFriendshipWeek === 0) {
+  if (
+    to.meta?.module === 'activitycenter_week_friendship_2024' &&
+    baseStore.baseInfo.currentFriendshipWeek === 0
+  ) {
     const unwatch = watch(
       () => baseStore.baseInfo.currentFriendshipWeek,
       (newVal) => {
