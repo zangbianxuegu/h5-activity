@@ -6,7 +6,7 @@
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           >
-            巡光嘉年华
+            巡 光 嘉 年 华
             <div
               class="date-help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
