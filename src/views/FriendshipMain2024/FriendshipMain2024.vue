@@ -36,24 +36,28 @@
             <!-- 向日葵 -->
             <div class="sunflower-box">
               <div ref="sunflower" class="sunflower bg-contain"></div>
+              <!-- 阳光 -->
               <div
                 v-if="isUsingSunlightsEnabled"
                 :class="[
-                  'sunflower-sunlight bg-contain',
+                  'sunflower-sunlight flex items-center justify-center bg-contain',
                   {
                     active: (Number(activityData.token_count) || 0) >= 100,
                   },
                 ]"
                 @click="handleUsingSunlight"
               >
+                <div class="sunlight-icon bg-contain"></div>
                 <p class="sunflower-text">-100</p>
               </div>
+              <!-- zzz -->
               <img
                 v-show="!isUsingSunlight"
                 class="img-sleep"
                 src="@/assets/images/friendship-main-2024/sleep.gif"
                 alt="zzz"
               />
+              <!-- heart -->
               <img
                 v-show="isUsingSunlight"
                 class="img-heart"
@@ -403,6 +407,22 @@ function getActivityData(): void {
     })
 }
 
+let startTime: number | null = null
+
+function animateHeart(): void {
+  if (!startTime) {
+    startTime = performance.now()
+  }
+  const elapsedTime = (performance.now() - startTime) / 1000
+  if (elapsedTime < 2) {
+    requestAnimationFrame(animateHeart)
+  } else {
+    isUsingSunlight.value = false
+    sunflower.value?.classList.remove('sunflower-animate')
+    startTime = null
+  }
+}
+
 // 使用阳光
 function handleUsingSunlight(): void {
   if (Number(activityData.value.token_count || 0) < 100) {
@@ -411,10 +431,7 @@ function handleUsingSunlight(): void {
   }
   isUsingSunlight.value = true
   sunflower.value?.classList.add('sunflower-animate')
-  setTimeout(() => {
-    isUsingSunlight.value = false
-    sunflower.value?.classList.remove('sunflower-animate')
-  }, 2000)
+  requestAnimationFrame(animateHeart)
   setPlayerTask({ task: 'activitycenter_main_friendship_2024_m1', value: 100 })
     .then((res) => {
       const { token_count: tokenCount, task_value: taskValue } =
@@ -581,15 +598,16 @@ function handleReward(
     background-image: url('@/assets/images/friendship-main-2024/sunlight-circle.png');
 
     &.active {
-      animation: breathe 2s infinite alternate;
-      width: 186px;
-      height: 189px;
+      animation: scaleAnimationCircle 2s infinite;
+      animation-timing-function: cubic-bezier(0.42, 0, 0.58, 1);
       background-image: url('@/assets/images/friendship-main-2024/sunlight-circle-active.png');
     }
   }
 
   &-text {
-    margin: -15px 0 0 115px;
+    position: absolute;
+    top: -15px;
+    left: 115px;
     width: 130px;
     height: 65px;
     border-radius: 65px;
@@ -600,6 +618,14 @@ function handleReward(
     background: rgba(146, 146, 201, 0.86);
   }
 }
+.sunlight-icon {
+  width: 89px;
+  height: 90px;
+  background-image: url('@/assets/images/friendship-main-2024/sunlight.png');
+  animation: scaleAnimationSunlight 2s infinite;
+  animation-timing-function: cubic-bezier(0.25, 0.45, 0.45, 0.95);
+}
+
 .sunflower-animate {
   animation: scaleMove 0.2s alternate;
 }
@@ -752,14 +778,26 @@ function handleReward(
     transform: scale(1);
   }
 }
-@keyframes breathe {
+
+@keyframes scaleAnimationSunlight {
   0% {
     transform: scale(1);
   }
-  50% {
-    transform: scale(1.05);
+  23% {
+    transform: scale(0.95);
   }
-  100% {
+  58% {
+    transform: scale(1);
+  }
+}
+@keyframes scaleAnimationCircle {
+  0% {
+    transform: scale(1);
+  }
+  25% {
+    transform: scale(0.9);
+  }
+  60% {
     transform: scale(1);
   }
 }

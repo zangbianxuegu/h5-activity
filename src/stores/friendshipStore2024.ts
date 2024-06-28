@@ -19,7 +19,6 @@ export const useActivityStore = defineStore(
           { remaining_amount: 1, price: 20, id: 7 },
         ],
       },
-      currency_info: { heart: 11 },
     })
     // 更新活动数据
     function updateActivityData(newEventData: FriendshipStore2024): void {

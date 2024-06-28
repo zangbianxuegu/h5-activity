@@ -278,13 +278,14 @@ const curItem = ref<StoreItem>({ remaining_amount: 5, price: 100, id: 0 })
 // 向日葵成长进度
 const progress = computed(() => {
   const stages =
-    activityDataMain.value.event_data.activitycenter_main_friendship_2024[0]
+    activityDataMain.value.event_data.activitycenter_main_friendship_2024[1]
       .stages
   const value =
-    activityDataMain.value.event_data.activitycenter_main_friendship_2024[0]
+    activityDataMain.value.event_data.activitycenter_main_friendship_2024[1]
       .value
   return stages.filter((item: number) => item <= value).length
 })
+console.log('progress: ', progress.value)
 
 const isVisited = Session.get('isVisitedFriendshipStore2024')
 const bodyTransitionName = ref('')
@@ -386,7 +387,7 @@ function handleConfirm(): void {
     storeCurrencyCount:
       curItem.value.id < 6
         ? (activityDataStore.value.token_info.sunlight_token as number)
-        : activityDataStore.value.currency_info.heart,
+        : -1,
     storeEvent: 'activitycenter_store_friendship_2024',
   })
     .then((res) => {
@@ -394,6 +395,7 @@ function handleConfirm(): void {
       const errorMap = {
         fail: '服务器错误',
         'not enough store currency': '货币不足',
+        'existing unlock': '商品已存在，不可兑换',
         'old data': '当前货币数量或者库存数量参数和实际不同',
         'exceed limit': '剩余可兑换数量不足',
       }

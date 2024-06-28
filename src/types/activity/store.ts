@@ -4,9 +4,9 @@ export interface StoreItem {
   id: number
 }
 
-interface CurrencyInfo {
-  heart: number
-}
+// interface CurrencyInfo {
+//   heart: number
+// }
 
 interface TokenInfo {
   fireworks_token?: number
@@ -23,7 +23,6 @@ export interface AnniversaryStore2024 {
 }
 
 export interface FriendshipStore2024 {
-  currency_info: CurrencyInfo
   token_info: TokenInfo
   sprite_exchange_store: SpriteExchangeStore
 }
