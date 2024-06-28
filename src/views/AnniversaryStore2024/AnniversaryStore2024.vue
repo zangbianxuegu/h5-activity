@@ -299,7 +299,7 @@ function handleConfirm(): void {
   purchaseSpriteToken({
     id: Number(curItem.value.id),
     remainingAmount: curItem.value.remaining_amount,
-    storeCurrencyCount: activityData.value.token_info.fireworks_token,
+    storeCurrencyCount: activityData.value.token_info.fireworks_token as number,
     storeEvent: 'activitycenter_anniversary_store_2024',
   })
     .then((res: PurchaseSpriteTokenRes) => {

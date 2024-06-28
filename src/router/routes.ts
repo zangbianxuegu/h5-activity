@@ -202,4 +202,49 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_anniversary_store_2024',
     },
   },
+  {
+    path: '/friendship-main-2024',
+    name: 'FriendshipMain2024',
+    component: () => import('@/views/FriendshipMain2024'),
+    meta: {
+      title: '向友葵的成长日记',
+      module: 'activitycenter_main_friendship_2024',
+    },
+  },
+  {
+    path: '/friendship-week-2024',
+    name: 'FriendshipWeek2024',
+    component: () => import('@/views/FriendshipWeek2024'),
+    meta: {
+      title: '每周惊喜',
+      module: 'activitycenter_week_friendship_2024', // 此处 module 需要动态修改
+    },
+  },
+  {
+    path: '/friendship-sign-2024',
+    name: 'FriendshipSign2024',
+    component: () => import('@/views/FriendshipSign2024'),
+    meta: {
+      title: '养分补给',
+      module: 'activitycenter_sign_friendship_2024',
+    },
+  },
+  {
+    path: '/friendship-store-2024',
+    name: 'FriendshipStore2024',
+    component: () => import('@/views/FriendshipStore2024'),
+    meta: {
+      title: '养分补给',
+      module: 'activitycenter_store_friendship_2024',
+    },
+  },
+  {
+    path: '/friendship-poster-2024',
+    name: 'FriendshipPoster2024',
+    component: () => import('@/views/FriendshipPoster2024'),
+    meta: {
+      title: '有友共享',
+      module: 'activitycenter_poster_friendship_2024',
+    },
+  },
 ]

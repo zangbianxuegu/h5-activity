@@ -223,12 +223,64 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '向友葵的成长日记',
+    value: 'activitycenter_main_friendship_2024',
+    routeName: 'FriendshipMain2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '每周惊喜',
+    value: 'activitycenter_week1_friendship_2024', // 第1周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '每周惊喜',
+    value: 'activitycenter_week2_friendship_2024', // 第2周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '每日签到',
+    value: 'activitycenter_sign_friendship_2024',
+    routeName: 'FriendshipSign2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '养分补给',
+    value: 'activitycenter_store_friendship_2024',
+    routeName: 'FriendshipStore2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '有友共享',
+    value: 'activitycenter_poster_friendship_2024',
+    routeName: 'FriendshipPoster2024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
     isNew: false,
     isClaimedReward: true,
   },
+]
+
+// 有友节周任务
+const activityFriendshipList = [
+  'activitycenter_week1_friendship_2024',
+  'activitycenter_week2_friendship_2024',
+  'activitycenter_week3_friendship_2024',
+  'activitycenter_week4_friendship_2024',
+  'activitycenter_week5_friendship_2024',
+  'activitycenter_week6_friendship_2024',
 ]
 
 const localUrl = 'https://10.227.198.175:5173'
@@ -351,6 +403,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     [],
   )
   const returnBuff = baseStore.baseInfo.returnBuff
+  // 处理回流页面
   if (returnBuff === 'true') {
     res.unshift({
       activity: 'activity_return_buff',
@@ -450,6 +503,18 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
   return res
 }
 
+// 获取当前有友节周
+function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
+  let res = 0
+  const item = activeEvents.find((item) =>
+    activityFriendshipList.includes(item.activity),
+  )
+  if (item) {
+    res = activityFriendshipList.indexOf(item.activity) + 1
+  }
+  return res
+}
+
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
@@ -458,6 +523,10 @@ function getAllEvents(): void {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
       console.log('activeEvents', activeEvents)
+
+      // 获取当前有友节周
+      const currentFriendshipWeek = findCurrentFriendshipWeek(activeEvents)
+      updateBaseInfoItems({ currentFriendshipWeek })
 
       const newMenuData = generateMenuData(initMenuItems, activeEvents)
       console.log('newMenuData: ', newMenuData)
