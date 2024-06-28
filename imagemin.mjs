@@ -69,19 +69,20 @@ const spinner = ora('图片压缩中...')
         return true
         // 系统时间戳，比Date.now()更精准，多了小数点后三位，所以控制在1ms内都认为是有效缓存
       } else {
-        if (Math.abs(ctimeMs - mtimeMs) > 10) {
-          debug &&
-            console.log(`
-          ${filePath}在缓存但过期了而入列，${ctimeMs} ${mtimeMs} 相差${ctimeMs - mtimeMs
-              }`)
-          tinyMap.set(filePath, {
-            mtimeMs,
-          })
-          return true
-        } else {
-          // debug && console.log(filePath + '在缓存而出列');
-          return false
-        }
+        return false
+        // if (Math.abs(ctimeMs - mtimeMs) > 10) {
+        //   debug &&
+        //     console.log(`
+        //   ${filePath}在缓存但过期了而入列，${ctimeMs} ${mtimeMs} 相差${ctimeMs - mtimeMs
+        //       }`)
+        //   tinyMap.set(filePath, {
+        //     mtimeMs,
+        //   })
+        //   return true
+        // } else {
+        //   // debug && console.log(filePath + '在缓存而出列');
+        //   return false
+        // }
       }
     })
     debug && console.log(filePaths)
