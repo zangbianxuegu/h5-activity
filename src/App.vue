@@ -291,6 +291,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '绮丽绘梦时',
+    value: 'activitycenter_rainbow1_2024',
+    routeName: 'Rainbow12024',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
