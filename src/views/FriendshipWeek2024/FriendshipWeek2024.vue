@@ -315,9 +315,9 @@ function handleSrc(name: string): string {
 // 设置红点
 function setRedDot(): void {
   const isClaimedReward =
-    !activityData.value.event_data.activitycenter_week_friendship_2024.some(
-      (item) => item.award[0] === 0 && item.value >= item.stages[0],
-    )
+    !activityData.value.event_data.activitycenter_week_friendship_2024
+      .slice(1)
+      .some((item) => item.award[0] === 0 && item.value >= item.stages[0])
   menuStore.updateMenuDataByIsClaimedReward(event, isClaimedReward)
 }
 
