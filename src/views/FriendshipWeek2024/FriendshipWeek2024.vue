@@ -501,15 +501,17 @@ function handleReward(task: string, status: string, index: number): void {
 }
 @for $i from 1 through 6 {
   @for $j from 1 through 3 {
-    .week#{$i}-task-item#{$j} {
-      &.wait {
-        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-wait.png');
-      }
-      &.can {
-        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-can.png');
-      }
-      &.redeemed {
-        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-redeemed.png');
+    @if not($i > 2 or ($i == 2 and $j >= 2)) {
+      .week#{$i}-task-item#{$j} {
+        &.wait {
+          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-wait.png');
+        }
+        &.can {
+          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-can.png');
+        }
+        &.redeemed {
+          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-redeemed.png');
+        }
       }
     }
   }

@@ -783,10 +783,10 @@ function handleReward(
   0% {
     transform: scale(1);
   }
-  23% {
+  40% {
     transform: scale(0.95);
   }
-  58% {
+  100% {
     transform: scale(1);
   }
 }
@@ -794,10 +794,10 @@ function handleReward(
   0% {
     transform: scale(1);
   }
-  25% {
+  42% {
     transform: scale(0.9);
   }
-  60% {
+  100% {
     transform: scale(1);
   }
 }
