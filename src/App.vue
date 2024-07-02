@@ -274,13 +274,22 @@ const initMenuItems: MenuItem[] = [
 ]
 
 // 有友节周任务
-const activityFriendshipList = [
+const activityFriendshipWeekList = [
   'activitycenter_week1_friendship_2024',
   'activitycenter_week2_friendship_2024',
   'activitycenter_week3_friendship_2024',
   'activitycenter_week4_friendship_2024',
   'activitycenter_week5_friendship_2024',
   'activitycenter_week6_friendship_2024',
+]
+
+// 有友节任务
+const activityFriendshipList = [
+  'activitycenter_main_friendship_2024',
+  'activitycenter_sign_friendship_2024',
+  ...activityFriendshipWeekList,
+  'activitycenter_store_friendship_2024',
+  'activitycenter_poster_friendship_2024',
 ]
 
 const localUrl = 'https://10.227.198.175:5173'
@@ -384,10 +393,12 @@ function handleToSprite(): void {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
+  const predefinedOrder = activityFriendshipList
+  let predefinedStartTime: number | null = null
   const res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
-        activeEvents.push({
+        const activity = {
           activity: activityName,
           startTime: activityInfo.start_time,
           endTime: activityInfo.end_time,
@@ -396,16 +407,45 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
             activityName === 'activity_center_notice'
               ? true
               : activityInfo.is_claimed_reward === 1,
-        })
+        }
+        if (activityName === 'activitycenter_main_friendship_2024') {
+          predefinedStartTime = activity.startTime
+        }
+        activeEvents.push(activity)
       }
       return activeEvents
     },
     [],
   )
+  // 按照 startTime 排序
+  res.sort((a, b) => b.startTime - a.startTime)
+  // 提取有友节活动
+  const predefinedActivities = predefinedOrder
+    .map((activityName) =>
+      res.find((activity) => activity.activity === activityName),
+    )
+    .filter((activity) => activity !== undefined) as Activity[]
+
+  // 过滤出其余的活动
+  const otherActivities = res.filter(
+    (activity) => !predefinedOrder.includes(activity.activity),
+  )
+
+  // 排序
+  const finalRes = [
+    ...otherActivities.filter(
+      (activity) => activity.startTime >= (predefinedStartTime || 0),
+    ),
+    ...predefinedActivities,
+    ...otherActivities.filter(
+      (activity) => activity.startTime < (predefinedStartTime || 0),
+    ),
+  ]
+
   const returnBuff = baseStore.baseInfo.returnBuff
   // 处理回流页面
   if (returnBuff === 'true') {
-    res.unshift({
+    finalRes.unshift({
       activity: 'activity_return_buff',
       startTime: 9999999999,
       endTime: 0,
@@ -413,11 +453,12 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
       isClaimedReward: true,
     })
   }
-  return res.sort((a, b) => {
-    // 如果是小光快报，让它排在最后
+
+  // 最后调整小光快报的位置
+  return finalRes.sort((a, b) => {
     if (a.activity === 'activity_center_notice') return 1
     if (b.activity === 'activity_center_notice') return -1
-    return b.startTime - a.startTime
+    return 0 // 保持现有顺序不变
   })
 }
 
@@ -507,10 +548,10 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
   let res = 0
   const item = activeEvents.find((item) =>
-    activityFriendshipList.includes(item.activity),
+    activityFriendshipWeekList.includes(item.activity),
   )
   if (item) {
-    res = activityFriendshipList.indexOf(item.activity) + 1
+    res = activityFriendshipWeekList.indexOf(item.activity) + 1
   }
   return res
 }
