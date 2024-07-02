@@ -56,8 +56,6 @@ export interface EventData {
   activity_season22_sprint: Event[]
   activitycenter_anniversary_visit_2024: Event[]
   activitycenter_anniversary_server_2024: Event[]
-  activitycenter_rainbow2_2024: Event[]
-  activitycenter_rainbow1_2024: Event[]
 }
 
 export type EventDataKeys = keyof EventData
@@ -80,6 +78,8 @@ export type EventName =
   | 'activitycenter_tournament_of_triumph_1'
   | 'activitycenter_tournament_of_triumph_2'
   | 'activitycenter_tournament_of_triumph_3'
+  | 'activitycenter_rainbow1_2024'
+  | 'activitycenter_rainbow2_2024'
 
 export interface MenuItem {
   label: string

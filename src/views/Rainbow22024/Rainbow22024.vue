@@ -16,9 +16,6 @@
         <Transition appear :name="mainTransitionName" mode="out-in">
           <div class="task-main">
             <div class="task-list-container">
-              <div
-                class="tag-clock overflow-hidden bg-contain bg-center bg-no-repeat"
-              ></div>
               <ul
                 class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
               >
@@ -139,11 +136,11 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { Event, DesignConfig, EventDataKeys } from '@/types'
+import type { Event, DesignConfig, EventName } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/activity'
+import { useActivityStore } from '@/stores/rainbow22024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
 interface Rewards {
@@ -211,13 +208,10 @@ const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 
-const EVENT_NAME: EventDataKeys =
-  activityStore.activeEventName.activitycenter_rainbow2_2024
+const EVENT_NAME = 'activitycenter_rainbow2_2024' as EventName
 
 // 活动数据
-const activityData = computed(
-  () => activityStore.eventData[EVENT_NAME] as Event[],
-)
+const activityData = computed(() => activityStore.activityData)
 const curRewards: Ref<Rewards> = ref({
   name: 'trail_pink',
   count: 0,
@@ -300,7 +294,8 @@ const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity = activityData.value[index]
+    const activity =
+      activityData.value.event_data.activitycenter_rainbow2_2024[index]
     const task = {
       ...item,
       status:
@@ -350,49 +345,63 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
+// 设置红点
+function setRedDot(): void {
+  const isClaimedReward =
+    !activityData.value.event_data.activitycenter_rainbow2_2024.some(
+      (item) => item.award[0] === 0 && item.value >= item.stages[0],
+    )
+  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
+}
 // 获取任务进度
 function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
-      // 获取数据并按照 TASK_LIST 的顺序进行排序
-      const activityData: Event[] =
-        res.data.event_data?.activitycenter_anniversary_visit_2024.sort(
-          (a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
-            const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
-            return orderA - orderB
-          },
-        )
-      // 是否已领奖：所有任务已领奖
-      const isClaimedReward = !activityData.some(
-        (item) => item.award[0] === 0 && item.value >= item.stages[0],
-      )
-      // 更新菜单数据 isClaimedReward
-      menuStore.updateMenuDataByIsClaimedReward(
-        EVENT_NAME as string,
-        isClaimedReward,
-      )
+      const data: any = res.data
+      const newActivityData = {
+        ...data,
+        event_data: {
+          activitycenter_rainbow2_2024: data.event_data[EVENT_NAME].sort(
+            (a: Event, b: Event) => {
+              const orderA = taskOrderMap.get(a.task_id) ?? 4
+              const orderB = taskOrderMap.get(b.task_id) ?? 4
+              return orderA - orderB
+            },
+          ),
+        },
+      }
+
       // 更新缓存活动数据
-      activityStore.updateEventData(EVENT_NAME, activityData)
+      activityStore.updateActivityData(newActivityData)
+      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
     })
 }
 
-function updateActivityDataRewardStatusNoRequest(task: string): void {
+function updateActivityDataRewardStatusNoRequest(): void {
   // 后端接口请求限制间隔 3s
   // 优化用户体验，不再延时请求接口，直接前端更新数据展示
-  const newActivityData = activityData.value.map((item) => {
-    return {
-      ...item,
-      award: item.task_id === task ? [1] : item.award,
-    }
-  })
-  activityStore.updateEventData(EVENT_NAME, newActivityData)
-  const isClaimedReward = !newActivityData.some(
-    (item) => item.award[0] === 0 && item.value >= item.stages[0],
-  )
+  const newActivityData = {
+    ...activityData.value,
+    event_data: {
+      activitycenter_rainbow2_2024:
+        activityData.value.event_data.activitycenter_rainbow2_2024.map(
+          (item) => {
+            return {
+              ...item,
+              award: item.task_id === currentTask.taskName ? [1] : item.award,
+            }
+          },
+        ),
+    },
+  }
+  activityStore.updateActivityData(newActivityData)
+  const isClaimedReward =
+    !newActivityData.event_data.activitycenter_rainbow2_2024.some(
+      (item) => item.award[0] === 0 && item.value >= item.stages[0],
+    )
   menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
 }
 
@@ -402,7 +411,7 @@ const currentTask = reactive({
 })
 
 function handleModalRewardClose(): void {
-  updateActivityDataRewardStatusNoRequest(currentTask.taskName)
+  updateActivityDataRewardStatusNoRequest()
 }
 
 // 领奖
@@ -501,14 +510,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   top: 12px;
   left: 589px;
 }
-.tag-clock {
-  position: absolute;
-  top: 106px;
-  left: 83px;
-  width: 158px;
-  height: 82px;
-  background-image: url('@/assets/images/rainbow2-2024/tag-clock.png');
-}
 .task-item {
   width: 282px;
   height: 234px;
@@ -517,7 +518,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 
 $reward-img-vertical-gap: 13px;
 $reward-img-horizontal-gap: 32px;
-@for $i from 1 through 10 {
+@for $i from 1 through 8 {
   .task-item#{$i} {
     &.wait {
       background-image: url('@/assets/images/rainbow2-2024/task#{$i}-wait.png');
