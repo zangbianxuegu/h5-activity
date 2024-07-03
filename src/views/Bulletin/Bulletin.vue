@@ -96,7 +96,7 @@ import dayjs from 'dayjs'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { type DesignConfig, type BulletinItem } from '@/types'
 import { showToast } from 'vant'
-import { webViewStatistics } from '@/utils/request'
+import { webViewStatistics } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
 
 // 基本信息

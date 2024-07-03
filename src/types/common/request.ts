@@ -4,6 +4,8 @@ export interface TokenParams {
   map: string
   return_buff: string
   os: string
+  refer?: string
+  source: string
 }
 
 export interface Response {

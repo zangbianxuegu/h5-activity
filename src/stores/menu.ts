@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { type MenuItem } from '@/types'
-import { setWebRedDot, updateRedDot } from '@/utils/request'
+import { updateRedDot } from '@/apis/base'
+import { setWebRedDot } from '@/utils/request'
 import { showToast } from 'vant'
 
 export const useMenuStore = defineStore('menu', () => {

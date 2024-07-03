@@ -3,7 +3,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './routes'
 import { useMenuStore } from '@/stores/menu'
 import { useBaseStore } from '@/stores/base'
-import { webViewStatistics } from '@/utils/request'
+import { webViewStatistics } from '@/apis/base'
 
 const router = createRouter({
   history: createWebHashHistory(),

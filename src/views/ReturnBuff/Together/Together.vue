@@ -33,9 +33,9 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { type DesignConfig } from '@/types'
+import type { DesignConfig, TokenParams } from '@/types'
 import { Session } from '@/utils/storage'
-import { getUserInfo, getJinglingToken } from '@/utils/request'
+import { getJinglingToken, getUserInfo } from '@/apis/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
 // 设计稿宽
@@ -91,14 +91,7 @@ onMounted(() => {
   getBaseInfo()
 })
 
-let tokenParams: {
-  game_uid: string
-  uid: string
-  map: string
-  return_buff: string
-  os: string
-  refer: string
-} = {
+let tokenParams: TokenParams = {
   game_uid: '',
   uid: '',
   map: '',
@@ -106,6 +99,7 @@ let tokenParams: {
   os: '',
   // 回流玩家攻略专题
   refer: encodeURIComponent('/sprite/index?q=回流玩家攻略专题'),
+  source: 'return',
 }
 
 // 获取基本信息

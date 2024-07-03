@@ -58,12 +58,9 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
-import { type MenuItem, type Activity, type ActivityTime } from '@/types'
-import {
-  getPlayerMissionData,
-  getUserInfo,
-  getJinglingToken,
-} from '@/utils/request'
+import type { MenuItem, Activity, ActivityTime, TokenParams } from '@/types'
+import { getPlayerMissionData } from '@/utils/request'
+import { getUserInfo, getJinglingToken } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
@@ -342,18 +339,13 @@ onMounted(() => {
   }
 })
 
-let tokenParams: {
-  game_uid: string
-  uid: string
-  map: string
-  return_buff: string
-  os: string
-} = {
+let tokenParams: TokenParams = {
   game_uid: '',
   uid: '',
   map: '',
   return_buff: '',
   os: '',
+  source: 'normal',
 }
 
 // 获取基本信息
@@ -367,6 +359,7 @@ function getBaseInfo(): void {
       updateBaseInfoItems({ appChannel })
       updateBaseInfoItems({ returnBuff })
       tokenParams = {
+        ...tokenParams,
         game_uid: res.game_uid,
         uid: res.uid,
         map: res.map,
