@@ -426,7 +426,7 @@ function animateHeart(): void {
 // 使用阳光
 function handleUsingSunlight(): void {
   if (Number(activityData.value.token_count || 0) < 100) {
-    showToast('阳光数量不足')
+    showToast('阳光不足，无法呵护向友葵！')
     return
   }
   isUsingSunlight.value = true
@@ -436,6 +436,7 @@ function handleUsingSunlight(): void {
     .then((res) => {
       const { token_count: tokenCount, task_value: taskValue } =
         res.data.activitycenter_main_friendship_2024.data
+      showToast('您已成功呵护向友葵，成长值+100')
       // 阳光数量
       activityData.value.token_count = tokenCount
       // main value
@@ -577,7 +578,7 @@ function handleReward(
 .sunflower-box {
   position: absolute;
   left: 22px;
-  bottom: 74px;
+  bottom: 94px;
   width: 430px;
   height: 805px;
 }
@@ -671,6 +672,7 @@ function handleReward(
   height: 362px;
 }
 .task-list {
+  margin-left: 100px;
   padding: 0 20px;
   width: 100%;
   height: 229px;
@@ -710,6 +712,7 @@ function handleReward(
     4px 4px 0 #fff;
 }
 .progress {
+  margin-left: -100px;
   margin-top: 10px;
   width: 1719px;
   height: 66px;
