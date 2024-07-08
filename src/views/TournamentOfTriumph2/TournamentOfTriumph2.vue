@@ -3,11 +3,11 @@
     <div class="tournament flex h-screen">
       <div class="tournament-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <div class="header z-10 flex">
+          <div class="header flex">
             <h1
               class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
             >
-              运动日锦标赛，开幕！ 7.26-8.10
+              奖牌收藏挑战赛 7.26-8.10
             </h1>
             <div
               class="help bg-contain bg-center bg-no-repeat"
@@ -17,46 +17,32 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <!-- 任务列表 -->
-            <ul class="task-list flex">
-              <li
-                v-for="(item, index) in taskList"
-                :key="item.id"
-                :class="[
-                  'task-bg animate-flip flex flex-col-reverse bg-contain',
-                  `bg-task${index + 1}`,
-                ]"
-              >
-                <div
-                  :class="[
-                    'task-item animate__animated animate__fadeIn animate__slow bg-contain indent-[-9999px]',
-                    `task-item${index + 1}`,
-                    `${item.status}`,
-                  ]"
-                  @click="handleReward(item.value, item.status, 1, index)"
-                >
-                  <p class="task-text">{{ item.title }}</p>
-                </div>
-              </li>
-            </ul>
             <!-- 累计任务列表 -->
-            <ul class="acc-task-list">
+            <ul class="task-list flex items-center bg-contain">
               <li
                 v-for="(item, index) in accTaskList"
                 :key="item.id"
                 :class="[
-                  'acc-task-item animate__animated animate__fadeIn bg-contain indent-[-9999px]',
-                  `acc-task-item${index + 1}`,
+                  'task-item bg-contain indent-[-9999px]',
+                  `task-item${index + 1}`,
                   `${item.status}`,
                 ]"
-                @click="handleReward(item.value, item.status, item.id, 6)"
+                @click="handleReward(item.value, item.status, item.id, 0)"
               >
-                <p>{{ item.title }}</p>
+                <p class="task-text">{{ item.title }}</p>
               </li>
             </ul>
-            <!-- 累计收集代币进度 -->
-            <div class="acc-progress bg-contain text-center">
-              <p class="acc-progress-count">({{ collectedCount }}/10)</p>
+            <!-- 人物 -->
+            <div class="sky animate__animated animate__fadeIn bg-contain"></div>
+            <!-- 第一名任务 -->
+            <div
+              :class="[
+                'top1-task task-item4 bg-contain indent-[-9999px]',
+                `${top1Task.status}`,
+              ]"
+              @click="handleReward(top1Task.value, top1Task.status, 1, 1)"
+            >
+              {{ top1Task.title }}
             </div>
           </section>
         </Transition>
@@ -72,47 +58,33 @@
             <span class="font-semibold">活动内容：</span>
           </p>
           <p class="modal-text">
-            活动期间参与运动日锦标赛项目即可获得对应奖励：
+            活动期间在任意运动日锦标赛中累积达成一定数量的名次要求即可获得对应奖励：
           </p>
           <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">收集云朵</span>项目即可获得<span
+            累积<span class="text-[#ffcb4d]">获得1次前三名</span>即可赢取<span
               class="text-[#ffcb4d]"
-              >漂浮魔法*2</span
+              >元气满满魔法*1</span
             >；
           </p>
           <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">飞行竞速</span>项目即可获得<span
+            累积<span class="text-[#ffcb4d]">获得3次前三名</span>即可赢取<span
               class="text-[#ffcb4d]"
-              >彩虹尾迹*2</span
+              >蜡烛*2</span
             >；
           </p>
           <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">越野赛跑</span>项目即可获得<span
+            累积<span class="text-[#ffcb4d]">获得6次前三名</span>即可赢取<span
               class="text-[#ffcb4d]"
-              >元气满满魔法*2</span
+              >体型重塑*2</span
             >；
           </p>
           <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">雪地滑行</span>项目即可获得<span
+            <span class="text-[#ffcb4d]">获得1次第一名</span>即可赢取<span
               class="text-[#ffcb4d]"
-              >炫彩步尘*2</span
+              >爱心*1</span
             >；
           </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">螃蟹赛跑</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >螃蟹恶作剧*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">星光收集</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >璀璨之星魔法*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            锦标赛项目会每日轮换，各位光之子记得前来参加哦~
-          </p>
+          <p class="modal-text">加油冲刺吧~</p>
         </template>
       </activity-modal>
       <!-- 奖励弹框 -->
@@ -147,7 +119,7 @@ import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/tournamentOfTriumph1'
+import { useActivityStore } from '@/stores/tournamentOfTriumph2'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
 interface Rewards {
@@ -155,92 +127,59 @@ interface Rewards {
   count: number
 }
 interface RewardsName {
-  gravity: string
-  trail_rainbow: string
   energy: string
-  flair_flower: string
-  crab_rock_trick: string
-  glow: string
+  candles: string
   resize_potion: string
   heart: string
 }
 const rewardsText: RewardsName = {
-  gravity: '漂浮魔法',
-  trail_rainbow: '彩虹尾迹',
   energy: '元气满满',
-  flair_flower: '炫彩步尘',
-  crab_rock_trick: '螃蟹恶作剧',
-  glow: '璀璨之星魔法',
+  candles: '蜡烛',
   resize_potion: '体型重塑',
   heart: '爱心',
 }
 const curRewards: Ref<Rewards> = ref({
-  name: 'gravity',
-  count: 2,
+  name: '元气满满',
+  count: 1,
 })
 
-const TASK_LIST = [
-  {
-    id: 1,
-    title: '参与1次收集云朵',
-    value: 'activitycenter_tournament_of_triumph_1_dawn',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    title: '参与1次云野飞行竞速',
-    value: 'activitycenter_tournament_of_triumph_1_prairie',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    title: '参与1次雨林越野赛跑',
-    value: 'activitycenter_tournament_of_triumph_1_rain',
-    status: 'wait',
-  },
-  {
-    id: 4,
-    title: '参与1次霞谷雪地滑行',
-    value: 'activitycenter_tournament_of_triumph_1_sunset',
-    status: 'wait',
-  },
-  {
-    id: 5,
-    title: '参与1次墓土螃蟹赛跑',
-    value: 'activitycenter_tournament_of_triumph_1_dusk',
-    status: 'wait',
-  },
-  {
-    id: 6,
-    title: '参与1次禁阁星光收集',
-    value: 'activitycenter_tournament_of_triumph_1_night',
-    status: 'wait',
-  },
-]
 const ACC_TASK_LIST = [
   {
     id: 1,
-    title: '收集3个奖牌代币',
-    value: 'collecting_event_candles',
+    title: '获得1次前三名',
+    value: 'activitycenter_tournament_of_triumph_2_top3',
     status: 'wait',
   },
   {
     id: 2,
-    title: '收集6个奖牌代币',
-    value: 'collecting_event_candles',
+    title: '获得3次前三名',
+    value: 'activitycenter_tournament_of_triumph_2_top3',
     status: 'wait',
   },
   {
     id: 3,
-    title: '收集10个奖牌代币',
-    value: 'collecting_event_candles',
+    title: '获得6次前三名',
+    value: 'activitycenter_tournament_of_triumph_2_top3',
+    status: 'wait',
+  },
+]
+const TASK_LIST = [
+  {
+    id: 1,
+    value: 'activitycenter_tournament_of_triumph_2_top3',
+    children: ACC_TASK_LIST,
+  },
+  {
+    id: 2,
+    title: '获得1次第一名',
+    value: 'activitycenter_tournament_of_triumph_2_top1',
     status: 'wait',
   },
 ]
 
 // 任务排序
 const taskOrderMap = new Map(
-  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.value, index]),
+  TASK_LIST.map((task, index) => [task.value, index]),
 )
 
 // 设计稿宽
@@ -275,50 +214,45 @@ const designConfig: DesignConfig = {
 const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 
-const EVENT = 'activitycenter_tournament_of_triumph_1'
+const EVENT = 'activitycenter_tournament_of_triumph_2'
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-const collectedCount = computed(
-  () => activityData.value.event_data[EVENT][6].value,
-)
 const isRewardImageLoaded = ref(false)
 const rewardImageSrc = ref(handleSrc(String(curRewards.value.name)))
-// 任务列表
-const taskList = computed(() => {
-  return TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT][index]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
 // 累计任务列表
 const accTaskList = computed(() => {
-  const activity = activityData.value.event_data[EVENT][6]
+  const accTasks = activityData.value.event_data[EVENT][0]
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
       status:
-        activity.award[index] === 1
+        accTasks.award[index] === 1
           ? 'redeemed'
-          : activity.award[index] === 0 &&
-              activity.value >= activity.stages[index]
+          : accTasks.award[index] === 0 &&
+              accTasks.value >= accTasks.stages[index]
             ? 'can'
             : 'wait',
     }
   })
 })
+// 获得1次第一名
+const top1Task = computed(() => {
+  const task = activityData.value.event_data[EVENT][1]
+  return {
+    ...TASK_LIST[1],
+    status:
+      task.award[0] === 1
+        ? 'redeemed'
+        : task.award[0] === 0 && task.value >= task.stages[0]
+          ? 'can'
+          : 'wait',
+  }
+})
 
-const isVisited = Session.get('isVisitedTournamentOfTriumph1')
+const isVisited = Session.get('isVisitedTournamentOfTriumph2')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 const mainTransitionName = ref('')
@@ -334,7 +268,7 @@ onMounted(() => {
   } catch (error) {
     console.error(error)
   }
-  Session.set('isVisitedTournamentOfTriumph1', true)
+  Session.set('isVisitedTournamentOfTriumph2', true)
 })
 
 /**
@@ -375,21 +309,17 @@ function preLoadImage(src: string): Promise<void> {
  * @param tasks 任务列表
  */
 function hasClaimedReward(tasks: Event[]): boolean {
-  // 检查1-6项，任务列表
-  const tasksValid = tasks
-    .slice(0, 6)
-    .every(
-      (task) =>
-        (task.value === 0 && task.award[0] === 0) ||
-        (task.value >= 1 && task.award[0] === 1),
-    )
-  if (!tasksValid) {
+  // 检查第2项
+  const top1TaskValid =
+    (tasks[1].value === 0 && tasks[1].award[0] === 0) ||
+    (tasks[1].value >= 1 && tasks[1].award[0] === 1)
+  if (!top1TaskValid) {
     return false
   }
-  // 检查第7项，累计任务
-  const task6 = tasks[6]
-  const accTasksValid = task6.stages.every(
-    (stage, index) => task6.value < stage || task6.award[index] === 1,
+  // 检查第1项，累计任务
+  const accTasks = tasks[0]
+  const accTasksValid = accTasks.stages.every(
+    (stage, index) => accTasks.value < stage || accTasks.award[index] === 1,
   )
   return accTasksValid
 }
@@ -413,8 +343,8 @@ function getActivityData(): void {
         ...data,
         event_data: {
           [EVENT]: data.event_data[EVENT].sort((a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? 7
-            const orderB = taskOrderMap.get(b.task_id) ?? 7
+            const orderA = taskOrderMap.get(a.task_id) ?? 2
+            const orderB = taskOrderMap.get(b.task_id) ?? 2
             return orderA - orderB
           }),
         },
@@ -510,118 +440,70 @@ function handleReward(
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/tournament-of-triumph-1/bg.jpg');
+    background-image: url('@/assets/images/tournament-of-triumph-2/bg.jpg');
   }
 }
 .header {
   position: relative;
-  left: 45px;
-  top: 69px;
-  width: 1319px;
+  left: 190px;
+  top: 180px;
 }
 .title {
-  width: 1319px;
-  height: 214px;
-  background-image: url('@/assets/images/tournament-of-triumph-1/title.png');
+  width: 1091px;
+  height: 267px;
+  background-image: url('@/assets/images/tournament-of-triumph-2/title.png');
 }
 .help {
   position: absolute;
-  right: 50px;
-  top: 23px;
+  left: 1060px;
+  bottom: 40px;
   width: 87px;
   height: 87px;
-  background-image: url('@/assets/images/tournament-of-triumph-1/help.png');
+  background-image: url('@/assets/images/tournament-of-triumph-2/help.png');
+}
+.sky {
+  position: absolute;
+  left: 59px;
+  top: 471px;
+  width: 313px;
+  height: 605px;
+  background-image: url('@/assets/images/tournament-of-triumph-2/sky.png');
 }
 .task-list {
   position: absolute;
-  left: 38px;
-  top: 0;
-  width: 1500px;
-}
-.task-bg {
-  width: 250px;
-  height: 1022px;
+  left: 222px;
+  top: 453px;
+  padding: 0 102px 0 103px;
+  width: 1291px;
+  height: 413px;
+  background-image: url('@/assets/images/tournament-of-triumph-2/task-main-bg.png');
 }
 .task-item {
-  margin-left: -8px;
-  margin-bottom: 58px;
-  width: 267px;
-  height: 340px;
-}
-@for $i from 1 through 6 {
-  .bg-task#{$i} {
-    background-image: url('@/assets/images/tournament-of-triumph-1/bg-task#{$i}.png');
+  margin-right: 45px;
+  width: 332px;
+  height: 240px;
+  &:nth-child(3) {
+    margin-right: 0;
   }
+}
+@for $i from 1 through 4 {
   .task-item#{$i} {
     &.wait {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-wait.png');
+      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-can.png');
+      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-can.png');
     }
     &.redeemed {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-redeemed.png');
     }
   }
 }
-.acc-task-item {
+.top1-task {
   position: absolute;
-  width: 146px;
-  height: 175px;
-}
-.acc-task-item1 {
-  right: 29px;
-  top: 623px;
-}
-.acc-task-item2 {
-  right: 123px;
-  top: 423px;
-}
-.acc-task-item3 {
-  right: 295px;
-  top: 300px;
-}
-@for $i from 1 through 3 {
-  .acc-task-item#{$i} {
-    &.wait {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-redeemed.png');
-    }
-  }
-}
-.acc-progress {
-  position: absolute;
-  right: 0;
-  bottom: 150px;
-  padding-top: 55px;
-  width: 497px;
-  height: 105px;
-  background-image: url('@/assets/images/tournament-of-triumph-1/acc-token-bg.png');
-
-  &-count {
-    height: 50px;
-    line-height: 50px;
-    font-size: 34px;
-    color: #fff281;
-  }
-}
-.animate-flip {
-  animation: flip 0.3s ease-out;
-}
-@keyframes flip {
-  0% {
-    transform: rotateY(0deg);
-  }
-  50% {
-    transform: rotateY(90deg);
-  }
-  100% {
-    transform: rotateY(0deg);
-  }
+  right: 108px;
+  top: 76px;
+  width: 405px;
+  height: 405px;
 }
 </style>

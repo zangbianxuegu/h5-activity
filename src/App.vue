@@ -270,6 +270,20 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '奖牌收集挑战赛',
+    value: 'activitycenter_tournament_of_triumph_2',
+    routeName: 'TournamentOfTriumph2',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '心火相传辉煌落幕',
+    value: 'activitycenter_tournament_of_triumph_3',
+    routeName: 'TournamentOfTriumph3',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

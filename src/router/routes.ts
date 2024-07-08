@@ -256,4 +256,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_tournament_of_triumph_1',
     },
   },
+  {
+    path: '/tournament-of-triumph-2',
+    name: 'TournamentOfTriumph2',
+    component: () => import('@/views/TournamentOfTriumph2'),
+    meta: {
+      title: '奖牌收集挑战赛',
+      module: 'activitycenter_tournament_of_triumph_2',
+    },
+  },
 ]
