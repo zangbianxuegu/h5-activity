@@ -247,4 +247,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_poster_friendship_2024',
     },
   },
+  {
+    path: '/tournament-of-triumph-1',
+    name: 'TournamentOfTriumph1',
+    component: () => import('@/views/TournamentOfTriumph1'),
+    meta: {
+      title: '运动日锦标赛，开幕！',
+      module: 'activitycenter_tournament_of_triumph_1',
+    },
+  },
 ]

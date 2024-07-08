@@ -263,6 +263,13 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '运动日锦标赛，开幕！',
+    value: 'activitycenter_tournament_of_triumph_1',
+    routeName: 'TournamentOfTriumph1',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
