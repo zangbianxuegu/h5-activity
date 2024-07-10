@@ -1,6 +1,7 @@
 /**
  * @function 将数字转为二进制数组
  * @param num 是否有未领奖状态数字
+ * @example 3 -> [1, 1]，2 -> [0, 1]
  */
 export function numberToBinaryArray(num: number): number[] {
   const binaryString = num.toString(2)

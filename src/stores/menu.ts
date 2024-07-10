@@ -126,7 +126,11 @@ export const useMenuStore = defineStore('menu', () => {
     }
   }
 
-  // 更新菜单数据 hasUnclaimedReward
+  /**
+   * @function 更新菜单数据hasUnclaimedReward
+   * @param event 活动名
+   * @param hasUnclaimedReward 是否有未领奖
+   */
   function updateMenuDataByHasUnclaimedReward(
     event: string,
     hasUnclaimedReward: boolean,
@@ -163,11 +167,31 @@ export const useMenuStore = defineStore('menu', () => {
     })
   }
 
+  /**
+   * @function 更新菜单数据isClaimedReward
+   * @param event 活动名
+   * @param isClaimedReward 是否已领奖
+   * @description 如果删除此方法，build 会报错。保留这个方法，是为了不侵入性修改之前的所有活动页面。
+   */
+  function updateMenuDataByIsClaimedReward(
+    event: string,
+    isClaimedReward: boolean,
+  ): void {
+    menuData.value = menuData.value.map((item) => {
+      return {
+        ...item,
+        hasUnclaimedReward:
+          item.value === event ? !isClaimedReward : item.hasUnclaimedReward,
+      }
+    })
+  }
+
   return {
     menuData,
     updateMenuData,
     updatedMenuDataByRoute,
     updateMenuDataByIsNew,
+    updateMenuDataByIsClaimedReward,
     updateMenuDataByHasUnclaimedReward,
   }
 })

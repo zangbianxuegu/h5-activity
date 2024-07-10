@@ -13,7 +13,7 @@
           :class="[
             'nav-item mx-4 my-10 cursor-pointer',
             isMenuItemActive(item) ? 'nav-item--active' : '',
-            item.isNew || !item.isClaimedReward ? 'nav-item--new' : '',
+            item.isNew || item.hasUnclaimedReward ? 'nav-item--new' : '',
           ]"
           @click="handleNav(item)"
         >
