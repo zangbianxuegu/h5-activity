@@ -475,7 +475,7 @@ export function claimMissionReward({
 function handleErrMsgMissionReward(code: number, msg: string): string {
   const errorMessages: Record<number, Record<string, string>> = {
     400: {
-      invalid: '无效的活动',
+      invalid: '状态异常，请刷新后重试',
       'repeat request': '请求频繁',
       'not recently online': '玩家近期不在线',
       'wrong event or task': '错误的活动或任务（无效活动）',
