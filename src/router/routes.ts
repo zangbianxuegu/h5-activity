@@ -62,7 +62,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/ReturnBuff'),
     meta: {
       title: '天空王国回归指南',
-      module: 'activity_return_buff',
+      module: 'return_buff',
     },
     children: [
       {
@@ -71,7 +71,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/ReturnBuff/Reunion'),
         meta: {
           title: '重逢',
-          module: 'activity_return_buff_reunion',
+          module: 'return_buff_reunion',
         },
       },
       {
@@ -80,7 +80,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/ReturnBuff/Setout'),
         meta: {
           title: '启程',
-          module: 'activity_return_buff_setout',
+          module: 'return_buff_setout',
         },
       },
       {
@@ -89,7 +89,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import('@/views/ReturnBuff/Together'),
         meta: {
           title: '同行',
-          module: 'activity_return_buff_together',
+          module: 'return_buff_together',
         },
       },
     ],

@@ -175,9 +175,10 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getReturnBuffData, claimReturnBuffReward } from '@/utils/request'
+import { getReturnBuffData, claimReturnBuffReward } from '@/apis/returnBuff'
 import { type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
+import { useMenuStore } from '@/stores/menu'
 import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
@@ -306,6 +307,8 @@ console.log('factor: ', factor.value)
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+
+const menuStore = useMenuStore()
 
 const activityData = ref({
   return_time: 1715296688,
@@ -489,6 +492,41 @@ const completedTaskCount = computed(() => {
   return count
 })
 
+type TaskName = keyof typeof activityData.value.mission
+
+// 是否有未领取的奖励
+const hasUnclaimedReward = computed(() => {
+  function hasUnclaimedRewardOf(task: string): boolean {
+    return (
+      activityData.value.mission[task as TaskName].filter(
+        (value) => value === '1',
+      ).length >
+      activityData.value.award[task as TaskName].filter(
+        (award) => award === '1',
+      ).length
+    )
+  }
+  const hasUnclaimedNormalExtra =
+    activityData.value.mission.return_buff_normal_extra[0] === '1' &&
+    activityData.value.award.return_buff_normal_extra[0] === '0'
+  const hasUnclaimedCollectCandle = hasUnclaimedRewardOf(
+    'return_collect_candle',
+  )
+  const hasUnclaimedSendHeardWax = hasUnclaimedRewardOf('return_send_heard_wax')
+  const hasUnclaimedUseCandle = hasUnclaimedRewardOf('return_use_candle')
+  const hasUnclaimedUseConsumable = hasUnclaimedRewardOf(
+    'return_use_consumable',
+  )
+
+  return (
+    hasUnclaimedNormalExtra ||
+    hasUnclaimedCollectCandle ||
+    hasUnclaimedSendHeardWax ||
+    hasUnclaimedUseCandle ||
+    hasUnclaimedUseConsumable
+  )
+})
+
 const isVisited = Session.get('isVisitedSetout')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -528,6 +566,11 @@ function getActivityData(): void {
   getReturnBuffData({ page: 2 })
     .then((res) => {
       activityData.value = res.data
+      // 更新红点
+      menuStore.updateMenuDataByHasUnclaimedReward(
+        'return_buff_setout',
+        hasUnclaimedReward.value,
+      )
     })
     .catch((error) => {
       console.log('Setout.vue', error)

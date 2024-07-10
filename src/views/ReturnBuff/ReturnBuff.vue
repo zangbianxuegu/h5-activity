@@ -9,7 +9,7 @@
             :class="[
               'nav-item cursor-pointer',
               isMenuItemActive(item) ? 'active' : '',
-              item.isNew || !item.isClaimedReward ? 'nav-item--new' : '',
+              item.isNew || item.hasUnclaimedReward ? 'nav-item--new' : '',
             ]"
             @click="handleNav(item)"
           >
@@ -66,8 +66,7 @@ const menuStore = useMenuStore()
 const menuData = computed(() => menuStore.menuData)
 const subMenuData = computed(
   () =>
-    menuData.value.find((item) => item.value === 'activity_return_buff')
-      ?.children || [],
+    menuData.value.find((item) => item.value === 'return_buff')?.children || [],
 )
 
 const router = useRouter()
@@ -171,14 +170,29 @@ function handleNav(curItem: MenuItem): void {
     &::after {
       position: absolute;
       right: -30px;
-      top: 20px;
+      top: 30px;
       display: block;
       content: '';
       width: 20px;
       height: 20px;
       border-radius: 20px;
       background-color: rgb(184, 25, 26);
+      animation: pulse 1.5s infinite;
     }
+  }
+}
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
   }
 }
 </style>

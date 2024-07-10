@@ -60,6 +60,7 @@ import { showToast } from 'vant'
 import Menu from '@/components/Menu'
 import type { MenuItem, Activity, ActivityTime, TokenParams } from '@/types'
 import { getPlayerMissionData } from '@/utils/request'
+import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
@@ -74,7 +75,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_childrens_day_2024',
     routeName: 'ChildrensDay2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -82,7 +83,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_season22_start',
     routeName: 'Season22Start',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -90,7 +91,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_sign_mayday_2024',
     routeName: 'SignMayday2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -98,7 +99,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_sanrio_2024',
     routeName: 'Sanrio2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -106,7 +107,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_nature_2024',
     routeName: 'Nature2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -114,7 +115,7 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_sign_in_1',
     routeName: 'Holiday',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [],
   },
   {
@@ -122,21 +123,21 @@ const initMenuItems: MenuItem[] = [
     value: 'signin',
     routeName: 'Signin',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [
       {
         label: '冬季签到',
         value: 'activity_sign_in_2',
         routeName: 'Winter',
         isNew: false,
-        isClaimedReward: true,
+        hasUnclaimedReward: false,
       },
       {
         label: '暑假签到',
         value: 'activity_sign_in_3',
         routeName: 'Summer',
         isNew: false,
-        isClaimedReward: true,
+        hasUnclaimedReward: false,
       },
     ],
   },
@@ -145,35 +146,35 @@ const initMenuItems: MenuItem[] = [
     value: 'activity_dragonboat_2024',
     routeName: 'DragonBoat2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
   },
   {
     label: '天空王国回归指南',
-    value: 'activity_return_buff',
+    value: 'return_buff',
     routeName: 'ReturnBuff',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
     children: [
       {
         label: '重逢',
-        value: 'activity_return_buff_reunion',
+        value: 'return_buff_reunion',
         routeName: 'Reunion',
         isNew: false,
-        isClaimedReward: true,
+        hasUnclaimedReward: false,
       },
       {
         label: '启程',
-        value: 'activity_return_buff_setout',
+        value: 'return_buff_setout',
         routeName: 'Setout',
         isNew: false,
-        isClaimedReward: true,
+        hasUnclaimedReward: false,
       },
       {
         label: '同行',
-        value: 'activity_return_buff_together',
+        value: 'return_buff_together',
         routeName: 'Together',
         isNew: false,
-        isClaimedReward: true,
+        hasUnclaimedReward: false,
       },
     ],
   },
@@ -182,91 +183,91 @@ const initMenuItems: MenuItem[] = [
     value: 'activitycenter_poster_anniversary_2024',
     routeName: 'PosterAnniversary2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
   },
   {
     label: '成为派对新星吧！',
     value: 'activity_anniversary_warmup_2024',
     routeName: 'AnniversaryWarmup2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
   },
   {
     label: '闲适安居 筑巢小憩',
     value: 'activity_season22_sprint',
     routeName: 'Season22Sprint',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '巡光嘉年华',
     value: 'activitycenter_anniversary_visit_2024',
     routeName: 'AnniversaryVisit2024',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
   },
   {
     label: '成为星星收藏家',
     value: 'activitycenter_anniversary_server_2024',
     routeName: 'AnniversaryServer2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '嘉年华商店',
     value: 'activitycenter_anniversary_store_2024',
     routeName: 'AnniversaryStore2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '向友葵的成长日记',
     value: 'activitycenter_main_friendship_2024',
     routeName: 'FriendshipMain2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '每周惊喜',
     value: 'activitycenter_week1_friendship_2024', // 第1周
     routeName: 'FriendshipWeek2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '每周惊喜',
     value: 'activitycenter_week2_friendship_2024', // 第2周
     routeName: 'FriendshipWeek2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '每日签到',
     value: 'activitycenter_sign_friendship_2024',
     routeName: 'FriendshipSign2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '养分补给',
     value: 'activitycenter_store_friendship_2024',
     routeName: 'FriendshipStore2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '有友共享',
     value: 'activitycenter_poster_friendship_2024',
     routeName: 'FriendshipPoster2024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
     isNew: false,
-    isClaimedReward: true,
+    hasUnclaimedReward: false,
   },
 ]
 
@@ -325,7 +326,7 @@ interface ActivityData {
   start_time: number
   end_time: number
   is_new: number
-  is_claimed_reward: number
+  has_unclaimed_reward: number
   active: number
 }
 type Activities = Record<string, ActivityData>
@@ -396,13 +397,32 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
           startTime: activityInfo.start_time,
           endTime: activityInfo.end_time,
           isNew: activityInfo.is_new === 1,
-          isClaimedReward:
+          hasUnclaimedReward:
             activityName === 'activity_center_notice'
               ? true
-              : activityInfo.is_claimed_reward === 1,
+              : activityInfo.has_unclaimed_reward > 0,
         }
         if (activityName === 'activitycenter_main_friendship_2024') {
           predefinedStartTime = activity.startTime
+        }
+        // 回流菜单数据处理
+        if (activityName === 'return_buff') {
+          const hasUnclaimedRewardArr = numberToBinaryArray(
+            activityInfo.has_unclaimed_reward,
+          )
+          initMenuItems.forEach((menuItem) => {
+            if (menuItem.routeName === 'ReturnBuff') {
+              if (menuItem.children?.length) {
+                menuItem.children = menuItem.children.map((item, index) => {
+                  return {
+                    ...item,
+                    hasUnclaimedReward: hasUnclaimedRewardArr[index] === 1,
+                  }
+                })
+              }
+            }
+          })
+          console.log('initMenuItems: ', initMenuItems)
         }
         activeEvents.push(activity)
       }
@@ -435,18 +455,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     ),
   ]
 
-  const returnBuff = baseStore.baseInfo.returnBuff
-  // 处理回流页面
-  if (returnBuff === 'true') {
-    finalRes.unshift({
-      activity: 'activity_return_buff',
-      startTime: 9999999999,
-      endTime: 0,
-      isNew: false,
-      isClaimedReward: true,
-    })
-  }
-
   // 最后调整小光快报的位置
   return finalRes.sort((a, b) => {
     if (a.activity === 'activity_center_notice') return 1
@@ -469,7 +477,7 @@ function generateMenuData(
       const updatedMenuItem = { ...menuItem }
       if (event) {
         updatedMenuItem.isNew = event.isNew
-        updatedMenuItem.isClaimedReward = event.isClaimedReward
+        updatedMenuItem.hasUnclaimedReward = event.hasUnclaimedReward
         activeMenu.push(updatedMenuItem)
       } else if (menuItem.children && menuItem.children.length > 0) {
         const activeChildren = generateMenuData(menuItem.children, activeEvents)

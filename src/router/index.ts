@@ -55,10 +55,10 @@ router.afterEach((to, from) => {
       if (
         ![
           'activity_center_notice',
-          'activity_return_buff',
-          'activity_return_buff_reunion',
-          'activity_return_buff_setout',
-          'activity_return_buff_together',
+          'return_buff',
+          'return_buff_reunion',
+          'return_buff_setout',
+          'return_buff_together',
         ].includes(module)
       ) {
         webViewStatistics({ module })

@@ -138,10 +138,10 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { showToast } from 'vant'
-import { getReturnBuffData, claimReturnBuffReward } from '@/utils/request'
+import { getReturnBuffData, claimReturnBuffReward } from '@/apis/returnBuff'
 import { type DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
-// import { useMenuStore } from '@/stores/menu'
+import { useMenuStore } from '@/stores/menu'
 import { useBaseStore } from '@/stores/base'
 import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
@@ -288,7 +288,7 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-// const menuStore = useMenuStore()
+const menuStore = useMenuStore()
 
 // 当前时间
 const baseStore = useBaseStore()
@@ -384,24 +384,23 @@ const taskList = computed(() => {
   })
 })
 
-// 是否已领完该领取的奖励
-// const isClaimedReward = computed(() => {
-//   const completedMissionLength = activityData.value.mission.filter(
-//     (m) => m === '1',
-//   ).length
-//   const claimedAwardLength = activityData.value.award.filter(
-//     (a) => a === '1',
-//   ).length
-//   const hasClaimedReturnAward = activityData.value.return_award
-//   const hasClaimedExtraAward =
-//     (!activityData.value.extra_award && completedMissionLength < 7) ||
-//     (completedMissionLength === 7 && activityData.value.extra_award)
-//   return (
-//     hasClaimedReturnAward &&
-//     completedMissionLength === claimedAwardLength &&
-//     hasClaimedExtraAward
-//   )
-// })
+// 是否有未领取的奖励
+const hasUnclaimedReward = computed(() => {
+  const completedMissionLength = activityData.value.mission.filter(
+    (m) => m === '1',
+  ).length
+  const claimedAwardLength = activityData.value.award.filter(
+    (a) => a === '1',
+  ).length
+  const hasUnclaimedReturnAward = !activityData.value.return_award
+  const hasUnclaimedExtraAward =
+    completedMissionLength === 7 && !activityData.value.extra_award
+  return (
+    hasUnclaimedReturnAward || // 回流固定奖励
+    completedMissionLength > claimedAwardLength || // 累计奖励
+    hasUnclaimedExtraAward // 完成7日后额外奖励
+  )
+})
 
 const isVisited = Session.get('isVisitedReunion')
 const bodyTransitionName = ref('')
@@ -446,10 +445,10 @@ function getActivityData(): void {
       const currentDate = dayjs.unix(currentTime.value).startOf('day')
       currentDay = currentDate.diff(returnDate, 'day') + 1
       // 更新红点
-      // menuStore.updateMenuDataByIsClaimedReward(
-      //   'activity_return_buff_reunion',
-      //   isClaimedReward.value,
-      // )
+      menuStore.updateMenuDataByHasUnclaimedReward(
+        'return_buff_reunion',
+        hasUnclaimedReward.value,
+      )
     })
     .catch((error) => {
       showToast(error.message)

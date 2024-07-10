@@ -6,28 +6,11 @@ import { showToast } from 'vant'
 
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
-  const menuData = ref<MenuItem[]>([
-    // {
-    //   label: '大耳狗茶话会',
-    //   value: 'activity_sanrio_2024',
-    //   routeName: 'Sanrio2024',
-    //   isNew: false,
-    //   isClaimedReward: true,
-    //   children: [],
-    // },
-    // {
-    //   label: '田月桑时春风雀跃',
-    //   value: 'activity_sign_mayday_2024',
-    //   routeName: 'SignMayday2024',
-    //   isNew: false,
-    //   isClaimedReward: true,
-    //   children: [],
-    // },
-  ])
+  const menuData = ref<MenuItem[]>([])
 
   function checkHasRedDot(items: MenuItem[]): boolean {
     for (const item of items) {
-      if (item.isNew || !item.isClaimedReward) {
+      if (item.isNew || item.hasUnclaimedReward) {
         return true
       }
       if (item.children && item.children.length > 0) {
@@ -143,33 +126,39 @@ export const useMenuStore = defineStore('menu', () => {
     }
   }
 
-  // 更新菜单数据 isClaimedReward
-  function updateMenuDataByIsClaimedReward(
+  // 更新菜单数据 hasUnclaimedReward
+  function updateMenuDataByHasUnclaimedReward(
     event: string,
-    isClaimedReward: boolean,
+    hasUnclaimedReward: boolean,
   ): void {
     menuData.value = menuData.value.map((item) => {
       if (
-        item.value === 'activity_return_buff' &&
+        item.value === 'return_buff' &&
         item.children &&
         item.children.length > 0
       ) {
-        const children = item.children.map((child) => {
+        const children = item.children.map((child: MenuItem) => {
           return {
             ...child,
-            isClaimedReward:
-              child.value === event ? isClaimedReward : child.isClaimedReward,
+            hasUnclaimedReward:
+              child.value === event
+                ? hasUnclaimedReward
+                : child.hasUnclaimedReward,
           }
         })
+        const hasUnclaimedRewardOfParent: boolean = children.some(
+          (child: MenuItem) => child.hasUnclaimedReward,
+        )
         return {
           ...item,
           children,
+          hasUnclaimedReward: hasUnclaimedRewardOfParent,
         }
       }
       return {
         ...item,
-        isClaimedReward:
-          item.value === event ? isClaimedReward : item.isClaimedReward,
+        hasUnclaimedReward:
+          item.value === event ? hasUnclaimedReward : item.hasUnclaimedReward,
       }
     })
   }
@@ -179,6 +168,6 @@ export const useMenuStore = defineStore('menu', () => {
     updateMenuData,
     updatedMenuDataByRoute,
     updateMenuDataByIsNew,
-    updateMenuDataByIsClaimedReward,
+    updateMenuDataByHasUnclaimedReward,
   }
 })

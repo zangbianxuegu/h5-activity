@@ -12,7 +12,7 @@ export interface Activity {
   startTime: number
   endTime: number
   isNew: boolean
-  isClaimedReward: boolean
+  hasUnclaimedReward: boolean
 }
 
 export type ActivityTimeItem = Pick<Activity, 'startTime' | 'endTime'>
@@ -81,7 +81,7 @@ export interface MenuItem {
   value: string
   routeName: string
   isNew: boolean
-  isClaimedReward: boolean
+  hasUnclaimedReward: boolean
   children?: MenuItem[]
 }
 

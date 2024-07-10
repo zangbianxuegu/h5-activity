@@ -11,7 +11,7 @@
               ? 'nav-item--active nav-item-main--active'
               : 'nav-item--active'
             : '',
-          item.isNew || item.isClaimedReward === false ? 'nav-item--new' : '',
+          item.isNew || item.hasUnclaimedReward ? 'nav-item--new' : '',
         ]"
         @click="handleNav(item)"
       >
@@ -26,120 +26,12 @@
         }}</span>
       </div>
     </div>
-    <!-- <ul class="text-white">
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetTaskValue(
-            'activity_sign_mayday_2024',
-            'activity_sign_mayday_2024_m1',
-            'true',
-          )
-        "
-      >
-        重置任务进度劳动节1
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetTaskValue(
-            'activity_sign_mayday_2024',
-            'activity_sign_mayday_2024_m2',
-            'true',
-          )
-        "
-      >
-        重置任务进度劳动节2
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetSpriteReward('activity_sign_in_1', 'activity_sign_in_m1')
-        "
-      >
-        重置领奖数据1
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetSpriteReward('activity_sign_in_2', 'activity_sign_in_m2')
-        "
-      >
-        重置领奖数据2
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetSpriteReward('activity_sign_in_3', 'activity_sign_in_m3')
-        "
-      >
-        重置领奖数据3
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetSpriteReward(
-            'activity_sign_mayday_2024',
-            'activity_sign_mayday_2024_m1',
-          )
-        "
-      >
-        重置领奖数据劳动节1
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="
-          handleResetSpriteReward(
-            'activity_sign_mayday_2024',
-            'activity_sign_mayday_2024_m2',
-          )
-        "
-      >
-        重置领奖数据劳动节2
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="handleGmsResetWebRedDot('activity_sign_in_1')"
-      >
-        重置红点1
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="handleGmsResetWebRedDot('activity_sign_in_2')"
-      >
-        重置红点2
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="handleGmsResetWebRedDot('activity_sign_in_3')"
-      >
-        重置红点3
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="handleGmsResetWebRedDot('activity_sign_mayday_2024')"
-      >
-        重置红点劳动节
-      </li>
-      <li
-        class="w-full border text-center"
-        @click="handleGmsResetWebRedDot('activity_center_notice')"
-      >
-        重置红点小光快报
-      </li>
-    </ul> -->
   </div>
 </template>
 
 <script setup lang="ts">
-// import { showToast } from 'vant'
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-// import {
-//   resetTaskValue,
-//   resetSpriteReward,
-//   gmsResetWebRedDot,
-// } from '@/utils/request'
 import { useMenuStore } from '@/stores/menu'
 
 // 有友节周任务
@@ -163,13 +55,13 @@ const computedMenuData = computed<MenuItem[]>(() => {
   return menuData.value.map((menuItem) => {
     if (menuItem.children && menuItem.children.length > 0) {
       const isNew = menuItem.children.some((child) => child.isNew)
-      const isClaimedReward = menuItem.children.every(
-        (child) => child.isClaimedReward,
+      const hasUnclaimedReward = menuItem.children.some(
+        (child) => child.hasUnclaimedReward,
       )
       return {
         ...menuItem,
         isNew,
-        isClaimedReward,
+        hasUnclaimedReward,
       }
     }
     return menuItem
@@ -186,11 +78,11 @@ function isMenuItemActive(item: MenuItem): boolean {
         module === 'activitycenter_week_friendship_2024') || // 有友节周任务
       (item.value === 'signin' &&
         ['activity_sign_in_2', 'activity_sign_in_3'].includes(module)) ||
-      (item.value === 'activity_return_buff' &&
+      (item.value === 'return_buff' &&
         [
-          'activity_return_buff_reunion',
-          'activity_return_buff_setout',
-          'activity_return_buff_together',
+          'return_buff_reunion',
+          'return_buff_setout',
+          'return_buff_together',
         ].includes(module))
     )
   }
@@ -272,43 +164,6 @@ function getNavTextClass(curItem: MenuItem): string[] {
   }
   return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
 }
-
-// // 重置任务进度（包括每日签到数据）
-// function handleResetTaskValue(
-//   event: string,
-//   task: string,
-//   clearDailyValue: string,
-// ): void {
-//   resetTaskValue({ event, task, clearDailyValue })
-//     .then(() => {
-//       showToast('重置任务进度成功')
-//     })
-//     .catch((error) => {
-//       showToast(error.message)
-//     })
-// }
-
-// // 重置领奖数据
-// function handleResetSpriteReward(event: string, task: string): void {
-//   resetSpriteReward({ event, task })
-//     .then(() => {
-//       showToast('重置领奖数据成功')
-//     })
-//     .catch((error) => {
-//       showToast(error.message)
-//     })
-// }
-
-// // 重置红点
-// function handleGmsResetWebRedDot(event: string): void {
-//   gmsResetWebRedDot({ event })
-//     .then(() => {
-//       showToast('重置红点成功')
-//     })
-//     .catch((error) => {
-//       showToast(error.message)
-//     })
-// }
 </script>
 
 <style scoped>
