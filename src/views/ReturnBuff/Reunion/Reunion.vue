@@ -27,7 +27,7 @@
                 v-for="item in taskList"
                 :key="item.stage"
                 :class="[
-                  'task-item overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                  'task-item animate__animated  animate__fadeIn overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]',
                   `task-item${item.stage}`,
                   `${item.status}`,
                 ]"
@@ -39,7 +39,7 @@
           </div>
           <div class="common-task">
             <div
-              class="task-common bg-contain bg-center bg-no-repeat"
+              class="task-common animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
               :class="{ redeemed: activityData.return_award }"
             ></div>
             <button

@@ -309,28 +309,25 @@ function preLoadImage(src: string): Promise<void> {
  * @function 是否已领奖
  * @param tasks 任务列表
  */
-function hasClaimedReward(tasks: Event[]): boolean {
+function checkHasUnclaimedReward(tasks: Event[]): boolean {
   // 检查第2项
-  const top1TaskValid =
-    (tasks[1].value === 0 && tasks[1].award[0] === 0) ||
-    (tasks[1].value >= 1 && tasks[1].award[0] === 1)
-  if (!top1TaskValid) {
-    return false
-  }
+  const top1TaskValid = tasks[1].value >= 1 && tasks[1].award[0] === 0
   // 检查第1项，累计任务
   const accTasks = tasks[0]
-  const accTasksValid = accTasks.stages.every(
-    (stage, index) => accTasks.value < stage || accTasks.award[index] === 1,
+  const accTasksValid = accTasks.stages.some(
+    (stage, index) => accTasks.value >= stage && accTasks.award[index] === 0,
   )
-  return accTasksValid
+  return accTasksValid || top1TaskValid
 }
 
 /**
  * @function 设置红点
  */
 function setRedDot(): void {
-  const isClaimedReward = hasClaimedReward(activityData.value.event_data[EVENT])
-  menuStore.updateMenuDataByIsClaimedReward(EVENT, isClaimedReward)
+  const hasUnclaimedReward = checkHasUnclaimedReward(
+    activityData.value.event_data[EVENT],
+  )
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT, hasUnclaimedReward)
 }
 
 /**

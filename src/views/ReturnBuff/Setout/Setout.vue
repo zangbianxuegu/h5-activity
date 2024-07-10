@@ -39,7 +39,7 @@
                 v-for="task in item.children"
                 :key="task.name"
                 :class="[
-                  'task-item bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                  'task-item animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat indent-[-9999px]',
                   `${task.name}`,
                   `${task.status}`,
                 ]"
@@ -73,7 +73,7 @@
           <!-- 领取启程礼 -->
           <div
             :class="[
-              'common-task bg-contain bg-center bg-no-repeat',
+              'common-task animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat',
               `${normalExtraStatus}`,
             ]"
             @click="handleReward('return_buff_normal_extra', normalExtraStatus)"

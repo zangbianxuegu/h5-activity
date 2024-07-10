@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { DesignConfig, Event } from '@/types'
+import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
@@ -203,23 +203,12 @@ function preLoadImage(src: string): Promise<void> {
 }
 
 /**
- * @function 是否已领奖
- * @param tasks 任务列表
- */
-function hasClaimedReward(tasks: Event[]): boolean {
-  // 检查第2项
-  const taskValid =
-    (tasks[0].value === 0 && tasks[0].award[0] === 0) ||
-    (tasks[0].value >= 1 && tasks[0].award[0] === 1)
-  return taskValid
-}
-
-/**
  * @function 设置红点
  */
 function setRedDot(): void {
-  const isClaimedReward = hasClaimedReward(activityData.value.event_data[EVENT])
-  menuStore.updateMenuDataByIsClaimedReward(EVENT, isClaimedReward)
+  const task = activityData.value.event_data[EVENT][0]
+  const hasUnclaimedReward = task.value >= 1 && task.award[0] === 0
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT, hasUnclaimedReward)
 }
 
 /**

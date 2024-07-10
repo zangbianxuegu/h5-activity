@@ -267,21 +267,21 @@ const initMenuItems: MenuItem[] = [
     value: 'activitycenter_tournament_of_triumph_1',
     routeName: 'TournamentOfTriumph1',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '奖牌收集挑战赛',
     value: 'activitycenter_tournament_of_triumph_2',
     routeName: 'TournamentOfTriumph2',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '心火相传辉煌落幕',
     value: 'activitycenter_tournament_of_triumph_3',
     routeName: 'TournamentOfTriumph3',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '小光快报',
@@ -476,8 +476,10 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     ),
   ]
 
-  // 最后调整小光快报的位置
+  // 最后调整回流、小光快报的位置
   return finalRes.sort((a, b) => {
+    if (a.activity === 'return_buff') return -1
+    if (b.activity === 'return_buff') return 1
     if (a.activity === 'activity_center_notice') return 1
     if (b.activity === 'activity_center_notice') return -1
     return 0 // 保持现有顺序不变
