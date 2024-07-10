@@ -247,4 +247,31 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_poster_friendship_2024',
     },
   },
+  {
+    path: '/tournament-of-triumph-1',
+    name: 'TournamentOfTriumph1',
+    component: () => import('@/views/TournamentOfTriumph1'),
+    meta: {
+      title: '运动日锦标赛，开幕！',
+      module: 'activitycenter_tournament_of_triumph_1',
+    },
+  },
+  {
+    path: '/tournament-of-triumph-2',
+    name: 'TournamentOfTriumph2',
+    component: () => import('@/views/TournamentOfTriumph2'),
+    meta: {
+      title: '奖牌收集挑战赛',
+      module: 'activitycenter_tournament_of_triumph_2',
+    },
+  },
+  {
+    path: '/tournament-of-triumph-3',
+    name: 'TournamentOfTriumph3',
+    component: () => import('@/views/TournamentOfTriumph3'),
+    meta: {
+      title: '心火相传辉煌落幕',
+      module: 'activitycenter_tournament_of_triumph_3',
+    },
+  },
 ]

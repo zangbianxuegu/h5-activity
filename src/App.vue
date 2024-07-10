@@ -263,6 +263,27 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '运动日锦标赛，开幕！',
+    value: 'activitycenter_tournament_of_triumph_1',
+    routeName: 'TournamentOfTriumph1',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '奖牌收集挑战赛',
+    value: 'activitycenter_tournament_of_triumph_2',
+    routeName: 'TournamentOfTriumph2',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
+    label: '心火相传辉煌落幕',
+    value: 'activitycenter_tournament_of_triumph_3',
+    routeName: 'TournamentOfTriumph3',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

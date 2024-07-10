@@ -161,6 +161,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   const navTextPrefix = 'nav-text'
   const menuTextMap: Record<string, string> = {
     activity_sanrio_2024: `${navTextPrefix}-sanrio`,
+    activitycenter_tournament_of_triumph_1: `${navTextPrefix}-tournament1`,
   }
   return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
 }
@@ -257,6 +258,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
 
   &-sanrio {
     width: 300px;
+  }
+
+  &-tournament1 {
+    width: 240px;
   }
 }
 </style>

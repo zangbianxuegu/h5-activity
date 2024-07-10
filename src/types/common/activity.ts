@@ -75,6 +75,9 @@ export type EventName =
   | 'activitycenter_week_friendship_2024'
   | 'activitycenter_week1_friendship_2024'
   | 'activitycenter_week2_friendship_2024'
+  | 'activitycenter_tournament_of_triumph_1'
+  | 'activitycenter_tournament_of_triumph_2'
+  | 'activitycenter_tournament_of_triumph_3'
 
 export interface MenuItem {
   label: string
