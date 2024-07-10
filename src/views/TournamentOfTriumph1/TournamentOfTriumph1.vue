@@ -9,6 +9,7 @@
             >
               运动日锦标赛，开幕！ 7.26-8.10
             </h1>
+            <h2 class="indent-[-9999px]">参与挑战，拼搏超越！</h2>
             <div
               class="help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"

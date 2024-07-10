@@ -7,9 +7,9 @@
             <h1
               class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
             >
-              奖牌收藏挑战赛 7.26-8.10
+              心火相传辉煌落幕 8.11 全天开启！
             </h1>
-            <h2 class="indent-[-9999px]">让荣誉勋章见证每一次努力</h2>
+            <h2 class="indent-[-9999px]">运动精神让心火更明亮</h2>
             <div
               class="help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
@@ -18,32 +18,14 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <!-- 累计任务列表 -->
-            <ul class="task-list flex items-center bg-contain">
-              <li
-                v-for="(item, index) in accTaskList"
-                :key="item.id"
-                :class="[
-                  'task-item bg-contain indent-[-9999px]',
-                  `task-item${index + 1}`,
-                  `${item.status}`,
-                ]"
-                @click="handleReward(item.value, item.status, item.id, 0)"
-              >
-                <p class="task-text">{{ item.title }}</p>
-              </li>
-            </ul>
-            <!-- 人物 -->
-            <div class="sky animate__animated animate__fadeIn bg-contain"></div>
-            <!-- 第一名任务 -->
             <div
               :class="[
-                'top1-task task-item4 bg-contain indent-[-9999px]',
-                `${top1Task.status}`,
+                'task-item animate__animated animate__fadeIn bg-contain indent-[-9999px]',
+                `${taskItem.status}`,
               ]"
-              @click="handleReward(top1Task.value, top1Task.status, 1, 1)"
+              @click="handleReward(taskItem.value, taskItem.status)"
             >
-              {{ top1Task.title }}
+              {{ taskItem.title }}
             </div>
           </section>
         </Transition>
@@ -52,40 +34,15 @@
       <activity-modal ref="modalHelp">
         <template #content>
           <p class="modal-text">
-            <span class="font-semibold">活动时间：</span
-            >2024年7月26日~2024年8月10日
+            <span class="font-semibold">活动时间：</span>2024年8月11日全天
           </p>
           <p class="modal-text">
             <span class="font-semibold">活动内容：</span>
           </p>
           <p class="modal-text">
-            活动期间在任意运动日锦标赛中累积达成一定数量的名次要求即可获得对应奖励：
+            8月11日当天参与<span class="text-[#ffcb4d]">闭幕式</span
+            >即可获得<span class="text-[#ffcb4d]">蜡烛*2</span>；
           </p>
-          <p class="modal-text">
-            累积<span class="text-[#ffcb4d]">获得1次前三名</span>即可赢取<span
-              class="text-[#ffcb4d]"
-              >元气满满魔法*1</span
-            >；
-          </p>
-          <p class="modal-text">
-            累积<span class="text-[#ffcb4d]">获得3次前三名</span>即可赢取<span
-              class="text-[#ffcb4d]"
-              >蜡烛*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            累积<span class="text-[#ffcb4d]">获得6次前三名</span>即可赢取<span
-              class="text-[#ffcb4d]"
-              >体型重塑*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            <span class="text-[#ffcb4d]">获得1次第一名</span>即可赢取<span
-              class="text-[#ffcb4d]"
-              >爱心*1</span
-            >；
-          </p>
-          <p class="modal-text">加油冲刺吧~</p>
         </template>
       </activity-modal>
       <!-- 奖励弹框 -->
@@ -120,7 +77,7 @@ import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/tournamentOfTriumph2'
+import { useActivityStore } from '@/stores/tournamentOfTriumph3'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 
 interface Rewards {
@@ -128,60 +85,15 @@ interface Rewards {
   count: number
 }
 interface RewardsName {
-  energy: string
   candles: string
-  resize_potion: string
-  heart: string
 }
 const rewardsText: RewardsName = {
-  energy: '元气满满',
   candles: '蜡烛',
-  resize_potion: '体型重塑',
-  heart: '爱心',
 }
 const curRewards: Ref<Rewards> = ref({
-  name: '元气满满',
-  count: 1,
+  name: '蜡烛',
+  count: 2,
 })
-
-const ACC_TASK_LIST = [
-  {
-    id: 1,
-    title: '获得1次前三名',
-    value: 'activitycenter_tournament_of_triumph_2_top3',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    title: '获得3次前三名',
-    value: 'activitycenter_tournament_of_triumph_2_top3',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    title: '获得6次前三名',
-    value: 'activitycenter_tournament_of_triumph_2_top3',
-    status: 'wait',
-  },
-]
-const TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_tournament_of_triumph_2_top3',
-    children: ACC_TASK_LIST,
-  },
-  {
-    id: 2,
-    title: '获得1次金牌',
-    value: 'activitycenter_tournament_of_triumph_2_top1',
-    status: 'wait',
-  },
-]
-
-// 任务排序
-const taskOrderMap = new Map(
-  TASK_LIST.map((task, index) => [task.value, index]),
-)
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -215,7 +127,7 @@ const designConfig: DesignConfig = {
 const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 
-const EVENT = 'activitycenter_tournament_of_triumph_2'
+const EVENT = 'activitycenter_tournament_of_triumph_3'
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const menuStore = useMenuStore()
@@ -223,27 +135,12 @@ const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
 const isRewardImageLoaded = ref(false)
 const rewardImageSrc = ref(handleSrc(String(curRewards.value.name)))
-// 累计任务列表
-const accTaskList = computed(() => {
-  const accTasks = activityData.value.event_data[EVENT][0]
-  return ACC_TASK_LIST.map((item, index) => {
-    return {
-      ...item,
-      status:
-        accTasks.award[index] === 1
-          ? 'redeemed'
-          : accTasks.award[index] === 0 &&
-              accTasks.value >= accTasks.stages[index]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
-// 获得1次第一名
-const top1Task = computed(() => {
-  const task = activityData.value.event_data[EVENT][1]
+// 闭幕式任务
+const taskItem = computed(() => {
+  const task = activityData.value.event_data[EVENT][0]
   return {
-    ...TASK_LIST[1],
+    title: '参加1次闭幕式',
+    value: 'activitycenter_tournament_of_triumph_3_reward',
     status:
       task.award[0] === 1
         ? 'redeemed'
@@ -253,7 +150,7 @@ const top1Task = computed(() => {
   }
 })
 
-const isVisited = Session.get('isVisitedTournamentOfTriumph2')
+const isVisited = Session.get('isVisitedTournamentOfTriumph3')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 const mainTransitionName = ref('')
@@ -269,7 +166,7 @@ onMounted(() => {
   } catch (error) {
     console.error(error)
   }
-  Session.set('isVisitedTournamentOfTriumph2', true)
+  Session.set('isVisitedTournamentOfTriumph3', true)
 })
 
 /**
@@ -311,18 +208,10 @@ function preLoadImage(src: string): Promise<void> {
  */
 function hasClaimedReward(tasks: Event[]): boolean {
   // 检查第2项
-  const top1TaskValid =
-    (tasks[1].value === 0 && tasks[1].award[0] === 0) ||
-    (tasks[1].value >= 1 && tasks[1].award[0] === 1)
-  if (!top1TaskValid) {
-    return false
-  }
-  // 检查第1项，累计任务
-  const accTasks = tasks[0]
-  const accTasksValid = accTasks.stages.every(
-    (stage, index) => accTasks.value < stage || accTasks.award[index] === 1,
-  )
-  return accTasksValid
+  const taskValid =
+    (tasks[0].value === 0 && tasks[0].award[0] === 0) ||
+    (tasks[0].value >= 1 && tasks[0].award[0] === 1)
+  return taskValid
 }
 
 /**
@@ -339,18 +228,7 @@ function setRedDot(): void {
 function getActivityData(): void {
   getPlayerMissionData({ event: EVENT })
     .then((res) => {
-      const data = res.data
-      const newActivityData = {
-        ...data,
-        event_data: {
-          [EVENT]: data.event_data[EVENT].sort((a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? 2
-            const orderB = taskOrderMap.get(b.task_id) ?? 2
-            return orderA - orderB
-          }),
-        },
-      }
-      activityStore.updateActivityData(newActivityData)
+      activityStore.updateActivityData(res.data)
       // 更新红点
       setRedDot()
     })
@@ -363,15 +241,8 @@ function getActivityData(): void {
  * @function 领奖
  * @param task 任务id
  * @param status 状态
- * @param rewardId 第几个奖励节点
- * @param index 任务索引
  */
-function handleReward(
-  task: string,
-  status: string,
-  rewardId: number,
-  index: number,
-): void {
+function handleReward(task: string, status: string): void {
   if (status === 'redeemed') {
     return
   }
@@ -382,7 +253,7 @@ function handleReward(
   claimMissionReward({
     event: EVENT,
     task,
-    rewardId,
+    rewardId: 1,
   })
     .then(async (res) => {
       const rewards = res.data.rewards
@@ -398,7 +269,7 @@ function handleReward(
       modalReward.value?.openModal()
 
       // 更新页面数据
-      activityData.value.event_data[EVENT][index].award[rewardId - 1] = 1
+      activityData.value.event_data[EVENT][0].award[0] = 1
       // 更新红点
       setRedDot()
     })
@@ -441,70 +312,43 @@ function handleReward(
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/tournament-of-triumph-2/bg.jpg');
+    background-image: url('@/assets/images/tournament-of-triumph-3/bg.jpg');
   }
 }
 .header {
   position: relative;
-  left: 190px;
-  top: 180px;
+  left: 318px;
+  top: 172px;
+  width: 1401px;
 }
 .title {
-  width: 1091px;
-  height: 267px;
-  background-image: url('@/assets/images/tournament-of-triumph-2/title.png');
+  width: 1401px;
+  height: 183px;
+  background-image: url('@/assets/images/tournament-of-triumph-3/title.png');
 }
 .help {
   position: absolute;
-  left: 1060px;
-  bottom: 40px;
-  width: 87px;
-  height: 87px;
-  background-image: url('@/assets/images/tournament-of-triumph-2/help.png');
-}
-.sky {
-  position: absolute;
-  left: 59px;
-  top: 471px;
-  width: 313px;
-  height: 605px;
-  background-image: url('@/assets/images/tournament-of-triumph-2/sky.png');
-}
-.task-list {
-  position: absolute;
-  left: 222px;
-  top: 453px;
-  padding: 0 102px 0 103px;
-  width: 1291px;
-  height: 413px;
-  background-image: url('@/assets/images/tournament-of-triumph-2/task-main-bg.png');
+  right: -20px;
+  top: 34px;
+  width: 93px;
+  height: 93px;
+  background-image: url('@/assets/images/tournament-of-triumph-3/help.png');
 }
 .task-item {
-  margin-right: 45px;
-  width: 332px;
-  height: 240px;
-  &:nth-child(3) {
-    margin-right: 0;
-  }
-}
-@for $i from 1 through 4 {
-  .task-item#{$i} {
-    &.wait {
-      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/tournament-of-triumph-2/task#{$i}-redeemed.png');
-    }
-  }
-}
-.top1-task {
   position: absolute;
-  right: 108px;
-  top: 76px;
-  width: 405px;
-  height: 405px;
+  right: 368px;
+  top: 380px;
+  width: 334px;
+  height: 360px;
+
+  &.wait {
+    background-image: url('@/assets/images/tournament-of-triumph-3/task-wait.png');
+  }
+  &.can {
+    background-image: url('@/assets/images/tournament-of-triumph-3/task-can.png');
+  }
+  &.redeemed {
+    background-image: url('@/assets/images/tournament-of-triumph-3/task-redeemed.png');
+  }
 }
 </style>

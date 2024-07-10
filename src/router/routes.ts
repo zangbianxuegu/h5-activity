@@ -265,4 +265,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_tournament_of_triumph_2',
     },
   },
+  {
+    path: '/tournament-of-triumph-3',
+    name: 'TournamentOfTriumph3',
+    component: () => import('@/views/TournamentOfTriumph3'),
+    meta: {
+      title: '心火相传辉煌落幕',
+      module: 'activitycenter_tournament_of_triumph_3',
+    },
+  },
 ]
