@@ -14,41 +14,37 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-main">
-            <div class="task-list-container">
-              <ul
-                class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
+          <div class="task-list-container">
+            <ul
+              class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
+            >
+              <li
+                v-for="(item, index) in taskList"
+                :key="item.name"
+                :class="[
+                  'task-item z-10 bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                  `task-item${index + 1}`,
+                  `${item.status}`,
+                ]"
+                @click="handleReward(item.name, item.status, index)"
               >
-                <li
-                  v-for="(item, index) in taskList"
-                  :key="item.name"
-                  :class="[
-                    'task-item z-10 bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                    `task-item${index + 1}`,
-                    `${item.status}`,
-                  ]"
-                  @click="handleReward(item.name, item.status, index)"
-                >
-                  {{ item.title }}
-                </li>
-              </ul>
-            </div>
+                {{ item.title }}
+              </li>
+            </ul>
           </div>
         </Transition>
-        <Transition>
-          <div>
-            <div
-              v-for="task in taskList"
-              :key="task.rainbow.name"
-              v-show="task.rainbow.isShow"
-              :class="[
-                `rainbow-${task.rainbow.name}`,
-                { 'rainbow-animation': task.rainbow.isShow },
-              ]"
-              class="rainbow opacity-1 z-5 bg-contain bg-center bg-no-repeat"
-            ></div>
-          </div>
-        </Transition>
+        <div>
+          <div
+            v-for="task in taskList"
+            :key="task.rainbow.name"
+            v-show="task.rainbow.isShow"
+            :class="[
+              `rainbow-${task.rainbow.name}`,
+              { 'rainbow-animation': task.rainbow.isShow },
+            ]"
+            class="rainbow opacity-1 z-5 bg-contain bg-center bg-no-repeat"
+          ></div>
+        </div>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
@@ -310,7 +306,7 @@ const taskList = computed(() => {
   })
 })
 
-const sessionIsVisitedKey = 'isVisitedAnniversaryVisit2024'
+const sessionIsVisitedKey = 'isVisitedRainbow22024'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -381,8 +377,6 @@ function getActivityData(): void {
 }
 
 function updateActivityDataRewardStatusNoRequest(): void {
-  // 后端接口请求限制间隔 3s
-  // 优化用户体验，不再延时请求接口，直接前端更新数据展示
   const newActivityData = {
     ...activityData.value,
     event_data: {
@@ -398,11 +392,6 @@ function updateActivityDataRewardStatusNoRequest(): void {
     },
   }
   activityStore.updateActivityData(newActivityData)
-  const isClaimedReward =
-    !newActivityData.event_data.activitycenter_rainbow2_2024.some(
-      (item) => item.award[0] === 0 && item.value >= item.stages[0],
-    )
-  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
 }
 
 const currentTask = reactive({
@@ -412,6 +401,7 @@ const currentTask = reactive({
 
 function handleModalRewardClose(): void {
   updateActivityDataRewardStatusNoRequest()
+  setRedDot()
 }
 
 // 领奖

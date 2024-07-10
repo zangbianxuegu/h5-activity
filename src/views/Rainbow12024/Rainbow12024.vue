@@ -14,20 +14,17 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <h1
-            class="join-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-          >
-            参与开启虹光
-          </h1>
-        </Transition>
-        <Transition appear :name="mainTransitionName" mode="out-in">
           <div>
-            <div class="rainbow bg-contain bg-center bg-no-repeat"></div>
-            <div class="personage bg-contain bg-center bg-no-repeat"></div>
-          </div>
-        </Transition>
-        <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-main">
+            <div>
+              <h2
+                class="join-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+              >
+                参与开启虹光
+              </h2>
+              <div class="rainbow bg-contain bg-center bg-no-repeat"></div>
+              <div class="personage bg-contain bg-center bg-no-repeat"></div>
+            </div>
+
             <div class="task-list-container">
               <ul
                 class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
@@ -271,7 +268,6 @@ const TASK_LIST = [
     status: 'wait',
   },
 ]
-// const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
@@ -350,8 +346,8 @@ function getActivityData(): void {
         event_data: {
           activitycenter_rainbow1_2024: data.event_data[EVENT_NAME].sort(
             (a: Event, b: Event) => {
-              const orderA = taskOrderMap.get(a.task_id) ?? 4
-              const orderB = taskOrderMap.get(b.task_id) ?? 4
+              const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
+              const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
               return orderA - orderB
             },
           ),
@@ -388,11 +384,6 @@ function updateActivityDataRewardStatusNoRequest(): void {
     },
   }
   activityStore.updateActivityData(newActivityData)
-  const isClaimedReward =
-    !newActivityData.event_data.activitycenter_rainbow1_2024.some(
-      (item) => item.award[0] === 0 && item.value >= item.stages[0],
-    )
-  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
 }
 
 // 领奖
@@ -421,6 +412,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
         count: Number(Object.values(rewards)[0]),
       }
       updateActivityDataRewardStatusNoRequest()
+      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
@@ -525,8 +517,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   position: absolute;
 }
 
-$reward-img-vertical-gap: 0px;
-$reward-img-horizontal-gap: 0px;
 @for $i from 1 through 8 {
   .task-item#{$i} {
     &.wait {
@@ -538,47 +528,48 @@ $reward-img-horizontal-gap: 0px;
     &.redeemed {
       background-image: url('@/assets/images/rainbow1-2024/task#{$i}-redeemed.png');
     }
-
-    @if $i == 1 {
-      top: 151 - $reward-img-vertical-gap;
-      left: 96 - $reward-img-horizontal-gap;
-    }
-    @if $i == 2 {
-      top: 325 - $reward-img-vertical-gap;
-      left: 448 - $reward-img-horizontal-gap;
-    }
-    @if $i == 3 {
-      top: 417 - $reward-img-vertical-gap;
-      left: 847 - $reward-img-horizontal-gap;
-    }
-    @if $i == 4 {
-      top: 325 - $reward-img-vertical-gap;
-      left: 1231 - $reward-img-horizontal-gap;
-    }
-    @if $i == 5 {
-      width: 442px;
-      height: 286px;
-      top: 172 - $reward-img-vertical-gap;
-      left: 1553 - $reward-img-horizontal-gap;
-    }
-
-    @if $i == 6 or $i == 7 or $i == 8 {
-      width: 146px;
-      height: 175px;
-    }
-    @if $i == 6 {
-      top: 921 - $reward-img-vertical-gap;
-      left: 126 - $reward-img-horizontal-gap;
-    }
-    @if $i == 7 {
-      top: 921 - $reward-img-vertical-gap;
-      left: 305 - $reward-img-horizontal-gap;
-    }
-    @if $i == 8 {
-      top: 921 - $reward-img-vertical-gap;
-      left: 484 - $reward-img-horizontal-gap;
-    }
   }
+}
+.task-item1 {
+  top: 151px;
+  left: 96px;
+}
+.task-item2 {
+  top: 325px;
+  left: 448px;
+}
+.task-item3 {
+  top: 417px;
+  left: 847px;
+}
+.task-item4 {
+  top: 325px;
+  left: 1231px;
+}
+.task-item5 {
+  width: 442px;
+  height: 286px;
+  top: 172px;
+  left: 1553px;
+}
+
+.task-item6,
+.task-item7,
+.task-item8 {
+  width: 146px;
+  height: 175px;
+}
+.task-item6 {
+  top: 921px;
+  left: 126px;
+}
+.task-item7 {
+  top: 921px;
+  left: 305px;
+}
+.task-item8 {
+  top: 921px;
+  left: 484px;
 }
 
 .task3-time {
