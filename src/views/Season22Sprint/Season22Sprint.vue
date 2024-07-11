@@ -87,7 +87,7 @@
             <div v-else>
               <p class="modal-text">领取奖励说明：</p>
               <p class="modal-text mt-1">
-                2024年7月25日<span class="text-[#ffcb4d]">新版本更新后</span
+                2024年7月23日<span class="text-[#ffcb4d]">新版本更新后</span
                 >，可在游戏内通过<span class="text-[#ffcb4d]">邮件</span
                 >领取<span class="text-[#ffcb4d]">季节蜡烛*6</span
                 >，感谢您的参与！
