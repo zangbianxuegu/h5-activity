@@ -82,6 +82,7 @@ export const useActivityStore = defineStore(
           },
         ],
       },
+      current_time: 0,
     })
     // 更新活动数据
     function updateActivityData(

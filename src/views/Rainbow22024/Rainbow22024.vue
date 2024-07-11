@@ -359,8 +359,8 @@ function getActivityData(): void {
         event_data: {
           activitycenter_rainbow2_2024: data.event_data[EVENT_NAME].sort(
             (a: Event, b: Event) => {
-              const orderA = taskOrderMap.get(a.task_id) ?? 4
-              const orderB = taskOrderMap.get(b.task_id) ?? 4
+              const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
+              const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
               return orderA - orderB
             },
           ),
