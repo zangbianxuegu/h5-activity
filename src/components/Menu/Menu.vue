@@ -21,9 +21,18 @@
           :src="handleMenuIcon(item)"
           alt="star"
         />
-        <span class="nav-text text-left" :class="getNavTextClass(item)">{{
-          item.label
-        }}</span>
+        <span
+          class="nav-text text-left"
+          :class="{
+            wider: [
+              'activitycenter_anniversary_visit_2024',
+              'activitycenter_anniversary_store_2024',
+              'activitycenter_tournament_of_triumph_1',
+            ].includes(item.value),
+            widest: ['activity_sanrio_2024'].includes(item.value),
+          }"
+          >{{ item.label }}</span
+        >
       </div>
     </div>
   </div>
@@ -156,15 +165,6 @@ function getNavIconClass(curItem: MenuItem): string[] {
   }
   return menuIconMap[key] ? [menuIconMap[key]] : []
 }
-
-function getNavTextClass(curItem: MenuItem): string[] {
-  const navTextPrefix = 'nav-text'
-  const menuTextMap: Record<string, string> = {
-    activity_sanrio_2024: `${navTextPrefix}-sanrio`,
-    activitycenter_tournament_of_triumph_1: `${navTextPrefix}-tournament1`,
-  }
-  return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
-}
 </script>
 
 <style scoped>
@@ -235,19 +235,19 @@ function getNavTextClass(curItem: MenuItem): string[] {
     height: 82px;
   }
   &-poster-anniversary-2024 {
-    margin: 0 20px;
+    margin: 0 22px 0 21px;
     padding: 0;
     width: 91px;
     height: 70px;
   }
   &-anniversary-visit-2024 {
-    margin: 0 20px;
+    margin: 0 25px;
     padding: 0;
     width: 84px;
     height: 67px;
   }
   &-friendship-2024 {
-    margin: 0 20px;
+    margin: 0 32px 0 30px;
     padding: 0;
     width: 73px;
     height: 89px;
@@ -256,12 +256,12 @@ function getNavTextClass(curItem: MenuItem): string[] {
 .nav-text {
   width: 180px;
 
-  &-sanrio {
-    width: 300px;
+  &.wider {
+    width: 240px;
   }
 
-  &-tournament1 {
-    width: 240px;
+  &.widest {
+    width: 300px;
   }
 }
 </style>
