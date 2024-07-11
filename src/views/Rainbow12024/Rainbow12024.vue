@@ -51,8 +51,8 @@
                       class="task-star task-star-can overflow-hidden bg-contain bg-center bg-no-repeat"
                     ></div>
                     <div
-                      v-for="(_, starIndex) in item.starCount -
-                      item.starCountCan"
+                      v-for="(_, starIndex) in (item.starCount as number) -
+                      (item.starCountCan as number)"
                       :key="starIndex"
                       class="task-star task-star-wait overflow-hidden bg-contain bg-center bg-no-repeat"
                     ></div>
@@ -253,17 +253,17 @@ const TASK_LIST = [
     status: 'wait',
   },
   {
-    name: 'activitycenter_rainbow_2024_m13',
+    name: 'activitycenter_rainbow_2024_m13_1',
     title: '累计参与开启虹光三天',
     status: 'wait',
   },
   {
-    name: 'activitycenter_rainbow_2024_m14',
+    name: 'activitycenter_rainbow_2024_m13_2',
     title: '累计参与开启虹光五天',
     status: 'wait',
   },
   {
-    name: 'activitycenter_rainbow_2024_m15',
+    name: 'activitycenter_rainbow_2024_m13_3',
     title: '累计参与开启虹光八天',
     status: 'wait',
   },
@@ -271,21 +271,45 @@ const TASK_LIST = [
 // 任务列表数据
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    const activity =
-      activityData.value.event_data.activitycenter_rainbow1_2024[index]
-    const task = {
-      ...item,
-      starCount: activity.stages[0],
-      starCountCan:
-        activity.value > activity.stages[0]
-          ? activity.stages[0]
-          : activity.value,
-      status:
-        activity.award[0] === 1
+    let task
+    if (index < 5) {
+      const activity =
+        activityData.value.event_data.activitycenter_rainbow1_2024[index]
+      task = {
+        ...item,
+        starCount: activity.stages[0],
+        starCountCan:
+          activity.value > activity.stages[0]
+            ? activity.stages[0]
+            : activity.value,
+        status:
+          activity.award[0] === 1
+            ? 'redeemed'
+            : activity.award[0] === 0 && activity.value >= activity.stages[0]
+            ? 'can'
+            : 'wait',
+      }
+    } else {
+      const activity =
+        activityData.value.event_data.activitycenter_rainbow1_2024[5]
+      task = {
+        ...item,
+      }
+      let m13TaskIndex = 0
+      if (item.name === 'activitycenter_rainbow_2024_m13_1') {
+        m13TaskIndex = 0
+      } else if (item.name === 'activitycenter_rainbow_2024_m13_2') {
+        m13TaskIndex = 1
+      } else if (item.name === 'activitycenter_rainbow_2024_m13_3') {
+        m13TaskIndex = 2
+      }
+      task.status =
+        activity.award[m13TaskIndex] === 1
           ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
+          : activity.award[m13TaskIndex] === 0 &&
+            activity.value >= activity.stages[m13TaskIndex]
           ? 'can'
-          : 'wait',
+          : 'wait'
     }
     return task
   })
@@ -329,11 +353,39 @@ function handleSrc(name: string): string {
 const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 设置红点
 function setRedDot(): void {
-  const isClaimedReward =
-    !activityData.value.event_data.activitycenter_rainbow1_2024.some(
-      (item) => item.award[0] === 0 && item.value >= item.stages[0],
-    )
-  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
+  const taskList = activityData.value.event_data.activitycenter_rainbow1_2024
+  const hasUnclaimedReward = taskList.some((task, index) => {
+    let res
+    if (index !== 5) {
+      res = task.value >= task.stages[0] && task.award[0] === 0
+    } else {
+      if (currentTask.taskName) {
+        // 点击领取奖品更新红点
+        const taskName = currentTask.taskName
+        if (taskName === 'activitycenter_rainbow_2024_m13_1') {
+          res = task.value >= task.stages[0] && task.award[0] === 0
+        } else if (taskName === 'activitycenter_rainbow_2024_m13_2') {
+          res = task.value >= task.stages[1] && task.award[1] === 0
+        } else if (taskName === 'activitycenter_rainbow_2024_m13_3') {
+          res = task.value >= task.stages[2] && task.award[2] === 0
+        }
+      } else {
+        // 初始化时更新红点
+        const arard0Index = task.award.findIndex((award) => award === 0)
+        if (arard0Index === -1) {
+          return false
+        } else {
+          const stages0Value = task.stages[arard0Index]
+          if (task.value >= stages0Value) {
+            return true
+          }
+        }
+      }
+    }
+    return res
+  })
+
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 
 function getActivityData(): void {
@@ -374,11 +426,21 @@ function updateActivityDataRewardStatusNoRequest(): void {
     event_data: {
       activitycenter_rainbow1_2024:
         activityData.value.event_data.activitycenter_rainbow1_2024.map(
-          (item) => {
-            return {
-              ...item,
-              award: item.task_id === currentTask.taskName ? [1] : item.award,
+          (item, index) => {
+            const res = { ...item }
+            const taskName = currentTask.taskName
+            if (index !== 5) {
+              res.award = item.task_id === taskName ? [1] : item.award
+            } else {
+              if (taskName === 'activitycenter_rainbow_2024_m13_1') {
+                res.award[0] = 1
+              } else if (taskName === 'activitycenter_rainbow_2024_m13_2') {
+                res.award[1] = 1
+              } else if (taskName === 'activitycenter_rainbow_2024_m13_3') {
+                res.award[2] = 1
+              }
             }
+            return res
           },
         ),
     },
@@ -389,18 +451,26 @@ function updateActivityDataRewardStatusNoRequest(): void {
 // 领奖
 function handleReward(task: string, status: string, taskIndex: number): void {
   // 领奖
-  if (status === 'redeemed') {
-    showToast('已领奖')
-    return
-  }
   if (status === 'wait') {
     showToast('还未完成任务')
     return
   }
+  let rewardId = 1
+  if (taskIndex >= 5) {
+    const taskName = task
+    if (taskName === 'activitycenter_rainbow_2024_m13_1') {
+      rewardId = 1
+    } else if (taskName === 'activitycenter_rainbow_2024_m13_2') {
+      rewardId = 2
+    } else if (taskName === 'activitycenter_rainbow_2024_m13_3') {
+      rewardId = 3
+    }
+    task = 'activitycenter_rainbow_2024_m13'
+  }
   claimMissionReward({
     event: EVENT_NAME,
     task,
-    rewardId: 1,
+    rewardId,
   })
     .then((res) => {
       currentTask.taskName = task
@@ -421,18 +491,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 </script>
 
 <style lang="scss" scoped>
-.rainbow-animation {
-  animation: opacity-enter ease-in-out 1s;
-}
-@keyframes opacity-enter {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }

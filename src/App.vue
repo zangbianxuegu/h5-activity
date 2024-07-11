@@ -221,7 +221,7 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '向友葵的成长日记',
+    label: '向友葵的 成长日记',
     value: 'activitycenter_main_friendship_2024',
     routeName: 'FriendshipMain2024',
     isNew: false,
@@ -288,14 +288,14 @@ const initMenuItems: MenuItem[] = [
     value: 'activitycenter_rainbow2_2024',
     routeName: 'Rainbow22024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '绮丽绘梦时',
     value: 'activitycenter_rainbow1_2024',
     routeName: 'Rainbow12024',
     isNew: false,
-    isClaimedReward: false,
+    hasUnclaimedReward: false,
   },
   {
     label: '小光快报',

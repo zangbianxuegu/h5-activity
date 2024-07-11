@@ -343,11 +343,11 @@ function handleSrc(name: string): string {
 
 // 设置红点
 function setRedDot(): void {
-  const isClaimedReward =
-    !activityData.value.event_data.activitycenter_rainbow2_2024.some(
-      (item) => item.award[0] === 0 && item.value >= item.stages[0],
-    )
-  menuStore.updateMenuDataByIsClaimedReward(EVENT_NAME, isClaimedReward)
+  const taskList = activityData.value.event_data.activitycenter_rainbow2_2024
+  const hasUnclaimedReward = taskList.some(
+    (task) => task.value >= task.stages[0] && task.award[0] === 0,
+  )
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 // 获取任务进度
 function getActivityData(): void {
@@ -407,10 +407,6 @@ function handleModalRewardClose(): void {
 // 领奖
 function handleReward(task: string, status: string, taskIndex: number): void {
   // 领奖
-  if (status === 'redeemed') {
-    showToast('已领奖')
-    return
-  }
   if (status === 'wait') {
     showToast('还未完成任务')
     return
