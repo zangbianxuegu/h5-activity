@@ -274,4 +274,22 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_tournament_of_triumph_3',
     },
   },
+  {
+    path: '/rainbow2-2024',
+    name: 'Rainbow22024',
+    component: () => import('@/views/Rainbow22024'),
+    meta: {
+      title: '多彩汇云间',
+      module: 'activitycenter_rainbow2_2024',
+    },
+  },
+  {
+    path: '/rainbow1-2024',
+    name: 'Rainbow12024',
+    component: () => import('@/views/Rainbow12024'),
+    meta: {
+      title: '绮丽绘梦时',
+      module: 'activitycenter_rainbow1_2024',
+    },
+  },
 ]

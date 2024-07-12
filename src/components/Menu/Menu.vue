@@ -19,24 +19,19 @@
         ]"
         @click="handleNav(item)"
       >
-        <img
-          class="nav-icon"
-          :class="getNavIconClass(item)"
-          :src="handleMenuIcon(item)"
-          alt="star"
-        />
+        <div class="icon-container">
+          <img
+            class="nav-icon"
+            :class="getNavIconClass(item)"
+            :src="handleMenuIcon(item)"
+            alt="star"
+          />
+        </div>
         <span
+          v-html="item.label.replaceAll(' ', '<br/>')"
           class="nav-text text-left"
-          :class="{
-            wider: [
-              'activitycenter_anniversary_visit_2024',
-              'activitycenter_anniversary_store_2024',
-              'activitycenter_tournament_of_triumph_1',
-            ].includes(item.value),
-            widest: ['activity_sanrio_2024'].includes(item.value),
-          }"
-          >{{ item.label }}</span
-        >
+          :class="getNavTextClass(item)"
+        ></span>
       </div>
     </div>
   </div>
@@ -169,6 +164,15 @@ function getNavIconClass(curItem: MenuItem): string[] {
   }
   return menuIconMap[key] ? [menuIconMap[key]] : []
 }
+
+function getNavTextClass(curItem: MenuItem): string[] {
+  const navTextPrefix = 'nav-text'
+  const menuTextMap: Record<string, string> = {
+    activity_sanrio_2024: `${navTextPrefix}-sanrio`,
+    activitycenter_tournament_of_triumph_1: `${navTextPrefix}-tournament1`,
+  }
+  return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
+}
 </script>
 
 <style scoped>
@@ -227,45 +231,42 @@ function getNavIconClass(curItem: MenuItem): string[] {
     transform: scale(1);
   }
 }
+.icon-container {
+  width: 150px;
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 .nav-icon {
-  margin: 0 42px 0 43px;
   width: 49px;
   height: 52px;
-
   &-sanrio {
-    margin: 0 20px;
-    padding: 0;
     width: 94px;
     height: 82px;
   }
   &-poster-anniversary-2024 {
-    margin: 0 22px 0 21px;
-    padding: 0;
     width: 91px;
     height: 70px;
   }
   &-anniversary-visit-2024 {
-    margin: 0 25px;
-    padding: 0;
     width: 84px;
     height: 67px;
   }
   &-friendship-2024 {
-    margin: 0 32px 0 30px;
-    padding: 0;
     width: 73px;
     height: 89px;
   }
 }
 .nav-text {
-  width: 180px;
-
-  &.wider {
-    width: 240px;
+  width: 200px;
+  &-sanrio {
+    width: 300px;
   }
 
-  &.widest {
-    width: 300px;
+  &-tournament1 {
+    width: 240px;
   }
 }
 </style>
