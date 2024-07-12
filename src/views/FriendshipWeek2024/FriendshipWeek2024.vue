@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="anniversary flex h-screen">
-      <div class="anniversary-main">
+    <div class="friendship flex h-screen">
+      <div class="friendship-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -19,7 +19,7 @@
             <!-- 任务列表 -->
             <ul class="task-list">
               <li
-                v-for="(item, index) in taskList.slice(1, 4)"
+                v-for="(item, index) in taskList"
                 :key="item.id"
                 :class="[
                   'task-item animate__animated animate__fadeIn bg-contain bg-no-repeat indent-[-9999px]',
@@ -27,13 +27,28 @@
                   `week${currentFriendshipWeek}-task-item${index + 1}`,
                   `${item.status}`,
                   {
-                    empty:
-                      currentFriendshipWeek === 2 && [1, 2].includes(index),
+                    empty: item.isNotOpened,
                   },
                 ]"
-                @click="handleReward(item.value, item.status, index)"
+                @click="handleReward(item.name, item.status, item.isNotOpened)"
               >
                 <p class="task-text">{{ item.title }}</p>
+                <!-- 进度 -->
+                <ol
+                  v-if="item.hasIndicates && !item.isNotOpened"
+                  class="task-indicates"
+                >
+                  <li
+                    v-for="(_, index) in Array.from({ length: item.stage })"
+                    :key="index"
+                    :class="[
+                      'task-indicate overflow-hidden indent-[-9999px]',
+                      { active: item.value >= index + 1 },
+                    ]"
+                  >
+                    {{ index + 1 }}
+                  </li>
+                </ol>
               </li>
             </ul>
           </main>
@@ -101,6 +116,7 @@
 </template>
 
 <script setup lang="ts">
+import dayjs from 'dayjs'
 import { showToast } from 'vant'
 import type { Event, DesignConfig, EventName } from '@/types'
 import { Session } from '@/utils/storage'
@@ -110,6 +126,14 @@ import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useBaseStore } from '@/stores/base'
 import { useActivityStore } from '@/stores/friendshipWeek2024'
+
+interface TaskItem {
+  id: number
+  title: string
+  name: string
+  status: string
+  hasIndicates: boolean
+}
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -151,6 +175,7 @@ const activityData = computed(() => activityStore.activityData)
 const currentFriendshipWeek = computed(
   () => baseStore.baseInfo.currentFriendshipWeek,
 )
+const currentTime = baseStore.baseInfo.currentTime
 const event =
   `activitycenter_week${currentFriendshipWeek.value}_friendship_2024` as EventName
 
@@ -205,72 +230,307 @@ const rewardMap = {
       img: 'table',
     },
   ],
+  activitycenter_week2_friendship_2024_m3: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '向日葵花盘装扮魔法*2',
+      img: 'outfit_horn_sunflower_headwear',
+    },
+  ],
+  activitycenter_week2_friendship_2024_m4: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '爱心*2',
+      img: 'heart',
+    },
+  ],
+  activitycenter_week3_friendship_2024_m2: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '留影蜡烛*2',
+      img: 'recording_candle',
+    },
+  ],
+  activitycenter_week3_friendship_2024_m3: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '体型重塑*2',
+      img: 'resize_potion',
+    },
+  ],
+  activitycenter_week3_friendship_2024_m4: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '爱心*2',
+      img: 'heart',
+    },
+  ],
+  activitycenter_week4_friendship_2024_m2: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '秋千*2',
+      img: 'swing',
+    },
+  ],
+  activitycenter_week4_friendship_2024_m3: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '粉色尾迹*2',
+      img: 'trail_pink',
+    },
+  ],
+  activitycenter_week4_friendship_2024_m4: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '爱心*2',
+      img: 'heart',
+    },
+  ],
+  activitycenter_week5_friendship_2024_m2: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '传信纸船*2',
+      img: 'message_boat',
+    },
+  ],
+  activitycenter_week5_friendship_2024_m3: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '彩虹尾迹*2',
+      img: 'trail_rainbow',
+    },
+  ],
+  activitycenter_week5_friendship_2024_m4: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '爱心*2',
+      img: 'heart',
+    },
+  ],
+  activitycenter_week6_friendship_2024_m2: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '绚丽彩虹*2',
+      img: 'rainbow',
+    },
+  ],
+  activitycenter_week6_friendship_2024_m3: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '彩虹尾迹*2',
+      img: 'trail_rainbow',
+    },
+  ],
+  activitycenter_week6_friendship_2024_m4: [
+    {
+      name: '阳光*100',
+      img: 'sunlight_token',
+    },
+    {
+      name: '爱心*2',
+      img: 'heart',
+    },
+  ],
 }
 const curRewards = ref(rewardMap.activitycenter_week1_friendship_2024_m2)
 
 const TASK_LIST_MAP = {
   week1: [
     {
-      id: 1,
-      title: '',
-      value: 'activitycenter_week1_friendship_2024_m1',
-      status: 'wait',
-    },
-    {
       id: 2,
       title: '通过星盘赠送好友10次阳光',
-      value: 'activitycenter_week1_friendship_2024_m2',
+      name: 'activitycenter_week1_friendship_2024_m2',
       status: 'wait',
+      hasIndicates: false,
     },
     {
       id: 3,
       title: '获得3次来自好友的向友葵呵护',
-      value: 'activitycenter_week1_friendship_2024_m3',
+      name: 'activitycenter_week1_friendship_2024_m3',
       status: 'wait',
+      hasIndicates: false,
     },
     {
       id: 4,
       title: '累计3天和陌生人一起坐在向日葵长凳上',
-      value: 'activitycenter_week1_friendship_2024_m4',
+      name: 'activitycenter_week1_friendship_2024_m4',
       status: 'wait',
+      hasIndicates: false,
     },
   ],
   week2: [
     {
-      id: 1,
-      title: '',
-      value: 'activitycenter_week2_friendship_2024_m1',
-      status: 'wait',
-    },
-    {
       id: 2,
       title: '通过星盘赠送好友10次阳光',
-      value: 'activitycenter_week2_friendship_2024_m2',
+      name: 'activitycenter_week2_friendship_2024_m2',
       status: 'wait',
+      hasIndicates: false,
     },
     {
       id: 3,
-      title: '稍后开放~保持神秘~',
-      value: 'activitycenter_week2_friendship_2024_m3',
+      title: '和好友一起参加3次比赛',
+      name: 'activitycenter_week2_friendship_2024_m3',
       status: 'wait',
+      hasIndicates: true,
     },
     {
       id: 4,
-      title: '稍后开放~保持神秘~',
-      value: 'activitycenter_week2_friendship_2024_m4',
+      title: '在竞技场中收获3次双生向日葵',
+      name: 'activitycenter_week2_friendship_2024_m4',
       status: 'wait',
+      hasIndicates: true,
+    },
+  ],
+  week3: [
+    {
+      id: 2,
+      title: '通过星盘赠送好友10次阳光',
+      name: 'activitycenter_week3_friendship_2024_m2',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 3,
+      title: '和好友一起参加3次比赛',
+      name: 'activitycenter_week3_friendship_2024_m3',
+      status: 'wait',
+      hasIndicates: true,
+    },
+    {
+      id: 4,
+      title: '在竞技场中收获3次双生向日葵',
+      name: 'activitycenter_week3_friendship_2024_m4',
+      status: 'wait',
+      hasIndicates: true,
+    },
+  ],
+  week4: [
+    {
+      id: 2,
+      title: '通过星盘赠送好友10次阳光',
+      name: 'activitycenter_week4_friendship_2024_m2',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 3,
+      title: '和好友牵手游玩鹊桥',
+      name: 'activitycenter_week4_friendship_2024_m3',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 4,
+      title: '累计3天在秘密花园抽签',
+      name: 'activitycenter_week4_friendship_2024_m4',
+      status: 'wait',
+      hasIndicates: true,
+    },
+  ],
+  week5: [
+    {
+      id: 2,
+      title: '通过星盘赠送好友10次阳光',
+      name: 'activitycenter_week5_friendship_2024_m2',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 3,
+      title: '和3名不同发色的好友牵手',
+      name: 'activitycenter_week5_friendship_2024_m3',
+      status: 'wait',
+      hasIndicates: true,
+    },
+    {
+      id: 4,
+      title: '在八人门中收获3次双生向日葵',
+      name: 'activitycenter_week5_friendship_2024_m4',
+      status: 'wait',
+      hasIndicates: true,
+    },
+  ],
+  week6: [
+    {
+      id: 2,
+      title: '通过星盘赠送好友10次阳光',
+      name: 'activitycenter_week6_friendship_2024_m2',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 3,
+      title: '和1名相同发色的好友牵手',
+      name: 'activitycenter_week6_friendship_2024_m3',
+      status: 'wait',
+      hasIndicates: false,
+    },
+    {
+      id: 4,
+      title: '在八人门中收获3次双生向日葵',
+      name: 'activitycenter_week6_friendship_2024_m4',
+      status: 'wait',
+      hasIndicates: true,
     },
   ],
 }
+const TASK_LIST =
+  TASK_LIST_MAP[
+    `week${currentFriendshipWeek.value}` as keyof typeof TASK_LIST_MAP
+  ]
 // 任务列表
 const taskList = computed(() => {
-  return TASK_LIST_MAP[
-    `week${currentFriendshipWeek.value}` as keyof typeof TASK_LIST_MAP
-  ].map((item, index) => {
+  return TASK_LIST.map((item, index) => {
     const activity =
-      activityData.value.event_data.activitycenter_week_friendship_2024[index]
+      activityData.value.event_data.activitycenter_week_friendship_2024[
+        index + 1
+      ]
+    // 任务是否未开放
+    const isNotOpened = checkTaskNotOpened(item)
     return {
       ...item,
+      value: activity.value,
+      stage: activity.stages[0],
+      isNotOpened,
       status:
         activity.award[0] === 1
           ? 'redeemed'
@@ -282,11 +542,7 @@ const taskList = computed(() => {
 })
 
 // 周任务排序
-const taskOrderMap = new Map(
-  TASK_LIST_MAP[
-    `week${currentFriendshipWeek.value}` as keyof typeof TASK_LIST_MAP
-  ].map((task, index) => [task.value, index]),
-)
+const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 
 onMounted(() => {
   try {
@@ -312,7 +568,41 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
-// 设置红点
+/**
+ * @function 检查任务是否未开放
+ * @param item 任务项
+ */
+function checkTaskNotOpened(item: TaskItem): boolean {
+  // 第2周运动日任务在7.26之前未开放
+  if (
+    [
+      'activitycenter_week2_friendship_2024_m3',
+      'activitycenter_week2_friendship_2024_m4',
+    ].includes(item.name)
+  ) {
+    const currentDate = dayjs.unix(currentTime)
+    console.log('currentDate: ', currentDate)
+    const targetDate = dayjs('2024-07-26')
+    console.log('targetDate: ', targetDate)
+    return currentDate.isBefore(targetDate)
+  }
+  // 第4周七夕节任务在8.8之前未开放
+  if (
+    [
+      'activitycenter_week4_friendship_2024_m3',
+      'activitycenter_week4_friendship_2024_m4',
+    ].includes(item.name)
+  ) {
+    const currentDate = dayjs.unix(currentTime)
+    const targetDate = dayjs('2024-08-08')
+    return currentDate.isBefore(targetDate)
+  }
+  return false
+}
+
+/**
+ * @function 设置红点
+ */
 function setRedDot(): void {
   const isClaimedReward =
     !activityData.value.event_data.activitycenter_week_friendship_2024
@@ -321,7 +611,9 @@ function setRedDot(): void {
   menuStore.updateMenuDataByIsClaimedReward(event, isClaimedReward)
 }
 
-// 获取任务进度
+/**
+ * @function 获取任务进度
+ */
 function getActivityData(): void {
   // 主任务
   getPlayerMissionData({ event })
@@ -338,8 +630,8 @@ function getActivityData(): void {
           activitycenter_week_friendship_2024:
             data.event_data.activitycenter_week_friendship_2024.sort(
               (a: Event, b: Event) => {
-                const orderA = taskOrderMap.get(a.task_id) ?? 4
-                const orderB = taskOrderMap.get(b.task_id) ?? 4
+                const orderA = taskOrderMap.get(a.task_id) ?? -1
+                const orderB = taskOrderMap.get(b.task_id) ?? -1
                 return orderA - orderB
               },
             ),
@@ -354,9 +646,18 @@ function getActivityData(): void {
     })
 }
 
-// 领奖
-function handleReward(task: string, status: string, index: number): void {
-  if (currentFriendshipWeek.value === 2 && index >= 1) {
+/**
+ * @function 领奖
+ * @param task 任务id
+ * @param status 任务状态
+ * @param isNotOpened 任务是否未开启
+ */
+function handleReward(
+  task: string,
+  status: string,
+  isNotOpened: boolean,
+): void {
+  if (isNotOpened) {
     showToast('稍后开放~')
     return
   }
@@ -421,7 +722,7 @@ function handleReward(task: string, status: string, index: number): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.anniversary {
+.friendship {
   position: relative;
   width: 2100px;
 
@@ -462,14 +763,36 @@ function handleReward(task: string, status: string, index: number): void {
   position: absolute;
   right: 56px;
   top: 64px;
-  width: 244px;
-  height: 67px;
 }
 .date1 {
+  width: 243px;
+  height: 67px;
   background-image: url('@/assets/images/friendship-week-2024/date1.png');
 }
 .date2 {
+  width: 244px;
+  height: 67px;
   background-image: url('@/assets/images/friendship-week-2024/date2.png');
+}
+.date3 {
+  width: 213px;
+  height: 62px;
+  background-image: url('@/assets/images/friendship-week-2024/date3.png');
+}
+.date4 {
+  width: 210px;
+  height: 61px;
+  background-image: url('@/assets/images/friendship-week-2024/date4.png');
+}
+.date5 {
+  width: 242px;
+  height: 66px;
+  background-image: url('@/assets/images/friendship-week-2024/date5.png');
+}
+.date6 {
+  width: 239px;
+  height: 67px;
+  background-image: url('@/assets/images/friendship-week-2024/date6.png');
 }
 .help {
   position: absolute;
@@ -501,19 +824,40 @@ function handleReward(task: string, status: string, index: number): void {
 }
 @for $i from 1 through 6 {
   @for $j from 1 through 3 {
-    @if not($i > 2 or ($i == 2 and $j >= 2)) {
-      .week#{$i}-task-item#{$j} {
-        &.wait {
-          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-wait.png');
-        }
-        &.can {
-          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-can.png');
-        }
-        &.redeemed {
-          background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-redeemed.png');
-        }
+    .week#{$i}-task-item#{$j} {
+      &.wait {
+        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-wait.png');
+      }
+      &.can {
+        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-can.png');
+      }
+      &.redeemed {
+        background-image: url('@/assets/images/friendship-week-2024/week#{$i}-task#{$j}-redeemed.png');
       }
     }
+  }
+}
+.task-indicates {
+  position: absolute;
+  left: 55%;
+  bottom: 30px;
+  transform: translate3d(-50%, 0, 0) rotate(-8deg);
+}
+.task-indicate {
+  float: left;
+  margin-left: 14px;
+  width: 37px;
+  height: 37px;
+  background: url('@/assets/images/friendship-week-2024/star.png') no-repeat
+    center center / 26px 26px;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &.active {
+    background: url('@/assets/images/friendship-week-2024/star-active.png')
+      no-repeat center center / 37px 37px;
   }
 }
 .reward-box {

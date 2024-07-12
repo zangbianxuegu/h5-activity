@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="anniversary flex h-screen">
-      <div class="anniversary-main">
+    <div class="friendship flex h-screen">
+      <div class="friendship-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -221,6 +221,8 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
+// 以任务 id 来命名 key，方便领奖时获取。
+// 周任务的每日任务奖励全部一样，故除外，为固定的。
 const rewardMap = {
   activitycenter_main_friendship_2024_m1_1: [
     {
@@ -246,13 +248,7 @@ const rewardMap = {
       img: 'CharSkyKid_Prop_SunflowerScreen',
     },
   ],
-  activitycenter_week1_friendship_2024_m1: [
-    {
-      name: '阳光*50',
-      img: 'sunlight_token',
-    },
-  ],
-  activitycenter_week1_friendship_2024_m2: [
+  activitycenter_week_friendship_2024_m1: [
     {
       name: '阳光*50',
       img: 'sunlight_token',
@@ -274,6 +270,30 @@ const DAILY_TASK_LIST = [
     week: '2',
     status: 'wait',
   },
+  {
+    title: '和陌生人一起坐在向日葵长凳上',
+    value: 'activitycenter_week3_friendship_2024_m1',
+    week: '3',
+    status: 'wait',
+  },
+  {
+    title: '收获1株双生向日葵',
+    value: 'activitycenter_week4_friendship_2024_m1',
+    week: '4',
+    status: 'wait',
+  },
+  {
+    title: '呵护1位好友的向日葵',
+    value: 'activitycenter_week5_friendship_2024_m1',
+    week: '5',
+    status: 'wait',
+  },
+  {
+    title: '和陌生人一起坐在向日葵长凳上',
+    value: 'activitycenter_week6_friendship_2024_m1',
+    week: '6',
+    status: 'wait',
+  },
 ]
 // 每日任务
 const dailyTask = computed(() => {
@@ -290,6 +310,7 @@ const dailyTask = computed(() => {
   return res
 })
 
+console.log('dailyTask: ', dailyTask)
 const MAIN_TASK_LIST = [
   {
     id: 1,
@@ -371,7 +392,9 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
-// 设置红点
+/**
+ * @function 设置红点
+ */
 function setRedDot(): void {
   const dailyValue = dailyTaskData.value.value
   const dailyAward = dailyTaskData.value.award
@@ -390,7 +413,9 @@ function setRedDot(): void {
   )
 }
 
-// 获取任务进度
+/**
+ * @function 获取任务进度
+ */
 function getActivityData(): void {
   // 主任务
   getPlayerMissionData({
@@ -423,7 +448,9 @@ function animateHeart(): void {
   }
 }
 
-// 使用阳光
+/**
+ * @function 使用阳光
+ */
 function handleUsingSunlight(): void {
   if (Number(activityData.value.token_count || 0) < 100) {
     showToast('阳光不足，无法呵护向友葵！')
@@ -452,7 +479,13 @@ function handleUsingSunlight(): void {
     })
 }
 
-// 领奖
+/**
+ * @function 领奖
+ * @param task 任务id
+ * @param status 任务状态
+ * @param rewardId 第几个奖励节点
+ * @param type 任务类型：周每日任务、main 任务
+ */
 function handleReward(
   task: string,
   status: string,
@@ -478,8 +511,10 @@ function handleReward(
     rewardId,
   })
     .then(async (res) => {
-      console.log('reward res: ', res)
-      const rewardKey = type === 'daily' ? task : `${task}_${rewardId}`
+      const rewardKey =
+        type === 'daily'
+          ? 'activitycenter_week_friendship_2024_m1'
+          : `${task}_${rewardId}`
       curRewards.value = rewardMap[rewardKey as keyof typeof rewardMap]
       modalReward.value?.openModal()
 
@@ -524,7 +559,7 @@ function handleReward(
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.anniversary {
+.friendship {
   position: relative;
   width: 2100px;
 
@@ -651,7 +686,7 @@ function handleReward(
   width: 406px;
   height: 473px;
 }
-@for $i from 1 through 2 {
+@for $i from 1 through 6 {
   .daily-task-#{$i} {
     &.wait {
       background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-wait.png');

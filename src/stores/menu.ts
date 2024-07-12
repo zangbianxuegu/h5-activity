@@ -57,6 +57,7 @@ export const useMenuStore = defineStore('menu', () => {
 
   // 更新菜单数据 isNew
   function updateMenuDataByIsNew(event: string): void {
+    console.log('event: ', event)
     // 接口更新红点状态
     let curItem = null
     if (
@@ -91,6 +92,7 @@ export const useMenuStore = defineStore('menu', () => {
       ].includes(event)
     ) {
       curItem = menuData.value.find((item) => item.value === event)
+      console.log('curItem: ', curItem)
     } else if (['activity_sign_in_2', 'activity_sign_in_3'].includes(event)) {
       curItem = menuData.value
         .find((item) => item.value === 'signin')

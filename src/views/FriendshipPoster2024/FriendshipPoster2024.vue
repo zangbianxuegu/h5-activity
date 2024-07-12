@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="anniversary flex h-screen">
-      <div class="anniversary-main">
+    <div class="friendship flex h-screen">
+      <div class="friendship-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1
@@ -121,7 +121,7 @@ onMounted(() => {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.anniversary {
+.friendship {
   position: relative;
   width: 2100px;
 

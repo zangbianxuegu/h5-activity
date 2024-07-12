@@ -242,6 +242,34 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '每周惊喜',
+    value: 'activitycenter_week3_friendship_2024', // 第3周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '每周惊喜',
+    value: 'activitycenter_week4_friendship_2024', // 第4周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '每周惊喜',
+    value: 'activitycenter_week5_friendship_2024', // 第5周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '每周惊喜',
+    value: 'activitycenter_week6_friendship_2024', // 第6周
+    routeName: 'FriendshipWeek2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '每日签到',
     value: 'activitycenter_sign_friendship_2024',
     routeName: 'FriendshipSign2024',
@@ -420,7 +448,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
           isNew: activityInfo.is_new === 1,
           hasUnclaimedReward:
             activityName === 'activity_center_notice'
-              ? true
+              ? false
               : activityInfo.has_unclaimed_reward > 0,
         }
         if (activityName === 'activitycenter_main_friendship_2024') {

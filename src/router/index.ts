@@ -45,7 +45,7 @@ router.afterEach((to, from) => {
     module = `activitycenter_week${currentFriendshipWeek}_friendship_2024`
   }
   const menuStore = useMenuStore()
-  // 更新菜单数据 isActive
+  // 更新菜单数据 isNew
   if (module && typeof module === 'string') {
     menuStore.updatedMenuDataByRoute(module)
   }

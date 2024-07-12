@@ -7,7 +7,11 @@
           'hover:cursor-pointer',
           isMainNavItem(item) ? 'nav-item-main' : '',
           isMenuItemActive(item)
-            ? item.value === 'activity_sanrio_2024'
+            ? [
+                'activity_sanrio_2024',
+                'activitycenter_poster_anniversary_2024',
+                'activitycenter_main_friendship_2024',
+              ].includes(item.value)
               ? 'nav-item--active nav-item-main--active'
               : 'nav-item--active'
             : '',
