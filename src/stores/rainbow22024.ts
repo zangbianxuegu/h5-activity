@@ -11,7 +11,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m1',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -20,16 +20,16 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m2',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
-            award: [0],
+            award: [1],
           },
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m3',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -38,7 +38,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m4',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -47,7 +47,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m5',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -56,7 +56,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m6',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -65,7 +65,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m7',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -74,7 +74,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_rainbow_2024_m8',
-            stages: [2],
+            stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
