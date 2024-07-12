@@ -41,6 +41,12 @@
       本地地址
     </div>
     <div
+      v-if="isCcLocal"
+      class="fixed right-0 top-0 z-10 bg-pink-600 px-1 text-sm text-white"
+    >
+      本地地址Cc
+    </div>
+    <div
       v-if="isGameDev"
       class="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
     >
@@ -326,6 +332,13 @@ const initMenuItems: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '求签乞巧 鹊桥相会',
+    value: 'activitycenter_qixi_2024',
+    routeName: 'Qixi2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
@@ -354,12 +367,14 @@ const activityFriendshipList = [
 ]
 
 const localUrl = 'https://10.227.198.175:5173'
+const localUrlCc = 'https://10.227.199.103:5173'
 const gameUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
 const gameDevUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html'
 const prodUrl = 'https://sky.h5.163.com/game/'
 const isLocal = ref(window.location.href.includes(localUrl))
+const isCcLocal = ref(window.location.href.includes(localUrlCc))
 const isGame = ref(window.location.href.includes(gameUrl))
 const isGameDev = ref(window.location.href.includes(gameDevUrl))
 const isProd = ref(window.location.href.includes(prodUrl))
