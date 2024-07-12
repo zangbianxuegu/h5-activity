@@ -1,3 +1,4 @@
+import { type ACTIVITY_LIST } from '@/constants'
 export interface BaseInfo {
   currentTime: number
   currentFriendshipWeek: number
@@ -65,25 +66,7 @@ export type EventDataKeysToObject = {
 }
 
 // 活动事件名
-// 在这里添加……
-export type EventName =
-  | keyof EventData
-  | 'activitycenter_anniversary_store_2024'
-  | 'activitycenter_main_friendship_2024'
-  | 'activitycenter_store_friendship_2024'
-  | 'activitycenter_sign_friendship_2024'
-  | 'activitycenter_week_friendship_2024'
-  | 'activitycenter_week1_friendship_2024'
-  | 'activitycenter_week2_friendship_2024'
-  | 'activitycenter_week3_friendship_2024'
-  | 'activitycenter_week4_friendship_2024'
-  | 'activitycenter_week5_friendship_2024'
-  | 'activitycenter_week6_friendship_2024'
-  | 'activitycenter_tournament_of_triumph_1'
-  | 'activitycenter_tournament_of_triumph_2'
-  | 'activitycenter_tournament_of_triumph_3'
-  | 'activitycenter_rainbow1_2024'
-  | 'activitycenter_rainbow2_2024'
+export type EventName = (typeof ACTIVITY_LIST)[number]
 
 export interface MenuItem {
   label: string

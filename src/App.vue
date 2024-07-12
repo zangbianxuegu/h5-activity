@@ -59,6 +59,7 @@
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
 import type { MenuItem, Activity, ActivityTime, TokenParams } from '@/types'
+import { FRIENDSHIP_2024, FRIENDSHIP_WEEK_2024 } from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
@@ -334,25 +335,6 @@ const initMenuItems: MenuItem[] = [
   },
 ]
 
-// 有友节周任务
-const activityFriendshipWeekList = [
-  'activitycenter_week1_friendship_2024',
-  'activitycenter_week2_friendship_2024',
-  'activitycenter_week3_friendship_2024',
-  'activitycenter_week4_friendship_2024',
-  'activitycenter_week5_friendship_2024',
-  'activitycenter_week6_friendship_2024',
-]
-
-// 有友节任务
-const activityFriendshipList = [
-  'activitycenter_main_friendship_2024',
-  'activitycenter_sign_friendship_2024',
-  ...activityFriendshipWeekList,
-  'activitycenter_store_friendship_2024',
-  'activitycenter_poster_friendship_2024',
-]
-
 const localUrl = 'https://10.227.198.175:5173'
 const gameUrl =
   'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
@@ -450,7 +432,7 @@ function handleToSprite(): void {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  const predefinedOrder = activityFriendshipList
+  const predefinedOrder = FRIENDSHIP_2024
   let predefinedStartTime: number | null = null
   const res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
@@ -614,10 +596,10 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
   let res = 0
   const item = activeEvents.find((item) =>
-    activityFriendshipWeekList.includes(item.activity),
+    FRIENDSHIP_WEEK_2024.includes(item.activity),
   )
   if (item) {
-    res = activityFriendshipWeekList.indexOf(item.activity) + 1
+    res = FRIENDSHIP_WEEK_2024.indexOf(item.activity) + 1
   }
   return res
 }

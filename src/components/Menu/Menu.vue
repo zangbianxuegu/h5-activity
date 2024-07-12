@@ -40,17 +40,8 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
+import { FRIENDSHIP_WEEK_2024 } from '@/constants'
 import { useMenuStore } from '@/stores/menu'
-
-// 有友节周任务
-const activityFriendshipList = [
-  'activitycenter_week1_friendship_2024',
-  'activitycenter_week2_friendship_2024',
-  'activitycenter_week3_friendship_2024',
-  'activitycenter_week4_friendship_2024',
-  'activitycenter_week5_friendship_2024',
-  'activitycenter_week6_friendship_2024',
-]
 
 const router = useRouter()
 const route = useRoute()
@@ -82,7 +73,7 @@ function isMenuItemActive(item: MenuItem): boolean {
   if (module && typeof module === 'string') {
     return (
       item.value === module ||
-      (activityFriendshipList.includes(item.value) &&
+      (FRIENDSHIP_WEEK_2024.includes(item.value) &&
         module === 'activitycenter_week_friendship_2024') || // 有友节周任务
       (item.value === 'signin' &&
         ['activity_sign_in_2', 'activity_sign_in_3'].includes(module)) ||
