@@ -61,13 +61,9 @@ export interface EventData {
 
 export type EventDataKeys = keyof EventData
 
-export type EventDataKeysToObject =
-  | {
-      [k in keyof EventData]: EventDataKeys
-    }
-
-  // 活动事件名
-  | 'activitycenter_qixi_2024'
+export type EventDataKeysToObject = {
+  [k in keyof EventData]: EventDataKeys
+}
 
 export type EventName = (typeof ACTIVITY_LIST)[number]
 

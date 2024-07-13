@@ -80,7 +80,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGame, isProd } = useEnvironment()
+const { isLocal, isCcLocal, isGameDev, isGame, isProd } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
