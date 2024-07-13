@@ -15,7 +15,7 @@ export const MENU_ITEMS: MenuItem[] = [
     children: [],
   },
   {
-    label: '巢落大地筑梦共时',
+    label: '巢落大地 筑梦共时',
     value: 'activity_season22_start',
     routeName: 'Season22Start',
     isNew: false,
@@ -23,7 +23,7 @@ export const MENU_ITEMS: MenuItem[] = [
     children: [],
   },
   {
-    label: '田月桑时春风雀跃',
+    label: '田月桑时 春风雀跃',
     value: 'activity_sign_mayday_2024',
     routeName: 'SignMayday2024',
     isNew: false,
@@ -39,7 +39,7 @@ export const MENU_ITEMS: MenuItem[] = [
     children: [],
   },
   {
-    label: '予光千缕碧浪万顷',
+    label: '予光千缕 碧浪万顷',
     value: 'activity_nature_2024',
     routeName: 'Nature2024',
     isNew: false,
@@ -234,7 +234,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '奖牌收集 挑战赛',
+    label: '奖牌收藏 挑战赛',
     value: 'activitycenter_tournament_of_triumph_2',
     routeName: 'TournamentOfTriumph2',
     isNew: false,

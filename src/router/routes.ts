@@ -261,7 +261,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'TournamentOfTriumph2',
     component: () => import('@/views/TournamentOfTriumph2'),
     meta: {
-      title: '奖牌收集挑战赛',
+      title: '奖牌收藏挑战赛',
       module: 'activitycenter_tournament_of_triumph_2',
     },
   },
