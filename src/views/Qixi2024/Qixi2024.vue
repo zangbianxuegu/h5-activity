@@ -353,7 +353,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/qixi-2024/bg.png');
+    background-image: url('@/assets/images/qixi-2024/bg.jpg');
   }
 }
 .title {

@@ -262,6 +262,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '求签乞巧 鹊桥相会',
+    value: 'activitycenter_qixi_2024',
+    routeName: 'Qixi2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
