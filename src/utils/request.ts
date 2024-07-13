@@ -1,5 +1,5 @@
 import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
-import { FRIENDSHIP_WEEK_2024, NEW_ACTIVITY_LIST } from '@/constants'
+import { FRIENDSHIP_WEEK_2024_LIST, NEW_ACTIVITY_LIST } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
@@ -180,7 +180,7 @@ export function getPlayerMissionData({
       // 兼容之前的活动，等待 stores/activity.ts 中保存的活动全部下架之后，只需要保留 if 中的逻辑
       if (NEW_ACTIVITY_LIST.includes(event)) {
         let cachedData
-        if (FRIENDSHIP_WEEK_2024.includes(event)) {
+        if (FRIENDSHIP_WEEK_2024_LIST.includes(event)) {
           cachedData = Session.get(
             'activitycenter_week_friendship_2024',
           )?.activityData

@@ -310,7 +310,6 @@ const dailyTask = computed(() => {
   return res
 })
 
-console.log('dailyTask: ', dailyTask)
 const MAIN_TASK_LIST = [
   {
     id: 1,

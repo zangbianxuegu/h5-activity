@@ -3,3 +3,9 @@ export declare global {
     UniSDKJSBridge: any
   }
 }
+export interface UseEnvironmentReturn {
+  isLocal: Ref<boolean>
+  isGame: Ref<boolean>
+  isGameDev: Ref<boolean>
+  isProd: Ref<boolean>
+}

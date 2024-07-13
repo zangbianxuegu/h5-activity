@@ -5,17 +5,13 @@
         :class="[
           'nav-item flex flex-row items-center text-center',
           'hover:cursor-pointer',
-          isMainNavItem(item) ? 'nav-item-main' : '',
-          isMenuItemActive(item)
-            ? [
-                'activity_sanrio_2024',
-                'activitycenter_poster_anniversary_2024',
-                'activitycenter_main_friendship_2024',
-              ].includes(item.value)
-              ? 'nav-item--active nav-item-main--active'
-              : 'nav-item--active'
-            : '',
-          item.isNew || item.hasUnclaimedReward ? 'nav-item--new' : '',
+          {
+            'nav-item-main': isMainNavItem(item),
+            'nav-item--active': isMenuItemActive(item),
+            'nav-item-main--active':
+              isMenuItemActive(item) && isMainNavItem(item),
+            'nav-item--new': item.isNew || item.hasUnclaimedReward,
+          },
         ]"
         @click="handleNav(item)"
       >
@@ -40,7 +36,11 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-import { FRIENDSHIP_WEEK_2024 } from '@/constants'
+import {
+  FRIENDSHIP_WEEK_2024_LIST,
+  MAIN_ACTIVITY_LIST,
+  RETURN_BUFF_LIST,
+} from '@/constants'
 import { useMenuStore } from '@/stores/menu'
 
 const router = useRouter()
@@ -73,27 +73,16 @@ function isMenuItemActive(item: MenuItem): boolean {
   if (module && typeof module === 'string') {
     return (
       item.value === module ||
-      (FRIENDSHIP_WEEK_2024.includes(item.value) &&
+      (FRIENDSHIP_WEEK_2024_LIST.includes(item.value) &&
         module === 'activitycenter_week_friendship_2024') || // 有友节周任务
-      (item.value === 'signin' &&
-        ['activity_sign_in_2', 'activity_sign_in_3'].includes(module)) ||
-      (item.value === 'return_buff' &&
-        [
-          'return_buff_reunion',
-          'return_buff_setout',
-          'return_buff_together',
-        ].includes(module))
+      (item.value === 'return_buff' && RETURN_BUFF_LIST.includes(module)) // 回流页面
     )
   }
   return false
 }
 
 function isMainNavItem(item: MenuItem): boolean {
-  return [
-    'activity_sanrio_2024',
-    'activitycenter_poster_anniversary_2024',
-    'activitycenter_main_friendship_2024',
-  ].includes(item.value)
+  return MAIN_ACTIVITY_LIST.includes(item.value)
 }
 
 // 菜单点击事件
