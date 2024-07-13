@@ -50,6 +50,7 @@ export const NEW_ACTIVITY_LIST = [
   'activitycenter_tournament_of_triumph_3',
   'activitycenter_rainbow1_2024',
   'activitycenter_rainbow2_2024',
+  'activitycenter_qixi_2024',
 ]
 
 // 所有活动
@@ -74,4 +75,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_tournament_of_triumph_3',
   'activitycenter_rainbow1_2024',
   'activitycenter_rainbow2_2024',
+  'activitycenter_qixi_2024',
 ]

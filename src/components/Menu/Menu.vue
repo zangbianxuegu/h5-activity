@@ -24,7 +24,7 @@
           />
         </div>
         <span
-          v-html="item.label.replaceAll(' ', '<br/>')"
+          v-html="item.label.replace(' ', '<br/>')"
           class="nav-text text-left"
           :class="getNavTextClass(item)"
         ></span>
