@@ -41,6 +41,12 @@
       本地地址
     </div>
     <div
+      v-if="isCcLocal"
+      class="fixed right-0 top-0 z-10 bg-pink-600 px-1 text-sm text-white"
+    >
+      本地地址Cc
+    </div>
+    <div
       v-if="isGameDev"
       class="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
     >
@@ -74,7 +80,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGame, isProd } = useEnvironment()
+const { isLocal, isCcLocal, isGameDev, isGame, isProd } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'

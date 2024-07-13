@@ -65,7 +65,6 @@ export type EventDataKeysToObject = {
   [k in keyof EventData]: EventDataKeys
 }
 
-// 活动事件名
 export type EventName = (typeof ACTIVITY_LIST)[number]
 
 export interface MenuItem {

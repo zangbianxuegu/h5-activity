@@ -292,4 +292,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_rainbow1_2024',
     },
   },
+  {
+    path: '/qixi-2024',
+    name: 'Qixi2024',
+    component: () => import('@/views/Qixi2024'),
+    meta: {
+      title: '求签乞巧 鹊桥相会',
+      module: 'activitycenter_qixi_2024',
+    },
+  },
 ]

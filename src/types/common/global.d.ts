@@ -8,4 +8,5 @@ export interface UseEnvironmentReturn {
   isGame: Ref<boolean>
   isGameDev: Ref<boolean>
   isProd: Ref<boolean>
+  isCcLocal: Ref<boolean>
 }
