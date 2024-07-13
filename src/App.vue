@@ -65,6 +65,11 @@
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
 import type { MenuItem, Activity, ActivityTime, TokenParams } from '@/types'
+import {
+  FRIENDSHIP_2024_LIST,
+  FRIENDSHIP_WEEK_2024_LIST,
+  MENU_ITEMS,
+} from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
@@ -73,311 +78,9 @@ import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
 import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
+import { useEnvironment } from '@/composables/useEnvironment'
 
-// 菜单初始值
-const initMenuItems: MenuItem[] = [
-  {
-    label: '剪刀石头布！',
-    value: 'activity_childrens_day_2024',
-    routeName: 'ChildrensDay2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '巢落大地筑梦共时',
-    value: 'activity_season22_start',
-    routeName: 'Season22Start',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '田月桑时春风雀跃',
-    value: 'activity_sign_mayday_2024',
-    routeName: 'SignMayday2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '大耳狗茶话会',
-    value: 'activity_sanrio_2024',
-    routeName: 'Sanrio2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '予光千缕碧浪万顷',
-    value: 'activity_nature_2024',
-    routeName: 'Nature2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '假日打卡',
-    value: 'activity_sign_in_1',
-    routeName: 'Holiday',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [],
-  },
-  {
-    label: '签到活动',
-    value: 'signin',
-    routeName: 'Signin',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [
-      {
-        label: '冬季签到',
-        value: 'activity_sign_in_2',
-        routeName: 'Winter',
-        isNew: false,
-        hasUnclaimedReward: false,
-      },
-      {
-        label: '暑假签到',
-        value: 'activity_sign_in_3',
-        routeName: 'Summer',
-        isNew: false,
-        hasUnclaimedReward: false,
-      },
-    ],
-  },
-  {
-    label: '击鼓行舟 粽香十里',
-    value: 'activity_dragonboat_2024',
-    routeName: 'DragonBoat2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '天空王国 回归指南',
-    value: 'return_buff',
-    routeName: 'ReturnBuff',
-    isNew: false,
-    hasUnclaimedReward: false,
-    children: [
-      {
-        label: '重逢',
-        value: 'return_buff_reunion',
-        routeName: 'Reunion',
-        isNew: false,
-        hasUnclaimedReward: false,
-      },
-      {
-        label: '启程',
-        value: 'return_buff_setout',
-        routeName: 'Setout',
-        isNew: false,
-        hasUnclaimedReward: false,
-      },
-      {
-        label: '同行',
-        value: 'return_buff_together',
-        routeName: 'Together',
-        isNew: false,
-        hasUnclaimedReward: false,
-      },
-    ],
-  },
-  {
-    label: '欢聚周年 畅享派对',
-    value: 'activitycenter_poster_anniversary_2024',
-    routeName: 'PosterAnniversary2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '成为派对 新星吧！',
-    value: 'activity_anniversary_warmup_2024',
-    routeName: 'AnniversaryWarmup2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '闲适安居 筑巢小憩',
-    value: 'activity_season22_sprint',
-    routeName: 'Season22Sprint',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '巡光嘉年华',
-    value: 'activitycenter_anniversary_visit_2024',
-    routeName: 'AnniversaryVisit2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '成为星星 收藏家',
-    value: 'activitycenter_anniversary_server_2024',
-    routeName: 'AnniversaryServer2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '嘉年华商店',
-    value: 'activitycenter_anniversary_store_2024',
-    routeName: 'AnniversaryStore2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '向友葵的 成长日记',
-    value: 'activitycenter_main_friendship_2024',
-    routeName: 'FriendshipMain2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week1_friendship_2024', // 第1周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week2_friendship_2024', // 第2周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week3_friendship_2024', // 第3周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week4_friendship_2024', // 第4周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week5_friendship_2024', // 第5周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每周惊喜',
-    value: 'activitycenter_week6_friendship_2024', // 第6周
-    routeName: 'FriendshipWeek2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '每日签到',
-    value: 'activitycenter_sign_friendship_2024',
-    routeName: 'FriendshipSign2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '养分补给',
-    value: 'activitycenter_store_friendship_2024',
-    routeName: 'FriendshipStore2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '有友共享',
-    value: 'activitycenter_poster_friendship_2024',
-    routeName: 'FriendshipPoster2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '运动日锦标 赛，开幕！',
-    value: 'activitycenter_tournament_of_triumph_1',
-    routeName: 'TournamentOfTriumph1',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '奖牌收集 挑战赛',
-    value: 'activitycenter_tournament_of_triumph_2',
-    routeName: 'TournamentOfTriumph2',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '心火相传 辉煌落幕',
-    value: 'activitycenter_tournament_of_triumph_3',
-    routeName: 'TournamentOfTriumph3',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '多彩汇云间',
-    value: 'activitycenter_rainbow2_2024',
-    routeName: 'Rainbow22024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '绮丽绘梦时',
-    value: 'activitycenter_rainbow1_2024',
-    routeName: 'Rainbow12024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '求签乞巧 鹊桥相会',
-    value: 'activitycenter_qixi_2024',
-    routeName: 'Qixi2024',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-  {
-    label: '小光快报',
-    value: 'activity_center_notice',
-    routeName: 'Bulletin',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
-]
-
-// 有友节周任务
-const activityFriendshipWeekList = [
-  'activitycenter_week1_friendship_2024',
-  'activitycenter_week2_friendship_2024',
-  'activitycenter_week3_friendship_2024',
-  'activitycenter_week4_friendship_2024',
-  'activitycenter_week5_friendship_2024',
-  'activitycenter_week6_friendship_2024',
-]
-
-// 有友节任务
-const activityFriendshipList = [
-  'activitycenter_main_friendship_2024',
-  'activitycenter_sign_friendship_2024',
-  ...activityFriendshipWeekList,
-  'activitycenter_store_friendship_2024',
-  'activitycenter_poster_friendship_2024',
-]
-
-const localUrl = 'https://10.227.198.175:5173'
-const localUrlCc = 'https://10.227.199.103:5173'
-const gameUrl =
-  'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
-const gameDevUrl =
-  'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html'
-const prodUrl = 'https://sky.h5.163.com/game/'
-const isLocal = ref(window.location.href.includes(localUrl))
-const isCcLocal = ref(window.location.href.includes(localUrlCc))
-const isGame = ref(window.location.href.includes(gameUrl))
-const isGameDev = ref(window.location.href.includes(gameDevUrl))
-const isProd = ref(window.location.href.includes(prodUrl))
+const { isLocal, isGameDev, isGame, isProd } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
@@ -465,7 +168,7 @@ function handleToSprite(): void {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  const predefinedOrder = activityFriendshipList
+  const predefinedOrder = FRIENDSHIP_2024_LIST
   let predefinedStartTime: number | null = null
   const res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
@@ -488,7 +191,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
           const hasUnclaimedRewardArr = numberToBinaryArray(
             activityInfo.has_unclaimed_reward,
           )
-          initMenuItems.forEach((menuItem) => {
+          MENU_ITEMS.forEach((menuItem) => {
             if (menuItem.routeName === 'ReturnBuff') {
               if (menuItem.children?.length) {
                 menuItem.children = menuItem.children.map((item, index) => {
@@ -500,7 +203,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
               }
             }
           })
-          console.log('initMenuItems: ', initMenuItems)
         }
         activeEvents.push(activity)
       }
@@ -629,10 +331,10 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
   let res = 0
   const item = activeEvents.find((item) =>
-    activityFriendshipWeekList.includes(item.activity),
+    FRIENDSHIP_WEEK_2024_LIST.includes(item.activity),
   )
   if (item) {
-    res = activityFriendshipWeekList.indexOf(item.activity) + 1
+    res = FRIENDSHIP_WEEK_2024_LIST.indexOf(item.activity) + 1
   }
   return res
 }
@@ -650,7 +352,7 @@ function getAllEvents(): void {
       const currentFriendshipWeek = findCurrentFriendshipWeek(activeEvents)
       updateBaseInfoItems({ currentFriendshipWeek })
 
-      const newMenuData = generateMenuData(initMenuItems, activeEvents)
+      const newMenuData = generateMenuData(MENU_ITEMS, activeEvents)
       console.log('newMenuData: ', newMenuData)
       if (!newMenuData || newMenuData.length === 0) {
         showToast('网络连接异常，请稍后重试')

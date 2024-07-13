@@ -4,6 +4,7 @@ import { routes } from './routes'
 import { useMenuStore } from '@/stores/menu'
 import { useBaseStore } from '@/stores/base'
 import { webViewStatistics } from '@/apis/base'
+import { NO_NEED_STATISTICS_LIST } from '@/constants'
 
 const router = createRouter({
   history: createWebHashHistory(),
@@ -52,15 +53,7 @@ router.afterEach((to, from) => {
   // 日志数据上报
   try {
     if (typeof module === 'string') {
-      if (
-        ![
-          'activity_center_notice',
-          'return_buff',
-          'return_buff_reunion',
-          'return_buff_setout',
-          'return_buff_together',
-        ].includes(module)
-      ) {
+      if (!NO_NEED_STATISTICS_LIST.includes(module)) {
         webViewStatistics({ module })
           .then(() => {
             // console.log('日志数据上报成功. module: ' + module)

@@ -1,4 +1,5 @@
 import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
+import { FRIENDSHIP_WEEK_2024_LIST, NEW_ACTIVITY_LIST } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
@@ -66,13 +67,9 @@ export function handlePostMessageToNative({
 
     function logRequestInfo(response: ServeResponse): void {
       console.log(
-        '请求类型:',
-        type,
-        '请求地址：',
-        resource,
-        '请求参数：',
+        `请求类型: ${type}\n请求地址: ${resource}\n请求参数:`,
         content,
-        '服务返回信息：',
+        '\n服务返回信息:',
         response,
       )
     }
@@ -181,31 +178,9 @@ export function getPlayerMissionData({
       // TODO
       // 拆分 activity 的全局状态管理。
       // 兼容之前的活动，等待 stores/activity.ts 中保存的活动全部下架之后，只需要保留 if 中的逻辑
-      if (
-        [
-          'activitycenter_anniversary_store_2024',
-          'activitycenter_main_friendship_2024',
-          'activitycenter_store_friendship_2024',
-          'activitycenter_sign_friendship_2024',
-          'activitycenter_week1_friendship_2024',
-          'activitycenter_week2_friendship_2024',
-          'activitycenter_week3_friendship_2024',
-          'activitycenter_week4_friendship_2024',
-          'activitycenter_week5_friendship_2024',
-          'activitycenter_week6_friendship_2024',
-        ].includes(event)
-      ) {
+      if (NEW_ACTIVITY_LIST.includes(event)) {
         let cachedData
-        if (
-          [
-            'activitycenter_week1_friendship_2024',
-            'activitycenter_week2_friendship_2024',
-            'activitycenter_week3_friendship_2024',
-            'activitycenter_week4_friendship_2024',
-            'activitycenter_week5_friendship_2024',
-            'activitycenter_week6_friendship_2024',
-          ].includes(event)
-        ) {
+        if (FRIENDSHIP_WEEK_2024_LIST.includes(event)) {
           cachedData = Session.get(
             'activitycenter_week_friendship_2024',
           )?.activityData

@@ -57,49 +57,14 @@ export const useMenuStore = defineStore('menu', () => {
 
   // 更新菜单数据 isNew
   function updateMenuDataByIsNew(event: string): void {
-    console.log('event: ', event)
     // 接口更新红点状态
     let curItem = null
-    if (
-      [
-        'activity_sign_in_1',
-        'activity_season22_start',
-        'activity_sanrio_2024',
-        'activity_sign_mayday_2024',
-        'activity_nature_2024',
-        'activity_childrens_day_2024',
-        'activity_center_notice',
-        'activity_dragonboat_2024',
-        'activity_anniversary_warmup_2024',
-        'activitycenter_poster_anniversary_2024',
-        'activity_season22_sprint',
-        'activitycenter_anniversary_visit_2024',
-        'activitycenter_anniversary_server_2024',
-        'activitycenter_anniversary_store_2024',
-        'activitycenter_store_friendship_2024',
-        'activitycenter_main_friendship_2024',
-        'activitycenter_sign_friendship_2024',
-        'activitycenter_week1_friendship_2024',
-        'activitycenter_week2_friendship_2024',
-        'activitycenter_week3_friendship_2024',
-        'activitycenter_week4_friendship_2024',
-        'activitycenter_week5_friendship_2024',
-        'activitycenter_week6_friendship_2024',
-        'activitycenter_poster_friendship_2024',
-        'activitycenter_tournament_of_triumph_1',
-        'activitycenter_tournament_of_triumph_2',
-        'activitycenter_tournament_of_triumph_3',
-        'activitycenter_rainbow2_2024',
-        'activitycenter_rainbow1_2024',
-        'activitycenter_qixi_2024',
-      ].includes(event)
-    ) {
-      curItem = menuData.value.find((item) => item.value === event)
-      console.log('curItem: ', curItem)
-    } else if (['activity_sign_in_2', 'activity_sign_in_3'].includes(event)) {
+    if (['activity_sign_in_2', 'activity_sign_in_3'].includes(event)) {
       curItem = menuData.value
         .find((item) => item.value === 'signin')
         ?.children?.find((child) => child.value === event)
+    } else {
+      curItem = menuData.value.find((item) => item.value === event)
     }
     if (curItem?.isNew) {
       setWebRedDot({ event })

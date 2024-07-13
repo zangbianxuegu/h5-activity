@@ -118,7 +118,7 @@
 <script setup lang="ts">
 import dayjs from 'dayjs'
 import { showToast } from 'vant'
-import type { Event, DesignConfig, EventName } from '@/types'
+import type { Event, DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
@@ -176,8 +176,7 @@ const currentFriendshipWeek = computed(
   () => baseStore.baseInfo.currentFriendshipWeek,
 )
 const currentTime = baseStore.baseInfo.currentTime
-const event =
-  `activitycenter_week${currentFriendshipWeek.value}_friendship_2024` as EventName
+const event = `activitycenter_week${currentFriendshipWeek.value}_friendship_2024`
 
 const isVisited = Session.get('isVisitedFriendshipWeek2024')
 const bodyTransitionName = ref('')
