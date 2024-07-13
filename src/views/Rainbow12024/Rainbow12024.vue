@@ -40,10 +40,6 @@
                   @click="handleReward(item.name, item.status, index)"
                 >
                   {{ item.title }}
-                  <div
-                    class="task3-time z-11 bg-contain bg-center bg-no-repeat"
-                    v-if="[2].includes(index)"
-                  ></div>
                   <div class="task-star-container" v-if="[3].includes(index)">
                     <div
                       v-for="(_, starIndex) in item.starCountCan"
@@ -85,8 +81,7 @@
               >；
             </p>
             <p class="modal-text">
-              3、8.21 00:00:00 - 8.27 23:59:59
-              ，和好友一起开启空中彩虹环，即可领取<span class="text-[#ffcb4d]"
+              3、和好友一起开启空中彩虹环，即可领取<span class="text-[#ffcb4d]"
                 >元气满满*2</span
               >；
             </p>
