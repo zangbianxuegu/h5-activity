@@ -80,7 +80,7 @@
             >；
           </p>
           <p class="modal-text">
-            <span class="text-[#ffcb4d]">获得1次第一名</span>即可赢取<span
+            <span class="text-[#ffcb4d]">获得1次金牌</span>即可赢取<span
               class="text-[#ffcb4d]"
               >爱心*1</span
             >；

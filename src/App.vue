@@ -160,11 +160,65 @@ function handleToSprite(): void {
     })
 }
 
+/**
+ * @function 调整运动日活动排序
+ * @param arr 菜单列表
+ */
+function adjustTournament(arr: Activity[]): Activity[] {
+  let tournamentOfTriumph1Index = -1
+  let tournamentOfTriumph2Index = -1
+
+  for (let i = 0; i < arr.length; i++) {
+    if (arr[i].activity === 'activitycenter_tournament_of_triumph_1') {
+      tournamentOfTriumph1Index = i
+    } else if (arr[i].activity === 'activitycenter_tournament_of_triumph_2') {
+      tournamentOfTriumph2Index = i
+    }
+    if (tournamentOfTriumph1Index !== -1 && tournamentOfTriumph2Index !== -1) {
+      if (tournamentOfTriumph1Index > tournamentOfTriumph2Index) {
+        ;[arr[tournamentOfTriumph1Index], arr[tournamentOfTriumph2Index]] = [
+          arr[tournamentOfTriumph2Index],
+          arr[tournamentOfTriumph1Index],
+        ]
+      }
+      break
+    }
+  }
+  return arr
+}
+
+/**
+ * @function 调整有友节活动
+ * @param arr 菜单列表
+ * @param startTime 有友节活动开始时间
+ */
+function adjustFriendship2024(arr: Activity[], startTime: number): Activity[] {
+  // 有友节活动
+  const predefinedActivities = FRIENDSHIP_2024_LIST.map((activityName) =>
+    arr.find((activity) => activity.activity === activityName),
+  ).filter((activity) => activity !== undefined) as Activity[]
+
+  // 其余的活动
+  const otherActivities = arr.filter(
+    (activity) => !FRIENDSHIP_2024_LIST.includes(activity.activity),
+  )
+
+  // 合并
+  return [
+    ...otherActivities.filter(
+      (activity) => activity.startTime >= (startTime || 0),
+    ),
+    ...predefinedActivities,
+    ...otherActivities.filter(
+      (activity) => activity.startTime < (startTime || 0),
+    ),
+  ]
+}
+
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  const predefinedOrder = FRIENDSHIP_2024_LIST
-  let predefinedStartTime: number | null = null
-  const res = Object.entries(activitiesResponse).reduce<Activity[]>(
+  let friendship2024StartTime: number = 0
+  let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
         const activity = {
@@ -178,7 +232,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
               : activityInfo.has_unclaimed_reward > 0,
         }
         if (activityName === 'activitycenter_main_friendship_2024') {
-          predefinedStartTime = activity.startTime
+          friendship2024StartTime = activity.startTime
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -206,31 +260,12 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
-  // 提取有友节活动
-  const predefinedActivities = predefinedOrder
-    .map((activityName) =>
-      res.find((activity) => activity.activity === activityName),
-    )
-    .filter((activity) => activity !== undefined) as Activity[]
-
-  // 过滤出其余的活动
-  const otherActivities = res.filter(
-    (activity) => !predefinedOrder.includes(activity.activity),
-  )
-
-  // 排序
-  const finalRes = [
-    ...otherActivities.filter(
-      (activity) => activity.startTime >= (predefinedStartTime || 0),
-    ),
-    ...predefinedActivities,
-    ...otherActivities.filter(
-      (activity) => activity.startTime < (predefinedStartTime || 0),
-    ),
-  ]
-
+  // 调整运动日活动排序
+  res = adjustTournament(res)
+  // 调整有友节活动排序
+  res = adjustFriendship2024(res, friendship2024StartTime)
   // 最后调整回流、小光快报的位置
-  return finalRes.sort((a, b) => {
+  return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
     if (b.activity === 'return_buff') return 1
     if (a.activity === 'activity_center_notice') return 1
