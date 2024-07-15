@@ -7,7 +7,7 @@
           'hover:cursor-pointer',
           isMainNavItem(item) ? 'nav-item-main' : '',
           isMenuItemActive(item)
-            ? item.value === 'activity_sanrio_2024'
+            ? isMainNavItem(item)
               ? 'nav-item--active nav-item-main--active'
               : 'nav-item--active'
             : '',
