@@ -260,8 +260,6 @@ const currentTask = reactive({
   taskIndex: 0,
 })
 function updateActivityDataRewardStatusNoRequest(): void {
-  // 后端接口请求限制间隔 3s
-  // 优化用户体验，不再延时请求接口，直接前端更新数据展示
   const newActivityData = {
     ...activityData.value,
     event_data: {
@@ -280,10 +278,6 @@ function updateActivityDataRewardStatusNoRequest(): void {
 // 领奖
 function handleReward(task: string, status: string, taskIndex: number): void {
   // 领奖
-  if (status === 'redeemed') {
-    showToast('已领奖')
-    return
-  }
   if (status === 'wait') {
     showToast('还未完成任务')
     return
