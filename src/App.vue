@@ -265,6 +265,13 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
+    label: '二重奏季 期待相遇',
+    value: 'activitycenter_season23_reserve',
+    routeName: 'Season23Reserve',
+    isNew: false,
+    isClaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
