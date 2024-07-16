@@ -244,7 +244,7 @@ const initMenuItems: MenuItem[] = [
     isClaimedReward: false,
   },
   {
-    label: '每日签到',
+    label: '每日礼物',
     value: 'activitycenter_sign_friendship_2024',
     routeName: 'FriendshipSign2024',
     isNew: false,

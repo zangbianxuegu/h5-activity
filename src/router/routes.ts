@@ -225,7 +225,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'FriendshipSign2024',
     component: () => import('@/views/FriendshipSign2024'),
     meta: {
-      title: '养分补给',
+      title: '每日礼物',
       module: 'activitycenter_sign_friendship_2024',
     },
   },
