@@ -3,41 +3,27 @@
     <div class="qixi-2024 flex h-screen">
       <div class="qixi-2024-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1
-            class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-          >
+          <h1 class="title overflow-hidden bg-contain indent-[-9999px]">
             求签乞巧 鹊桥相会
-            <div
-              class="date-help bg-contain bg-center bg-no-repeat"
-              @click="handleHelp"
-            ></div>
+            <div class="date-help bg-contain" @click="handleHelp"></div>
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div>
-            <div class="task-list-container">
-              <ul
-                class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
-              >
-                <li
-                  v-for="(item, index) in taskList"
-                  :key="item.name"
-                  :class="[
-                    'task-item z-10 bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                    `task-item${index + 1}`,
-                    `${item.status}`,
-                  ]"
-                  @click="handleReward(item.name, item.status, index)"
-                >
-                  {{ item.title }}
-                  <div
-                    class="task2-time z-11 bg-contain bg-center bg-no-repeat"
-                    v-if="index === 1"
-                  ></div>
-                </li>
-              </ul>
-            </div>
-          </div>
+          <ul class="task-list">
+            <li
+              v-for="(item, index) in taskList"
+              :key="item.name"
+              :class="[
+                'task-item bg-contain indent-[-9999px]',
+                `task-item${index + 1}`,
+                `${item.status}`,
+              ]"
+              @click="handleReward(item.name, item.status, index)"
+            >
+              {{ item.title }}
+              <div class="task2-time bg-contain" v-if="index === 1"></div>
+            </li>
+          </ul>
         </Transition>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
@@ -58,7 +44,7 @@
               2、活动期间，七夕当天去秘密花园见证，即可领取<span
                 class="text-[#ffcb4d]"
                 >爱心*1</span
-              >；
+              >。
             </p>
           </template>
         </activity-modal>
@@ -89,7 +75,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { DesignConfig, Event, EventName } from '@/types'
+import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
@@ -147,7 +133,7 @@ const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 
-const EVENT_NAME = 'activitycenter_qixi_2024' as EventName
+const EVENT_NAME = 'activitycenter_qixi_2024'
 // 活动数据
 const activityData = computed(() => activityStore.activityData)
 const curRewards: Ref<Rewards> = ref({
@@ -220,6 +206,7 @@ function handleSrc(name: string): string {
 }
 
 const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
+
 // 设置红点
 function setRedDot(): void {
   const taskList = activityData.value.event_data.activitycenter_qixi_2024
@@ -232,7 +219,7 @@ function setRedDot(): void {
 function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
-      const data: any = res.data
+      const data = res.data
 
       const newActivityData = {
         ...data,
@@ -259,7 +246,8 @@ const currentTask = reactive({
   taskName: '',
   taskIndex: 0,
 })
-function updateActivityDataRewardStatusNoRequest(): void {
+
+function updateActivityDataRewardStatus(): void {
   const newActivityData = {
     ...activityData.value,
     event_data: {
@@ -277,7 +265,9 @@ function updateActivityDataRewardStatusNoRequest(): void {
 
 // 领奖
 function handleReward(task: string, status: string, taskIndex: number): void {
-  // 领奖
+  if (status === 'redeemed') {
+    return
+  }
   if (status === 'wait') {
     showToast('还未完成任务')
     return
@@ -296,7 +286,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      updateActivityDataRewardStatusNoRequest()
+      updateActivityDataRewardStatus()
       setRedDot()
     })
     .catch((error) => {
@@ -314,7 +304,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     opacity: 1;
   }
 }
-
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
@@ -365,15 +354,12 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   height: 45px;
   top: 7px;
   left: 1022px;
-  // border: 1px solid red;
 }
-
 .task-item {
   width: 397px;
   height: 397px;
   position: absolute;
 }
-
 @for $i from 1 through 2 {
   .task-item#{$i} {
     &.wait {
@@ -395,7 +381,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   top: 262px;
   left: 1399px;
 }
-
 .task2-time {
   width: 125px;
   height: 43px;
@@ -403,15 +388,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   top: 32px;
   right: 60px;
   background-image: url('@/assets/images/qixi-2024/task2-time.png');
-}
-
-.modal-text {
-  font-size: 40px;
-  color: #454545;
-
-  &-blue {
-    color: #4db6da;
-  }
 }
 .modal-reward {
   width: 150px;

@@ -24,10 +24,11 @@
                 v-for="(item, index) in taskList"
                 :key="item.id"
                 :class="[
-                  'task-bg animate-flip flex flex-col-reverse bg-contain',
+                  'task-bg animate-flip flex flex-col-reverse bg-cover',
                   `bg-task${index + 1}`,
                 ]"
               >
+                <div v-if="item.status === 'redeemed'" class="task-mask"></div>
                 <div
                   :class="[
                     'task-item animate__animated animate__fadeIn animate__slow bg-contain indent-[-9999px]',
@@ -535,8 +536,17 @@ function handleReward(
   width: 1500px;
 }
 .task-bg {
+  position: relative;
   width: 250px;
   height: 1022px;
+}
+.task-mask {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
 }
 .task-item {
   margin-left: -8px;
