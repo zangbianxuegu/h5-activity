@@ -705,7 +705,6 @@
   "src/assets/images/tournament-of-triumph-1/task3-redeemed.png": 1720611373697.4922,
   "src/assets/images/tournament-of-triumph-1/task5-wait.png": 1720611373698.0112,
   "src/assets/images/tournament-of-triumph-1/task4-redeemed.png": 1720611373698.0112,
-  "src/assets/images/tournament-of-triumph-1/title.png": 1720611373698.9783,
   "src/assets/images/tournament-of-triumph-1/task6-wait.png": 1720611373698.9783,
   "src/assets/images/tournament-of-triumph-1/task6-redeemed.png": 1720611373698.0112,
   "src/assets/images/tournament-of-triumph-2/bg.jpg": 1720611373698.9783,
@@ -881,5 +880,6 @@
   "src/assets/images/qixi-2024/task2-wait.png": 1720783423197.604,
   "src/assets/images/qixi-2024/task2-time.png": 1720783517613.3152,
   "src/assets/images/qixi-2024/title.png": 1720783517612.339,
-  "src/assets/images/qixi-2024/bg.jpg": 1720854223920.4932
+  "src/assets/images/qixi-2024/bg.jpg": 1720854223920.4932,
+  "src/assets/images/tournament-of-triumph-1/title.png": 1721118034608.2778
 }

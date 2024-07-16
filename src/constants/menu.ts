@@ -227,7 +227,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '运动日锦标 赛，开幕！',
+    label: '运动会锦标 赛，开幕！',
     value: 'activitycenter_tournament_of_triumph_1',
     routeName: 'TournamentOfTriumph1',
     isNew: false,

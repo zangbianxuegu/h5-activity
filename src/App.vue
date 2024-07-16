@@ -161,7 +161,7 @@ function handleToSprite(): void {
 }
 
 /**
- * @function 调整运动日活动排序
+ * @function 调整运动会活动排序
  * @param arr 菜单列表
  */
 function adjustTournament(arr: Activity[]): Activity[] {
@@ -260,7 +260,7 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
-  // 调整运动日活动排序
+  // 调整运动会活动排序
   res = adjustTournament(res)
   // 调整有友节活动排序
   res = adjustFriendship2024(res, friendship2024StartTime)

@@ -252,7 +252,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'TournamentOfTriumph1',
     component: () => import('@/views/TournamentOfTriumph1'),
     meta: {
-      title: '运动日锦标赛，开幕！',
+      title: '运动会锦标赛，开幕！',
       module: 'activitycenter_tournament_of_triumph_1',
     },
   },

@@ -572,7 +572,7 @@ function handleSrc(name: string): string {
  * @param item 任务项
  */
 function checkTaskNotOpened(item: TaskItem): boolean {
-  // 第2周运动日任务在7.26之前未开放
+  // 第2周运动会任务在7.26之前未开放
   if (
     [
       'activitycenter_week2_friendship_2024_m3',

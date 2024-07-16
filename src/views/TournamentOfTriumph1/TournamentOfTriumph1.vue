@@ -7,7 +7,7 @@
             <h1
               class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
             >
-              运动日锦标赛，开幕！ 7.26-8.10
+              运动会锦标赛，开幕！ 7.26-8.10
             </h1>
             <h2 class="indent-[-9999px]">参与挑战，拼搏超越！</h2>
             <div
@@ -74,7 +74,7 @@
             <span class="font-semibold">活动内容：</span>
           </p>
           <p class="modal-text">
-            活动期间参与运动日锦标赛项目即可获得对应奖励：
+            活动期间参与运动会锦标赛项目即可获得对应奖励：
           </p>
           <p class="modal-text">
             参与1次<span class="text-[#ffcb4d]">收集云朵</span>项目即可获得<span

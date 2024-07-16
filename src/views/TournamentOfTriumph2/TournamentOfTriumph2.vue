@@ -59,7 +59,7 @@
             <span class="font-semibold">活动内容：</span>
           </p>
           <p class="modal-text">
-            活动期间在任意运动日锦标赛中累积达成一定数量的名次要求即可获得对应奖励：
+            活动期间在任意运动会锦标赛中累积达成一定数量的名次要求即可获得对应奖励：
           </p>
           <p class="modal-text">
             累积<span class="text-[#ffcb4d]">获得1次前三名</span>即可赢取<span
