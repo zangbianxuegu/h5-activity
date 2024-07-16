@@ -329,6 +329,7 @@ const { updateMenuData } = menuStore
 // 活动信息
 const activityStore = useActivityStore()
 const { updateActivityTime } = activityStore
+const currentChannel = computed(() => baseStore.baseInfo.channel)
 
 // 接口数据类型
 interface ActivityData {
@@ -398,11 +399,27 @@ function handleToSprite(): void {
     })
 }
 
+/**
+ * @function 过滤二重奏预约活动
+ * @description 华为、荣耀渠道不显示二重奏预约
+ * @param arr 菜单列表
+ * @returns 菜单列表
+ */
+function filterSeason23Reverse(arr: Activity[]): Activity[] {
+  return arr.filter(
+    (item) =>
+      !(
+        item.activity === 'activitycenter_season23_reserve' &&
+        ['huawei', 'honor_sdk'].includes(currentChannel.value)
+      ),
+  )
+}
+
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   const predefinedOrder = activityFriendshipList
   let predefinedStartTime: number | null = null
-  const res = Object.entries(activitiesResponse).reduce<Activity[]>(
+  let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
         const activity = {
@@ -424,6 +441,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     },
     [],
   )
+  // 过滤二重奏预约活动
+  res = filterSeason23Reverse(res)
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
   // 提取有友节活动
