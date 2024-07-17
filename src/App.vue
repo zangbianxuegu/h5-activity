@@ -401,7 +401,7 @@ function handleToSprite(): void {
 
 /**
  * @function 过滤二重奏预约活动
- * @description 华为、荣耀渠道不显示二重奏预约
+ * @description 华为、荣耀、抖音渠道不显示二重奏预约
  * @param arr 菜单列表
  * @returns 菜单列表
  */
@@ -410,7 +410,7 @@ function filterSeason23Reverse(arr: Activity[]): Activity[] {
     (item) =>
       !(
         item.activity === 'activitycenter_season23_reserve' &&
-        ['huawei', 'honor_sdk'].includes(currentChannel.value)
+        ['huawei', 'honor_sdk', 'douyin'].includes(currentChannel.value)
       ),
   )
 }
