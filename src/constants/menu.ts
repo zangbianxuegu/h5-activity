@@ -269,6 +269,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '谐音和鸣 谱写新章',
+    value: 'activitycenter_season23_start',
+    routeName: 'Season23Start2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
