@@ -410,10 +410,7 @@ function handleToSprite(): void {
  */
 function filterSeason23Reverse(arr: Activity[]): Activity[] {
   return arr.filter((item) => {
-    const whiteList: string[] = [
-      '232ce2a7-2f23-4cd4-9460-174759cf36e3',
-      'f7c2c703-3d77-40da-a96a-61a7f897283e',
-    ]
+    const whiteList: string[] = []
     const isInWhiteList = whiteList.includes(gameUid.value)
     if (whiteList.length > 0 && !isInWhiteList) {
       return item.activity !== 'activitycenter_season23_reserve'
