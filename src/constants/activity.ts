@@ -51,6 +51,7 @@ export const NEW_ACTIVITY_LIST = [
   'activitycenter_rainbow1_2024',
   'activitycenter_rainbow2_2024',
   'activitycenter_qixi_2024',
+  'activitycenter_season23_start',
 ]
 
 // 所有活动

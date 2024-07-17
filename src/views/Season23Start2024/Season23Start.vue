@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="season23-start-2024 flex h-screen">
-      <div class="season23-start-2024-main">
+    <div class="season23-start flex h-screen">
+      <div class="season23-start-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
@@ -23,7 +23,7 @@
                   v-for="(item, index) in taskList"
                   :key="item.name"
                   :class="[
-                    'task-item z-10 bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                    'task-item bg-contain bg-center bg-no-repeat indent-[-9999px]',
                     `task-item${index + 1}`,
                     `${item.status}`,
                   ]"
@@ -102,7 +102,7 @@ import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import { useActivityStore } from '@/stores/season23Start2024'
+import { useActivityStore } from '@/stores/season23Start'
 
 interface Rewards {
   name: string
@@ -208,7 +208,7 @@ const taskList = computed(() => {
   })
 })
 
-const sessionIsVisitedKey = 'isVisitedSeason23Start2024'
+const sessionIsVisitedKey = 'isVisitedSeason23Start'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -361,7 +361,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.season23-start-2024 {
+.season23-start {
   position: relative;
   width: 2100px;
 
@@ -375,7 +375,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/season23-start-2024/bg.jpg');
+    background-image: url('@/assets/images/season23-start/bg.jpg');
   }
 }
 .title {
@@ -384,7 +384,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   left: 436px;
   width: 1173px;
   height: 263px;
-  background-image: url('@/assets/images/season23-start-2024/title.png');
+  background-image: url('@/assets/images/season23-start/title.png');
 }
 .date-help {
   position: absolute;
@@ -405,13 +405,13 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 @for $i from 1 through 4 {
   .task-item#{$i} {
     &.wait {
-      background-image: url('@/assets/images/season23-start-2024/task#{$i}-wait.png');
+      background-image: url('@/assets/images/season23-start/task#{$i}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/season23-start-2024/task#{$i}-can.png');
+      background-image: url('@/assets/images/season23-start/task#{$i}-can.png');
     }
     &.redeemed {
-      background-image: url('@/assets/images/season23-start-2024/task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/season23-start/task#{$i}-redeemed.png');
     }
   }
 }
@@ -432,14 +432,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   left: 1138px;
 }
 
-.modal-text {
-  font-size: 40px;
-  color: #454545;
-
-  &-blue {
-    color: #4db6da;
-  }
-}
 .modal-reward {
   width: 150px;
 }
