@@ -410,7 +410,7 @@ function filterSeason23Reverse(arr: Activity[]): Activity[] {
     (item) =>
       !(
         item.activity === 'activitycenter_season23_reserve' &&
-        ['huawei', 'honor_sdk', 'douyin'].includes(currentChannel.value)
+        ['huawei', 'honor_sdk', 'toutiao_sdk'].includes(currentChannel.value)
       ),
   )
 }
