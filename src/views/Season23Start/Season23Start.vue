@@ -54,7 +54,7 @@
             <p class="modal-text">
               2、活动期间，获得一件新季节外观，即可领取<span
                 class="text-[#ffcb4d]"
-                >古典音乐桌椅使用魔法*2</span
+                >古典音乐桌椅试用魔法*2</span
               >；
             </p>
             <p class="modal-text">

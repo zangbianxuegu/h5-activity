@@ -884,11 +884,8 @@
   "src/assets/images/tournament-of-triumph-1/title.png": 1721118034608.2778,
   "src/assets/images/common/reward/reward-outfit_prop_cloudmusictable.png": 1721189775037.641,
   "src/assets/images/common/reward/reward-outfit_prop_fledglingharp.png": 1721189775037.641,
-  "src/assets/images/season23-start/task1-redeemed.png": 1721197424040.0952,
-  "src/assets/images/season23-start/task1-wait.png": 1721197424041.0713,
   "src/assets/images/season23-start/bg.jpg": 1721197424040.0952,
   "src/assets/images/season23-start/task2-can.png": 1721197424041.0713,
-  "src/assets/images/season23-start/task1-can.png": 1721197424041.0713,
   "src/assets/images/season23-start/task4-can.png": 1721197424041.0713,
   "src/assets/images/season23-start/task2-redeemed.png": 1721197424041.0713,
   "src/assets/images/season23-start/task3-can.png": 1721197424041.0713,
@@ -897,5 +894,8 @@
   "src/assets/images/season23-start/title.png": 1721197424044.0012,
   "src/assets/images/season23-start/task3-wait.png": 1721197424041.0713,
   "src/assets/images/season23-start/task3-redeemed.png": 1721197424041.0713,
-  "src/assets/images/season23-start/task4-wait.png": 1721197424042.0493
+  "src/assets/images/season23-start/task4-wait.png": 1721197424042.0493,
+  "src/assets/images/season23-start/task1-wait.png": 1721209051464.3164,
+  "src/assets/images/season23-start/task1-can.png": 1721209051464.3164,
+  "src/assets/images/season23-start/task1-redeemed.png": 1721209051464.3164
 }
