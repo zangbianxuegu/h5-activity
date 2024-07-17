@@ -686,15 +686,17 @@ function handleReward(
   height: 473px;
 }
 @for $i from 1 through 6 {
+  // 4-6 周任务和 1-3 周任务一样
+  $j: ($i - 1) % 3 + 1;
   .daily-task-#{$i} {
     &.wait {
-      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-wait.png');
+      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$j}-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-can.png');
+      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$j}-can.png');
     }
     &.redeemed {
-      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/friendship-main-2024/daily-task#{$j}-redeemed.png');
     }
   }
 }
