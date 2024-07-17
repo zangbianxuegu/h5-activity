@@ -301,4 +301,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_qixi_2024',
     },
   },
+  {
+    path: '/season23-start',
+    name: 'Season23Start',
+    component: () => import('@/views/Season23Start'),
+    meta: {
+      title: '谐音和鸣 谱写新章',
+      module: 'activitycenter_season23_start',
+    },
+  },
 ]
