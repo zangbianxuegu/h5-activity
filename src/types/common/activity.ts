@@ -5,6 +5,7 @@ export interface BaseInfo {
   appChannel: string
   token: string
   returnBuff: string
+  gameUid: string
 }
 
 export interface Activity {

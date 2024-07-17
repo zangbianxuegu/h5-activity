@@ -321,6 +321,8 @@ const isLoading = ref(false)
 // 基本信息
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
+const currentChannel = computed(() => baseStore.baseInfo.channel)
+const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -329,7 +331,6 @@ const { updateMenuData } = menuStore
 // 活动信息
 const activityStore = useActivityStore()
 const { updateActivityTime } = activityStore
-const currentChannel = computed(() => baseStore.baseInfo.channel)
 
 // 接口数据类型
 interface ActivityData {
@@ -371,9 +372,11 @@ function getBaseInfo(): void {
       const channel = res.channel
       const appChannel = res.appChannel
       const returnBuff = res.return_buff
+      const gameUid = res.game_uid
       updateBaseInfoItems({ channel })
       updateBaseInfoItems({ appChannel })
       updateBaseInfoItems({ returnBuff })
+      updateBaseInfoItems({ gameUid })
       tokenParams = {
         game_uid: res.game_uid,
         uid: res.uid,
@@ -401,18 +404,25 @@ function handleToSprite(): void {
 
 /**
  * @function 过滤二重奏预约活动
- * @description 华为、荣耀、抖音渠道不显示二重奏预约
+ * @description 如果存在白名单，根据白名单显示；否则屏蔽华为、荣耀、抖音渠道
  * @param arr 菜单列表
  * @returns 菜单列表
  */
 function filterSeason23Reverse(arr: Activity[]): Activity[] {
-  return arr.filter(
-    (item) =>
-      !(
-        item.activity === 'activitycenter_season23_reserve' &&
-        ['huawei', 'honor_sdk', 'toutiao_sdk'].includes(currentChannel.value)
-      ),
-  )
+  return arr.filter((item) => {
+    const whiteList: string[] = [
+      '232ce2a7-2f23-4cd4-9460-174759cf36e3',
+      'f7c2c703-3d77-40da-a96a-61a7f897283e',
+    ]
+    const isInWhiteList = whiteList.includes(gameUid.value)
+    if (whiteList.length > 0 && !isInWhiteList) {
+      return item.activity !== 'activitycenter_season23_reserve'
+    }
+    return !(
+      item.activity === 'activitycenter_season23_reserve' &&
+      ['huawei', 'honor_sdk', 'toutiao_sdk'].includes(currentChannel.value)
+    )
+  })
 }
 
 // 抽取有效的活动信息

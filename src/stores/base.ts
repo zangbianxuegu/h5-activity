@@ -10,6 +10,7 @@ export const useBaseStore = defineStore('base', () => {
     appChannel: '',
     token: '',
     returnBuff: 'true',
+    gameUid: '',
   })
 
   function updateBaseInfo(newBaseInfo: BaseInfo): void {
