@@ -271,7 +271,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     label: '谐音和鸣 谱写新章',
     value: 'activitycenter_season23_start',
-    routeName: 'Season23Start2024',
+    routeName: 'Season23Start',
     isNew: false,
     hasUnclaimedReward: false,
   },
