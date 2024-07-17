@@ -443,16 +443,17 @@ function updateActivityDataRewardStatusNoRequest(): void {
   activityStore.updateActivityData(newActivityData)
 }
 
-// 领奖
 function handleReward(task: string, status: string, taskIndex: number): void {
-  // 领奖
+  if (status === 'redeemed') {
+    return
+  }
   if (status === 'wait') {
     showToast('还未完成任务')
     return
   }
   let rewardId = 1
+  const taskName = task
   if (taskIndex >= 5) {
-    const taskName = task
     if (taskName === 'activitycenter_rainbow_2024_m13_1') {
       rewardId = 1
     } else if (taskName === 'activitycenter_rainbow_2024_m13_2') {
@@ -468,7 +469,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     rewardId,
   })
     .then((res) => {
-      currentTask.taskName = task
+      currentTask.taskName = taskName
       currentTask.taskIndex = taskIndex
       const rewards = res.data.rewards
       modalReward.value?.openModal()

@@ -14,7 +14,7 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div class="task-list-container">
+          <div class="task-list-container z-30">
             <ul
               class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
             >
@@ -22,7 +22,7 @@
                 v-for="(item, index) in taskList"
                 :key="item.name"
                 :class="[
-                  'task-item z-10 bg-contain bg-center bg-no-repeat indent-[-9999px]',
+                  'task-item z-20 bg-contain bg-center bg-no-repeat indent-[-9999px]',
                   `task-item${index + 1}`,
                   `${item.status}`,
                 ]"
@@ -33,7 +33,7 @@
             </ul>
           </div>
         </Transition>
-        <div>
+        <div v-if="isShowRainbow">
           <div
             v-for="task in taskList"
             :key="task.rainbow.name"
@@ -42,7 +42,7 @@
               `rainbow-${task.rainbow.name}`,
               { 'rainbow-animation': task.rainbow.isShow },
             ]"
-            class="rainbow opacity-1 z-5 bg-contain bg-center bg-no-repeat"
+            class="rainbow opacity-1 z-10 bg-contain bg-center bg-no-repeat"
           ></div>
         </div>
         <!-- 活动规则弹框 -->
@@ -286,6 +286,12 @@ const TASK_LIST = [
     },
   },
 ]
+
+const isShowRainbow = ref(false)
+setTimeout(() => {
+  isShowRainbow.value = true
+}, 600)
+
 const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 // 任务列表数据
 const taskList = computed(() => {
@@ -434,7 +440,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 
 <style lang="scss" scoped>
 .rainbow-animation {
-  animation: opacity-enter ease-in-out 1s;
+  animation: opacity-enter ease-in-out 1.3s;
 }
 @keyframes opacity-enter {
   0% {
@@ -458,7 +464,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   opacity: 0.2;
 }
 .fade-in-main-enter-active {
-  transition: opacity 1s ease-out 0.5s;
+  transition: opacity 0.3s ease-out 0.2s;
 }
 .fade-in-main-enter-from {
   opacity: 0.2;
@@ -557,7 +563,7 @@ $reward-img-horizontal-gap: 32px;
   width: 802px;
   height: 539px;
   background-image: url('@/assets/images/rainbow2-2024/rainbow-pink.png');
-  z-index: 6;
+  z-index: 16;
 }
 .rainbow-red {
   position: absolute;
