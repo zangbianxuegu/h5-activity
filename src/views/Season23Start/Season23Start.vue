@@ -73,19 +73,21 @@
         <!-- 领奖弹框 -->
         <activity-modal ref="modalReward">
           <template #content>
-            <p class="modal-text">
-              恭喜你获得
-              <span class="modal-text-blue"
-                >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                {{ curRewards.count }}</span
-              >：
-            </p>
-            <div class="mt-10 flex items-center justify-center">
-              <img
-                class="modal-reward"
-                :src="handleSrc(String(curRewards.name))"
-                alt="reward"
-              />
+            <div class="flex h-full flex-col">
+              <p class="modal-text">
+                恭喜你获得
+                <span class="modal-text-blue"
+                  >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                  {{ curRewards.count }}</span
+                >：
+              </p>
+              <div class="flex flex-1 items-center justify-center">
+                <img
+                  :class="[currentTask.taskIndex === 0 ? 'w-220px' : 'w-150px']"
+                  :src="handleSrc(String(curRewards.name))"
+                  alt="reward"
+                />
+              </div>
             </div>
           </template>
         </activity-modal>
@@ -431,8 +433,10 @@ function handleReward(task: string, status: string, taskIndex: number): void {
   top: 624px;
   left: 1138px;
 }
-
-.modal-reward {
+.w-220px {
+  width: 220px;
+}
+.w-150px {
   width: 150px;
 }
 </style>
