@@ -183,7 +183,7 @@ const TASK_LIST = [
   },
   {
     id: 16,
-    sunlightCount: 10,
+    sunlightCount: 20,
   },
   {
     id: 17,
@@ -191,7 +191,7 @@ const TASK_LIST = [
   },
   {
     id: 18,
-    sunlightCount: 20,
+    sunlightCount: 10,
   },
   {
     id: 19,

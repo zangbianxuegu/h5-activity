@@ -87,6 +87,8 @@ const isLoading = ref(false)
 // 基本信息
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
+const currentChannel = computed(() => baseStore.baseInfo.channel)
+const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -131,9 +133,11 @@ function getBaseInfo(): void {
       const channel = res.channel
       const appChannel = res.appChannel
       const returnBuff = res.return_buff
+      const gameUid = res.game_uid
       updateBaseInfoItems({ channel })
       updateBaseInfoItems({ appChannel })
       updateBaseInfoItems({ returnBuff })
+      updateBaseInfoItems({ gameUid })
       tokenParams = {
         ...tokenParams,
         game_uid: res.game_uid,
@@ -215,6 +219,26 @@ function adjustFriendship2024(arr: Activity[], startTime: number): Activity[] {
   ]
 }
 
+/**
+ * @function 过滤二重奏预约活动
+ * @description 如果存在白名单，根据白名单显示；否则屏蔽华为、荣耀、抖音渠道
+ * @param arr 菜单列表
+ * @returns 菜单列表
+ */
+function filterSeason23Reverse(arr: Activity[]): Activity[] {
+  return arr.filter((item) => {
+    const whiteList: string[] = []
+    const isInWhiteList = whiteList.includes(gameUid.value)
+    if (whiteList.length > 0 && !isInWhiteList) {
+      return item.activity !== 'activitycenter_season23_reserve'
+    }
+    return !(
+      item.activity === 'activitycenter_season23_reserve' &&
+      ['huawei', 'honor_sdk', 'toutiao_sdk'].includes(currentChannel.value)
+    )
+  })
+}
+
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   let friendship2024StartTime: number = 0
@@ -258,6 +282,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     },
     [],
   )
+  // 过滤二重奏预约活动
+  res = filterSeason23Reverse(res)
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
   // 调整运动会活动排序

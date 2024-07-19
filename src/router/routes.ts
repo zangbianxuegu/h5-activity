@@ -225,7 +225,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'FriendshipSign2024',
     component: () => import('@/views/FriendshipSign2024'),
     meta: {
-      title: '每日签到',
+      title: '每日礼物',
       module: 'activitycenter_sign_friendship_2024',
     },
   },
@@ -308,6 +308,15 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '谐音和鸣 谱写新章',
       module: 'activitycenter_season23_start',
+    },
+  },
+  {
+    path: '/season23-reserve',
+    name: 'Season23Reserve',
+    component: () => import('@/views/Season23Reserve'),
+    meta: {
+      title: '二重奏季 期待相遇',
+      module: 'activitycenter_season23_reserve',
     },
   },
 ]

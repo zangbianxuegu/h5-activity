@@ -241,6 +241,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
 }
 .nav-text {
   width: 200px;
+
   &-sanrio {
     width: 300px;
   }

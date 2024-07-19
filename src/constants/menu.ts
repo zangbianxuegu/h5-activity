@@ -206,7 +206,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '每日签到',
+    label: '每日礼物',
     value: 'activitycenter_sign_friendship_2024',
     routeName: 'FriendshipSign2024',
     isNew: false,
@@ -272,6 +272,13 @@ export const MENU_ITEMS: MenuItem[] = [
     label: '谐音和鸣 谱写新章',
     value: 'activitycenter_season23_start',
     routeName: 'Season23Start',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '二重奏季 期待相遇',
+    value: 'activitycenter_season23_reserve',
+    routeName: 'Season23Reserve',
     isNew: false,
     hasUnclaimedReward: false,
   },
