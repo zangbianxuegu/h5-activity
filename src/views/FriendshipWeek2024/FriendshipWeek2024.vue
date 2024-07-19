@@ -543,9 +543,30 @@ const taskList = computed(() => {
 // 周任务排序
 const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
 
+// 如果获取所有活动信息接口较后返回，currentFriendshipWeek 会进行更新
+// 观察当前周数，如果已经更新，进行数据请求
+watch(
+  () => currentFriendshipWeek.value,
+  (newVal) => {
+    if (newVal !== 0) {
+      try {
+        getActivityData()
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  },
+  {
+    immediate: true,
+  },
+)
+
 onMounted(() => {
   try {
-    getActivityData()
+    // 获取当前周数之后
+    if (currentFriendshipWeek.value !== 0) {
+      getActivityData()
+    }
   } catch (error) {
     console.error(error)
   }
@@ -580,9 +601,7 @@ function checkTaskNotOpened(item: TaskItem): boolean {
     ].includes(item.name)
   ) {
     const currentDate = dayjs.unix(currentTime)
-    console.log('currentDate: ', currentDate)
     const targetDate = dayjs('2024-07-26')
-    console.log('targetDate: ', targetDate)
     return currentDate.isBefore(targetDate)
   }
   // 第4周七夕节任务在8.8之前未开放
