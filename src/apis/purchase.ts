@@ -1,5 +1,5 @@
 import type { Response } from '@/types'
-import { handlePostMessageToNative } from '@/utils/request'
+import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
 
 /**
  * @param token_count 礼花剩余数
@@ -45,11 +45,11 @@ export function purchaseSpriteToken({
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgPurchaseSpriteToken(
+          const errorMessage = getErrorMessage(
+            'purchase_sprite_token',
             res.code,
             res.msg,
           )
-          console.log('errorMessage: ', errorMessage)
           reject(new Error(errorMessage))
         }
       },
@@ -58,33 +58,4 @@ export function purchaseSpriteToken({
       reject(err)
     })
   })
-}
-
-function handleErrMsgPurchaseSpriteToken(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    401: {
-      'invalid user': '非法账号',
-      'invalid event': '商店事件未定义',
-      'inactive event': '商店事件未开启',
-    },
-    402: {
-      'invalid id or event': '商品id错误',
-      'invalid store currency type': '商品货币配置异常',
-    },
-    404: {
-      'frequent request': '频繁请求',
-    },
-    405: {
-      'concurrent request': '冲突请求',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-  const defaultErrorMessage = '兑换奖励失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
 }

@@ -1,5 +1,9 @@
 import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
-import { FRIENDSHIP_WEEK_2024_LIST, NEW_ACTIVITY_LIST } from '@/constants'
+import {
+  FRIENDSHIP_WEEK_2024_LIST,
+  NEW_ACTIVITY_LIST,
+  ERROR_MESSAGES,
+} from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
@@ -150,7 +154,11 @@ function fetchPlayerMissionData(
             Session.set('allEvents', res)
           }
         } else {
-          const errorMessage = handleErrMsgPlayerMission(res.code, res.msg)
+          const errorMessage = getErrorMessage(
+            'get_player_mission_data',
+            res.code,
+            res.msg,
+          )
           reject(new Error(errorMessage))
         }
       },
@@ -161,10 +169,26 @@ function fetchPlayerMissionData(
   })
 }
 
-// 获取玩家任务进度数据
-// 对外暴露的函数，根据 event 参数的存在与否决定是否使用节流
-// 服务端同一活动接口限制时间间隔 3s。实际测试，因为网络传输、Redis 存储，服务端记录的时间并不是前端请求发起时间，可能会存在前端请求间隔 1707163045531 -> 1707163048696，大于 3s，服务端 2024-02-06 14:12:42.104 -> 2024-02-06 14:12:45.037，小于 3s
-// 所以设置为 3500
+/**
+ * 获取玩家任务进度数据
+ * @function getPlayerMissionData
+ * @description
+ * 对外暴露的函数，根据 event 参数的存在与否决定是否使用节流。
+ * 服务端同一活动接口限制时间间隔 3s。实际测试，因为网络传输、Redis 存储，服务端记录的时间并不是前端请求发起时间，可能会存在前端请求间隔 1707163045531 -> 1707163048696，大于 3s，服务端 2024-02-06 14:12:42.104 -> 2024-02-06 14:12:45.037，小于 3s
+ * 为了尽量避免此问题，时间间隔设置为 3500 ms。
+ * @typedef {Object} GetPlayerMissionDataParams
+ * @property {EventName} event 活动名称
+ * @property {string} token 获取 token 的类型。使用这个参数获取 token 数量。比如有友节主页。
+ * @returns {Promise<Response>} 返回一个 Promise，解析为 Response 对象
+ * @example
+ * getPlayerMissionData({ event: '', token: '' })
+ *   .then(res => {
+ *     console.log(res);
+ *   })
+ *   .catch(error => {
+ *     console.error(error);
+ *   });
+ */
 export function getPlayerMissionData({
   event,
   token,
@@ -250,32 +274,14 @@ export function getPlayerMissionData({
   })
 }
 
-function handleErrMsgPlayerMission(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      'invalid event': '没有活动配置（无效的活动）',
-      'invalid task': '没有任务配置（无效的任务）',
-      'invalid user': '非法userid',
-      'not recently online': '玩家近期不在线',
-    },
-    401: {
-      'inactive event': '活动未开启',
-      'repeat request': '请求过于频繁，请稍后再试',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-
-  const defaultErrorMessage = '获取玩家任务进度失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
-}
-
-// 更新任务进度
+/**
+ * 更新任务进度
+ * @function setPlayerTask
+ * @typedef {Object} SetPlayerTaskParams
+ * @property {string} task 任务id
+ * @property {number} [value] 任务值/进度
+ * @returns {Promise<Response>}
+ */
 export function setPlayerTask({
   task,
   value = 1,
@@ -297,7 +303,11 @@ export function setPlayerTask({
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgPlayerTask(res.code, res.msg)
+          const errorMessage = getErrorMessage(
+            'set_player_task',
+            res.code,
+            res.msg,
+          )
           reject(new Error(errorMessage))
         }
       },
@@ -308,26 +318,16 @@ export function setPlayerTask({
   })
 }
 
-function handleErrMsgPlayerTask(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      'invalid task': '没有活动配置',
-      'invalid user': '非法userid',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-
-  const defaultErrorMessage = '更新任务进度失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
-}
-
-// 领奖
+/**
+ * 领奖
+ * @function claimMissionReward
+ * @typedef {Object} ClaimMissionRewardParams
+ * @property {string} task 任务id
+ * @property {string} event 活动名称
+ * @property {number} rewardId 第几个奖励节点
+ * @property {string} [expect] 有友节每日礼物（可选）
+ * @returns {Promise<Response>}
+ */
 export function claimMissionReward({
   task,
   event,
@@ -355,7 +355,11 @@ export function claimMissionReward({
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgMissionReward(res.code, res.msg)
+          const errorMessage = getErrorMessage(
+            'claim_jingling_mission_reward',
+            res.code,
+            res.msg,
+          )
           reject(new Error(errorMessage))
         }
       },
@@ -366,40 +370,12 @@ export function claimMissionReward({
   })
 }
 
-function handleErrMsgMissionReward(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      invalid: '状态异常，请刷新后重试',
-      'repeat request': '请求频繁',
-      'not recently online': '玩家近期不在线',
-      'wrong event or task': '错误的活动或任务（无效活动）',
-      'wrong reward_id': '错误的奖励id',
-      'concurrent request': '并发的请求',
-    },
-    401: {
-      inactive: '活动未开启',
-    },
-    403: {
-      'already received the reward': '已领取奖励',
-      'out of stock': '奖品库存不足',
-      'already has unlock': '已拥有该物品',
-      'reward has already selected': '已选择奖励',
-      'already selected another': '已选择其他奖励',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-
-  const defaultErrorMessage = '领奖失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
-}
-
-// 设置新活动状态
+/**
+ * 设置新活动状态
+ * @function setWebRedDot
+ * @param param {string} 活动名称
+ * @returns {Promise<Response>}
+ */
 export function setWebRedDot({ event }: { event: string }): Promise<Response> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
@@ -412,8 +388,7 @@ export function setWebRedDot({ event }: { event: string }): Promise<Response> {
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgRedDot(res.code, res.msg)
-          reject(new Error(errorMessage))
+          console.log('res.msg', res.msg)
         }
       },
     }).catch((err) => {
@@ -423,23 +398,18 @@ export function setWebRedDot({ event }: { event: string }): Promise<Response> {
   })
 }
 
-function handleErrMsgRedDot(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      'invalid event': '没有活动配置（无效的活动）',
-    },
-    401: {
-      'inactive event': '活动未开启',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-
-  const defaultErrorMessage = '设置新活动状态失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
+/**
+ * 获取接口错误对应的文案
+ * @function getErrorMessage
+ * @param {string} api 接口名称
+ * @param {number} code 接口状态码
+ * @param {string} msg 接口 msg
+ * @returns {string} 前端显示文案
+ */
+export function getErrorMessage(
+  api: string,
+  code: number,
+  msg: string,
+): string {
+  return ERROR_MESSAGES[api][code][msg] || '服务器异常，请稍后重试'
 }

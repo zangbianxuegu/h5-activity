@@ -1,5 +1,5 @@
 import type { Response } from '@/types'
-import { handlePostMessageToNative } from '@/utils/request'
+import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
 
 // 获取回流任务数据
 export function getReturnBuffData({
@@ -18,8 +18,11 @@ export function getReturnBuffData({
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgReturnBuffData(res.code, res.msg)
-          console.log('errorMessage: ', errorMessage)
+          const errorMessage = getErrorMessage(
+            'get_return_buff_data',
+            res.code,
+            res.msg,
+          )
           reject(new Error(errorMessage))
         }
       },
@@ -28,24 +31,6 @@ export function getReturnBuffData({
       reject(err)
     })
   })
-}
-
-function handleErrMsgReturnBuffData(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      'invalid user': '非法userid',
-      'invalid task': '没有活动配置',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-  const defaultErrorMessage = '获取回流任务数据失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
 }
 
 // 回流任务领奖
@@ -65,8 +50,11 @@ export function claimReturnBuffReward({
         if (res.code === 200) {
           resolve(res)
         } else {
-          const errorMessage = handleErrMsgReturnBuffReward(res.code, res.msg)
-          console.log('errorMessage: ', errorMessage)
+          const errorMessage = getErrorMessage(
+            'claim_return_buff_reward',
+            res.code,
+            res.msg,
+          )
           reject(new Error(errorMessage))
         }
       },
@@ -75,25 +63,4 @@ export function claimReturnBuffReward({
       reject(err)
     })
   })
-}
-
-function handleErrMsgReturnBuffReward(code: number, msg: string): string {
-  const errorMessages: Record<number, Record<string, string>> = {
-    400: {
-      invalid: '未完成',
-      'wrong type': '参数错误',
-    },
-    403: {
-      'already received the reward': '已领取过奖励',
-    },
-    500: {
-      default: '服务器内部发生错误',
-    },
-  }
-  const defaultErrorMessage = '获取回流任务数据失败'
-  return (
-    errorMessages[code]?.[msg] ||
-    errorMessages[code]?.default ||
-    defaultErrorMessage
-  )
 }
