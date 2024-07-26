@@ -1,4 +1,3 @@
-import { showToast } from 'vant'
 import { createRouter, createWebHashHistory } from 'vue-router'
 import { routes } from './routes'
 import { useMenuStore } from '@/stores/menu'
@@ -54,13 +53,9 @@ router.afterEach((to, from) => {
   try {
     if (typeof module === 'string') {
       if (!NO_NEED_STATISTICS_LIST.includes(module)) {
-        webViewStatistics({ module })
-          .then(() => {
-            // console.log('日志数据上报成功. module: ' + module)
-          })
-          .catch((error) => {
-            showToast(error.message)
-          })
+        void webViewStatistics({ module }).then(() => {
+          // console.log('日志数据上报成功. module: ' + module)
+        })
       }
     }
   } catch (error) {

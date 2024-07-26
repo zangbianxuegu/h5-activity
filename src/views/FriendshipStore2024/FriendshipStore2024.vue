@@ -393,10 +393,10 @@ function handleConfirm(): void {
     .then((res) => {
       // code = 200 的错误
       const errorMap = {
-        fail: '服务器错误',
-        'not enough store currency': '货币不足',
-        'existing unlock': '商品已存在，不可兑换',
-        'old data': '当前货币数量或者库存数量参数和实际不同',
+        fail: '服务器异常，请稍后重试',
+        'not enough store currency': '代币不足，不可兑换',
+        'existing unlock': '已拥有该物品，不可兑换',
+        'old data': '兑换发生错误，请稍后重试',
         'exceed limit': '剩余可兑换数量不足',
       }
       if (res.msg !== 'ok') {

@@ -67,35 +67,31 @@ export const useMenuStore = defineStore('menu', () => {
       curItem = menuData.value.find((item) => item.value === event)
     }
     if (curItem?.isNew) {
-      setWebRedDot({ event })
-        .then(() => {
-          menuData.value = menuData.value.map((item) => {
-            if (
-              item.value === 'signin' &&
-              item.children &&
-              item.children.length > 0
-            ) {
-              const children = item.children.map((child) => {
-                const isNew = child.value === event ? false : child.isNew
-                return {
-                  ...child,
-                  isNew,
-                }
-              })
+      void setWebRedDot({ event }).then(() => {
+        menuData.value = menuData.value.map((item) => {
+          if (
+            item.value === 'signin' &&
+            item.children &&
+            item.children.length > 0
+          ) {
+            const children = item.children.map((child) => {
+              const isNew = child.value === event ? false : child.isNew
               return {
-                ...item,
-                children,
+                ...child,
+                isNew,
               }
-            }
+            })
             return {
               ...item,
-              isNew: item.value === event ? false : item.isNew,
+              children,
             }
-          })
+          }
+          return {
+            ...item,
+            isNew: item.value === event ? false : item.isNew,
+          }
         })
-        .catch((error) => {
-          showToast(error.message)
-        })
+      })
     }
   }
 

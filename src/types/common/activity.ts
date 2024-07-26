@@ -104,3 +104,8 @@ export interface BulletinItem {
 export interface BulletinData {
   bulletin: BulletinItem[]
 }
+
+export type ErrorMessages = Record<
+  string,
+  Record<number, Record<string, string>>
+>

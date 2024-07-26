@@ -245,13 +245,9 @@ window.addEventListener('pageshow', (event) => {
 
 // 日志数据上报
 function handleWebViewStatistics(module: string): void {
-  webViewStatistics({ module })
-    .then(() => {
-      // showToast('日志数据上报成功')
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+  void webViewStatistics({ module }).then(() => {
+    // showToast('日志数据上报成功')
+  })
 }
 
 // 点击事件
