@@ -16,7 +16,7 @@
         <div class="wrapper" @click.stop>
           <van-form @submit="onSubmit">
             <van-cell-group inset>
-              <van-field name="protocol" label="协议">
+              <van-field name="protocol" label="协议" required>
                 <template #input>
                   <van-radio-group
                     v-model="debugLinkForm.protocol"
@@ -27,10 +27,10 @@
                   </van-radio-group>
                 </template></van-field
               >
-              <van-field name="isOnlyProtocol" label="是否固定协议">
+              <van-field name="isJumpDirectly" label="点击直接跳转" required>
                 <template #input>
                   <van-radio-group
-                    v-model="debugLinkForm.isOnlyProtocol"
+                    v-model="debugLinkForm.isJumpDirectly"
                     direction="horizontal"
                   >
                     <van-radio :name="true">是</van-radio>
@@ -43,7 +43,8 @@
                 type="text"
                 name="domainName"
                 label="域名"
-                placeholder="域名"
+                placeholder="wwww.baidu.com"
+                required
               />
               <van-field
                 v-model="debugLinkForm.port"
@@ -58,8 +59,18 @@
                 name="linkName"
                 label="链接名称"
                 placeholder="链接名称"
+                required
               />
             </van-cell-group>
+            <van-divider
+              >最终链接：{{
+                generateWholeLink(
+                  debugLinkForm.protocol,
+                  debugLinkForm.domainName,
+                  debugLinkForm.port,
+                )
+              }}</van-divider
+            >
             <div class="flex" style="margin: 16px">
               <van-button round block type="primary" native-type="submit">
                 {{ submitBtnText }}
@@ -84,10 +95,10 @@
           <DebugLink
             v-for="(link, index) in defaultDebugLinks"
             :key="index"
-            :linkName="link.linkName"
+            :link-name="link.linkName"
             :link="link.link"
-            :isDefaultLink="true"
-            :is-only-protocol="link.isOnlyProtocol"
+            :is-default-link="true"
+            :is-jump-directly="link.isJumpDirectly"
           ></DebugLink>
         </div>
       </div>
@@ -98,10 +109,10 @@
             v-for="(link, index) in customDebugLinks"
             :id="link.id"
             :key="index"
-            :linkName="link.linkName"
+            :link-name="link.linkName"
             :link="generateHrefByDebugLinkForm(link)"
-            :isDefaultLink="false"
-            :is-only-protocol="link.isOnlyProtocol"
+            :is-default-link="false"
+            :is-jump-directly="link.isJumpDirectly"
             @edit="handleEditDebugLink"
             @remove="handleRemoveDebugLink"
           ></DebugLink>
@@ -115,14 +126,15 @@
 import { Local } from '@/utils/storage'
 import DebugLink from './components/DebugLink.vue'
 import { generateUUID } from '@/utils/utils'
-import defaultDebugLinks from './configs/defaultDebugLinks'
+import defaultDebugLinks from './configs/defaultDebugLinks.ts'
+import { showNotify } from 'vant'
 interface DebugLinkForm {
   id: string
   protocol: string
   domainName: string
   port: string
   linkName: string
-  isOnlyProtocol: boolean
+  isJumpDirectly: boolean
 }
 
 const debugLinkForm = ref<DebugLinkForm>({
@@ -131,7 +143,7 @@ const debugLinkForm = ref<DebugLinkForm>({
   domainName: '',
   port: '',
   linkName: '',
-  isOnlyProtocol: false,
+  isJumpDirectly: false,
 })
 
 const formModalConfig = ref({
@@ -153,7 +165,7 @@ const customDebugLinks = ref<DebugLinkForm[]>([])
 const customDebugLinkStorageHandlers = {
   add: (value: DebugLinkForm) => {
     customDebugLinks.value?.push(value)
-    Local.set('customDebugLinks', JSON.stringify(customDebugLinks.value))
+    Local.set('customDebugLinks', customDebugLinks.value)
   },
   remove: (id: string) => {
     const oldList = customDebugLinkStorageHandlers.getAll()
@@ -172,13 +184,13 @@ const customDebugLinkStorageHandlers = {
     customDebugLinkStorageHandlers.updateAll(newList)
   },
   updateAll: (debugLinks: DebugLinkForm[]) => {
-    Local.set('customDebugLinks', JSON.stringify(debugLinks))
+    Local.set('customDebugLinks', debugLinks)
     customDebugLinks.value = debugLinks
   },
   getAll: () => {
     const list = Local.get('customDebugLinks')
     if (list) {
-      return JSON.parse(list)
+      return list
     } else {
       return []
     }
@@ -197,11 +209,11 @@ const showBebugLinkForm = (isEditMode = false): void => {
     formModalConfig.value.mode = 'add'
     debugLinkForm.value = {
       id: '',
-      protocol: '',
+      protocol: 'http',
       domainName: '',
       port: '',
       linkName: '',
-      isOnlyProtocol: false,
+      isJumpDirectly: false,
     }
   }
   formModalConfig.value.isShow = true
@@ -226,15 +238,28 @@ const handleRemoveDebugLink = (id: string): void => {
   customDebugLinks.value = customDebugLinkStorageHandlers.getAll()
 }
 
-const generateHrefByDebugLinkForm = (form: DebugLinkForm): string => {
-  const { protocol, domainName, port } = form
+const generateWholeLink = (
+  protocol: string,
+  domainName: string,
+  port: string,
+): string => {
   const href = port
     ? `${protocol}://${domainName}:${port}`
     : `${protocol}://${domainName}`
   return href
 }
 
+const generateHrefByDebugLinkForm = (form: DebugLinkForm): string => {
+  const { protocol, domainName, port } = form
+  const href = generateWholeLink(protocol, domainName, port)
+  return href
+}
+
 const onSubmit = (values: DebugLinkForm): void => {
+  if (!values.domainName || !values.linkName) {
+    showNotify({ type: 'danger', message: '必填项不能为空' })
+    return
+  }
   if (formModalConfig.value.mode === 'add') {
     customDebugLinkStorageHandlers.add({ ...values, id: generateUUID() })
   } else if (formModalConfig.value.mode === 'edit') {
@@ -246,7 +271,7 @@ const onSubmit = (values: DebugLinkForm): void => {
 onMounted(() => {
   const _customDebugLinks = Local.get('customDebugLinks')
   if (_customDebugLinks) {
-    customDebugLinks.value = JSON.parse(_customDebugLinks)
+    customDebugLinks.value = _customDebugLinks
   }
 })
 </script>

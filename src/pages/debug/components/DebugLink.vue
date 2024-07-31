@@ -2,14 +2,14 @@
   <div class="container w-full">
     <van-button :color="linkBtnConfig.color" @click="onClickLinkBtn()">
       <div class="link-text">
-        <van-icon v-if="!isOnlyProtocol" name="edit" />
+        <van-icon v-if="!isJumpDirectly" name="edit" />
         <span class="truncate">
           {{ props.linkName }}
         </span>
       </div>
       <div
         class="link-edit"
-        v-if="!isDefaultLink && isOnlyProtocol"
+        v-if="!isDefaultLink && isJumpDirectly"
         @click.stop="onClickLinkEditBtn()"
       >
         <van-icon name="edit" />
@@ -29,7 +29,7 @@ interface Props {
   linkName: string
   link: string
   isDefaultLink: boolean
-  isOnlyProtocol?: boolean
+  isJumpDirectly?: boolean
 }
 const props = defineProps<Props>()
 
@@ -37,7 +37,7 @@ const emits = defineEmits(['edit', 'remove'])
 
 const linkBtnConfig = computed(() => {
   let color = 'linear-gradient(to right, rgb(0, 176, 155), rgb(150, 201, 61))'
-  if (props.isOnlyProtocol) {
+  if (props.isJumpDirectly) {
     color = 'linear-gradient(to right, rgb(55, 59, 68), rgb(66, 134, 244))'
   }
   return {
@@ -72,7 +72,7 @@ const onSelectActionSheet = ({ name }: { name: string }): void => {
 }
 
 const onClickLinkBtn = (): void => {
-  if (props.isOnlyProtocol) {
+  if (props.isJumpDirectly) {
     goToLink(props.link)
   } else {
     actionSheetObject.show = true

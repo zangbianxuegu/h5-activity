@@ -2,37 +2,37 @@ const defaultDebugLinks = [
   {
     linkName: 'dev https',
     link: 'https://10.227.198.175:5173/',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'dev http',
     link: 'http://10.227.198.175:5173/',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'preview https',
     link: 'https://10.227.198.175:4173/',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'preview http',
     link: 'http://10.227.198.175:4173/',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'game dev',
     link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'game',
     link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   {
     linkName: 'prod',
     link: 'https://sky.h5.163.com/game/index.html',
-    isOnlyProtocol: true,
+    isJumpDirectly: true,
   },
   { linkName: 'cc dev', link: 'https://10.227.199.103:5173/' },
 ]
