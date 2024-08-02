@@ -104,7 +104,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
   claim_return_buff_reward: {
     400: {
       invalid: '请求异常，请稍后重试',
-      'wrong type': '请求异常，请稍后',
+      'wrong type': '请求异常，请稍后重试',
     },
     403: {
       'already received the reward': '已领取该奖励',
