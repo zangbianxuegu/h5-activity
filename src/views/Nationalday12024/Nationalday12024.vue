@@ -45,7 +45,7 @@
             </div>
             <div class="reward-token-container bg-contain bg-center">
               <div class="token-count flex items-center justify-center">
-                <span>
+                <span class="token-count-text">
                   (<van-rolling-text
                     ref="currentCountRollingTextRef"
                     :start-num="0"
@@ -462,15 +462,6 @@ function handleReward(
 </script>
 
 <style lang="scss" scoped>
-@keyframes opacity-enter {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
@@ -591,24 +582,20 @@ function handleReward(
   width: 424px;
   height: 109px;
   background-image: url('@/assets/images/nationalday1-2024/bg-reward-token.png');
-  .token-count {
-    width: 100%;
-    // height: 50%;
-    position: absolute;
-    bottom: 4px;
-    overflow: hidden;
-    span {
-      font-family: SourceHanSansCN-Regular;
-      font-size: 34px;
-      color: #fff281;
-    }
+}
+.token-count {
+  width: 100%;
+  position: absolute;
+  bottom: 4px;
+  overflow: hidden;
+
+  &-text {
+    font-family: SourceHanSansCN-Regular;
+    font-size: 34px;
+    color: #fff281;
   }
 }
-</style>
-<style lang="scss">
-.van-rolling-text-item__item {
-  font-family: SourceHanSansCN-Regular;
-  font-size: 34px;
+:deep(.van-rolling-text) {
   color: #fff281;
 }
 </style>
