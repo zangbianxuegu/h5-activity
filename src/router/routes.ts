@@ -319,4 +319,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season23_reserve',
     },
   },
+  {
+    path: '/nationalday1-2024',
+    name: 'Nationalday12024',
+    component: () => import('@/views/Nationalday12024'),
+    meta: {
+      title: '悠长假日 拾光小憩',
+      module: 'activitycenter_nationalday1_2024',
+    },
+  },
 ]
