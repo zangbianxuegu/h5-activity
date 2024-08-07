@@ -1,4 +1,4 @@
-import type { TokenParams, Response } from '@/types'
+import type { TokenParams, Response, MiniProgramParams } from '@/types'
 import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
 
 // 获取用户信息，仅与客户端通信 Web <-> APP
@@ -12,6 +12,31 @@ export function getUserInfo(): Promise<any> {
           resolve(res)
         } else {
           reject(new Error('获取用户信息出错'))
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+/**
+ * 打开微信小程序
+ * @function openWechatMiniprogram
+ * @param {MiniProgramParams} params 打开小程序传参
+ * @returns {Promise<any>}
+ */
+export function openWechatMiniprogram(params: MiniProgramParams): Promise<any> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'open_wechat_miniprogram',
+      content: params,
+      handleRes: (res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(new Error('打开小程序出错'))
         }
       },
     }).catch((err) => {

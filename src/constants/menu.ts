@@ -283,6 +283,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '姆明季期 待相遇',
+    value: 'activitycenter_season24_reserve',
+    routeName: 'Season24Reserve',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

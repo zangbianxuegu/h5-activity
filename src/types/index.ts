@@ -1,4 +1,5 @@
 export * from './common/global'
 export * from './common/activity'
 export * from './common/request'
+export * from './common/wechat'
 export * from './activity/store'

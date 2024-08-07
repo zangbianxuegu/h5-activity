@@ -319,4 +319,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season23_reserve',
     },
   },
+  {
+    path: '/season24-reserve',
+    name: 'Season24Reserve',
+    component: () => import('@/views/Season24Reserve'),
+    meta: {
+      title: '姆明季期待相遇',
+      module: 'activitycenter_season24_reserve',
+    },
+  },
 ]
