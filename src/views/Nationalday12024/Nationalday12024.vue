@@ -590,12 +590,14 @@ function handleReward(
   overflow: hidden;
 
   &-text {
+    color: #fff281;
     font-family: SourceHanSansCN-Regular;
     font-size: 34px;
-    color: #fff281;
   }
 }
 :deep(.van-rolling-text) {
+  font-family: SourceHanSansCN-Regular;
+  font-size: 34px;
   color: #fff281;
 }
 </style>

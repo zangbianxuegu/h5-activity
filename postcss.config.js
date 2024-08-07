@@ -5,12 +5,16 @@ export default {
     tailwindcss: {},
     autoprefixer: {},
     'postcss-px-to-viewport-8-plugin': {
-      viewportWidth: 2560,
-      exclude: [/node_modules/],
+      viewportWidth: (file) => {
+        let designWidth = 2560
+        if (file.indexOf('van') > 0) {
+          designWidth = 1500
+        }
+        return designWidth
+      },
       unitPrecision: 5, // 单位转换后保留的精度
       viewportUnit: 'vw',
       mediaQuery: true,
-      selectorBlackList: [/^\.van-/], // 添加.van-前缀的类名
     },
   },
 }
