@@ -154,20 +154,20 @@ function handleHelp(): void {
 }
 .header {
   position: relative;
-  left: 490px;
-  top: 90px;
-  width: 1208px;
+  left: 618px;
+  top: 100px;
+  width: 1090px;
 }
 .title {
   position: absolute;
-  width: 1208px;
-  height: 302px;
-  background-image: url('@/assets/images/season23-reserve/title.png');
+  width: 1090px;
+  height: 301px;
+  background-image: url('@/assets/images/season24-reserve/title.png');
 }
 .help {
   position: absolute;
-  left: 1082px;
-  top: 80px;
+  left: 960px;
+  top: 78px;
   width: 61px;
   height: 61px;
   background-image: url('@/assets/images/season23-reserve/help.png');
