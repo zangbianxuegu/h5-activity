@@ -283,6 +283,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '清凉夏末 魔法相赠',
+    value: 'activitycenter_summerday_2024',
+    routeName: 'Summerday2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
