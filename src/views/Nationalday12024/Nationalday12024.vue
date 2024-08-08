@@ -532,7 +532,13 @@ function handleReward(
 
 @for $taskIndex from 1 through 2 {
   .task-item#{$taskIndex} {
-    @for $rewardIndex from 1 through 4 {
+    $rewardLength: 1;
+    @if ($taskIndex == 1) {
+      $rewardLength: 1;
+    } @else if($taskIndex == 2) {
+      $rewardLength: 4;
+    }
+    @for $rewardIndex from 1 through $rewardLength {
       .reward#{$rewardIndex} {
         &.wait {
           background-image: url('@/assets/images/nationalday1-2024/task#{$taskIndex}-reward#{$rewardIndex}-wait.png');
