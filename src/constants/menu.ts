@@ -290,6 +290,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '弦音协奏 携手谢幕',
+    value: 'activitycenter_season23_sprint',
+    routeName: 'Season23Sprint',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
