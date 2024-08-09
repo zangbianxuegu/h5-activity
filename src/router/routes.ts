@@ -337,4 +337,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season23_sprint',
     },
   },
+  {
+    path: '/summerday-2024',
+    name: 'Summerday2024',
+    component: () => import('@/views/Summerday2024'),
+    meta: {
+      title: '清凉夏末 魔法相赠',
+      module: 'activitycenter_summerday_2024',
+    },
+  },
 ]
