@@ -283,6 +283,20 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '悠长假日 拾光小憩',
+    value: 'activitycenter_nationalday1_2024',
+    routeName: 'Nationalday12024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '弦音协奏 携手谢幕',
+    value: 'activitycenter_season23_sprint',
+    routeName: 'Season23Sprint',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '清凉夏末 魔法相赠',
     value: 'activitycenter_summerday_2024',
     routeName: 'Summerday2024',

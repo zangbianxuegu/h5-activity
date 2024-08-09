@@ -320,6 +320,24 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/nationalday1-2024',
+    name: 'Nationalday12024',
+    component: () => import('@/views/Nationalday12024'),
+    meta: {
+      title: '悠长假日 拾光小憩',
+      module: 'activitycenter_nationalday1_2024',
+    },
+  },
+  {
+    path: '/season23-sprint',
+    name: 'Season23Sprint',
+    component: () => import('@/views/Season23Sprint'),
+    meta: {
+      title: '弦音协奏 携手谢幕',
+      module: 'activitycenter_season23_sprint',
+    },
+  },
+  {
     path: '/summerday-2024',
     name: 'Summerday2024',
     component: () => import('@/views/Summerday2024'),
