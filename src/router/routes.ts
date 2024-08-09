@@ -328,4 +328,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_nationalday1_2024',
     },
   },
+  {
+    path: '/season23-sprint',
+    name: 'Season23Sprint',
+    component: () => import('@/views/Season23Sprint'),
+    meta: {
+      title: '弦音协奏 携手谢幕',
+      module: 'activitycenter_season23_sprint',
+    },
+  },
 ]
