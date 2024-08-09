@@ -1,3 +1,4 @@
+// 2024 夏之日活动
 import { defineStore } from 'pinia'
 import type { ActivityData } from '@/types'
 
@@ -10,37 +11,42 @@ export const useActivityStore = defineStore(
         activitycenter_summerday_2024: [
           {
             value: 0,
-            task_id: 'activitycenter_season23_start_m1',
+            task_id: 'activitycenter_summerday_2024_m1',
             stages: [1],
             score: '',
-            is_eggy_reward: false,
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
-            task_id: 'activitycenter_season23_start_m2',
+            task_id: 'use_consumables',
             stages: [1],
             score: '',
-            is_eggy_reward: false,
+            awarded_types: [],
+            award: [0],
+          },
+          {
+            value: 0,
+            task_id: 'activitycenter_summerday_2024_m2',
+            stages: [1],
+            score: '',
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
             task_id: 'login_days',
-            stages: [1],
+            stages: [5],
             score: '',
-            is_eggy_reward: false,
+            is_today_sign_in: 0,
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
-            task_id: 'collecting_season_candles',
+            task_id: 'collecting_event_candles',
             stages: [20, 30, 50],
             score: '',
-            is_eggy_reward: false,
             awarded_types: [],
             award: [0, 0, 0],
           },

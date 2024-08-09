@@ -1,107 +1,146 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="summerday-2024 flex h-screen">
-      <div class="summerday-2024-main">
+    <div class="summerday flex h-screen">
+      <div class="summerday-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1
-            class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-          >
-            清凉夏末 魔法相赠
+          <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+            <div class="sr-only">
+              清凉夏末 魔法相赠
+              <p>
+                <time datetime="2024-08-29">8.29</time>-
+                <time datetime="2024-09-11">9.11</time>
+              </p>
+            </div>
             <div
-              class="date-help bg-contain bg-center bg-no-repeat"
+              class="help cursor-pointer bg-contain"
               @click="handleHelp"
             ></div>
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <div>
-            <div class="task-list-container">
-              <ul
-                class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
+          <section>
+            <!-- 任务列表 -->
+            <h2 id="taskListHeading" class="sr-only">任务列表</h2>
+            <ul
+              class="task-list clear-both bg-cover"
+              aria-labelledby="taskListHeading"
+            >
+              <li
+                v-for="(item, index) in taskList"
+                :key="item.id"
+                :class="[
+                  'task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                  `task-item${index + 1}`,
+                  `${item.status}`,
+                ]"
+                :aria-label="`任务 ${index + 1}: ${item.title}`"
+                @click="handleReward(item.value, item.status, 1, index)"
               >
-                <li
-                  v-for="(item, index) in taskList"
-                  :key="item.name"
-                  :class="[
-                    'task-item bg-contain bg-center bg-no-repeat indent-[-9999px]',
-                    `task-item${index + 1}`,
-                    `${item.status}`,
-                  ]"
-                  @click="handleReward(item.name, item.status, index)"
-                >
-                  {{ item.title }}
-                </li>
-              </ul>
-            </div>
-          </div>
+                <p class="task-text sr-only">{{ item.title }}</p>
+              </li>
+            </ul>
+            <!-- 累计任务列表 -->
+            <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
+            <ul class="acc-task-list" aria-labelledby="accTaskListHeading">
+              <li
+                v-for="(item, index) in accTaskList"
+                :key="item.id"
+                :class="[
+                  'acc-task-item animate__animated animate__fadeIn bg-contain',
+                  `acc-task-item${index + 1}`,
+                  `${item.status}`,
+                ]"
+                :aria-label="`累计任务 ${index + 1}: ${item.title}`"
+                @click="handleReward(item.value, item.status, item.id, 4)"
+              >
+                <p class="sr-only">{{ item.title }}</p>
+              </li>
+            </ul>
+            <!-- 累计收集代币进度 -->
+            <section
+              class="acc-progress bg-contain text-center"
+              aria-labelledby="accProgressHeading"
+            >
+              <h2 id="accProgressHeading" class="sr-only text-lg font-bold">
+                累计收集代币
+              </h2>
+              <p class="acc-progress-count">
+                <span class="sr-only">当前代币数量：</span>
+                ({{ collectedCount <= 50 ? collectedCount : 50 }}/50)
+              </p>
+            </section>
+          </section>
         </Transition>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <p class="modal-text">
-              <span class="font-semibold">活动时间：</span
-              >2024年8月29日~2024年9月12日
-            </p>
-            <p class="modal-text">
-              <span class="font-semibold">活动内容：</span>
-            </p>
-            <p class="modal-text">
-              1、活动期间，体验一次捉迷藏玩法，即可领取<span
-                class="text-[#ffcb4d]"
-                >烧烤架魔法*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              2、活动期间，使用一次沙滩球魔法，即可领取<span
-                class="text-[#ffcb4d]"
-                >沙滩球魔法*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              3、活动期间，兑换一件夏之日物品，即可领取<span
-                class="text-[#ffcb4d]"
-                >新礼包泳圈试用魔法*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              4、活动期间，累计登录5天，即可领取<span class="text-[#ffcb4d]"
-                >体型重塑*2</span
-              >；
-            </p>
-            <div class="modal-text">
-              5、活动期间，收集夏之日代币，即可领取
-              <div class="grid grid-cols-3">
-                <span>收集数目</span>
-                <span class="col-span-2">对应奖励</span>
-                <span>20个</span>
-                <span class="col-span-2 text-[#ffcb4d]">璀璨之星*1</span>
-                <span>30个</span>
-                <span class="col-span-2 text-[#ffcb4d]">冲浪板试用魔法*1</span>
-                <span>50个</span>
-                <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>
-              </div>
-            </div>
+            <section aria-labelledby="activity-rules-title">
+              <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
+              <h3 class="modal-text">
+                <span class="font-semibold">活动时间：</span>
+                2024年8月29日~2024年9月11日
+              </h3>
+              <h3 class="modal-text">
+                <span class="font-semibold">活动内容：</span>
+              </h3>
+              <ul class="modal-text list-inside list-decimal">
+                <li>
+                  活动期间，体验一次捉迷藏玩法，即可领取
+                  <span class="text-[#ffcb4d]">烧烤架魔法*2</span>
+                </li>
+                <li>
+                  活动期间，使用一次沙滩球魔法，即可领取
+                  <span class="text-[#ffcb4d]">沙滩球魔法*2</span>
+                </li>
+                <li>
+                  活动期间，兑换一件夏之日物品，即可领取
+                  <span class="text-[#ffcb4d]">新礼包泳圈试用魔法*2</span>
+                </li>
+                <li>
+                  活动期间，累计登录5天，即可领取
+                  <span class="text-[#ffcb4d]">体型重塑*2</span>
+                </li>
+                <li>
+                  活动期间，收集夏之日代币，即可领取：
+                  <div class="grid grid-cols-3">
+                    <span>收集数目</span>
+                    <span class="col-span-2">对应奖励</span>
+                    <span>20个</span>
+                    <span class="col-span-2 text-[#ffcb4d]">璀璨之星*1</span>
+                    <span>30个</span>
+                    <span class="col-span-2 text-[#ffcb4d]"
+                      >冲浪板试用魔法*1</span
+                    >
+                    <span>50个</span>
+                    <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>
+                  </div>
+                </li>
+              </ul>
+            </section>
           </template>
         </activity-modal>
         <!-- 领奖弹框 -->
         <activity-modal ref="modalReward">
           <template #content>
-            <div class="flex h-full flex-col">
+            <section
+              class="flex h-full flex-col"
+              aria-labelledby="modalRewardTitle"
+            >
+              <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
               <p class="modal-text">
                 恭喜你获得
-                <span class="modal-text-blue"
-                  >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                  {{ curRewards.count }}</span
+                <span class="modal-text-blue">
+                  {{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                  {{ curRewards.count }} </span
                 >：
               </p>
               <div class="flex flex-1 items-center justify-center">
                 <img
-                  :class="[currentTask.taskIndex === 0 ? 'w-220px' : 'w-150px']"
                   :src="handleSrc(String(curRewards.name))"
-                  alt="reward"
+                  alt="reward image"
                 />
               </div>
-            </div>
+            </section>
           </template>
         </activity-modal>
       </div>
@@ -112,7 +151,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { DesignConfig, Event, EventName } from '@/types'
+import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
@@ -123,7 +162,6 @@ interface Rewards {
   name: string
   count: number
 }
-
 interface RewardsName {
   outfit_prop_marshmallow: string
   beachball: string
@@ -133,7 +171,6 @@ interface RewardsName {
   outfit_prop_surfboard: string
   heart: string
 }
-
 const rewardsText: RewardsName = {
   outfit_prop_marshmallow: '烧烤架魔法',
   beachball: '沙滩球魔法',
@@ -143,6 +180,59 @@ const rewardsText: RewardsName = {
   outfit_prop_surfboard: '冲浪板试用魔法',
   heart: '爱心',
 }
+const curRewards: Ref<Rewards> = ref({
+  name: 'outfit_prop_marshmallow',
+  count: 2,
+})
+
+// 主任务列表
+const TASK_LIST = [
+  {
+    id: 1,
+    value: 'activitycenter_summerday_2024_m1',
+    title: '体验一次捉迷藏玩法',
+    status: 'wait',
+  },
+  {
+    id: 2,
+    value: 'use_consumables',
+    title: '使用一次沙滩球魔法',
+    status: 'wait',
+  },
+  {
+    id: 3,
+    value: 'activitycenter_summerday_2024_m2',
+    title: '兑换一件夏之日物品',
+    status: 'wait',
+  },
+  {
+    id: 4,
+    value: 'login_days',
+    title: '累计登录5天',
+    status: 'wait',
+  },
+]
+// 累计任务列表
+const ACC_TASK_LIST = [
+  {
+    id: 1,
+    value: 'collecting_event_candles',
+    title: '收集夏之日代币20个',
+    status: 'wait',
+  },
+  {
+    id: 2,
+    value: 'collecting_event_candles',
+    title: '收集夏之日代币30个',
+    status: 'wait',
+  },
+  {
+    id: 3,
+    value: 'collecting_event_candles',
+    title: '收集夏之日代币50个',
+    status: 'wait',
+  },
+]
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -160,7 +250,6 @@ const DESIGN_MAYDAY_CONTENT_HEIGHT = DESIGN_MAYDAY_HEIGHT
 // 设计稿主体内容宽高比
 const DESIGN_MAYDAY_CONTENT_RATIO =
   DESIGN_MAYDAY_CONTENT_WIDTH / DESIGN_MAYDAY_CONTENT_HEIGHT
-
 // 配置参数
 const designConfig: DesignConfig = {
   designWidth: DESIGN_WIDTH,
@@ -171,102 +260,57 @@ const designConfig: DesignConfig = {
   designMainContentHeight: DESIGN_MAYDAY_CONTENT_HEIGHT,
   designMainContentRatio: DESIGN_MAYDAY_CONTENT_RATIO,
 }
-
 // 缩放系数
-const { factor } = useResponsiveStyles(designConfig)
-console.log('factor: ', factor.value)
+useResponsiveStyles(designConfig)
 
+// 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
+// 活动数据
+const EVENT_NAME = 'activitycenter_summerday_2024'
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
-
-const EVENT_NAME = 'activitycenter_summerday_2024' as EventName
-// 活动数据
 const activityData = computed(() => activityStore.activityData)
-const curRewards: Ref<Rewards> = ref({
-  name: 'outfit_prop_marshmallow',
-  count: 0,
-})
-const TASK_LIST = [
-  {
-    name: 'activitycenter_summerday_2024_m1',
-    title: '体验一次捉迷藏玩法',
-    status: 'wait',
-  },
-  {
-    name: 'use_consumables',
-    title: '使用一次沙滩球魔法',
-    status: 'wait',
-  },
-  {
-    name: 'activitycenter_summerday_2024_m2',
-    title: '兑换一件夏之日物品',
-    status: 'wait',
-  },
-  {
-    name: 'login_days',
-    title: '累计登录5天',
-    status: 'wait',
-  },
-  {
-    name: 'collecting_season_candles_1',
-    title: '收集夏之日代币20个',
-    status: 'wait',
-  },
-  {
-    name: 'collecting_season_candles_2',
-    title: '收集夏之日代币30个',
-    status: 'wait',
-  },
-  {
-    name: 'collecting_season_candles_3',
-    title: '收集夏之日代币50个',
-    status: 'wait',
-  },
-]
-// 任务列表数据
+const collectedCount = computed(
+  () => activityData.value.event_data[EVENT_NAME][4].value,
+)
+
+// 任务排序
+const taskOrderMap = new Map(
+  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.value, index]),
+)
+
+// 任务列表
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
-    let task
-    if (item.name.includes('collecting_season_candles')) {
-      const activity =
-        activityData.value.event_data.activitycenter_summerday_2024.find(
-          (e) => e.task_id === 'collecting_season_candles',
-        ) as Event
-      task = {
-        ...item,
-      }
-      let taskIndex = 0
-      if (item.name === 'collecting_season_candles_1') {
-        taskIndex = 0
-      } else if (item.name === 'collecting_season_candles_2') {
-        taskIndex = 1
-      } else if (item.name === 'collecting_season_candles_3') {
-        taskIndex = 2
-      }
-      task.status =
-        activity.award[taskIndex] === 1
+    const activity = activityData.value.event_data[EVENT_NAME][index]
+    return {
+      ...item,
+      status:
+        activity.award[0] === 1
           ? 'redeemed'
-          : activity.award[taskIndex] === 0 &&
-              activity.value >= activity.stages[taskIndex]
+          : activity.award[0] === 0 && activity.value >= activity.stages[0]
             ? 'can'
-            : 'wait'
-    } else {
-      const activity =
-        activityData.value.event_data.activitycenter_summerday_2024[index]
-      task = {
-        ...item,
-        status:
-          activity.award[0] === 1
-            ? 'redeemed'
-            : activity.award[0] === 0 && activity.value >= activity.stages[0]
-              ? 'can'
-              : 'wait',
-      }
+            : 'wait',
     }
-    return task
+  })
+})
+
+// 累计任务列表
+const accTaskList = computed(() => {
+  const activity = activityData.value.event_data[EVENT_NAME][4]
+  return ACC_TASK_LIST.map((item, index) => {
+    return {
+      ...item,
+      status:
+        activity.award[index] === 1
+          ? 'redeemed'
+          : activity.award[index] === 0 &&
+              activity.value >= activity.stages[index]
+            ? 'can'
+            : 'wait',
+    }
   })
 })
 
@@ -290,12 +334,19 @@ onMounted(() => {
   Session.set(sessionIsVisitedKey, true)
 })
 
-// 显示帮助
+/**
+ * @function 显示帮助
+ * @returns {void}
+ */
 function handleHelp(): void {
   modalHelp.value?.openModal()
 }
 
-// 处理 img src
+/**
+ * @function 处理 img src
+ * @param name 奖励名
+ * @returns {string} 图片路径
+ */
 function handleSrc(name: string): string {
   const imgSrc = new URL(
     `../../assets/images/common/reward/reward-${name}.png`,
@@ -305,51 +356,44 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
-const taskOrderMap = new Map(TASK_LIST.map((task, index) => [task.name, index]))
-// 设置红点
-function setRedDot(): void {
-  const taskList = activityData.value.event_data.activitycenter_summerday_2024
-  const hasUnclaimedReward = taskList.some((task, index) => {
-    let res
-    if (task.task_id !== 'collecting_season_candles') {
-      res = task.value >= task.stages[0] && task.award[0] === 0
-    } else {
-      if (currentTask.taskName) {
-        const taskName = currentTask.taskName
-        // 点击领取奖品更新红点
-        if (taskName.includes('collecting_season_candles')) {
-          if (taskName === 'collecting_season_candles_1') {
-            res = task.value >= task.stages[0] && task.award[0] === 0
-          } else if (taskName === 'collecting_season_candles_2') {
-            res = task.value >= task.stages[1] && task.award[1] === 0
-          } else if (taskName === 'collecting_season_candles_3') {
-            res = task.value >= task.stages[2] && task.award[2] === 0
-          }
-        }
-      } else {
-        // 初始化时更新红点
-        const arard0Index = task.award.findIndex((award) => award === 0)
-        if (arard0Index === -1) {
-          return false
-        } else {
-          const stages0Value = task.stages[arard0Index]
-          if (task.value >= stages0Value) {
-            return true
-          }
-        }
-      }
-    }
-    return res
-  })
+/**
+ * @function 检查是否有未领奖
+ * @param {Event[]} tasks 任务列表
+ * @returns {boolean} 是否有未领奖
+ */
+function checkHasUnclaimedReward(tasks: Event[]): boolean {
+  // 检查1-4项，任务列表
+  const tasksValid = tasks
+    .slice(0, 4)
+    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
+  // 检查第5项，累计任务
+  const accTask = tasks[4]
+  const accTasksValid = accTask.stages.some(
+    (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
+  )
+  return tasksValid || accTasksValid
+}
 
+/**
+ * @function 设置红点
+ * @returns {void}
+ */
+function setRedDot(): void {
+  const hasUnclaimedReward = checkHasUnclaimedReward(
+    activityData.value.event_data[EVENT_NAME],
+  )
+  console.log('hasUnclaimedReward: ', hasUnclaimedReward)
   menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 
+/**
+ * @function 获取任务进度
+ * @returns {void}
+ */
 function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
-      const data: any = res.data
-
+      const data = res.data
       const newActivityData = {
         ...data,
         event_data: {
@@ -364,6 +408,7 @@ function getActivityData(): void {
       }
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
+      console.log('activityStore: ', activityStore)
       setRedDot()
     })
     .catch((error) => {
@@ -371,42 +416,20 @@ function getActivityData(): void {
     })
 }
 
-const currentTask = reactive({
-  taskName: '',
-  taskIndex: 0,
-})
-function updateActivityDataRewardStatusNoRequest(): void {
-  const newActivityData = {
-    ...activityData.value,
-    event_data: {
-      activitycenter_summerday_2024:
-        activityData.value.event_data.activitycenter_summerday_2024.map(
-          (item) => {
-            const res = { ...item }
-            const taskName = currentTask.taskName
-            if (item.task_id !== 'collecting_season_candles') {
-              res.award = item.task_id === taskName ? [1] : item.award
-            } else {
-              if (taskName.includes('collecting_season_candles')) {
-                if (taskName === 'collecting_season_candles_1') {
-                  res.award[0] = 1
-                } else if (taskName === 'collecting_season_candles_2') {
-                  res.award[1] = 1
-                } else if (taskName === 'collecting_season_candles_3') {
-                  res.award[2] = 1
-                }
-              }
-            }
-            return res
-          },
-        ),
-    },
-  }
-  activityStore.updateActivityData(newActivityData)
-}
-
-// 领奖
-function handleReward(task: string, status: string, taskIndex: number): void {
+/**
+ * @function 领奖
+ * @param task 任务id
+ * @param status 状态
+ * @param rewardId 第几个奖励节点
+ * @param index 任务索引
+ * @returns {void}
+ */
+function handleReward(
+  task: string,
+  status: string,
+  rewardId: number,
+  index: number,
+): void {
   if (status === 'redeemed') {
     return
   }
@@ -414,35 +437,21 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     showToast('还未完成任务')
     return
   }
-
-  let rewardId = 1
-  const taskName = task
-  if (taskName.includes('collecting_season_candles')) {
-    if (taskName === 'collecting_season_candles_1') {
-      rewardId = 1
-    } else if (taskName === 'collecting_season_candles_2') {
-      rewardId = 2
-    } else if (taskName === 'collecting_season_candles_3') {
-      rewardId = 3
-    }
-    task = 'collecting_season_candles'
-  }
-
   claimMissionReward({
     event: EVENT_NAME,
     task,
     rewardId,
   })
     .then((res) => {
-      currentTask.taskName = task
-      currentTask.taskIndex = taskIndex
       const rewards = res.data.rewards
       modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      updateActivityDataRewardStatusNoRequest()
+      // 更新页面数据
+      activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
+      // 更新红点
       setRedDot()
     })
     .catch((error) => {
@@ -452,15 +461,6 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 </script>
 
 <style lang="scss" scoped>
-@keyframes opacity-enter {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
@@ -479,7 +479,7 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.summerday-2024 {
+.summerday {
   position: relative;
   width: 2100px;
 
@@ -498,28 +498,35 @@ function handleReward(task: string, status: string, taskIndex: number): void {
 }
 .title {
   position: absolute;
-  top: 132px;
-  left: 436px;
-  width: 1173px;
-  height: 263px;
+  left: 170px;
+  top: 159px;
+  width: 1305px;
+  height: 217px;
   background-image: url('@/assets/images/summerday-2024/title.png');
 }
-.date-help {
+.help {
   position: absolute;
-  border-radius: 50%;
-  width: 50px;
-  height: 50px;
-  top: 30px;
-  left: 1071px;
-  // border: 1px solid red;
+  width: 127px;
+  height: 127px;
+  top: 74px;
+  right: 0;
+  background-image: url('@/assets/images/summerday-2024/help.png');
 }
-
+.task-list {
+  position: absolute;
+  left: 70px;
+  top: 431px;
+  padding: 74px 39px 105px 140px;
+  width: 1379px;
+  height: 499px;
+  background-image: url('@/assets/images/summerday-2024/main-bg.png');
+}
 .task-item {
-  width: 334px;
-  height: 360px;
-  position: absolute;
+  float: left;
+  margin-right: 70px;
+  width: 230px;
+  height: 320px;
 }
-
 @for $i from 1 through 4 {
   .task-item#{$i} {
     &.wait {
@@ -533,26 +540,50 @@ function handleReward(task: string, status: string, taskIndex: number): void {
     }
   }
 }
-.task-item1 {
-  top: 383px;
-  left: 107px;
+.acc-task-item {
+  position: absolute;
+  width: 180px;
+  height: 210px;
 }
-.task-item2 {
-  top: 516px;
-  left: 454px;
+.acc-task-item1 {
+  right: 25px;
+  top: 554px;
 }
-.task-item3 {
-  top: 438px;
-  left: 833px;
+.acc-task-item2 {
+  right: 125px;
+  top: 339px;
 }
-.task-item4 {
-  top: 624px;
-  left: 1138px;
+.acc-task-item3 {
+  right: 313px;
+  top: 218px;
 }
-.w-220px {
-  width: 220px;
+@for $i from 1 through 3 {
+  .acc-task-item#{$i} {
+    &.wait {
+      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-can.png');
+    }
+    &.redeemed {
+      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-redeemed.png');
+    }
+  }
 }
-.w-150px {
-  width: 150px;
+.acc-progress {
+  position: absolute;
+  right: 130px;
+  bottom: 66px;
+  padding-top: 96px;
+  width: 433px;
+  height: 181px;
+  background-image: url('@/assets/images/summerday-2024/progress-bg.png');
+
+  &-count {
+    height: 50px;
+    line-height: 50px;
+    font-size: 34px;
+    color: #fff281;
+  }
 }
 </style>
