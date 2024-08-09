@@ -101,8 +101,53 @@
                 >：
               </p>
               <div class="flex flex-1 items-center justify-center">
-                <img :src="handleSrc(String(curRewards.name))" alt="reward" />
+                <img
+                  class="reward-img"
+                  :src="handleSrc(String(curRewards.name))"
+                  alt="reward"
+                />
               </div>
+            </div>
+          </template>
+        </activity-modal>
+        <!-- 兑换弹框 -->
+        <activity-modal ref="modalConfirmGetReward" class="reward-box">
+          <template #content>
+            <div class="confirm-get-reward-modal-content flex h-full flex-col">
+              <div>
+                <p>
+                  确定要选择【{{
+                    rewardsText[currentTask.reward.name as keyof RewardsName]
+                  }}】吗？
+                </p>
+                <p>选择后，将无法再领取自选范围内的其他奖励</p>
+              </div>
+              <div class="flex flex-1 items-center justify-center">
+                <img
+                  v-if="currentTask.reward.name"
+                  class="reward-img"
+                  :src="handleSrc(String(currentTask.reward.name))"
+                  alt="reward"
+                />
+              </div>
+            </div>
+          </template>
+          <template #footer>
+            <div class="relative z-10 -mt-10 flex justify-around">
+              <button
+                class="btn btn-cancel rounded-md text-white"
+                type="button"
+                @click="closeConfirmGetRewardModal"
+              >
+                我再想想
+              </button>
+              <button
+                class="btn btn-confirm rounded-md text-white"
+                type="button"
+                @click="onClickConfirmGetRewardBtn"
+              >
+                确认
+              </button>
             </div>
           </template>
         </activity-modal>
@@ -200,6 +245,7 @@ interface Reward {
   rewardId?: string
   isExpect?: boolean
   status: 'wait' | 'redeemed' | 'can' | 'ban' | string
+  isConfirmGetReward?: boolean
 }
 
 const rewardToken = {
@@ -229,6 +275,7 @@ const TASK_LIST = [
         isExpect: true,
         count: 1,
         status: 'wait',
+        isConfirmGetReward: false,
       },
       {
         name: 'CharSkyKid_Neck_AP07BowTie_02',
@@ -236,6 +283,7 @@ const TASK_LIST = [
         isExpect: true,
         count: 1,
         status: 'wait',
+        isConfirmGetReward: false,
       },
       {
         name: 'CharSkyKid_Horn_FlowerPoppy_02',
@@ -243,6 +291,7 @@ const TASK_LIST = [
         isExpect: true,
         count: 1,
         status: 'wait',
+        isConfirmGetReward: false,
       },
       {
         name: 'heart',
@@ -250,6 +299,7 @@ const TASK_LIST = [
         isExpect: true,
         count: 3,
         status: 'wait',
+        isConfirmGetReward: false,
       },
     ],
   },
@@ -380,10 +430,15 @@ function getActivityData(): void {
     })
 }
 
-const currentTask = reactive({
+const currentTask = reactive<{
+  taskName: string
+  taskIndex: number
+  reward: Reward
+  rewardIndex: number
+}>({
   taskName: '',
   taskIndex: 0,
-  reward: {},
+  reward: {} as unknown as Reward,
   rewardIndex: 0,
 })
 function updateActivityDataRewardStatusNoRequest(): void {
@@ -413,6 +468,24 @@ function updateActivityDataRewardStatusNoRequest(): void {
   activityStore.updateActivityData(newActivityData)
 }
 
+const modalConfirmGetReward = ref()
+function openConfirmGetRewardModal(): void {
+  modalConfirmGetReward.value?.openModal()
+}
+function closeConfirmGetRewardModal(): void {
+  modalConfirmGetReward.value?.closeModal()
+}
+function onClickConfirmGetRewardBtn(): void {
+  currentTask.reward.isConfirmGetReward = true
+  handleReward(
+    currentTask.taskName,
+    currentTask.taskIndex,
+    currentTask.reward,
+    currentTask.rewardIndex,
+  )
+  closeConfirmGetRewardModal()
+}
+
 // 领奖
 function handleReward(
   taskName: string,
@@ -429,6 +502,18 @@ function handleReward(
     return
   }
 
+  currentTask.taskName = taskName
+  currentTask.taskIndex = taskIndex
+  currentTask.reward = reward
+  currentTask.rewardIndex = rewardIndex
+  if (
+    taskName === 'activitycenter_nationalday1_2024_m1' &&
+    !reward.isConfirmGetReward
+  ) {
+    openConfirmGetRewardModal()
+    return
+  }
+
   const claimMissionRewardData: {
     event: string
     task: string
@@ -442,10 +527,6 @@ function handleReward(
   reward.isExpect && (claimMissionRewardData.expect = reward.rewardId)
   claimMissionReward(claimMissionRewardData)
     .then((res) => {
-      currentTask.taskName = taskName
-      currentTask.taskIndex = taskIndex
-      currentTask.reward = reward
-      currentTask.rewardIndex = rewardIndex
       const rewards = res.data.rewards
       modalReward.value?.openModal()
       curRewards.value = {
@@ -605,5 +686,25 @@ function handleReward(
   font-family: SourceHanSansCN-Regular;
   font-size: 34px;
   color: #fff281;
+}
+.confirm-get-reward-modal-content {
+  font-size: 36px;
+  color: #696969;
+  padding: 0 20px 0;
+}
+.reward-img {
+  width: 160px;
+  height: fit-content;
+}
+.btn {
+  width: 340px;
+  height: 94px;
+  font-size: 40px;
+  &-cancel {
+    background: #74d2ee;
+  }
+  &-confirm {
+    background: #ffcb4d;
+  }
 }
 </style>
