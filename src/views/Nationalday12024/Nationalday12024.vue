@@ -290,6 +290,8 @@ const TASK_LIST = [
     ],
   },
 ]
+// 领奖前就已经拥有的奖品
+const banAwardTypes: number[] = []
 // 任务列表数据
 const taskList = computed((): Task[] => {
   return TASK_LIST.map((task, taskIndex) => {
@@ -309,18 +311,24 @@ const taskList = computed((): Task[] => {
                 ? 'can'
                 : 'wait'
         } else if (task.name === 'activitycenter_nationalday1_2024_m1') {
-          if (activity.value >= activity.stages[0]) {
-            if (activity.awarded_types.length === 0) {
-              resObject.status = 'can'
-            } else {
-              resObject.status = activity.awarded_types.includes(
-                Number(rewardIndex + 1),
-              )
-                ? 'redeemed'
-                : 'ban'
-            }
+          const _banAwardTypes = activity?.ban_award_types as number[]
+          banAwardTypes.push(..._banAwardTypes)
+          if (_banAwardTypes.includes(Number(rewardIndex + 1))) {
+            resObject.status = 'ban'
           } else {
-            resObject.status = 'wait'
+            if (activity.value >= activity.stages[0]) {
+              if (activity.awarded_types.length === 0) {
+                resObject.status = 'can'
+              } else {
+                resObject.status = activity.awarded_types.includes(
+                  Number(rewardIndex + 1),
+                )
+                  ? 'redeemed'
+                  : 'ban'
+              }
+            } else {
+              resObject.status = 'wait'
+            }
           }
         }
         return resObject
@@ -421,6 +429,7 @@ function updateActivityDataRewardStatusNoRequest(): void {
         activityData.value.event_data.activitycenter_nationalday1_2024.map(
           (item) => {
             if (
+              item.task_id === 'activitycenter_nationalday1_2024_m1' &&
               currentTask.taskName === 'activitycenter_nationalday1_2024_m1'
             ) {
               return {
@@ -466,7 +475,13 @@ function handleReward(
   rewardIndex: number,
 ): void {
   const status = reward.status
-  if (status === 'redeemed' || status === 'ban') {
+  if (status === 'redeemed') {
+    return
+  }
+  if (status === 'ban') {
+    if (banAwardTypes.includes(rewardIndex + 1)) {
+      showToast('已拥有')
+    }
     return
   }
   if (status === 'wait') {

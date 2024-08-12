@@ -25,6 +25,7 @@ export const useActivityStore = defineStore(
             is_eggy_reward: false,
             awarded_types: [],
             award: [0],
+            ban_award_types: [],
           },
         ],
       },
