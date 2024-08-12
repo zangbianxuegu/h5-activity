@@ -94,7 +94,7 @@
                 </li>
                 <li>
                   活动期间，兑换一件夏之日物品，即可领取
-                  <span class="text-[#ffcb4d]">新礼包泳圈试用魔法*2</span>
+                  <span class="text-[#ffcb4d]">遥鲲泳圈试用魔法*2</span>
                 </li>
                 <li>
                   活动期间，累计登录5天，即可领取
