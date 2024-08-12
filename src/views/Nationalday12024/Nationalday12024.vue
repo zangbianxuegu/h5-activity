@@ -46,21 +46,7 @@
             <div class="reward-token-container bg-contain bg-center">
               <div class="token-count flex items-center justify-center">
                 <span class="token-count-text">
-                  (<van-rolling-text
-                    ref="currentCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardToken.currentCount"
-                    :duration="1"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />/<van-rolling-text
-                    ref="targetCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardToken.targetCount"
-                    :duration="1"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />)
+                  ({{ rewardToken.currentCount }}/{{ rewardToken.targetCount }})
                 </span>
               </div>
             </div>
@@ -157,7 +143,7 @@
 </template>
 
 <script setup lang="ts">
-import { type RollingTextInstance, showToast } from 'vant'
+import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { DesignConfig, Event, EventName } from '@/types'
 import { Session } from '@/utils/storage'
@@ -355,19 +341,6 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
-const rollingTextHeight = ref(0)
-const currentCountRollingTextRef = ref<RollingTextInstance>()
-const targetCountRollingTextRef = ref<RollingTextInstance>()
-const setRollingTextHeight = (): void => {
-  const text = document.querySelector('.van-rolling-text') as HTMLDivElement
-  const computedStyle = window.getComputedStyle(text)
-  const fontSize = computedStyle.getPropertyValue('font-size')
-  rollingTextHeight.value =
-    Math.ceil(parseFloat(fontSize.replace('px', ''))) + 5
-  currentCountRollingTextRef.value?.start()
-  targetCountRollingTextRef.value?.start()
-}
-
 onMounted(() => {
   try {
     getActivityData()
@@ -375,7 +348,6 @@ onMounted(() => {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
-  setRollingTextHeight()
 })
 
 // 显示帮助
@@ -681,11 +653,6 @@ function handleReward(
     font-family: SourceHanSansCN-Regular;
     font-size: 34px;
   }
-}
-:deep(.van-rolling-text) {
-  font-family: SourceHanSansCN-Regular;
-  font-size: 34px;
-  color: #fff281;
 }
 .confirm-get-reward-modal-content {
   font-size: 36px;

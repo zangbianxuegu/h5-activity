@@ -58,42 +58,18 @@
             <div class="reward-token-candle-container bg-contain bg-center">
               <div class="token-count flex items-center justify-center">
                 <span>
-                  (<van-rolling-text
-                    ref="tokenCandleTargetCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardTokenCandle.currentCount"
-                    :duration="0.7"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />/<van-rolling-text
-                    ref="tokenCandleCurrentCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardTokenCandle.targetCount"
-                    :duration="0.7"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />)
+                  ({{ rewardTokenCandle.currentCount }}/{{
+                    rewardTokenCandle.targetCount
+                  }})
                 </span>
               </div>
             </div>
             <div class="reward-token-login-container bg-contain bg-center">
               <div class="token-count flex items-center justify-center">
                 <span>
-                  (<van-rolling-text
-                    ref="tokenLoginTargetCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardTokenLogin.currentCount"
-                    :duration="0.8"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />/<van-rolling-text
-                    ref="tokenLoginCurrentCountRollingTextRef"
-                    :start-num="0"
-                    :target-num="rewardTokenLogin.targetCount"
-                    :duration="0.8"
-                    :height="rollingTextHeight"
-                    :auto-start="false"
-                  />)
+                  ({{ rewardTokenLogin.currentCount }}/{{
+                    rewardTokenLogin.targetCount
+                  }})
                 </span>
               </div>
             </div>
@@ -174,7 +150,7 @@
 </template>
 
 <script setup lang="ts">
-import { type RollingTextInstance, showToast } from 'vant'
+import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { DesignConfig, Event, EventName } from '@/types'
 import { Session } from '@/utils/storage'
@@ -389,23 +365,6 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
-const rollingTextHeight = ref(0)
-const tokenCandleTargetCountRollingTextRef = ref<RollingTextInstance>()
-const tokenCandleCurrentCountRollingTextRef = ref<RollingTextInstance>()
-const tokenLoginTargetCountRollingTextRef = ref<RollingTextInstance>()
-const tokenLoginCurrentCountRollingTextRef = ref<RollingTextInstance>()
-const setRollingTextHeight = (): void => {
-  const text = document.querySelector('.van-rolling-text') as HTMLDivElement
-  const computedStyle = window.getComputedStyle(text)
-  const fontSize = computedStyle.getPropertyValue('font-size')
-  rollingTextHeight.value =
-    Math.ceil(parseFloat(fontSize.replace('px', ''))) + 5
-  tokenCandleTargetCountRollingTextRef.value?.start()
-  tokenCandleCurrentCountRollingTextRef.value?.start()
-  tokenLoginTargetCountRollingTextRef.value?.start()
-  tokenLoginCurrentCountRollingTextRef.value?.start()
-}
-
 onMounted(() => {
   try {
     getActivityData()
@@ -413,7 +372,6 @@ onMounted(() => {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
-  setRollingTextHeight()
 })
 
 // 显示帮助
@@ -751,11 +709,6 @@ function handleReward(
       color: #fff281;
     }
   }
-}
-:deep(.van-rolling-text) {
-  font-family: SourceHanSansCN-Regular;
-  font-size: 46px;
-  color: #fff281;
 }
 
 .mask-layer-1 {
