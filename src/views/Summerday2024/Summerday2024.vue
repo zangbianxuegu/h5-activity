@@ -174,7 +174,7 @@ interface RewardsName {
 const rewardsText: RewardsName = {
   outfit_prop_marshmallow: '烧烤架魔法',
   beachball: '沙滩球魔法',
-  outfit_prop_mantafloat: '新礼包泳圈试用魔法',
+  outfit_prop_mantafloat: '遥鲲泳圈试用魔法',
   resize_potion: '体型重塑',
   glow: '璀璨之星',
   outfit_prop_surfboard: '冲浪板试用魔法',
