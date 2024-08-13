@@ -31,6 +31,7 @@ export interface Event {
   is_today_sign_in?: boolean | number
   awarded_types: any[]
   task_names?: string[]
+  ban_award_types?: any[]
 }
 
 type SingleEventData<K extends EventName> = {
