@@ -117,8 +117,8 @@ if (!isVisited) {
 
 onMounted(async () => {
   Session.set('isVisitSeason24Reserve', true)
-  await getReserveStatus()
   document.addEventListener('visibilitychange', handleVisibilityChange)
+  getReserveStatus()
 })
 
 onUnmounted(() => {
@@ -128,18 +128,21 @@ onUnmounted(() => {
 /**
  * 获取预约状态
  */
-async function getReserveStatus(): Promise<void> {
-  console.log('Fetching data...')
-  const res = await getSeasonReservationStatus(channel)
-  console.log('res333: ', res)
-  isReserved.value = true
+function getReserveStatus(): void {
+  getSeasonReservationStatus(channel)
+    .then(() => {
+      isReserved.value = true
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 /**
  * 节流获取预约状态
  */
-const throttledFetchData = throttle(async () => {
-  await getReserveStatus()
+const throttledFetchData = throttle(() => {
+  getReserveStatus()
 }, 1000)
 
 /**
@@ -148,7 +151,7 @@ const throttledFetchData = throttle(async () => {
 function handleVisibilityChange(): void {
   if (document.visibilityState === 'visible') {
     console.log('页面重新显示')
-    void throttledFetchData() // 使用节流
+    throttledFetchData() // 使用节流
   }
 }
 

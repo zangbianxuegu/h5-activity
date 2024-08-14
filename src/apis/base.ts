@@ -59,7 +59,6 @@ export function getSeasonReservationStatus(channel: string): Promise<Response> {
       resource: '/account/mini_program/get_season_reservation_status',
       content: { channel },
       handleRes: (res) => {
-        console.log('res22222: ', res)
         if (res.code === 200) {
           resolve(res)
         }
