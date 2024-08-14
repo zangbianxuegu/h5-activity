@@ -13,7 +13,12 @@
         <div class="main">
           <button
             type="button"
-            class="btn bg-transparent bg-contain indent-[-9999px]"
+            :class="[
+              'btn bg-transparent bg-contain indent-[-9999px]',
+              {
+                'btn-reserved disabled': isReserved,
+              },
+            ]"
             @click="handleToReserve"
           >
             约定相见
@@ -45,11 +50,13 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
+import throttle from 'lodash.throttle'
 import type { DesignConfig, MiniProgramParams } from '@/types'
 import { Session } from '@/utils/storage'
-import ActivityModal from '@/components/Modal'
-import { openWechatMiniprogram } from '@/apis/base'
+import { useBaseStore } from '@/stores/base'
+import { openWechatMiniprogram, getSeasonReservationStatus } from '@/apis/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import ActivityModal from '@/components/Modal'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -84,11 +91,16 @@ const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+// 基本信息
+const baseStore = useBaseStore()
+const channel = baseStore.baseInfo.channel
+// 是否已预约
+const isReserved = ref(false)
 
 const prodUrl = 'https://sky.h5.163.com/game/'
 const isProd = ref(window.location.href.includes(prodUrl))
 const type = isProd.value ? 0 : 1
-// 打开微信小程序传参
+// 打开微信小程序传参，运营提供
 const miniProgramParams: MiniProgramParams = {
   username: 'gh_5ebd38011f07',
   path: '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946',
@@ -103,17 +115,53 @@ if (!isVisited) {
   headTransitionName.value = 'fade-in-head'
 }
 
-onMounted(() => {
+onMounted(async () => {
   Session.set('isVisitSeason24Reserve', true)
+  await getReserveStatus()
+  document.addEventListener('visibilitychange', handleVisibilityChange)
 })
 
-// 预约
+onUnmounted(() => {
+  document.removeEventListener('visibilitychange', handleVisibilityChange)
+})
+
+/**
+ * 获取预约状态
+ */
+async function getReserveStatus(): Promise<void> {
+  console.log('Fetching data...')
+  const res = await getSeasonReservationStatus(channel)
+  console.log('res333: ', res)
+  isReserved.value = true
+}
+
+/**
+ * 节流获取预约状态
+ */
+const throttledFetchData = throttle(async () => {
+  await getReserveStatus()
+}, 1000)
+
+/**
+ * 页面显示时，执行
+ */
+function handleVisibilityChange(): void {
+  if (document.visibilityState === 'visible') {
+    console.log('页面重新显示')
+    void throttledFetchData() // 使用节流
+  }
+}
+
+/**
+ * 点击“约定相见”，前往小程序预约新季节
+ */
 function handleToReserve(): void {
-  openWechatMiniprogram(miniProgramParams)
-    .then()
-    .catch((error) => {
-      showToast(error.message)
-    })
+  if (isReserved.value) {
+    return
+  }
+  openWechatMiniprogram(miniProgramParams).catch((error) => {
+    showToast(error.message)
+  })
 }
 
 // 显示帮助
@@ -179,6 +227,10 @@ function handleHelp(): void {
   width: 413px;
   height: 132px;
   background-image: url('@/assets/images/season23-reserve/btn.png');
+
+  &-reserved {
+    background-image: url('@/assets/images/season24-reserve/btn-reserved.png');
+  }
 }
 .reward {
   position: absolute;

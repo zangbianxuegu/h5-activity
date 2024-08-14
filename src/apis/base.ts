@@ -46,6 +46,40 @@ export function openWechatMiniprogram(params: MiniProgramParams): Promise<any> {
   })
 }
 
+/**
+ * 获取新赛季预约状态
+ * @function getSeasonReservationStatus
+ * @param {string} channel 渠道名称
+ * @returns {Promise<Response>}
+ */
+export function getSeasonReservationStatus(channel: string): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/mini_program/get_season_reservation_status',
+      content: { channel },
+      handleRes: (res) => {
+        console.log('res22222: ', res)
+        if (res.code === 200) {
+          resolve(res)
+        }
+        // else {
+        //   const errorMessage = getErrorMessage(
+        //     'get_season_reservation_status',
+        //     res.code,
+        //     res.msg,
+        //   )
+        //   console.log('errorMessage: ', errorMessage)
+        //   reject(new Error(errorMessage))
+        // }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
 // 通知客户端更新红点
 export function updateRedDot(): Promise<any> {
   return new Promise((resolve, reject) => {
