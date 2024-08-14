@@ -1,4 +1,4 @@
-import type { TokenParams, Response } from '@/types'
+import type { TokenParams, Response, MiniProgramParams } from '@/types'
 import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
 
 // 获取用户信息，仅与客户端通信 Web <-> APP
@@ -13,6 +13,65 @@ export function getUserInfo(): Promise<any> {
         } else {
           reject(new Error('获取用户信息出错'))
         }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+/**
+ * 打开微信小程序
+ * @function openWechatMiniprogram
+ * @param {MiniProgramParams} params 打开小程序传参
+ * @returns {Promise<any>}
+ */
+export function openWechatMiniprogram(params: MiniProgramParams): Promise<any> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'open_wechat_miniprogram',
+      content: params,
+      handleRes: (res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(new Error('打开小程序出错'))
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+/**
+ * 获取新赛季预约状态
+ * @function getSeasonReservationStatus
+ * @param {string} channel 渠道名称
+ * @returns {Promise<Response>}
+ */
+export function getSeasonReservationStatus(channel: string): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/mini_program/get_season_reservation_status',
+      content: { channel },
+      handleRes: (res) => {
+        console.log('res22222: ', res)
+        if (res.code === 200) {
+          resolve(res)
+        }
+        // else {
+        //   const errorMessage = getErrorMessage(
+        //     'get_season_reservation_status',
+        //     res.code,
+        //     res.msg,
+        //   )
+        //   console.log('errorMessage: ', errorMessage)
+        //   reject(new Error(errorMessage))
+        // }
       },
     }).catch((err) => {
       console.log(err)

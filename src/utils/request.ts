@@ -80,18 +80,21 @@ export function handlePostMessageToNative({
 
     // 轮询等待 UniSDKJSBridge 挂载成功
     waitForUniSDKJSBridge(() => {
+      const data =
+        type === 'userinfo' || type === 'update_red_dot'
+          ? { type }
+          : type === 'open_wechat_miniprogram'
+            ? { type, content }
+            : {
+                type,
+                resource,
+                content: JSON.stringify(content),
+              }
       postMsgToNative({
         methodId: 'ngwebview_notify_native',
         reqData: {
           notification_name: 'NT_NOTIFICATION_EXTEND',
-          data:
-            type === 'userinfo' || type === 'update_red_dot'
-              ? { type }
-              : {
-                  type,
-                  resource,
-                  content: JSON.stringify(content),
-                },
+          data,
         },
         callback: {
           nativeCallback: function (respJSONString: string) {

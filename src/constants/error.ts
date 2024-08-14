@@ -110,4 +110,11 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'already received the reward': '已领取该奖励',
     },
   },
+
+  // 查询新季节预约状态
+  get_season_reservation_status: {
+    404: {
+      not_reserved: '未预约',
+    },
+  },
 }

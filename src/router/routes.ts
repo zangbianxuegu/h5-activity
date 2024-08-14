@@ -346,4 +346,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_summerday_2024',
     },
   },
+  {
+    path: '/season24-reserve',
+    name: 'Season24Reserve',
+    component: () => import('@/views/Season24Reserve'),
+    meta: {
+      title: '姆明季期待相遇',
+      module: 'activitycenter_season24_reserve',
+    },
+  },
 ]
