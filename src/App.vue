@@ -58,7 +58,13 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
-import type { MenuItem, Activity, ActivityTime, TokenParams } from '@/types'
+import type {
+  MenuItem,
+  Activity,
+  ActivityTime,
+  TokenParams,
+  UserInfo,
+} from '@/types'
 import {
   FRIENDSHIP_2024_LIST,
   FRIENDSHIP_WEEK_2024_LIST,
@@ -108,10 +114,10 @@ interface ActivityData {
 }
 type Activities = Record<string, ActivityData>
 
-onMounted(() => {
+onMounted(async () => {
   try {
+    await getBaseInfo()
     getAllEvents()
-    getBaseInfo()
   } catch (error) {
     // console.error(error)
   }
@@ -127,29 +133,28 @@ let tokenParams: TokenParams = {
 }
 
 // 获取基本信息
-function getBaseInfo(): void {
-  getUserInfo()
-    .then((res) => {
-      const channel = res.channel
-      const appChannel = res.appChannel
-      const returnBuff = res.return_buff
-      const gameUid = res.game_uid
-      updateBaseInfoItems({ channel })
-      updateBaseInfoItems({ appChannel })
-      updateBaseInfoItems({ returnBuff })
-      updateBaseInfoItems({ gameUid })
-      tokenParams = {
-        ...tokenParams,
-        game_uid: res.game_uid,
-        uid: res.uid,
-        map: res.map,
-        return_buff: res.return_buff,
-        os: res.os,
-      }
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+async function getBaseInfo(): Promise<void> {
+  try {
+    const res: UserInfo = await getUserInfo()
+    const channel = res.channel
+    const appChannel = res.appChannel
+    const returnBuff = res.return_buff
+    const gameUid = res.game_uid
+    updateBaseInfoItems({ channel })
+    updateBaseInfoItems({ appChannel })
+    updateBaseInfoItems({ returnBuff })
+    updateBaseInfoItems({ gameUid })
+    tokenParams = {
+      ...tokenParams,
+      game_uid: res.game_uid,
+      uid: res.uid,
+      map: res.map,
+      return_buff: res.return_buff,
+      os: res.os,
+    }
+  } catch (error) {
+    showToast((error as Error).message)
+  }
 }
 
 // 前往精灵
@@ -397,7 +402,8 @@ function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  getPlayerMissionData({})
+  console.log('currentChannel: ', currentChannel.value)
+  getPlayerMissionData({ channel: currentChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)

@@ -1,9 +1,14 @@
-import type { TokenParams, Response, MiniProgramParams } from '@/types'
+import type {
+  UserInfo,
+  TokenParams,
+  Response,
+  MiniProgramParams,
+} from '@/types'
 import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
 
 // 获取用户信息，仅与客户端通信 Web <-> APP
 // window.UniSDKNativeCallback, -209576407, { "methodId": "NGWebViewCallbackToWeb", "web_response": "{"cmd":"kefu_get_token","uid":"aebgkelrab6bhqzn@ad.netease.win.163.com","game_uid":"65750a6d - 1717 - 4c45 - be90 - 7a7be8035cbf","os":"android","game_server":6,"login_from":0,"map":"CandleSpace","return_buff":"false"}", "callback_id": "-209576407"}
-export function getUserInfo(): Promise<any> {
+export function getUserInfo(): Promise<UserInfo> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
       type: 'userinfo',

@@ -134,7 +134,11 @@ const throttledFetchMap: {
 
 // 原始的获取玩家任务数据的函数，没有应用节流
 function fetchPlayerMissionData(
-  { event, token }: { event?: EventName; token?: string },
+  {
+    event,
+    token,
+    channel,
+  }: { event?: EventName; token?: string; channel?: string },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
 ): Promise<void> {
@@ -147,6 +151,7 @@ function fetchPlayerMissionData(
         source_id: '',
         event,
         token,
+        channel,
       },
       handleRes: (res) => {
         if (res.code === 200) {
@@ -195,9 +200,11 @@ function fetchPlayerMissionData(
 export function getPlayerMissionData({
   event,
   token,
+  channel,
 }: {
   event?: EventName
   token?: string
+  channel?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     const now = Date.now()
@@ -270,9 +277,11 @@ export function getPlayerMissionData({
       }
       // 存储请求时间
       Session.set('lastFetchTimeAllEvents', now.toString())
-      fetchPlayerMissionData({ event }, resolve, reject).catch((err) => {
-        reject(err)
-      })
+      fetchPlayerMissionData({ event, channel }, resolve, reject).catch(
+        (err) => {
+          reject(err)
+        },
+      )
     }
   })
 }
