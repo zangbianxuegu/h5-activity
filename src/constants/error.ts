@@ -117,4 +117,11 @@ export const ERROR_MESSAGES: ErrorMessages = {
       not_reserved: '未预约',
     },
   },
+
+  // 获取走格子数据
+  get_dice_map_data: {
+    400: {
+      'inactive event': '活动未开启，请稍后重试',
+    },
+  },
 }

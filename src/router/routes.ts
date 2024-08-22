@@ -355,4 +355,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season24_reserve',
     },
   },
+  {
+    path: '/dice-map',
+    name: 'DiceMap',
+    component: () => import('@/views/DiceMap'),
+    meta: {
+      title: '旅行尾迹地图',
+      module: 'activitycenter_dice_map',
+    },
+  },
 ]
