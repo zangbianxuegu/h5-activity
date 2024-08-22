@@ -968,13 +968,10 @@
   "src/assets/images/season23-sprint/task4-reward1-wait.png": 1723172960497.4924,
   "src/assets/images/summerday-2024/acc-task1-wait.png": 1723186799776.5896,
   "src/assets/images/summerday-2024/acc-task1-redeemed.png": 1723186799787.3247,
-  "src/assets/images/summerday-2024/acc-task2-wait.png": 1723186799787.3247,
   "src/assets/images/summerday-2024/acc-task1-can.png": 1723186799776.5896,
   "src/assets/images/summerday-2024/acc-task3-can.png": 1723186799787.3247,
-  "src/assets/images/summerday-2024/acc-task2-can.png": 1723186799787.3247,
   "src/assets/images/summerday-2024/acc-task3-wait.png": 1723186799788.3022,
   "src/assets/images/summerday-2024/bg.jpg": 1723186799789.2788,
-  "src/assets/images/summerday-2024/acc-task2-redeemed.png": 1723186799789.2788,
   "src/assets/images/summerday-2024/acc-task3-redeemed.png": 1723186799789.2788,
   "src/assets/images/summerday-2024/main-bg.png": 1723186799789.2788,
   "src/assets/images/summerday-2024/help.png": 1723186799789.2788,
@@ -995,5 +992,8 @@
   "src/assets/images/summerday-2024/title.png": 1723186799790.2554,
   "src/assets/images/summerday-2024/task4-wait.png": 1723186799790.2554,
   "src/assets/images/summerday-2024/task4-redeemed.png": 1723186799795.1338,
-  "src/assets/images/common/reward/reward-outfit_prop_surfboard.png": 1723186799795.1338
+  "src/assets/images/common/reward/reward-outfit_prop_surfboard.png": 1723186799795.1338,
+  "src/assets/images/summerday-2024/acc-task2-can.png": 1724309770381.6362,
+  "src/assets/images/summerday-2024/acc-task2-redeemed.png": 1724309770381.6362,
+  "src/assets/images/summerday-2024/acc-task2-wait.png": 1724309770381.6362
 }
