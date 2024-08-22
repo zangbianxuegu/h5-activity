@@ -676,7 +676,6 @@ function handleReward(
 }
 .reward-img {
   width: 160px;
-  height: fit-content;
 }
 .btn {
   width: 340px;
