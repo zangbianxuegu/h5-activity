@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="summerday flex h-screen">
-      <div class="summerday-main">
+    <div class="dice flex h-screen">
+      <div class="dice-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -18,7 +18,62 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section></section>
+          <section>
+            <!-- 导航按钮 -->
+            <nav class="nav absolute">
+              <ul>
+                <li class="nav-item nav-dice bg-contain">
+                  <a href="http://" class="block h-full w-full">
+                    <span class="sr-only">获取骰子</span>
+                  </a>
+                </li>
+                <li class="nav-item nav-store mt-3 bg-contain">
+                  <a href="http://" class="block h-full w-full">
+                    <span class="sr-only">兑换商店</span>
+                  </a>
+                </li>
+              </ul>
+            </nav>
+            <!-- 螃蟹 -->
+            <div class="crab absolute right-0 top-[198px] bg-contain">
+              <!-- 左眼 -->
+              <span
+                class="crab-eye crab-eye-left inline-block rounded-full bg-contain"
+              ></span>
+              <!-- 有眼 -->
+              <span
+                class="crab-eye crab-eye-right inline-block rounded-full bg-contain"
+              ></span>
+            </div>
+            <!-- 骰子操作 -->
+            <div class="dices absolute right-[36px] top-[468px] flex flex-col">
+              <!-- 万能骰子，选择点数 -->
+              <button
+                type="button"
+                class="dice-item dice-select relative cursor-pointer bg-contain"
+                aria-label="选择点数的万能骰子"
+                onclick="alert('选择点数的万能骰子被点击')"
+              >
+                <span
+                  class="absolute right-[-25px] top-[-25px] h-[60px] w-[60px] rounded-full bg-[#838ce0] text-center font-medium leading-[60px] text-white"
+                  >2</span
+                >
+              </button>
+
+              <!-- 随机骰子 -->
+              <button
+                type="button"
+                class="dice-item dice-random relative mt-[60px] cursor-pointer bg-contain"
+                aria-label="随机骰子"
+                onclick="alert('随机骰子被点击')"
+              >
+                <span
+                  class="absolute right-[-25px] top-[-25px] h-[60px] w-[60px] rounded-full bg-[#838ce0] text-center font-medium leading-[60px] text-white"
+                  >10</span
+                >
+              </button>
+            </div>
+          </section>
         </Transition>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
@@ -27,43 +82,20 @@
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年8月29日~2024年9月11日
+                2024年10月1日~2024年10月7日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
+                <li>活动期间，可前往飞行里程碑页面完成各种任务获取骰子</li>
                 <li>
-                  活动期间，体验一次捉迷藏玩法，即可领取
-                  <span class="text-[#ffcb4d]">烧烤架魔法*2</span>
+                  使用骰子后，角色可在旅行尾迹地图上移动相应的格数，并获取对应的奖励。每次完成一圈后，会获得<span
+                    class="text-[#ffcb4d]"
+                    >飞行券*30</span
+                  >的额外奖励；
                 </li>
-                <li>
-                  活动期间，使用一次沙滩球魔法，即可领取
-                  <span class="text-[#ffcb4d]">沙滩球魔法*2</span>
-                </li>
-                <li>
-                  活动期间，兑换一件夏之日物品，即可领取
-                  <span class="text-[#ffcb4d]">遥鲲泳圈试用魔法*2</span>
-                </li>
-                <li>
-                  活动期间，累计登录5天，即可领取
-                  <span class="text-[#ffcb4d]">体型重塑*2</span>
-                </li>
-                <li>
-                  活动期间，收集夏之日代币，即可领取：
-                  <div class="grid grid-cols-3">
-                    <span>收集数目</span>
-                    <span class="col-span-2">对应奖励</span>
-                    <span>20个</span>
-                    <span class="col-span-2 text-[#ffcb4d]">璀璨之星*1</span>
-                    <span>30个</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >冲浪板试用魔法*1</span
-                    >
-                    <span>50个</span>
-                    <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>
-                  </div>
-                </li>
+                <li>使用飞行券可在纪念品商店兑换各种道具。</li>
               </ul>
             </section>
           </template>
@@ -99,18 +131,12 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import {
-  getPlayerMissionData,
-  // claimMissionReward
-} from '@/utils/request'
 import { getDiceMapData } from '@/apis/diceMap'
-import type { DesignConfig, Event } from '@/types'
+import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import { useBaseStore } from '@/stores/base'
-import { useMenuStore } from '@/stores/menu'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import { useActivityStore } from '@/stores/summerday2024'
 
 interface Rewards {
   name: string
@@ -138,55 +164,6 @@ const curRewards: Ref<Rewards> = ref({
   name: 'outfit_prop_marshmallow',
   count: 2,
 })
-
-// 主任务列表
-const TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_summerday_2024_m1',
-    title: '体验一次捉迷藏玩法',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    value: 'use_consumables',
-    title: '使用一次沙滩球魔法',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    value: 'activitycenter_summerday_2024_m2',
-    title: '兑换一件夏之日物品',
-    status: 'wait',
-  },
-  {
-    id: 4,
-    value: 'login_days',
-    title: '累计登录5天',
-    status: 'wait',
-  },
-]
-// 累计任务列表
-const ACC_TASK_LIST = [
-  {
-    id: 1,
-    value: 'collecting_event_candles',
-    title: '收集夏之日代币20个',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    value: 'collecting_event_candles',
-    title: '收集夏之日代币30个',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    value: 'collecting_event_candles',
-    title: '收集夏之日代币50个',
-    status: 'wait',
-  },
-]
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -222,19 +199,10 @@ const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // 活动数据
-const EVENT_NAME = 'activitycenter_summerday_2024'
 const baseStore = useBaseStore()
-const menuStore = useMenuStore()
-const activityStore = useActivityStore()
-const activityData = computed(() => activityStore.activityData)
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
-// 任务排序
-const taskOrderMap = new Map(
-  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.value, index]),
-)
-
-const sessionIsVisitedKey = 'isVisitedSummerday2024'
+const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -270,7 +238,6 @@ onMounted(() => {
     if (gameUid.value !== '') {
       handleDiceData()
     }
-    getActivityData()
   } catch (error) {
     console.error(error)
   }
@@ -300,36 +267,6 @@ function handleSrc(name: string): string {
 }
 
 /**
- * @function 检查是否有未领奖
- * @param {Event[]} tasks 任务列表
- * @returns {boolean} 是否有未领奖
- */
-function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 检查1-4项，任务列表
-  const tasksValid = tasks
-    .slice(0, 4)
-    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
-  // 检查第5项，累计任务
-  const accTask = tasks[4]
-  const accTasksValid = accTask.stages.some(
-    (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
-  )
-  return tasksValid || accTasksValid
-}
-
-/**
- * @function 设置红点
- * @returns {void}
- */
-function setRedDot(): void {
-  const hasUnclaimedReward = checkHasUnclaimedReward(
-    activityData.value.event_data[EVENT_NAME],
-  )
-  console.log('hasUnclaimedReward: ', hasUnclaimedReward)
-  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
-}
-
-/**
  * @function handleDiceData
  * @description 获取走格子数据
  */
@@ -337,36 +274,6 @@ function handleDiceData(): void {
   getDiceMapData(gameUid.value)
     .then((res) => {
       console.log('res: ', res)
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
-
-/**
- * @function 获取任务进度
- * @returns {void}
- */
-function getActivityData(): void {
-  getPlayerMissionData({ event: EVENT_NAME })
-    .then((res) => {
-      const data = res.data
-      const newActivityData = {
-        ...data,
-        event_data: {
-          activitycenter_summerday_2024: data.event_data[EVENT_NAME].sort(
-            (a: Event, b: Event) => {
-              const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
-              const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
-              return orderA - orderB
-            },
-          ),
-        },
-      }
-      // 更新缓存活动数据
-      activityStore.updateActivityData(newActivityData)
-      console.log('activityStore: ', activityStore)
-      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
@@ -436,7 +343,7 @@ function getActivityData(): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.summerday {
+.dice {
   position: relative;
   width: 2100px;
 
@@ -468,78 +375,87 @@ function getActivityData(): void {
   bottom: -10px;
   right: -10px;
 }
-.task-list {
-  position: absolute;
-  left: 70px;
-  top: 431px;
-  padding: 74px 39px 105px 140px;
-  width: 1379px;
-  height: 499px;
-  background-image: url('@/assets/images/summerday-2024/main-bg.png');
+.dice-item {
+  width: 142px;
+  height: 142px;
 }
-.task-item {
-  float: left;
-  margin-right: 70px;
-  width: 230px;
-  height: 320px;
+.dice-select {
+  background-image: url('@/assets/images/dice-map/dice-select.png');
 }
-@for $i from 1 through 4 {
-  .task-item#{$i} {
-    &.wait {
-      background-image: url('@/assets/images/summerday-2024/task#{$i}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/summerday-2024/task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/summerday-2024/task#{$i}-redeemed.png');
-    }
-  }
+.dice-random {
+  background-image: url('@/assets/images/dice-map/dice-random.png');
 }
-.acc-task-item {
-  position: absolute;
-  width: 180px;
-  height: 210px;
-}
-.acc-task-item1 {
-  right: 25px;
-  top: 554px;
-}
-.acc-task-item2 {
-  right: 125px;
-  top: 339px;
-}
-.acc-task-item3 {
-  right: 313px;
-  top: 218px;
-}
-@for $i from 1 through 3 {
-  .acc-task-item#{$i} {
-    &.wait {
-      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/summerday-2024/acc-task#{$i}-redeemed.png');
-    }
-  }
-}
-.acc-progress {
-  position: absolute;
-  right: 130px;
-  bottom: 66px;
-  padding-top: 96px;
-  width: 433px;
-  height: 181px;
-  background-image: url('@/assets/images/summerday-2024/progress-bg.png');
+.nav {
+  left: 27px;
+  top: 32px;
 
-  &-count {
-    height: 50px;
-    line-height: 50px;
-    font-size: 34px;
-    color: #fff281;
+  &-item {
+    width: 237px;
+    height: 95px;
+  }
+
+  &-dice {
+    background-image: url('@/assets/images/dice-map/btn-dice.png');
+  }
+
+  &-store {
+    background-image: url('@/assets/images/dice-map/btn-store.png');
+  }
+}
+.crab {
+  width: 244px;
+  height: 230px;
+  background-image: url('@/assets/images/dice-map/crab.png');
+
+  &-eye {
+    position: absolute;
+  }
+
+  &-eye-left {
+    left: 26px;
+    top: 98px;
+    width: 15px;
+    height: 21px;
+    background-image: url('@/assets/images/dice-map/crab-eye-left.png');
+    animation: blink-left 2s infinite;
+  }
+
+  &-eye-right {
+    position: absolute;
+    left: 63px;
+    top: 128px;
+    width: 19px;
+    height: 22px;
+    background-image: url('@/assets/images/dice-map/crab-eye-right.png');
+    animation: blink-right 2s infinite;
+  }
+}
+@keyframes blink-left {
+  0% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  6.7% {
+    transform: scaleY(0.05) rotate(45deg);
+  }
+  20% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  100% {
+    transform: scaleY(1) rotate(0deg);
+  }
+}
+@keyframes blink-right {
+  0% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  6.7% {
+    transform: scaleY(0.05) rotate(40deg);
+  }
+  20% {
+    transform: scaleY(1) rotate(0deg);
+  }
+  100% {
+    transform: scaleY(1) rotate(0deg);
   }
 }
 </style>
