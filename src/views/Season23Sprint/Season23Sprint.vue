@@ -218,7 +218,7 @@ const rewardModalType = ref<'defaultType' | 'delayType'>('defaultType')
 
 const rewardsText: RewardsName = {
   resize_potion: '体型重塑',
-  glow: '璀璨之星',
+  glow: '璀璨之星魔法',
   energy: '元气满满',
   candles: '蜡烛',
   message_boat: '传信纸船',
