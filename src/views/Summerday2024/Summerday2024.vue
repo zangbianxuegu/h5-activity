@@ -86,11 +86,11 @@
               <ul class="modal-text list-inside list-decimal">
                 <li>
                   活动期间，体验一次捉迷藏玩法，即可领取
-                  <span class="text-[#ffcb4d]">烧烤架魔法*2</span>
+                  <span class="text-[#ffcb4d]">篝火点心礼包试用魔法*2</span>
                 </li>
                 <li>
                   活动期间，使用一次沙滩球魔法，即可领取
-                  <span class="text-[#ffcb4d]">沙滩球魔法*2</span>
+                  <span class="text-[#ffcb4d]">沙滩弹球*2</span>
                 </li>
                 <li>
                   活动期间，兑换一件夏之日物品，即可领取
@@ -106,10 +106,12 @@
                     <span>收集数目</span>
                     <span class="col-span-2">对应奖励</span>
                     <span>20个</span>
-                    <span class="col-span-2 text-[#ffcb4d]">璀璨之星*1</span>
+                    <span class="col-span-2 text-[#ffcb4d]"
+                      >璀璨之星魔法*1</span
+                    >
                     <span>30个</span>
                     <span class="col-span-2 text-[#ffcb4d]"
-                      >冲浪板试用魔法*1</span
+                      >夏日冲浪礼包试用魔法*1</span
                     >
                     <span>50个</span>
                     <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>

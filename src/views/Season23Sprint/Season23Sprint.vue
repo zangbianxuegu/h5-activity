@@ -94,7 +94,7 @@
             <p class="modal-text">
               2、活动期间，累计收集季节蜡烛，即可领取<span
                 class="text-[#ffcb4d]"
-                >璀璨之星*1，元气满满*1，蜡烛*1</span
+                >璀璨之星魔法*1，元气满满*1，蜡烛*1</span
               >；
             </p>
             <p class="modal-text">
