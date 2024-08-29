@@ -94,7 +94,7 @@
             <p class="modal-text">
               2、活动期间，累计收集季节蜡烛，即可领取<span
                 class="text-[#ffcb4d]"
-                >璀璨之星魔法*1，元气满满*1，蜡烛*1</span
+                >璀璨之星魔法*1，元气满满魔法*1，蜡烛*1</span
               >；
             </p>
             <p class="modal-text">
@@ -106,7 +106,7 @@
             <p class="modal-text">
               4、活动期间，完成二重奏季毕业，即可领取<span
                 class="text-[#ffcb4d]"
-                >下个赛季季节蜡烛*6</span
+                >新季节蜡烛*6</span
               >；
             </p>
           </template>
@@ -219,12 +219,12 @@ const rewardModalType = ref<'defaultType' | 'delayType'>('defaultType')
 const rewardsText: RewardsName = {
   resize_potion: '体型重塑',
   glow: '璀璨之星魔法',
-  energy: '元气满满',
+  energy: '元气满满魔法',
   candles: '蜡烛',
   message_boat: '传信纸船',
   rainbow: '绚丽彩虹',
   heart: '爱心',
-  season_candles: '下个赛季季节蜡烛',
+  season_candles: '新季节蜡烛',
 }
 
 interface Task {
