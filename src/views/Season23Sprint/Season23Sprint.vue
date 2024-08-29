@@ -104,10 +104,10 @@
               >；
             </p>
             <p class="modal-text">
-              4、活动期间，完成二重奏季毕业，即可领取<span
+              4、活动期间，达成二重奏季毕业，即可领取<span
                 class="text-[#ffcb4d]"
                 >新季节蜡烛*6</span
-              >；
+              >（奖励将在下个季节开始后的一周内通过邮件发放）。
             </p>
           </template>
         </activity-modal>
