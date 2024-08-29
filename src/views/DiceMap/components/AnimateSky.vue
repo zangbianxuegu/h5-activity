@@ -74,31 +74,16 @@ onMounted(() => {
  * @description 播放动画
  * @param animationName 动画名称
  */
-function playAnimation(
-  animationName: string,
-  loop: boolean,
-  flag?: true,
-): void {
+function playAnimation(animationName: string, loop: boolean): void {
   if (player) {
     player.animationState?.clearTracks()
-    if (flag) {
-      console.log(11111)
-      player.animationState?.clearTrack(0)
-      player.animationState?.setEmptyAnimation(0, 0)
-      player.animationState?.setEmptyAnimations(0)
-      // player.setViewport(animationName)
-      // player.animationState?.addAnimation(0, animationName, loop)
-      player?.setAnimation(animationName, loop)
-      // player.play()
-    }
-    if (!flag) {
-      // 必须
-      // player.setViewport(animationName)
-      // player.animationState?.addAnimation(0, animationName, loop)
-      player.setAnimation(animationName, loop)
-      // 必须
-      player.play()
-    }
+
+    // 必须
+    // player.setViewport(animationName)
+    // player.animationState?.addAnimation(0, animationName, loop)
+    player.setAnimation(animationName, loop)
+    // 必须
+    player.play()
   }
 }
 

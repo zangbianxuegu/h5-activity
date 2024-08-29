@@ -5,7 +5,7 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1
             class="title relative overflow-hidden bg-contain bg-no-repeat"
-            @click="moveTest(3, 9)"
+            @click="moveTest(0, 3)"
           >
             <div class="sr-only">
               旅行尾迹地图
@@ -165,7 +165,13 @@ import { useBaseStore } from '@/stores/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import AnimateSky from './components/AnimateSky.vue'
 import AnimateDice from './components/AnimateDice.vue'
-import { coordinates } from './data'
+import {
+  ANIMATION,
+  animationListIdle,
+  coordinates,
+  animateSkySizes,
+  type Animation,
+} from './configs'
 
 interface Rewards {
   name: string
@@ -240,7 +246,7 @@ const diceNum = ref(1)
 const isDiceAnimating = ref(false)
 
 // 当前位置，0-49
-let curPosition = 3
+let curPosition = 0
 // 当前动画大小类型
 let curSizeType = 'right_idle'
 
@@ -290,86 +296,92 @@ onMounted(() => {
   Session.set(sessionIsVisitedKey, true)
 })
 
-/**
- * @function 显示帮助
- * @returns {void}
- */
-function handleHelp(): void {
-  modalHelp.value?.openModal()
+// 初始化
+function initAnimateSky(): void {
+  const animation = (coordinates[curPosition].direction + '_idle') as Animation
+  console.log('animation: ', animation)
+  animateSkyPlay(curPosition, animation)
+  // 测试
+  // setAnimateSkySize('back_move')
+  // setAnimateSkyPosition(curPosition, 'back_move')
+  // animateSky.value?.playAnimation('back_move', true)
 }
 
-/**
- * @function 处理 img src
- * @param name 奖励名
- * @returns {string} 图片路径
- */
-function handleSrc(name: string): string {
-  const imgSrc = new URL(
-    `../../assets/images/common/reward/reward-${name}.png`,
-    import.meta.url,
-  ).href
+let leftSteps = 0
 
-  return imgSrc
+// 测试动画效果
+function moveTest(from: number, to: number): void {
+  const steps = to - from
+  leftSteps = steps
+  // 开始动画
+  const animation = (coordinates[from].direction + '_move') as Animation
+  animateSkyPlay(from, animation)
 }
 
-/**
- * @function handleDiceData
- * @description 获取走格子数据
- */
-function handleDiceData(): void {
-  getDiceMapData(gameUid.value)
-    .then((res) => {
-      console.log('res: ', res)
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
+// 根据位置确定动画类型
 
 /**
  * @function setAnimationSkySize
  * @description 设置动画大小，每个动画的大小是固定的
  * @param {string} animation 动画名称
  */
-function setAnimateSkySize(animation: string): void {
+function setAnimateSkySize(animation: Animation): void {
   if (animateSky.value) {
-    if (animation === 'right_idle') {
-      curSizeType = 'right_idle'
-      animateSky.value.$el.classList.add('w-[127px]')
-      animateSky.value.$el.classList.remove('w-[295px]')
-      animateSky.value.$el.classList.add('h-[185px]')
-      animateSky.value.$el.classList.remove('h-[222px]')
-    } else if (animation === 'right_move') {
-      curSizeType = 'right_move'
-      animateSky.value.$el.classList.remove('w-[127px]')
-      animateSky.value.$el.classList.add('w-[295px]')
-      animateSky.value.$el.classList.remove('h-[185px]')
-      animateSky.value.$el.classList.add('h-[222px]')
-    } else if (animation === 'front_idle') {
-      curSizeType = 'front_idle'
-      // animateSky.value.$el.classList.add('w-[127px]')
-    }
+    curSizeType = animation
+    const style = generateDynamicStyles({
+      width: animateSkySizes[animation].width,
+      height: animateSkySizes[animation].height,
+    })
+    animateSky.value.$el.style.width = style.width
+    animateSky.value.$el.style.height = style.height
   }
 }
 
 /**
  * @function setAnimateSkyPosition
  * @description 设置动画位置，根据动画大小和坐标位置
- * @param {string} animation 动画名称
  * @param {number} position 坐标位置
+ * @param {string} animation 动画名称
  */
-function setAnimateSkyPosition(animation: string, position: number): void {
+function setAnimateSkyPosition(position: number, animation: Animation): void {
   const { x, y } = coordinates[position]
   let left = 0
   let top = 0
-  if (animation === 'right_idle') {
-    const skyRightIdleSize = { width: 127, height: 185 }
-    left = Math.floor(x - skyRightIdleSize.width / 2)
-    top = Math.floor(y - skyRightIdleSize.height / 2 + 22)
-  } else if (animation === 'right_move') {
-    const skyRightMoveSize = { width: 295, height: 222 }
-    left = Math.floor(x - 65)
-    top = Math.floor(y - skyRightMoveSize.height / 2)
+  switch (animation) {
+    case ANIMATION.RIGHT_IDLE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2)
+      top = Math.floor(y - animateSkySizes[animation].height / 2) + 22
+      break
+    case ANIMATION.RIGHT_MOVE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2) + 82
+      top = Math.floor(y - animateSkySizes[animation].height / 2)
+      break
+    case ANIMATION.FRONT_IDLE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2)
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 50
+      break
+    case ANIMATION.FRONT_MOVE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2)
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 100
+      break
+    case ANIMATION.LEFT_IDLE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 10
+      top = Math.floor(y - animateSkySizes[animation].height / 2)
+      break
+    case ANIMATION.LEFT_MOVE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 80
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 20
+      break
+    case ANIMATION.BACK_IDLE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 20
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 40
+      break
+    case ANIMATION.BACK_MOVE:
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 35
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 10
+      break
+    default:
+      break
   }
   if (animateSky.value) {
     const style = generateDynamicStyles({
@@ -381,66 +393,23 @@ function setAnimateSkyPosition(animation: string, position: number): void {
   }
 }
 
-// 初始化
-function initAnimateSky(): void {
-  animateSkyRightIdle(curPosition)
-}
-
-let leftSteps = 0
-function moveTest(from: number, to: number): void {
-  const steps = to - from
-  leftSteps = steps
+/**
+ * @function animateSkyPlay
+ * @description 角色动画
+ * @param {number} position 位置
+ * @param {Animation} animation 动画名称
+ */
+function animateSkyPlay(position: number, animation: Animation): void {
+  // 设置动画大小
+  if (curSizeType !== animation) {
+    setAnimateSkySize(animation)
+  }
+  // 设置动画位置
+  setAnimateSkyPosition(position, animation)
   // 开始动画
-  animateSkyRightMove(from)
+  const loop = animationListIdle.includes(animation)
+  animateSky.value?.playAnimation(animation, loop)
 }
-
-/**
- * @function animateSkyRightIdle
- * @description 角色右闲置
- * @param {number} position 位置
- */
-function animateSkyRightIdle(position: number): void {
-  // 设置动画大小为 right_move
-  if (curSizeType !== 'right_idle') {
-    setAnimateSkySize('right_idle')
-  }
-  // 设置动画位置
-  setAnimateSkyPosition('right_idle', position)
-  // play right_idle
-  animateSky.value?.playAnimation('right_idle', true)
-}
-
-/**
- * @function animateSkyRightMove
- * @description 角色右移动
- * @param {number} position 位置
- */
-function animateSkyRightMove(position: number): void {
-  // 设置动画大小为 right_move
-  if (curSizeType !== 'right_move') {
-    setAnimateSkySize('right_move')
-  }
-  // 设置动画位置
-  setAnimateSkyPosition('right_move', position)
-  // play right_move
-  animateSky.value?.playAnimation('right_move', false)
-}
-
-/**
- * @function animateSkyFrontIdle
- * @description 角色前闲置
- * @param {number} position 位置
- */
-// function animateSkyFrontIdle(position: number): void {
-//   // 设置动画大小为 right_move
-//   if (curSizeType !== 'front_idle') {
-//     setAnimateSkySize('front_idle')
-//   }
-//   // 设置动画位置
-//   setAnimateSkyPosition('front_idle', position)
-//   // play right_idle
-//   animateSky.value?.playAnimation('front_idle', true)
-// }
 
 /**
  * @function handleDiceRandom
@@ -476,27 +445,25 @@ function onAnimateDiceComplete(): void {
  * @param entry
  */
 function OnAnimationSkyComplete(entry: any): void {
-  if (entry.animation.name === 'right_idle') {
-    console.log('角色动画right_idle完成')
+  if (entry.animation.name.includes('idle')) {
+    console.log(`角色动画完成${entry.animation.name}`)
   }
-  if (entry.animation.name === 'right_move') {
-    console.log('角色动画right_move完成')
+  if (entry.animation.name.includes('move')) {
+    console.log(`角色动画完成${entry.animation.name}`)
     leftSteps--
     curPosition++
     if (leftSteps > 0) {
+      // move animation
       setTimeout(() => {
-        animateSkyRightMove(curPosition)
-      }, 100)
+        const animation = (coordinates[curPosition].direction +
+          '_move') as Animation
+        animateSkyPlay(curPosition, animation)
+      }, 0)
     } else {
       // idle animation
-      // animateSkyRightIdle(curPosition)
-
-      // play right_move
-      animateSky.value?.playAnimation('right_idle', true)
-      // 设置动画大小为 right_move
-      setAnimateSkySize('right_idle')
-      // 设置动画位置
-      setAnimateSkyPosition('right_idle', curPosition)
+      const animation = (coordinates[curPosition].direction +
+        '_idle') as Animation
+      animateSkyPlay(curPosition, animation)
     }
   }
 }
@@ -517,6 +484,42 @@ const generateDynamicStyles = (
     dynamicStyles[key] = calculatePxToViewport(value)
   }
   return dynamicStyles
+}
+
+/**
+ * @function 显示帮助
+ * @returns {void}
+ */
+function handleHelp(): void {
+  modalHelp.value?.openModal()
+}
+
+/**
+ * @function 处理 img src
+ * @param name 奖励名
+ * @returns {string} 图片路径
+ */
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../assets/images/common/reward/reward-${name}.png`,
+    import.meta.url,
+  ).href
+
+  return imgSrc
+}
+
+/**
+ * @function handleDiceData
+ * @description 获取走格子数据
+ */
+function handleDiceData(): void {
+  getDiceMapData(gameUid.value)
+    .then((res) => {
+      console.log('res: ', res)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 /**
