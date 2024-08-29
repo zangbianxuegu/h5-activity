@@ -3,10 +3,7 @@
     <div class="dice flex h-screen">
       <div class="dice-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1
-            class="title relative overflow-hidden bg-contain bg-no-repeat"
-            @click="moveTest(0, 3)"
-          >
+          <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
               旅行尾迹地图
               <p>
@@ -150,6 +147,34 @@
             </section>
           </template>
         </activity-modal>
+        <!-- 选择路线 -->
+        <activity-modal ref="modalDirection">
+          <template #content>
+            <section class="" aria-labelledby="modalDirectionTitle">
+              <h2 class="mt-6 text-center text-[40px] text-[#454545]">
+                请选择前进方向
+              </h2>
+              <div class="mt-16 flex justify-center">
+                <button
+                  type="button"
+                  class="arrow-btn arrow-btn-up cursor-pointer bg-contain bg-no-repeat"
+                  aria-label="向上"
+                  @click="chooseDirection('B')"
+                >
+                  <span class="sr-only">向上</span>
+                </button>
+                <button
+                  type="button"
+                  class="arrow-btn arrow-btn-right cursor-pointer bg-contain bg-no-repeat"
+                  aria-label="向右"
+                  @click="chooseDirection('A')"
+                >
+                  <span class="sr-only">向右</span>
+                </button>
+              </div>
+            </section>
+          </template>
+        </activity-modal>
       </div>
     </div>
   </Transition>
@@ -229,26 +254,29 @@ const designConfig: DesignConfig = {
 // 缩放系数
 const { factor } = useResponsiveStyles(designConfig)
 
-// 弹框
+// refs
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalDirection = ref<InstanceType<typeof ActivityModal> | null>(null)
+const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
+const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
 
 // 活动数据
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
-// refs
-const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
-const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
 // 随机骰子数值
 const diceNum = ref(1)
 // 是否正在播放骰子动画
 const isDiceAnimating = ref(false)
-
 // 当前位置，0-49
 let curPosition = 0
+// 当前路线
+let curRoute = '' // A、B
+// 剩余步数
+let remainingSteps = 0
 // 当前动画大小类型
-let curSizeType = 'right_idle'
+let curSizeType = ANIMATION.RIGHT_IDLE
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -282,6 +310,7 @@ watch(
 )
 
 onMounted(() => {
+  modalDirection.value?.openModal()
   try {
     if (gameUid.value !== '') {
       handleDiceData()
@@ -307,18 +336,19 @@ function initAnimateSky(): void {
   // animateSky.value?.playAnimation('back_move', true)
 }
 
-let leftSteps = 0
-
 // 测试动画效果
-function moveTest(from: number, to: number): void {
-  const steps = to - from
-  leftSteps = steps
-  // 开始动画
-  const animation = (coordinates[from].direction + '_move') as Animation
-  animateSkyPlay(from, animation)
-}
+// function moveTest(from: number, to: number): void {
+//   const steps = to - from
+//   leftSteps = steps
+//   // 开始动画
+//   const animation = (coordinates[from].direction + '_move') as Animation
+//   animateSkyPlay(from, animation)
+// }
 
-// 根据位置确定动画类型
+function animateSkyMove(): void {
+  const animation = (coordinates[curPosition].direction + '_move') as Animation
+  animateSkyPlay(curPosition, animation)
+}
 
 /**
  * @function setAnimationSkySize
@@ -437,6 +467,28 @@ function handleDiceRandom(): void {
 function onAnimateDiceComplete(): void {
   console.log('骰子动画完成')
   isDiceAnimating.value = false
+  remainingSteps = diceNum.value
+  animateSkyMove()
+}
+
+/**
+ * @function onAnimate
+ * @description 设置当前位置向前一步
+ */
+function setCurPositionForward(): void {
+  // 当前位置 7，路线 B，下一步 36
+  // 当前位置 35，下一步 0
+  // 当前位置 49，下一步 22
+  // 其他所有位置，下一步 + 1
+  if (curPosition === 7 && curRoute === 'B') {
+    curPosition = 36
+  } else if (curPosition === 35) {
+    curPosition = 0
+  } else if (curPosition === 49) {
+    curPosition = 22
+  } else {
+    curPosition++
+  }
 }
 
 /**
@@ -450,9 +502,11 @@ function OnAnimationSkyComplete(entry: any): void {
   }
   if (entry.animation.name.includes('move')) {
     console.log(`角色动画完成${entry.animation.name}`)
-    leftSteps--
-    curPosition++
-    if (leftSteps > 0) {
+    // 设置剩余步数
+    remainingSteps--
+    // 设置当前位置
+    setCurPositionForward()
+    if (remainingSteps > 0) {
       // move animation
       setTimeout(() => {
         const animation = (coordinates[curPosition].direction +
@@ -506,6 +560,15 @@ function handleSrc(name: string): string {
   ).href
 
   return imgSrc
+}
+
+/**
+ * @function chooseDirection
+ * @description 选择路线
+ */
+function chooseDirection(route: string): void {
+  curRoute = route
+  modalDirection.value?.closeModal()
 }
 
 /**
@@ -642,6 +705,28 @@ function handleDiceData(): void {
 
   &-store {
     background-image: url('@/assets/images/dice-map/btn-store.png');
+  }
+}
+.arrow-btn {
+  width: 202px;
+  height: 202px;
+  border-radius: 30px;
+  background-color: #fff;
+  box-shadow: 0 0 27px 16px rgba(193, 228, 250, 0.78);
+
+  &-up {
+    background-size: 66px 119px;
+    background-position: center center;
+    background-image: url('@/assets/images/dice-map/arrow-up.png');
+  }
+
+  &-right {
+    margin-left: 230px;
+    background-size: 69px 119px;
+    background-position: center center;
+    background-image: url('@/assets/images/dice-map/arrow-up.png');
+    transform: rotate(90deg);
+    transform-origin: center center;
   }
 }
 .crab {
