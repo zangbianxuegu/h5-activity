@@ -18,6 +18,7 @@ export const ANIMATION = {
 }
 
 // 坐标位置
+// 每个格子的中心位置
 export const coordinates: Coordinate[] = [
   // 0
   {
