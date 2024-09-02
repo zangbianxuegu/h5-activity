@@ -40,6 +40,29 @@ onMounted(() => {
       padRight: '0%',
       padTop: '0%',
       padBottom: '0%',
+      transitionTime: 0,
+      // animations: {
+      //   right_move: {
+      //     width: 295,
+      //     height: 222,
+      //     x: -60,
+      //     y: -100,
+      //     padLeft: '0%',
+      //     padRight: '0%',
+      //     padTop: '0%',
+      //     padBottom: '0%',
+      //   },
+      //   right_idle: {
+      //     width: 127,
+      //     height: 185,
+      //     x: -63,
+      //     y: -96,
+      //     padLeft: '0%',
+      //     padRight: '0%',
+      //     padTop: '0%',
+      //     padBottom: '0%',
+      //   },
+      // },
     },
     // 加载完成回调函数
     success: (player) => {
@@ -79,9 +102,9 @@ function playAnimation(animationName: string, loop: boolean): void {
     player.animationState?.clearTracks()
 
     // 必须
-    // player.setViewport(animationName)
-    // player.animationState?.addAnimation(0, animationName, loop)
-    player.setAnimation(animationName, loop)
+    player.setViewport(animationName)
+    player.animationState?.addAnimation(0, animationName, loop)
+    // player.setAnimation(animationName, loop)
     // 必须
     player.play()
   }
