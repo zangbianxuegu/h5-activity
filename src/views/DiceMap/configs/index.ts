@@ -6,7 +6,7 @@ interface Coordinate {
 
 // 动画名称
 // right_idle, right_move, left_idle, left_move, front_idle, front_move, back_idle, back_move
-export const ANIMATION = {
+export const ANIMATION: Record<string, Animation> = {
   LEFT_IDLE: 'left_idle',
   RIGHT_IDLE: 'right_idle',
   FRONT_IDLE: 'front_idle',
@@ -22,62 +22,62 @@ export const ANIMATION = {
 export const coordinates: Coordinate[] = [
   // 0
   {
-    x: 364,
+    x: 360,
     y: 965,
     direction: 'right',
   },
   // 1
   {
     x: 520,
-    y: 962,
+    y: 965,
     direction: 'right',
   },
   // 2
   {
-    x: 677,
-    y: 959,
+    x: 680,
+    y: 965,
     direction: 'right',
   },
   // 3
   {
-    x: 834,
-    y: 956,
+    x: 840,
+    y: 965,
     direction: 'right',
   },
   // 4
   {
-    x: 989,
-    y: 953,
+    x: 1000,
+    y: 965,
     direction: 'right',
   },
   // 5
   {
-    x: 1143,
-    y: 949,
+    x: 1160,
+    y: 965,
     direction: 'right',
   },
   // 6
   {
-    x: 1296,
-    y: 946,
+    x: 1320,
+    y: 965,
     direction: 'right',
   },
   // 7
   {
-    x: 1448,
-    y: 942,
+    x: 1480,
+    y: 965,
     direction: 'right',
   },
   // 8
   {
-    x: 1600,
-    y: 941,
+    x: 1640,
+    y: 965,
     direction: 'right',
   },
   // 9
   {
-    x: 1750,
-    y: 937,
+    x: 1800,
+    y: 965,
     direction: 'front',
   },
   // 10

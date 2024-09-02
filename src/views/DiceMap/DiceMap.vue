@@ -85,6 +85,15 @@
               :premultiplied-alpha="true"
               @complete="OnAnimationSkyComplete"
             />
+            <AnimateSky
+              ref="animateSky2"
+              class="absolute"
+              json-path="./spine/yuyan/yuyan.json"
+              atlas-path="./spine/yuyan/yuyan.atlas"
+              :animations="[]"
+              :premultiplied-alpha="true"
+              @complete="OnAnimationSkyComplete"
+            />
             <!-- 随机骰子动画 -->
             <AnimateDice
               ref="animateDice"
@@ -259,6 +268,7 @@ const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalDirection = ref<InstanceType<typeof ActivityModal> | null>(null)
 const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
+const animateSky2 = ref<InstanceType<typeof AnimateSky> | null>(null)
 const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
 
 // 活动数据
@@ -269,14 +279,14 @@ const gameUid = computed(() => baseStore.baseInfo.gameUid)
 const diceNum = ref(1)
 // 是否正在播放骰子动画
 const isDiceAnimating = ref(false)
+// 当前动画类型
+let curAnimation = ANIMATION.RIGHT_IDLE
 // 当前位置，0-49
-let curPosition = 0
+let curPosition = 1
 // 当前路线
 let curRoute = '' // A、B
 // 剩余步数
 let remainingSteps = 0
-// 当前动画大小类型
-let curSizeType = ANIMATION.RIGHT_IDLE
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -310,7 +320,6 @@ watch(
 )
 
 onMounted(() => {
-  modalDirection.value?.openModal()
   try {
     if (gameUid.value !== '') {
       handleDiceData()
@@ -318,7 +327,7 @@ onMounted(() => {
     // 初始化角色动画
     setTimeout(() => {
       initAnimateSky()
-    }, 2000)
+    }, 1000)
   } catch (error) {
     console.error(error)
   }
@@ -328,26 +337,27 @@ onMounted(() => {
 // 初始化
 function initAnimateSky(): void {
   const animation = (coordinates[curPosition].direction + '_idle') as Animation
-  console.log('animation: ', animation)
   animateSkyPlay(curPosition, animation)
-  // 测试
-  // setAnimateSkySize('back_move')
-  // setAnimateSkyPosition(curPosition, 'back_move')
-  // animateSky.value?.playAnimation('back_move', true)
 }
 
-// 测试动画效果
-// function moveTest(from: number, to: number): void {
-//   const steps = to - from
-//   leftSteps = steps
-//   // 开始动画
-//   const animation = (coordinates[from].direction + '_move') as Animation
-//   animateSkyPlay(from, animation)
-// }
+// 动画测试
+window.addEventListener('click', () => {
+  remainingSteps = 2
+  animateSkyMove()
+})
 
 function animateSkyMove(): void {
-  const animation = (coordinates[curPosition].direction + '_move') as Animation
-  animateSkyPlay(curPosition, animation)
+  if (curPosition === 7) {
+    // 先进行路线选择
+    modalDirection.value?.openModal()
+  } else {
+    // move animation
+    setTimeout(() => {
+      const animation = (coordinates[curPosition].direction +
+        '_move') as Animation
+      animateSkyPlay(curPosition, animation)
+    }, 0)
+  }
 }
 
 /**
@@ -357,7 +367,7 @@ function animateSkyMove(): void {
  */
 function setAnimateSkySize(animation: Animation): void {
   if (animateSky.value) {
-    curSizeType = animation
+    curAnimation = animation
     const style = generateDynamicStyles({
       width: animateSkySizes[animation].width,
       height: animateSkySizes[animation].height,
@@ -379,20 +389,20 @@ function setAnimateSkyPosition(position: number, animation: Animation): void {
   let top = 0
   switch (animation) {
     case ANIMATION.RIGHT_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2)
-      top = Math.floor(y - animateSkySizes[animation].height / 2) + 22
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 12
+      top = Math.floor(y - animateSkySizes[animation].height / 2) + 18
       break
     case ANIMATION.RIGHT_MOVE:
       left = Math.floor(x - animateSkySizes[animation].width / 2) + 82
       top = Math.floor(y - animateSkySizes[animation].height / 2)
       break
     case ANIMATION.FRONT_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2)
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 50
+      left = Math.floor(x - animateSkySizes[animation].width / 2) + 5
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 55
       break
     case ANIMATION.FRONT_MOVE:
       left = Math.floor(x - animateSkySizes[animation].width / 2)
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 100
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 95
       break
     case ANIMATION.LEFT_IDLE:
       left = Math.floor(x - animateSkySizes[animation].width / 2) - 10
@@ -403,12 +413,12 @@ function setAnimateSkyPosition(position: number, animation: Animation): void {
       top = Math.floor(y - animateSkySizes[animation].height / 2) - 20
       break
     case ANIMATION.BACK_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 20
+      left = Math.floor(x - animateSkySizes[animation].width / 2) - 15
       top = Math.floor(y - animateSkySizes[animation].height / 2) - 40
       break
     case ANIMATION.BACK_MOVE:
       left = Math.floor(x - animateSkySizes[animation].width / 2) - 35
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 10
+      top = Math.floor(y - animateSkySizes[animation].height / 2) - 5
       break
     default:
       break
@@ -431,7 +441,7 @@ function setAnimateSkyPosition(position: number, animation: Animation): void {
  */
 function animateSkyPlay(position: number, animation: Animation): void {
   // 设置动画大小
-  if (curSizeType !== animation) {
+  if (curAnimation !== animation) {
     setAnimateSkySize(animation)
   }
   // 设置动画位置
@@ -502,23 +512,53 @@ function OnAnimationSkyComplete(entry: any): void {
   }
   if (entry.animation.name.includes('move')) {
     console.log(`角色动画完成${entry.animation.name}`)
+
     // 设置剩余步数
     remainingSteps--
     // 设置当前位置
     setCurPositionForward()
+
     if (remainingSteps > 0) {
-      // move animation
-      setTimeout(() => {
-        const animation = (coordinates[curPosition].direction +
-          '_move') as Animation
-        animateSkyPlay(curPosition, animation)
-      }, 0)
+      animateSkyMove()
     } else {
       // idle animation
       const animation = (coordinates[curPosition].direction +
         '_idle') as Animation
       animateSkyPlay(curPosition, animation)
+      // setTimeout(() => {
+      //   if (animateSky.value) {
+      //     animateSky.value.$el.style.display = 'block'
+      //   }
+      // }, 300)
+      // if (animateSky.value) {
+      //   animateSky.value.$el.style.display = 'none'
+      // }
+      // setAnimateSkySize(animation)
+      // setAnimateSkyPosition(curPosition, animation)
+      // const loop = animationListIdle.includes(animation)
+      // animateSky.value?.playAnimation(animation, loop)
     }
+  }
+}
+
+/**
+ * @function chooseDirection
+ * @description 选择路线
+ * @param {string} route 路线：A | B
+ */
+function chooseDirection(route: string): void {
+  curRoute = route
+  modalDirection.value?.closeModal()
+  if (remainingSteps > 0) {
+    setTimeout(() => {
+      let animation = ANIMATION.RIGHT_MOVE
+      if (curRoute === 'A') {
+        animation = ANIMATION.RIGHT_MOVE
+      } else {
+        animation = ANIMATION.FRONT_MOVE
+      }
+      animateSkyPlay(curPosition, animation)
+    }, 0)
   }
 }
 
@@ -560,15 +600,6 @@ function handleSrc(name: string): string {
   ).href
 
   return imgSrc
-}
-
-/**
- * @function chooseDirection
- * @description 选择路线
- */
-function chooseDirection(route: string): void {
-  curRoute = route
-  modalDirection.value?.closeModal()
 }
 
 /**
