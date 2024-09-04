@@ -1,12 +1,5 @@
 <template>
-  <div>
-    <div v-if="loading" class="text-red-500">loading...</div>
-    <div
-      v-show="!loading"
-      ref="spineContainer"
-      class="spine h-full w-full"
-    ></div>
-  </div>
+  <div ref="spineContainer" class="spine transition-opacity"></div>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +11,7 @@ import {
 interface Props {
   jsonPath: string
   atlasPath: string
+  animations: string[]
   premultipliedAlpha: boolean
 }
 
@@ -34,28 +28,47 @@ onMounted(() => {
   const config: SpinePlayerConfig = {
     jsonUrl: props.jsonPath,
     atlasUrl: props.atlasPath,
+    animations: props.animations,
     alpha: true,
     premultipliedAlpha: props.premultipliedAlpha,
     backgroundColor: '#00000000',
     preserveDrawingBuffer: false,
     showControls: false,
-    // animation: 'left_idle',
     viewport: {
-      // debugRender: true,
-      padTop: 0,
-      padLeft: 0,
-      padBottom: 0,
-      padRight: 0,
-      x: -225,
-      y: -200,
-      width: 450,
-      height: 400,
+      debugRender: true,
+      padLeft: '0%',
+      padRight: '0%',
+      padTop: '0%',
+      padBottom: '0%',
+      transitionTime: 0,
+      // animations: {
+      //   right_move: {
+      //     width: 295,
+      //     height: 222,
+      //     x: -60,
+      //     y: -100,
+      //     padLeft: '0%',
+      //     padRight: '0%',
+      //     padTop: '0%',
+      //     padBottom: '0%',
+      //   },
+      //   right_idle: {
+      //     width: 127,
+      //     height: 185,
+      //     x: -63,
+      //     y: -96,
+      //     padLeft: '0%',
+      //     padRight: '0%',
+      //     padTop: '0%',
+      //     padBottom: '0%',
+      //   },
+      // },
     },
     // 加载完成回调函数
     success: (player) => {
       loading.value = false
       // 初始加载完成之后清空动画
-      // player.animationState?.setEmptyAnimation(0, 0)
+      player.animationState?.setEmptyAnimation(0, 0)
       // 监听动画完成事件
       player.animationState?.addListener({
         complete: function (entry) {
@@ -87,27 +100,17 @@ onMounted(() => {
 function playAnimation(animationName: string, loop: boolean): void {
   if (player) {
     player.animationState?.clearTracks()
+
     // 必须
-    // player.setViewport(animationName)
-    // player.animationState?.addAnimation(0, animationName, loop)
-    player.setAnimation(animationName, loop)
+    player.setViewport(animationName)
+    player.animationState?.addAnimation(0, animationName, loop)
+    // player.setAnimation(animationName, loop)
     // 必须
     player.play()
   }
 }
 
-/**
- * @function setEmptyAnimation
- * @description 设置空动画
- */
-function setEmptyAnimation(): void {
-  if (player) {
-    player.animationState?.setEmptyAnimation(0, 0)
-  }
-}
-
 defineExpose({
   playAnimation,
-  setEmptyAnimation,
 })
 </script>
