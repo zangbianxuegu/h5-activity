@@ -19,3 +19,16 @@ export function generateUUID(): string {
     return v.toString(16)
   })
 }
+
+/**
+ * @function capitalizeFirstLetter
+ * @description 将字符串的首字母大写
+ * @param str 输入字符串
+ * @returns 输出字符串
+ */
+export function capitalizeFirstLetter(str: string): string {
+  if (str.length === 0) {
+    return str
+  }
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}

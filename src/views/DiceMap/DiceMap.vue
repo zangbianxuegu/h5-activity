@@ -12,7 +12,7 @@
               </p>
             </div>
             <div
-              class="help cursor-pointer bg-contain"
+              class="help z-10 cursor-pointer bg-contain"
               @click="handleHelp"
             ></div>
           </h1>
@@ -32,10 +32,19 @@
                     <span class="sr-only">兑换商店</span>
                   </a>
                 </li>
+                <li class="nav-item nav-query mt-3 bg-contain" @click="test">
+                  <!-- <a href="javascript:void" class="block h-full w-full">
+                    <span class="sr-only">奖励查询</span>
+                  </a> -->
+                </li>
               </ul>
             </nav>
+            <!-- 开始 -->
+            <div class="start absolute bg-contain">
+              <span class="sr-only">开始</span>
+            </div>
             <!-- 螃蟹 -->
-            <div class="crab absolute right-0 top-[198px] bg-contain">
+            <div class="crab absolute right-0 top-[104px] bg-contain">
               <!-- 左眼 -->
               <span
                 class="crab-eye crab-eye-left inline-block rounded-full bg-contain"
@@ -47,50 +56,77 @@
             </div>
             <!-- 骰子操作 -->
             <div
-              class="dices absolute right-[36px] top-[468px] z-10 flex flex-col"
+              class="dices absolute right-[12px] top-[446px] z-10 flex flex-col"
             >
               <!-- 万能骰子，选择点数 -->
               <button
                 type="button"
                 class="dice-item dice-select relative cursor-pointer bg-contain"
                 aria-label="选择点数的万能骰子"
-                onclick="alert('选择点数的万能骰子被点击')"
+                @click="handleDiceSelect"
               >
                 <span
-                  class="absolute right-[-25px] top-[-25px] h-[60px] w-[60px] rounded-full bg-[#838ce0] text-center font-medium leading-[60px] text-white"
+                  class="dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white"
                   >2</span
                 >
               </button>
-
               <!-- 随机骰子 -->
               <button
                 type="button"
-                class="dice-item dice-random relative mt-[60px] cursor-pointer bg-contain"
+                class="dice-item dice-random relative cursor-pointer bg-contain"
                 aria-label="随机骰子"
                 @click="handleDiceRandom"
               >
                 <span
-                  class="absolute right-[-25px] top-[-25px] h-[60px] w-[60px] rounded-full bg-[#838ce0] text-center font-medium leading-[60px] text-white"
+                  class="dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white"
                   >10</span
                 >
               </button>
             </div>
+            <!-- 格子 -->
+            <!-- <div
+              class="row absolute left-[240px] top-[93px] flex h-[940px] w-[1600px] flex-wrap"
+            >
+              <div
+                class="h-[94px] w-[160px] border border-solid border-green-500"
+                v-for="(_, index) in Array.from({ length: 100 })"
+                :key="index"
+              ></div>
+            </div> -->
             <!-- sky 动画 -->
+            <!-- right -->
             <AnimateSky
-              ref="animateSky"
-              class="absolute h-[185px] w-[127px]"
+              :ref="animateSkyRefs.animateSkyRight"
+              class="c111 absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
-              :animations="[]"
               :premultiplied-alpha="true"
               @complete="OnAnimationSkyComplete"
             />
+            <!-- front -->
             <AnimateSky
-              ref="animateSky2"
-              class="absolute"
+              :ref="animateSkyRefs.animateSkyFront"
+              class="c222 absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
-              :animations="[]"
+              :premultiplied-alpha="true"
+              @complete="OnAnimationSkyComplete"
+            />
+            <!-- left -->
+            <AnimateSky
+              :ref="animateSkyRefs.animateSkyLeft"
+              class="c333 absolute h-[400px] w-[450px]"
+              json-path="./spine/yuyan/yuyan.json"
+              atlas-path="./spine/yuyan/yuyan.atlas"
+              :premultiplied-alpha="true"
+              @complete="OnAnimationSkyComplete"
+            />
+            <!-- back -->
+            <AnimateSky
+              :ref="animateSkyRefs.animateSkyBack"
+              class="c444 absolute h-[400px] w-[450px]"
+              json-path="./spine/yuyan/yuyan.json"
+              atlas-path="./spine/yuyan/yuyan.atlas"
               :premultiplied-alpha="true"
               @complete="OnAnimationSkyComplete"
             />
@@ -108,82 +144,13 @@
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
-        <activity-modal ref="modalHelp">
-          <template #content>
-            <section aria-labelledby="activity-rules-title">
-              <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动时间：</span>
-                2024年10月1日~2024年10月7日
-              </h3>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动内容：</span>
-              </h3>
-              <ul class="modal-text list-inside list-decimal">
-                <li>活动期间，可前往飞行里程碑页面完成各种任务获取骰子</li>
-                <li>
-                  使用骰子后，角色可在旅行尾迹地图上移动相应的格数，并获取对应的奖励。每次完成一圈后，会获得<span
-                    class="text-[#ffcb4d]"
-                    >飞行券*30</span
-                  >的额外奖励；
-                </li>
-                <li>使用飞行券可在纪念品商店兑换各种道具。</li>
-              </ul>
-            </section>
-          </template>
-        </activity-modal>
+        <ModalHelp ref="modalHelp" />
         <!-- 领奖弹框 -->
-        <activity-modal ref="modalReward">
-          <template #content>
-            <section
-              class="flex h-full flex-col"
-              aria-labelledby="modalRewardTitle"
-            >
-              <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
-              <p class="modal-text">
-                恭喜你获得
-                <span class="modal-text-blue">
-                  {{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                  {{ curRewards.count }} </span
-                >：
-              </p>
-              <div class="flex flex-1 items-center justify-center">
-                <img
-                  :src="handleSrc(String(curRewards.name))"
-                  alt="reward image"
-                />
-              </div>
-            </section>
-          </template>
-        </activity-modal>
-        <!-- 选择路线 -->
-        <activity-modal ref="modalDirection">
-          <template #content>
-            <section class="" aria-labelledby="modalDirectionTitle">
-              <h2 class="mt-6 text-center text-[40px] text-[#454545]">
-                请选择前进方向
-              </h2>
-              <div class="mt-16 flex justify-center">
-                <button
-                  type="button"
-                  class="arrow-btn arrow-btn-up cursor-pointer bg-contain bg-no-repeat"
-                  aria-label="向上"
-                  @click="chooseDirection('B')"
-                >
-                  <span class="sr-only">向上</span>
-                </button>
-                <button
-                  type="button"
-                  class="arrow-btn arrow-btn-right cursor-pointer bg-contain bg-no-repeat"
-                  aria-label="向右"
-                  @click="chooseDirection('A')"
-                >
-                  <span class="sr-only">向右</span>
-                </button>
-              </div>
-            </section>
-          </template>
-        </activity-modal>
+        <ModalReward ref="modalReward" />
+        <!-- 选择路线弹框 -->
+        <ModalRoute ref="modalRoute" @choose="chooseRoute" />
+        <!-- 选择点数弹框 -->
+        <ModalDice ref="modalDice" @choose="chooseDiceNum" />
       </div>
     </div>
   </Transition>
@@ -194,45 +161,22 @@ import { showToast } from 'vant'
 import { getDiceMapData } from '@/apis/diceMap'
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
-import ActivityModal from '@/components/Modal'
 import { useBaseStore } from '@/stores/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import { capitalizeFirstLetter } from '@/utils/utils'
 import AnimateSky from './components/AnimateSky.vue'
 import AnimateDice from './components/AnimateDice.vue'
+import ModalHelp from './components/ModalHelp.vue'
+import ModalReward from './components/ModalReward.vue'
+import ModalRoute from './components/ModalRoute.vue'
+import ModalDice from './components/ModalDice.vue'
 import {
   ANIMATION,
   animationListIdle,
   coordinates,
-  animateSkySizes,
+  directions,
   type Animation,
 } from './configs'
-
-interface Rewards {
-  name: string
-  count: number
-}
-interface RewardsName {
-  outfit_prop_marshmallow: string
-  beachball: string
-  outfit_prop_mantafloat: string
-  resize_potion: string
-  glow: string
-  outfit_prop_surfboard: string
-  heart: string
-}
-const rewardsText: RewardsName = {
-  outfit_prop_marshmallow: '烧烤架魔法',
-  beachball: '沙滩球魔法',
-  outfit_prop_mantafloat: '遥鲲泳圈试用魔法',
-  resize_potion: '体型重塑',
-  glow: '璀璨之星',
-  outfit_prop_surfboard: '冲浪板试用魔法',
-  heart: '爱心',
-}
-const curRewards: Ref<Rewards> = ref({
-  name: 'outfit_prop_marshmallow',
-  count: 2,
-})
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -262,14 +206,23 @@ const designConfig: DesignConfig = {
 }
 // 缩放系数
 const { factor } = useResponsiveStyles(designConfig)
+console.log('factor: ', factor.value)
 
 // refs
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalDirection = ref<InstanceType<typeof ActivityModal> | null>(null)
-const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
-const animateSky2 = ref<InstanceType<typeof AnimateSky> | null>(null)
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
+const modalReward = ref<InstanceType<typeof ModalReward> | null>(null)
+const modalRoute = ref<InstanceType<typeof ModalRoute> | null>(null)
+const modalDice = ref<InstanceType<typeof ModalDice> | null>(null)
+// const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
 const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
+const animateSkyRefs = {
+  animateSkyFront: ref<InstanceType<typeof AnimateSky> | null>(null),
+  animateSkyBack: ref<InstanceType<typeof AnimateSky> | null>(null),
+  animateSkyRight: ref<InstanceType<typeof AnimateSky> | null>(null),
+  animateSkyLeft: ref<InstanceType<typeof AnimateSky> | null>(null),
+}
+// 当前 animateSky 实例
+let curAnimateSky = animateSkyRefs.animateSkyRight
 
 // 活动数据
 const baseStore = useBaseStore()
@@ -280,13 +233,17 @@ const diceNum = ref(1)
 // 是否正在播放骰子动画
 const isDiceAnimating = ref(false)
 // 当前动画类型
-let curAnimation = ANIMATION.RIGHT_IDLE
+// let curAnimation = ANIMATION.RIGHT_IDLE
 // 当前位置，0-49
-let curPosition = 1
+let curPosition = 36
+// 是否需要设置位置
+let isNeedSetPos = true
 // 当前路线
-let curRoute = '' // A、B
+let curRoute = 'B' // A、B
 // 剩余步数
 let remainingSteps = 0
+// 在最后的 idle 时切换了方向
+let hasSwitched = false
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -336,22 +293,98 @@ onMounted(() => {
 
 // 初始化
 function initAnimateSky(): void {
+  // 设置 curAnimateSky
+  for (const [direction, positions] of Object.entries(directions)) {
+    if (positions.includes(curPosition)) {
+      const refKey = `animateSky${capitalizeFirstLetter(direction)}`
+      curAnimateSky = animateSkyRefs[refKey as keyof typeof animateSkyRefs]
+      break
+    }
+  }
   const animation = (coordinates[curPosition].direction + '_idle') as Animation
   animateSkyPlay(curPosition, animation)
 }
 
 // 动画测试
-window.addEventListener('click', () => {
-  remainingSteps = 2
+function test(): void {
+  remainingSteps = 6
+  isNeedSetPos = true
   animateSkyMove()
-})
+}
 
+/**
+ * @function setAnimateSkyPosition
+ * @description 设置动画位置，根据动画大小和坐标位置
+ * @param {number} position 坐标位置
+ */
+function setAnimateSkyPosition(position: number): void {
+  const { x, y, direction } = coordinates[position]
+  console.log('开始设置位置：', x, y)
+  let offsetX = 225
+  let offsetY = 200
+  switch (direction) {
+    case 'left':
+      offsetX = 255
+      break
+    case 'back':
+      offsetX = 215
+      offsetY = 210
+      break
+    default:
+      break
+  }
+  if (curAnimateSky.value) {
+    const style = generateDynamicStyles({
+      left: x - offsetX,
+      top: y - offsetY,
+    })
+    console.log('style22: ', style)
+    curAnimateSky.value.$el.style.left = style.left
+    curAnimateSky.value.$el.style.top = style.top
+  }
+}
+
+/**
+ * @function animateSkyPlay
+ * @description 角色动画。设置位置，根据动画名称和是否循环进行播放
+ * @param {number} position 位置
+ * @param {Animation} animation 动画名称
+ */
+function animateSkyPlay(position: number, animation: Animation): void {
+  console.log('position: ', position)
+  // 1. 让其他方向的 animateSky 实例隐藏
+  for (const animateSky of Object.values(animateSkyRefs)) {
+    animateSky.value?.$el.classList.add('hidden')
+    // 清空动画
+    animateSky.value?.setEmptyAnimation()
+  }
+  // 2. 让当前方向上的 animateSky 实例显示进行动画
+  curAnimateSky.value?.$el.classList.remove('hidden')
+  console.log('curAnimateSky.value: ', curAnimateSky.value?.$el)
+  // 设置动画位置
+  // fix: 结束 idle 不需要设置位置。角色停留在 move 的结束 pose 上。
+  // 如果切换了方向，也需要设置位置
+  if (isNeedSetPos || hasSwitched) {
+    console.log('111')
+    setAnimateSkyPosition(position)
+  }
+  // 开始动画
+  const loop = animationListIdle.includes(animation)
+  curAnimateSky.value?.playAnimation(animation, loop)
+}
+
+/**
+ * @function animateSkyMove
+ * @description 角色移动。根据当前位置和路线选择进行移动
+ */
 function animateSkyMove(): void {
   if (curPosition === 7) {
     // 先进行路线选择
-    modalDirection.value?.openModal()
+    modalRoute.value?.open()
   } else {
     // move animation
+    // fix: 连续 move，每一次 move 之后，会有重影现象
+    // 比如 0->2，0->1 move 结束时，角色在右边停留，1->2 时，设置位置，此时角色还是在视口右边，再进行动画 play，角色从视口中间开始，这样角色从右到中间有一个闪动。
     setTimeout(() => {
       const animation = (coordinates[curPosition].direction +
         '_move') as Animation
@@ -361,94 +394,11 @@ function animateSkyMove(): void {
 }
 
 /**
- * @function setAnimationSkySize
- * @description 设置动画大小，每个动画的大小是固定的
- * @param {string} animation 动画名称
+ * @function handleDiceSelect
+ * @description 点击万能骰子
  */
-function setAnimateSkySize(animation: Animation): void {
-  if (animateSky.value) {
-    curAnimation = animation
-    const style = generateDynamicStyles({
-      width: animateSkySizes[animation].width,
-      height: animateSkySizes[animation].height,
-    })
-    animateSky.value.$el.style.width = style.width
-    animateSky.value.$el.style.height = style.height
-  }
-}
-
-/**
- * @function setAnimateSkyPosition
- * @description 设置动画位置，根据动画大小和坐标位置
- * @param {number} position 坐标位置
- * @param {string} animation 动画名称
- */
-function setAnimateSkyPosition(position: number, animation: Animation): void {
-  const { x, y } = coordinates[position]
-  let left = 0
-  let top = 0
-  switch (animation) {
-    case ANIMATION.RIGHT_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 12
-      top = Math.floor(y - animateSkySizes[animation].height / 2) + 18
-      break
-    case ANIMATION.RIGHT_MOVE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) + 82
-      top = Math.floor(y - animateSkySizes[animation].height / 2)
-      break
-    case ANIMATION.FRONT_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) + 5
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 55
-      break
-    case ANIMATION.FRONT_MOVE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2)
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 95
-      break
-    case ANIMATION.LEFT_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 10
-      top = Math.floor(y - animateSkySizes[animation].height / 2)
-      break
-    case ANIMATION.LEFT_MOVE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 80
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 20
-      break
-    case ANIMATION.BACK_IDLE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 15
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 40
-      break
-    case ANIMATION.BACK_MOVE:
-      left = Math.floor(x - animateSkySizes[animation].width / 2) - 35
-      top = Math.floor(y - animateSkySizes[animation].height / 2) - 5
-      break
-    default:
-      break
-  }
-  if (animateSky.value) {
-    const style = generateDynamicStyles({
-      left,
-      top,
-    })
-    animateSky.value.$el.style.left = style.left
-    animateSky.value.$el.style.top = style.top
-  }
-}
-
-/**
- * @function animateSkyPlay
- * @description 角色动画
- * @param {number} position 位置
- * @param {Animation} animation 动画名称
- */
-function animateSkyPlay(position: number, animation: Animation): void {
-  // 设置动画大小
-  if (curAnimation !== animation) {
-    setAnimateSkySize(animation)
-  }
-  // 设置动画位置
-  setAnimateSkyPosition(position, animation)
-  // 开始动画
-  const loop = animationListIdle.includes(animation)
-  animateSky.value?.playAnimation(animation, loop)
+function handleDiceSelect(): void {
+  modalDice.value?.open()
 }
 
 /**
@@ -478,6 +428,7 @@ function onAnimateDiceComplete(): void {
   console.log('骰子动画完成')
   isDiceAnimating.value = false
   remainingSteps = diceNum.value
+  isNeedSetPos = true
   animateSkyMove()
 }
 
@@ -507,48 +458,75 @@ function setCurPositionForward(): void {
  * @param entry
  */
 function OnAnimationSkyComplete(entry: any): void {
-  if (entry.animation.name.includes('idle')) {
-    console.log(`角色动画完成${entry.animation.name}`)
-  }
+  // 重置
+  hasSwitched = false
   if (entry.animation.name.includes('move')) {
-    console.log(`角色动画完成${entry.animation.name}`)
+    console.log('111111111111111')
 
     // 设置剩余步数
     remainingSteps--
     // 设置当前位置
     setCurPositionForward()
 
+    // 切换方向
+    // 结束时在这些位置，需要切换方向
+    if ([0, 9, 18, 27, 39, 43, 45, 47].includes(curPosition)) {
+      switchDirection(curPosition)
+      console.log('aaaaaaaaaaaaaaaa')
+    }
+    // 结束时在22，且路线为 B，需要切换方向
+    // 剩余步数为0，需要设置 hasSwitched，以便设置位置
+    if (curPosition === 22 && curRoute === 'B') {
+      switchDirection(curPosition, 'left')
+
+      console.log('cccccccccccc1111')
+      if (remainingSteps === 0) {
+        hasSwitched = true
+        console.log('ccccccccccc222222')
+      }
+    }
+    // 结束时在这些位置，且剩余步数为0，需要设置 hasSwitched，以便设置位置
+    if ([0, 9, 18, 27, 39, 43, 45, 47].includes(curPosition)) {
+      if (remainingSteps === 0) {
+        console.log('bbbbbbbbbbbbbbb')
+        hasSwitched = true
+      }
+    }
+    // 如果剩余步数大于0，继续 move 动画
+    // 否则，进行 idle 动画
     if (remainingSteps > 0) {
       animateSkyMove()
     } else {
+      isNeedSetPos = false
       // idle animation
       const animation = (coordinates[curPosition].direction +
         '_idle') as Animation
+      console.log('animation: ', animation)
       animateSkyPlay(curPosition, animation)
-      // setTimeout(() => {
-      //   if (animateSky.value) {
-      //     animateSky.value.$el.style.display = 'block'
-      //   }
-      // }, 300)
-      // if (animateSky.value) {
-      //   animateSky.value.$el.style.display = 'none'
-      // }
-      // setAnimateSkySize(animation)
-      // setAnimateSkyPosition(curPosition, animation)
-      // const loop = animationListIdle.includes(animation)
-      // animateSky.value?.playAnimation(animation, loop)
     }
   }
 }
 
 /**
- * @function chooseDirection
+ * @function switchDirection
+ * @description 切换方向，改变 curAnimateSky
+ * @param {number} position 位置
+ * @param {string} direction 方向
+ */
+function switchDirection(position: number, direction?: string): void {
+  const finalDirection = direction || coordinates[position].direction
+  const refKey = `animateSky${capitalizeFirstLetter(finalDirection)}`
+  console.log('refKey: ', refKey)
+  curAnimateSky = animateSkyRefs[refKey as keyof typeof animateSkyRefs]
+}
+
+/**
+ * @function chooseRoute
  * @description 选择路线
  * @param {string} route 路线：A | B
  */
-function chooseDirection(route: string): void {
+function chooseRoute(route: string): void {
   curRoute = route
-  modalDirection.value?.closeModal()
   if (remainingSteps > 0) {
     setTimeout(() => {
       let animation = ANIMATION.RIGHT_MOVE
@@ -556,16 +534,29 @@ function chooseDirection(route: string): void {
         animation = ANIMATION.RIGHT_MOVE
       } else {
         animation = ANIMATION.FRONT_MOVE
+        // 切换方向
+        switchDirection(curPosition, 'front')
       }
       animateSkyPlay(curPosition, animation)
     }, 0)
   }
 }
 
+/**
+ * @function chooseDiceNum
+ * @description 选择万能骰子点数
+ * @param num 选择的点数
+ */
+function chooseDiceNum(num: number): void {
+  remainingSteps = num
+  isNeedSetPos = true
+  animateSkyMove()
+}
+
 // px -> vw
 const calculatePxToViewport = (px: number): string => {
   const clientWidth = document.documentElement.clientWidth
-  return Math.round(((px * factor.value) / DESIGN_WIDTH) * clientWidth) + 'px'
+  return Math.round((px / DESIGN_WIDTH) * clientWidth) + 'px'
   // return ((px * factor.value) / DESIGN_WIDTH) * 100 + 'vw'
 }
 
@@ -585,21 +576,7 @@ const generateDynamicStyles = (
  * @returns {void}
  */
 function handleHelp(): void {
-  modalHelp.value?.openModal()
-}
-
-/**
- * @function 处理 img src
- * @param name 奖励名
- * @returns {string} 图片路径
- */
-function handleSrc(name: string): string {
-  const imgSrc = new URL(
-    `../../assets/images/common/reward/reward-${name}.png`,
-    import.meta.url,
-  ).href
-
-  return imgSrc
+  modalHelp.value?.open()
 }
 
 /**
@@ -698,28 +675,33 @@ function handleDiceData(): void {
 }
 .title {
   position: absolute;
-  left: 488px;
-  top: 641px;
-  width: 755px;
-  height: 218px;
+  left: 432px;
+  top: 593px;
+  width: 776px;
+  height: 348px;
   background-image: url('@/assets/images/dice-map/title.png');
 }
 .help {
   position: absolute;
   width: 80px;
   height: 80px;
-  bottom: -10px;
-  right: -10px;
+  top: 110px;
+  right: -20px;
 }
 .dice-item {
-  width: 142px;
-  height: 142px;
+  width: 188px;
+  height: 188px;
 }
 .dice-select {
   background-image: url('@/assets/images/dice-map/dice-select.png');
 }
 .dice-random {
   background-image: url('@/assets/images/dice-map/dice-random.png');
+}
+.dice-num {
+  box-shadow:
+    0 0 10px rgba(188, 255, 195, 0.68),
+    0 0 2px rgba(188, 255, 195, 0.68);
 }
 .nav {
   left: 27px;
@@ -737,32 +719,21 @@ function handleDiceData(): void {
   &-store {
     background-image: url('@/assets/images/dice-map/btn-store.png');
   }
+
+  &-query {
+    background-image: url('@/assets/images/dice-map/btn-query.png');
+  }
 }
-.arrow-btn {
-  width: 202px;
-  height: 202px;
-  border-radius: 30px;
-  background-color: #fff;
-  box-shadow: 0 0 27px 16px rgba(193, 228, 250, 0.78);
-
-  &-up {
-    background-size: 66px 119px;
-    background-position: center center;
-    background-image: url('@/assets/images/dice-map/arrow-up.png');
-  }
-
-  &-right {
-    margin-left: 230px;
-    background-size: 69px 119px;
-    background-position: center center;
-    background-image: url('@/assets/images/dice-map/arrow-up.png');
-    transform: rotate(90deg);
-    transform-origin: center center;
-  }
+.start {
+  left: 277px;
+  bottom: 140px;
+  width: 85px;
+  height: 44px;
+  background-image: url('@/assets/images/dice-map/start.png');
 }
 .crab {
-  width: 244px;
-  height: 230px;
+  width: 218px;
+  height: 341px;
   background-image: url('@/assets/images/dice-map/crab.png');
 
   &-eye {
@@ -770,8 +741,8 @@ function handleDiceData(): void {
   }
 
   &-eye-left {
-    left: 26px;
-    top: 98px;
+    left: 28px;
+    top: 203px;
     width: 15px;
     height: 21px;
     background-image: url('@/assets/images/dice-map/crab-eye-left.png');
@@ -780,8 +751,8 @@ function handleDiceData(): void {
 
   &-eye-right {
     position: absolute;
-    left: 63px;
-    top: 128px;
+    left: 64px;
+    top: 231px;
     width: 19px;
     height: 22px;
     background-image: url('@/assets/images/dice-map/crab-eye-right.png');

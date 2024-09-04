@@ -22,302 +22,302 @@ export const ANIMATION: Record<string, Animation> = {
 export const coordinates: Coordinate[] = [
   // 0
   {
-    x: 360,
-    y: 965,
+    x: 320,
+    y: 986,
     direction: 'right',
   },
   // 1
   {
-    x: 520,
-    y: 965,
+    x: 480,
+    y: 986,
     direction: 'right',
   },
   // 2
   {
-    x: 680,
-    y: 965,
+    x: 640,
+    y: 986,
     direction: 'right',
   },
   // 3
   {
-    x: 840,
-    y: 965,
+    x: 800,
+    y: 986,
     direction: 'right',
   },
   // 4
   {
-    x: 1000,
-    y: 965,
+    x: 960,
+    y: 986,
     direction: 'right',
   },
   // 5
   {
-    x: 1160,
-    y: 965,
+    x: 1120,
+    y: 986,
     direction: 'right',
   },
   // 6
   {
-    x: 1320,
-    y: 965,
+    x: 1280,
+    y: 986,
     direction: 'right',
   },
   // 7
   {
-    x: 1480,
-    y: 965,
+    x: 1440,
+    y: 986,
     direction: 'right',
   },
   // 8
   {
-    x: 1640,
-    y: 965,
+    x: 1600,
+    y: 986,
     direction: 'right',
   },
   // 9
   {
-    x: 1800,
-    y: 965,
+    x: 1760,
+    y: 986,
     direction: 'front',
   },
   // 10
   {
-    x: 1737,
-    y: 839,
+    x: 1760,
+    y: 892,
     direction: 'front',
   },
   // 11
   {
-    x: 1723,
-    y: 745,
+    x: 1760,
+    y: 798,
     direction: 'front',
   },
   // 12
   {
-    x: 1709,
-    y: 654,
+    x: 1760,
+    y: 704,
     direction: 'front',
   },
   // 13
   {
-    x: 1697,
-    y: 570,
+    x: 1760,
+    y: 610,
     direction: 'front',
   },
   // 14
   {
-    x: 1684,
-    y: 479,
+    x: 1760,
+    y: 516,
     direction: 'front',
   },
   // 15
   {
-    x: 1673,
-    y: 397,
+    x: 1760,
+    y: 422,
     direction: 'front',
   },
   // 16
   {
-    x: 1661,
-    y: 316,
+    x: 1760,
+    y: 328,
     direction: 'front',
   },
   // 17
   {
-    x: 1649,
-    y: 236,
+    x: 1760,
+    y: 234,
     direction: 'front',
   },
   // 18
   {
-    x: 1639,
-    y: 161,
+    x: 1760,
+    y: 140,
     direction: 'left',
   },
   // 19
   {
-    x: 1507,
-    y: 161,
+    x: 1600,
+    y: 140,
     direction: 'left',
   },
   // 20
   {
-    x: 1375,
-    y: 162,
+    x: 1440,
+    y: 140,
     direction: 'left',
   },
   // 21
   {
-    x: 1242,
-    y: 163,
+    x: 1280,
+    y: 140,
     direction: 'left',
   },
   // 22
   {
-    x: 1109,
-    y: 164,
+    x: 1120,
+    y: 140,
     direction: 'left',
   },
   // 23
   {
-    x: 975,
-    y: 165,
+    x: 960,
+    y: 140,
     direction: 'left',
   },
   // 24
   {
-    x: 838,
-    y: 166,
+    x: 800,
+    y: 140,
     direction: 'left',
   },
   // 25
   {
-    x: 705,
-    y: 167,
+    x: 640,
+    y: 140,
     direction: 'left',
   },
   // 26
   {
-    x: 568,
-    y: 167,
+    x: 480,
+    y: 140,
     direction: 'left',
   },
   // 27
   {
-    x: 432,
-    y: 168,
+    x: 320,
+    y: 140,
     direction: 'back',
   },
   // 28
   {
-    x: 425,
-    y: 246,
+    x: 320,
+    y: 234,
     direction: 'back',
   },
   // 29
   {
-    x: 418,
-    y: 325,
+    x: 320,
+    y: 328,
     direction: 'back',
   },
   // 30
   {
-    x: 411,
-    y: 409,
+    x: 320,
+    y: 422,
     direction: 'back',
   },
   // 31
   {
-    x: 404,
-    y: 494,
+    x: 320,
+    y: 516,
     direction: 'back',
   },
   // 32
   {
-    x: 396,
-    y: 583,
+    x: 320,
+    y: 610,
     direction: 'back',
   },
   // 33
   {
-    x: 388,
-    y: 674,
+    x: 320,
+    y: 704,
     direction: 'back',
   },
   // 34
   {
-    x: 380,
-    y: 768,
+    x: 320,
+    y: 798,
     direction: 'back',
   },
   // 35
   {
-    x: 372,
-    y: 865,
+    x: 320,
+    y: 892,
     direction: 'back',
   },
   // 36
   {
-    x: 1438,
-    y: 844,
+    x: 1440,
+    y: 892,
     direction: 'front',
   },
   // 37
   {
-    x: 1429,
-    y: 750,
+    x: 1440,
+    y: 798,
     direction: 'front',
   },
   // 38
   {
-    x: 1420,
-    y: 658,
+    x: 1440,
+    y: 704,
     direction: 'front',
   },
   // 39
   {
-    x: 1412,
-    y: 570,
+    x: 1440,
+    y: 610,
     direction: 'left',
   },
   // 40
   {
-    x: 1269,
-    y: 571,
+    x: 1280,
+    y: 610,
     direction: 'left',
   },
   // 41
   {
-    x: 1125,
-    y: 573,
+    x: 1120,
+    y: 610,
     direction: 'left',
   },
   // 42
   {
-    x: 981,
-    y: 575,
+    x: 960,
+    y: 610,
     direction: 'left',
   },
   // 43
   {
-    x: 832,
-    y: 576,
+    x: 800,
+    y: 610,
     direction: 'front',
   },
   // 44
   {
-    x: 836,
-    y: 489,
+    x: 800,
+    y: 516,
     direction: 'front',
   },
   // 45
   {
-    x: 837,
-    y: 405,
+    x: 800,
+    y: 422,
     direction: 'right',
   },
   // 46
   {
-    x: 978,
-    y: 404,
+    x: 960,
+    y: 422,
     direction: 'right',
   },
   // 47
   {
-    x: 1118,
-    y: 401,
+    x: 1120,
+    y: 422,
     direction: 'front',
   },
   // 48
   {
-    x: 1114,
-    y: 320,
+    x: 1120,
+    y: 328,
     direction: 'front',
   },
   // 49
   {
-    x: 1111,
-    y: 241,
+    x: 1120,
+    y: 234,
     direction: 'front',
   },
 ]
@@ -382,9 +382,9 @@ export const animationListMove = animationList.filter((animation) =>
   animation.includes('move'),
 )
 
-// export const directions = {
-//   right: [0, 1, 2, 3, 4, 5, 6, 7, 8],
-//   front: [9, 10, 11, 12, 13, 14, 15, 16, 17],
-//   left: [18, 19, 20, 21, 22, 23, 24, 25, 26],
-//   back: [27, 28, 29, 30, 31, 32, 33, 34, 35],
-// }
+export const directions = {
+  right: [0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46],
+  front: [9, 10, 11, 12, 13, 14, 15, 16, 17, 36, 37, 38, 43, 44, 47, 48, 49],
+  left: [18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 40, 41, 42],
+  back: [27, 28, 29, 30, 31, 32, 33, 34, 35],
+}
