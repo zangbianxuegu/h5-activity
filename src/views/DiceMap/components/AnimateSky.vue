@@ -59,7 +59,7 @@ onMounted(() => {
       // 监听动画完成事件
       player.animationState?.addListener({
         complete: function (entry) {
-          console.log('角色动画完成 complete: ', entry)
+          console.log('complete: ', entry)
           emit('complete', entry)
         },
       })
@@ -103,6 +103,7 @@ function playAnimation(animationName: string, loop: boolean): void {
 function setEmptyAnimation(): void {
   if (player) {
     player.animationState?.setEmptyAnimation(0, 0)
+    player.skeleton?.setToSetupPose()
   }
 }
 

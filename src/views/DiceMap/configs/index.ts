@@ -323,6 +323,8 @@ export const coordinates: Coordinate[] = [
 ]
 
 // 路线
+export type Route = 'A' | 'B'
+
 export const routes = {
   A: [
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
@@ -374,13 +376,11 @@ export type Animation = keyof typeof animateSkySizes
 
 export const animationList = Object.keys(animateSkySizes) as Animation[]
 
-export const animationListIdle = animationList.filter((animation) =>
-  animation.includes('idle'),
-)
-
-export const animationListMove = animationList.filter((animation) =>
-  animation.includes('move'),
-)
+export function isIdle(
+  animation: Animation,
+): animation is `${'right' | 'left' | 'front' | 'back'}_idle` {
+  return animation.endsWith('_idle')
+}
 
 export const directions = {
   right: [0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46],
