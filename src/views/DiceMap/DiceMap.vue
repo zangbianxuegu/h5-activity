@@ -97,7 +97,7 @@
             <!-- right -->
             <AnimateSky
               :ref="animateSkyRefs.animateSkyRight"
-              class="c111 absolute h-[400px] w-[450px]"
+              class="sky-right absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
               :premultiplied-alpha="true"
@@ -106,7 +106,7 @@
             <!-- front -->
             <AnimateSky
               :ref="animateSkyRefs.animateSkyFront"
-              class="c222 absolute h-[400px] w-[450px]"
+              class="sky-front absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
               :premultiplied-alpha="true"
@@ -115,7 +115,7 @@
             <!-- left -->
             <AnimateSky
               :ref="animateSkyRefs.animateSkyLeft"
-              class="c333 absolute h-[400px] w-[450px]"
+              class="sky-left absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
               :premultiplied-alpha="true"
@@ -124,7 +124,7 @@
             <!-- back -->
             <AnimateSky
               :ref="animateSkyRefs.animateSkyBack"
-              class="c444 absolute h-[400px] w-[450px]"
+              class="sky-back absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
               :premultiplied-alpha="true"
@@ -172,10 +172,11 @@ import ModalRoute from './components/ModalRoute.vue'
 import ModalDice from './components/ModalDice.vue'
 import {
   ANIMATION,
-  animationListIdle,
+  isIdle,
   coordinates,
   directions,
   type Animation,
+  type Route,
 } from './configs'
 
 // 设计稿宽
@@ -235,15 +236,15 @@ const isDiceAnimating = ref(false)
 // 当前动画类型
 // let curAnimation = ANIMATION.RIGHT_IDLE
 // 当前位置，0-49
-let curPosition = 36
+let curPosition = 2
 // 是否需要设置位置
 let isNeedSetPos = true
 // 当前路线
-let curRoute = 'B' // A、B
+let curRoute = 'A' as Route // A、B
 // 剩余步数
 let remainingSteps = 0
-// 在最后的 idle 时切换了方向
-let hasSwitched = false
+// 是否切换了方向
+let hasSwitched = true
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -297,17 +298,17 @@ function initAnimateSky(): void {
   for (const [direction, positions] of Object.entries(directions)) {
     if (positions.includes(curPosition)) {
       const refKey = `animateSky${capitalizeFirstLetter(direction)}`
+      console.log('refKey: ', refKey)
       curAnimateSky = animateSkyRefs[refKey as keyof typeof animateSkyRefs]
       break
     }
   }
-  const animation = (coordinates[curPosition].direction + '_idle') as Animation
-  animateSkyPlay(curPosition, animation)
+  animateSkyIdle()
 }
 
 // 动画测试
 function test(): void {
-  remainingSteps = 6
+  remainingSteps = 3
   isNeedSetPos = true
   animateSkyMove()
 }
@@ -338,7 +339,6 @@ function setAnimateSkyPosition(position: number): void {
       left: x - offsetX,
       top: y - offsetY,
     })
-    console.log('style22: ', style)
     curAnimateSky.value.$el.style.left = style.left
     curAnimateSky.value.$el.style.top = style.top
   }
@@ -346,36 +346,40 @@ function setAnimateSkyPosition(position: number): void {
 
 /**
  * @function animateSkyPlay
- * @description 角色动画。设置位置，根据动画名称和是否循环进行播放
+ * @description 角色动画。
+ * 1. 根据方向设置 curAnimateSky
+ * 2. 设置位置
+ * 3. 根据动画名称和是否循环进行播放
  * @param {number} position 位置
  * @param {Animation} animation 动画名称
  */
 function animateSkyPlay(position: number, animation: Animation): void {
   console.log('position: ', position)
-  // 1. 让其他方向的 animateSky 实例隐藏
-  for (const animateSky of Object.values(animateSkyRefs)) {
-    animateSky.value?.$el.classList.add('hidden')
-    // 清空动画
-    animateSky.value?.setEmptyAnimation()
+  // 1.1 让所有方向的 animateSky 实例隐藏
+  if (hasSwitched) {
+    for (const animateSky of Object.values(animateSkyRefs)) {
+      animateSky.value?.$el.classList.add('hidden')
+      // 清空动画
+      animateSky.value?.setEmptyAnimation()
+    }
+    // 1.2 让当前方向上的 animateSky 实例显示进行动画
+    curAnimateSky.value?.$el.classList.remove('hidden')
+    console.log('curAnimateSky.value: ', curAnimateSky.value?.$el)
   }
-  // 2. 让当前方向上的 animateSky 实例显示进行动画
-  curAnimateSky.value?.$el.classList.remove('hidden')
-  console.log('curAnimateSky.value: ', curAnimateSky.value?.$el)
-  // 设置动画位置
+  // 2 设置动画位置
   // fix: 结束 idle 不需要设置位置。角色停留在 move 的结束 pose 上。
   // 如果切换了方向，也需要设置位置
   if (isNeedSetPos || hasSwitched) {
-    console.log('111')
     setAnimateSkyPosition(position)
   }
-  // 开始动画
-  const loop = animationListIdle.includes(animation)
+  // 3 开始动画
+  const loop = isIdle(animation)
   curAnimateSky.value?.playAnimation(animation, loop)
 }
 
 /**
  * @function animateSkyMove
- * @description 角色移动。根据当前位置和路线选择进行移动
+ * @description 角色移动。根据当前位置和路线选择进行 move 动画。
  */
 function animateSkyMove(): void {
   if (curPosition === 7) {
@@ -391,6 +395,15 @@ function animateSkyMove(): void {
       animateSkyPlay(curPosition, animation)
     }, 0)
   }
+}
+
+/**
+ * @function animateSkyIdle
+ * @description 角色闲置。在当前位置进行 idle 动画。
+ */
+function animateSkyIdle(): void {
+  const animation = (coordinates[curPosition].direction + '_idle') as Animation
+  animateSkyPlay(curPosition, animation)
 }
 
 /**
@@ -412,7 +425,7 @@ function handleDiceRandom(): void {
   isDiceAnimating.value = true
   // 生成1-6的随机数
   const random = Math.floor(Math.random() * 6) + 1
-  console.log('random: ', random)
+  console.log('生成的随机数: ', random)
   diceNum.value = random
   const animationName = `num_${diceNum.value}`
   setTimeout(() => {
@@ -425,7 +438,7 @@ function handleDiceRandom(): void {
  * @description 随机骰子动画完成
  */
 function onAnimateDiceComplete(): void {
-  console.log('骰子动画完成')
+  console.log('随机骰子动画完成')
   isDiceAnimating.value = false
   remainingSteps = diceNum.value
   isNeedSetPos = true
@@ -433,7 +446,7 @@ function onAnimateDiceComplete(): void {
 }
 
 /**
- * @function onAnimate
+ * @function setCurPositionForward
  * @description 设置当前位置向前一步
  */
 function setCurPositionForward(): void {
@@ -453,56 +466,34 @@ function setCurPositionForward(): void {
 }
 
 /**
- * @function onAnimate
- * @description 角色动画完成
+ * @function OnAnimationSkyComplete
+ * @description 角色动画完成回调函数
  * @param entry
  */
 function OnAnimationSkyComplete(entry: any): void {
-  // 重置
+  // 重置是否切换了方式
   hasSwitched = false
   if (entry.animation.name.includes('move')) {
-    console.log('111111111111111')
-
-    // 设置剩余步数
     remainingSteps--
-    // 设置当前位置
     setCurPositionForward()
 
     // 切换方向
     // 结束时在这些位置，需要切换方向
     if ([0, 9, 18, 27, 39, 43, 45, 47].includes(curPosition)) {
       switchDirection(curPosition)
-      console.log('aaaaaaaaaaaaaaaa')
     }
     // 结束时在22，且路线为 B，需要切换方向
-    // 剩余步数为0，需要设置 hasSwitched，以便设置位置
     if (curPosition === 22 && curRoute === 'B') {
       switchDirection(curPosition, 'left')
-
-      console.log('cccccccccccc1111')
-      if (remainingSteps === 0) {
-        hasSwitched = true
-        console.log('ccccccccccc222222')
-      }
-    }
-    // 结束时在这些位置，且剩余步数为0，需要设置 hasSwitched，以便设置位置
-    if ([0, 9, 18, 27, 39, 43, 45, 47].includes(curPosition)) {
-      if (remainingSteps === 0) {
-        console.log('bbbbbbbbbbbbbbb')
-        hasSwitched = true
-      }
     }
     // 如果剩余步数大于0，继续 move 动画
     // 否则，进行 idle 动画
     if (remainingSteps > 0) {
       animateSkyMove()
     } else {
+      // 设置为不需要设置位置
       isNeedSetPos = false
-      // idle animation
-      const animation = (coordinates[curPosition].direction +
-        '_idle') as Animation
-      console.log('animation: ', animation)
-      animateSkyPlay(curPosition, animation)
+      animateSkyIdle()
     }
   }
 }
@@ -516,16 +507,17 @@ function OnAnimationSkyComplete(entry: any): void {
 function switchDirection(position: number, direction?: string): void {
   const finalDirection = direction || coordinates[position].direction
   const refKey = `animateSky${capitalizeFirstLetter(finalDirection)}`
-  console.log('refKey: ', refKey)
+  console.log('切换到animateSky实例: ', refKey)
   curAnimateSky = animateSkyRefs[refKey as keyof typeof animateSkyRefs]
+  hasSwitched = true
 }
 
 /**
  * @function chooseRoute
  * @description 选择路线
- * @param {string} route 路线：A | B
+ * @param {Route} route 路线：A | B
  */
-function chooseRoute(route: string): void {
+function chooseRoute(route: Route): void {
   curRoute = route
   if (remainingSteps > 0) {
     setTimeout(() => {
@@ -538,7 +530,7 @@ function chooseRoute(route: string): void {
         switchDirection(curPosition, 'front')
       }
       animateSkyPlay(curPosition, animation)
-    }, 0)
+    }, 200)
   }
 }
 
@@ -550,7 +542,9 @@ function chooseRoute(route: string): void {
 function chooseDiceNum(num: number): void {
   remainingSteps = num
   isNeedSetPos = true
-  animateSkyMove()
+  setTimeout(() => {
+    animateSkyMove()
+  }, 200)
 }
 
 // px -> vw
