@@ -93,6 +93,21 @@
                 :key="index"
               ></div>
             </div> -->
+            <!-- 地图上显示的奖励 -->
+            <!-- 位置 6：喜茶 -->
+            <div class="reward reward-pos6 bg-contain"></div>
+            <!-- 位置 13：烟花 -->
+            <div class="reward reward-pos13 bg-contain"></div>
+            <!-- 位置 16：喜茶 -->
+            <div class="reward reward-pos16 bg-contain"></div>
+            <!-- 位置 28：随机 -->
+            <div class="reward reward-pos28 bg-contain"></div>
+            <!-- 位置 30：喜茶 -->
+            <div class="reward reward-pos30 bg-contain"></div>
+            <!-- 位置 45：彩虹尾迹 -->
+            <div class="reward reward-pos45 bg-contain"></div>
+            <!-- 位置 48：喜茶 -->
+            <div class="reward reward-pos48 bg-contain"></div>
             <!-- sky 动画 -->
             <!-- right -->
             <AnimateSky
@@ -147,6 +162,8 @@
         <ModalHelp ref="modalHelp" />
         <!-- 领奖弹框 -->
         <ModalReward ref="modalReward" />
+        <!-- 奖励查询弹框 -->
+        <ModalQuery ref="modalQuery" />
         <!-- 选择路线弹框 -->
         <ModalRoute ref="modalRoute" @choose="chooseRoute" />
         <!-- 选择点数弹框 -->
@@ -168,6 +185,7 @@ import AnimateSky from './components/AnimateSky.vue'
 import AnimateDice from './components/AnimateDice.vue'
 import ModalHelp from './components/ModalHelp.vue'
 import ModalReward from './components/ModalReward.vue'
+import ModalQuery from './components/ModalQuery.vue'
 import ModalRoute from './components/ModalRoute.vue'
 import ModalDice from './components/ModalDice.vue'
 import {
@@ -212,9 +230,9 @@ console.log('factor: ', factor.value)
 // refs
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 const modalReward = ref<InstanceType<typeof ModalReward> | null>(null)
+const modalQuery = ref<InstanceType<typeof ModalQuery> | null>(null)
 const modalRoute = ref<InstanceType<typeof ModalRoute> | null>(null)
 const modalDice = ref<InstanceType<typeof ModalDice> | null>(null)
-// const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
 const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
 const animateSkyRefs = {
   animateSkyFront: ref<InstanceType<typeof AnimateSky> | null>(null),
@@ -236,7 +254,7 @@ const isDiceAnimating = ref(false)
 // 当前动画类型
 // let curAnimation = ANIMATION.RIGHT_IDLE
 // 当前位置，0-49
-let curPosition = 2
+let curPosition = 35
 // 是否需要设置位置
 let isNeedSetPos = true
 // 当前路线
@@ -278,6 +296,7 @@ watch(
 )
 
 onMounted(() => {
+  // modalQuery.value?.open()
   try {
     if (gameUid.value !== '') {
       handleDiceData()
@@ -779,6 +798,76 @@ function handleDiceData(): void {
   }
   100% {
     transform: scaleY(1) rotate(0deg);
+  }
+}
+.reward {
+  position: absolute;
+  animation: floatAndScale 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  will-change: transform;
+
+  &-pos6 {
+    left: 1238px;
+    top: 918px;
+    width: 76px;
+    height: 104px;
+    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+  }
+
+  &-pos13 {
+    left: 1684px;
+    top: 522px;
+    width: 115px;
+    height: 126px;
+    background-image: url('@/assets/images/dice-map/reward-fireworks.png');
+  }
+
+  &-pos16 {
+    left: 1693px;
+    top: 264px;
+    width: 76px;
+    height: 104px;
+    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+  }
+
+  &-pos28 {
+    left: 312px;
+    top: 164px;
+    width: 73px;
+    height: 111px;
+    background-image: url('@/assets/images/dice-map/reward-random.png');
+  }
+
+  &-pos30 {
+    left: 302px;
+    top: 357px;
+    width: 76px;
+    height: 104px;
+    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+  }
+
+  &-pos45 {
+    left: 739px;
+    top: 331px;
+    width: 143px;
+    height: 129px;
+    background-image: url('@/assets/images/dice-map/reward-rainbow.png');
+  }
+
+  &-pos48 {
+    left: 1072px;
+    top: 264px;
+    width: 76px;
+    height: 104px;
+    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+  }
+}
+@keyframes floatAndScale {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(0, -8px, 0) scale(1.08);
   }
 }
 </style>

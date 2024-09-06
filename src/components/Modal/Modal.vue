@@ -17,13 +17,15 @@
         关闭
       </div>
       <div class="my-2 flex items-center justify-center">
-        <h2
-          class="modal-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
-        >
-          标题
-        </h2>
+        <slot name="title">
+          <h2
+            class="modal-title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+          >
+            提示
+          </h2>
+        </slot>
       </div>
-      <div class="modal-content my-4 px-2">
+      <div class="modal-content">
         <slot name="content"></slot>
       </div>
       <div class="modal-footer">
@@ -79,10 +81,8 @@ defineExpose({
   }
 
   &-content {
-    padding-bottom: 80px;
-    height: 600px;
+    // height: 600px;
     overflow-y: auto;
-    mask-image: linear-gradient(to bottom, black 80%, transparent);
   }
 }
 </style>

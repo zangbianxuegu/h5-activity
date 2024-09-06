@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading" class="text-red-500">loading...</div>
+    <!-- <div v-if="loading" class="text-red-500">loading...</div> -->
     <div
       v-show="!loading"
       ref="spineContainer"
@@ -39,6 +39,7 @@ onMounted(() => {
     backgroundColor: '#00000000',
     preserveDrawingBuffer: false,
     showControls: false,
+    showLoading: false,
     // animation: 'left_idle',
     viewport: {
       // debugRender: true,

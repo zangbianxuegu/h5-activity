@@ -376,15 +376,20 @@ export type Animation = keyof typeof animateSkySizes
 
 export const animationList = Object.keys(animateSkySizes) as Animation[]
 
+// 是否为空闲动画
 export function isIdle(
   animation: Animation,
 ): animation is `${'right' | 'left' | 'front' | 'back'}_idle` {
   return animation.endsWith('_idle')
 }
 
+// 方向
 export const directions = {
   right: [0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 46],
   front: [9, 10, 11, 12, 13, 14, 15, 16, 17, 36, 37, 38, 43, 44, 47, 48, 49],
   left: [18, 19, 20, 21, 22, 23, 24, 25, 26, 39, 40, 41, 42],
   back: [27, 28, 29, 30, 31, 32, 33, 34, 35],
 }
+
+// 地图奖励
+export const mapRewards = {}

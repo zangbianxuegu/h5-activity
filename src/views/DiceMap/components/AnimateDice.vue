@@ -34,6 +34,7 @@ onMounted(() => {
     backgroundColor: '#00000000',
     preserveDrawingBuffer: false,
     showControls: false,
+    showLoading: false,
     viewport: {
       // debugRender: true,
       padLeft: '0%',
@@ -76,7 +77,6 @@ onMounted(() => {
  * @param animationName 动画名称
  */
 function playAnimation(animationName: string, loop: boolean): void {
-  console.log('animationName: ', animationName)
   if (player) {
     player.animationState?.clearTracks()
     // 必须
