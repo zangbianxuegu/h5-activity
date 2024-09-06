@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <div v-if="loading" class="text-red-500">loading...</div> -->
+    <div v-if="loading" class="text-red-500">loading...</div>
     <div
       v-show="!loading"
       ref="spineContainer"
@@ -22,7 +22,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-const emit = defineEmits(['complete'])
+const emit = defineEmits(['success', 'complete'])
 const spineContainer = ref<HTMLElement | null>(null)
 let player: SpinePlayer | null = null
 const loading = ref(true)
@@ -40,7 +40,7 @@ onMounted(() => {
     preserveDrawingBuffer: false,
     showControls: false,
     showLoading: false,
-    // animation: 'left_idle',
+    defaultMix: 0,
     viewport: {
       // debugRender: true,
       padTop: 0,
@@ -54,9 +54,9 @@ onMounted(() => {
     },
     // 加载完成回调函数
     success: (player) => {
+      console.log('The skeleton and its assets have been successfully loaded.')
       loading.value = false
-      // 初始加载完成之后清空动画
-      // player.animationState?.setEmptyAnimation(0, 0)
+      emit('success')
       // 监听动画完成事件
       player.animationState?.addListener({
         complete: function (entry) {
@@ -87,29 +87,12 @@ onMounted(() => {
  */
 function playAnimation(animationName: string, loop: boolean): void {
   if (player) {
-    player.animationState?.clearTracks()
-    // 必须
-    // player.setViewport(animationName)
-    // player.animationState?.addAnimation(0, animationName, loop)
     player.setAnimation(animationName, loop)
-    // 必须
     player.play()
-  }
-}
-
-/**
- * @function setEmptyAnimation
- * @description 设置空动画
- */
-function setEmptyAnimation(): void {
-  if (player) {
-    player.animationState?.setEmptyAnimation(0, 0)
-    player.skeleton?.setToSetupPose()
   }
 }
 
 defineExpose({
   playAnimation,
-  setEmptyAnimation,
 })
 </script>
