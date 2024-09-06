@@ -5,7 +5,7 @@
         <h2 class="mt-6 text-center text-[40px] text-[#454545]">
           请选择前进方向
         </h2>
-        <div class="mt-16 flex justify-center">
+        <div class="mt-16 flex justify-center pb-8">
           <button
             type="button"
             class="arrow-btn arrow-btn-up cursor-pointer bg-contain bg-no-repeat"
