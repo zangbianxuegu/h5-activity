@@ -1,19 +1,39 @@
 <template>
   <activity-modal ref="modalReward">
     <template #content>
-      <section class="flex h-full flex-col" aria-labelledby="modalRewardTitle">
-        <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
-        <p class="modal-text">
-          恭喜你获得
-          <span class="modal-text-blue">
-            {{ rewardsText[curRewards.name as keyof RewardsName] }} *
-            {{ curRewards.count }} </span
-          >：
-        </p>
-        <div class="flex flex-1 items-center justify-center">
-          <img :src="handleSrc(String(curRewards.name))" alt="reward image" />
-        </div>
+      <section class="text-center" aria-labelledby="modalRewardTitle">
+        <h3 class="mt-4 text-[40px] font-medium text-[#454545]">
+          恭喜你获得“
+          <span class="text-[#399cf3]">
+            {{ rewardsText[curRewards.name as keyof RewardsName] }} </span
+          >”
+        </h3>
+        <!-- <figure class="">
+          <img
+            :src="handleSrc(String(curRewards.name))"
+            class="h-[172px] w-[289px]"
+            alt="reward image"
+          />
+          <figcaption class="mt-2">
+            {{ rewardsText[curRewards.name as keyof RewardsName] }} * 1
+          </figcaption>
+        </figure> -->
+        <figure class="mt-10 flex flex-col items-center text-center">
+          <img
+            src="@/assets/images/dice-map/coupon-discount.png"
+            class="h-[172px] w-[289px]"
+            alt="reward image"
+          />
+          <figcaption class="mt-2 text-[#399cf3]">
+            喜茶联动第二杯半价券
+          </figcaption>
+        </figure>
       </section>
+    </template>
+    <template #footer>
+      <p class="text-center text-[#adadad]">
+        可在【中奖查询】查看中奖历史及详细使用方法
+      </p>
     </template>
   </activity-modal>
 </template>
@@ -58,14 +78,14 @@ function open(): void {
  * @param name 奖励名
  * @returns {string} 图片路径
  */
-function handleSrc(name: string): string {
-  const imgSrc = new URL(
-    `../../../assets/images/common/reward/reward-${name}.png`,
-    import.meta.url,
-  ).href
+// function handleSrc(name: string): string {
+//   const imgSrc = new URL(
+//     `../../../assets/images/common/reward/reward-${name}.png`,
+//     import.meta.url,
+//   ).href
 
-  return imgSrc
-}
+//   return imgSrc
+// }
 
 defineExpose({
   open,
