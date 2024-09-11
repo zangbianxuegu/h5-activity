@@ -360,7 +360,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'DiceMap',
     component: () => import('@/views/DiceMap'),
     meta: {
-      title: '旅行尾迹地图',
+      title: '因光而遇 因遇而喜',
       module: 'activitycenter_dice_map',
     },
   },
