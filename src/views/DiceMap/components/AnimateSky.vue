@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div v-if="loading" class="text-red-500">loading...</div>
+    <!-- <div v-if="loading" class="text-red-500">loading...</div> -->
     <div
       v-show="!loading"
       ref="spineContainer"
@@ -18,7 +18,6 @@ import {
 interface Props {
   jsonPath: string
   atlasPath: string
-  premultipliedAlpha: boolean
 }
 
 const props = defineProps<Props>()
@@ -35,7 +34,7 @@ onMounted(() => {
     jsonUrl: props.jsonPath,
     atlasUrl: props.atlasPath,
     alpha: true,
-    premultipliedAlpha: props.premultipliedAlpha,
+    premultipliedAlpha: true,
     backgroundColor: '#00000000',
     preserveDrawingBuffer: false,
     showControls: false,

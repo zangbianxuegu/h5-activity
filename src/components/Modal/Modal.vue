@@ -11,6 +11,7 @@
       @click.stop
     >
       <div
+        v-if="showClose"
         class="modal-close absolute right-2.5 top-1.5 overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
         @click="closeModal"
       >
@@ -53,6 +54,10 @@ defineProps({
     type: String,
     default: new URL('@/assets/images/common/modal-bg.png', import.meta.url)
       .href,
+  },
+  showClose: {
+    type: Boolean,
+    default: true,
   },
 })
 

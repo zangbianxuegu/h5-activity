@@ -9,26 +9,28 @@
     </template>
     <template #content>
       <ul class="list">
-        <li class="item flex items-center">
+        <li
+          v-for="item in props.heyteaRewards"
+          :key="item.code"
+          class="item flex items-center"
+        >
           <div class="item-name w-1/2 bg-no-repeat">
-            <span class="font-medium text-[#399cf3]">喜茶联动30-3优惠券</span>
+            <span class="font-medium text-[#399cf3]">{{
+              heyteaRewardText[item.type as keyof typeof heyteaRewardText]
+            }}</span>
           </div>
           <div class="relative w-1/2">
-            <span class="mr-4 inline-block w-full text-center text-[#399cf3]"
-              >hasdfg73113</span
+            <span class="mr-4 inline-block w-full text-center text-[#399cf3]">{{
+              item.code
+            }}</span>
+            <button
+              class="copy absolute bg-contain"
+              @click="copyToClipboard(item.code)"
             >
-            <button class="copy absolute bg-contain">
               <span class="sr-only">复制</span>
             </button>
           </div>
         </li>
-        <li class="item"></li>
-        <li class="item"></li>
-        <li class="item"></li>
-        <li class="item"></li>
-        <li class="item"></li>
-        <li class="item"></li>
-        <li class="item"></li>
       </ul>
     </template>
     <template #footer>
@@ -40,11 +42,66 @@
 </template>
 
 <script setup lang="ts">
+import { type HeyteaRewards } from '@/types'
 import ActivityModal from '@/components/Modal'
+import { showToast } from 'vant'
 const modalQuery = ref<InstanceType<typeof ActivityModal> | null>(null)
+
+interface Props {
+  heyteaRewards: HeyteaRewards
+}
+
+const props = defineProps<Props>()
+
+const heyteaRewardText = {
+  heytea_coupon: '光遇喜茶联动30-3优惠券',
+  heytea_gift: '光遇喜茶联动赠饮券',
+  heytea_half: '光遇喜茶联动第二杯半价券',
+}
 
 function open(): void {
   modalQuery.value?.openModal()
+}
+
+/**
+ * @function copyToClipboard
+ * @description 复制券码
+ * @param text 券码
+ */
+function copyToClipboard(text: string): void {
+  if (navigator.clipboard) {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        showToast('优惠券码复制成功')
+      })
+      .catch((err) => {
+        console.error('Error copying text: ', err.name, err.message)
+        copyToClipboardFallback(text)
+      })
+  } else {
+    copyToClipboardFallback(text)
+  }
+}
+
+function copyToClipboardFallback(text: string): void {
+  const textarea = document.createElement('textarea')
+  textarea.value = text
+  textarea.style.position = 'fixed' // 避免影响用户体验
+  document.body.appendChild(textarea)
+  textarea.select()
+  try {
+    const successful = document.execCommand('copy')
+    if (successful) {
+      console.log('Text copied to clipboard using fallback')
+      showToast('优惠券码复制成功')
+    } else {
+      console.error('Fallback copy command was unsuccessful')
+    }
+  } catch (err) {
+    console.error('Fallback method error: ', err)
+  }
+  document.body.removeChild(textarea)
 }
 
 defineExpose({

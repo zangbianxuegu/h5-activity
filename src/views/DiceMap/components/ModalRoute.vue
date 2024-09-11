@@ -1,5 +1,5 @@
 <template>
-  <activity-modal ref="modalDirection">
+  <activity-modal ref="modalDirection" :show-close="false">
     <template #content>
       <section class="" aria-labelledby="modalDirectionTitle">
         <h2 class="mt-6 text-center text-[40px] text-[#454545]">

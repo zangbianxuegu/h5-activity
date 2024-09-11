@@ -124,4 +124,25 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'inactive event': '活动未开启，请稍后重试',
     },
   },
+
+  // 获取走格子数据
+  throw_random_dice: {
+    400: {
+      'insuf random dice': '蟹蟹的士数量不足',
+      'inactive event': '活动未开启，请稍后重试',
+      'repeat request': '请求频繁，请稍后重试',
+    },
+  },
+
+  // 走格子移动
+  move: {
+    400: {
+      'inactive event': '活动未开启，请稍后重试',
+      'repeat request': '请求频繁，请稍后重试',
+      'invalid dice value': '骰子点数错误，请稍后重试',
+      'invalid cur pos': '玩家当前位置错误，请稍后重试',
+      'invalid move': '请求异常，请稍后重试',
+      'insuf dice': '骰子数量不足',
+    },
+  },
 }

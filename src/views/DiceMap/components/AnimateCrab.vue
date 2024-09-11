@@ -11,9 +11,6 @@ import {
 interface Props {
   jsonPath: string
   atlasPath: string
-  animations: string[]
-  premultipliedAlpha: boolean
-  autoPlay: boolean
 }
 
 const props = defineProps<Props>()
@@ -28,30 +25,28 @@ onMounted(() => {
   const config: SpinePlayerConfig = {
     jsonUrl: props.jsonPath,
     atlasUrl: props.atlasPath,
-    animations: props.animations,
     alpha: true,
-    premultipliedAlpha: props.premultipliedAlpha,
     backgroundColor: '#00000000',
     preserveDrawingBuffer: false,
     showControls: false,
     showLoading: false,
+    // 多次动画之间不要混入，直接从头开始
+    defaultMix: 0,
     viewport: {
       // debugRender: true,
-      padLeft: '0%',
-      padRight: '0%',
-      padTop: '0%',
-      padBottom: '0%',
+      padLeft: 0,
+      padRight: 0,
+      padTop: 0,
+      padBottom: 0,
     },
     // 加载完成回调函数
     success: (player) => {
       // 初始加载完成之后清空动画
-      if (!props.autoPlay) {
-        player.animationState?.setEmptyAnimation(0, 0)
-      }
+      player.animationState?.setEmptyAnimation(0, 0)
       // 监听动画完成事件
       player.animationState?.addListener({
         complete: function (entry) {
-          console.log('骰子动画完成 complete: ', entry)
+          console.log('螃蟹动画完成 complete: ', entry)
           emit('complete')
         },
       })
@@ -78,12 +73,7 @@ onMounted(() => {
  */
 function playAnimation(animationName: string, loop: boolean): void {
   if (player) {
-    player.animationState?.clearTracks()
-    // 必须
-    // player.setViewport(animationName)
-    // player.animationState?.addAnimation(0, animationName, false)
     player.setAnimation(animationName, loop)
-    // 必须
     player.play()
   }
 }

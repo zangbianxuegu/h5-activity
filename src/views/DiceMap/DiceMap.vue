@@ -5,14 +5,14 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
-              旅行尾迹地图
+              因光而遇 因遇而喜
               <p>
-                <time datetime="2024-08-29">10.1</time>-
-                <time datetime="2024-09-11">10.7</time>
+                <time datetime="2024-09-27">9.27</time>-
+                <time datetime="2024-10-11">10.11</time>
               </p>
             </div>
             <div
-              class="help z-10 cursor-pointer bg-contain"
+              class="help z-30 cursor-pointer bg-contain"
               @click="handleHelp"
             ></div>
           </h1>
@@ -23,19 +23,22 @@
             <nav class="nav absolute">
               <ul>
                 <li class="nav-item nav-dice bg-contain">
-                  <a href="http://" class="block h-full w-full">
+                  <RouterLink to="/dice-mission" class="block h-full w-full">
                     <span class="sr-only">获取骰子</span>
-                  </a>
+                  </RouterLink>
                 </li>
                 <li class="nav-item nav-store mt-3 bg-contain">
-                  <a href="http://" class="block h-full w-full">
+                  <RouterLink to="/dice-store" class="block h-full w-full">
                     <span class="sr-only">兑换商店</span>
-                  </a>
+                  </RouterLink>
                 </li>
-                <li class="nav-item nav-query mt-3 bg-contain" @click="test">
-                  <!-- <a href="javascript:void" class="block h-full w-full">
+                <li
+                  class="nav-item nav-query mt-3 bg-contain"
+                  @click="handleRewardQuery"
+                >
+                  <a href="javascript:void(0);" class="block h-full w-full">
                     <span class="sr-only">奖励查询</span>
-                  </a> -->
+                  </a>
                 </li>
               </ul>
             </nav>
@@ -49,7 +52,7 @@
               <span
                 class="crab-eye crab-eye-left inline-block rounded-full bg-contain"
               ></span>
-              <!-- 有眼 -->
+              <!-- 右眼 -->
               <span
                 class="crab-eye crab-eye-right inline-block rounded-full bg-contain"
               ></span>
@@ -66,8 +69,11 @@
                 @click="handleDiceSelect"
               >
                 <span
-                  class="dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white"
-                  >2</span
+                  :class="[
+                    'dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white',
+                    { 'dice-num-mini': diceCountRandom > 99 },
+                  ]"
+                  >{{ diceCountCustom }}</span
                 >
               </button>
               <!-- 随机骰子 -->
@@ -78,8 +84,11 @@
                 @click="handleDiceRandom"
               >
                 <span
-                  class="dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white"
-                  >10</span
+                  :class="[
+                    'dice-num absolute right-[-2px] top-[-2px] h-[60px] w-[60px] rounded-full bg-[#64a2e8] text-center font-medium leading-[60px] text-white',
+                    { 'dice-num-mini': diceCountRandom > 99 },
+                  ]"
+                  >{{ diceCountRandom }}</span
                 >
               </button>
             </div>
@@ -114,29 +123,29 @@
               class="absolute h-[400px] w-[450px]"
               json-path="./spine/yuyan/yuyan.json"
               atlas-path="./spine/yuyan/yuyan.atlas"
-              :premultiplied-alpha="true"
               @success="onAnimateSkySuccess"
               @complete="OnAnimateSkyComplete"
             />
-            <!-- 随机骰子动画 -->
-            <AnimateDice
-              ref="animateDice"
-              class="absolute left-[871px] top-[232px] h-[626px] w-[1194px]"
-              jsonPath="./spine/touzi/touzi.json"
-              atlasPath="./spine/touzi/touzi.atlas"
-              :animations="['num_1']"
-              :premultiplied-alpha="false"
-              :auto-play="false"
-              @complete="onAnimateDiceComplete"
+            <!-- 螃蟹动画 -->
+            <div
+              ref="overlay"
+              class="overlay pointer-events-none fixed inset-0 z-10 bg-black opacity-0 transition-opacity duration-200"
+            ></div>
+            <AnimateCrab
+              ref="animateCrab"
+              class="absolute left-[638px] top-[227px] z-20 h-[686px] w-[764px]"
+              jsonPath="./spine/crab/crab.json"
+              atlasPath="./spine/crab/crab.atlas"
+              @complete="onAnimateCrabComplete"
             />
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
         <ModalHelp ref="modalHelp" />
         <!-- 领奖弹框 -->
-        <ModalReward ref="modalReward" />
+        <ModalReward ref="modalReward" :rewards="curRewards" :is-end="isEnd" />
         <!-- 奖励查询弹框 -->
-        <ModalQuery ref="modalQuery" />
+        <ModalQuery ref="modalQuery" :heytea-rewards="heyteaRewards" />
         <!-- 选择路线弹框 -->
         <ModalRoute ref="modalRoute" @choose="chooseRoute" />
         <!-- 选择点数弹框 -->
@@ -148,13 +157,13 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getDiceMapData } from '@/apis/diceMap'
-import type { DesignConfig } from '@/types'
+import { getDiceMapData, getRandomDiceNum, diceMove } from '@/apis/diceMap'
+import type { DesignConfig, HeyteaRewards, Rewards } from '@/types'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import AnimateSky from './components/AnimateSky.vue'
-import AnimateDice from './components/AnimateDice.vue'
+import AnimateCrab from './components/AnimateCrab.vue'
 import ModalHelp from './components/ModalHelp.vue'
 import ModalReward from './components/ModalReward.vue'
 import ModalQuery from './components/ModalQuery.vue'
@@ -199,28 +208,47 @@ const { factor } = useResponsiveStyles(designConfig)
 console.log('factor: ', factor.value)
 
 // refs
+const overlay = ref<InstanceType<typeof HTMLDivElement> | null>(null)
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 const modalReward = ref<InstanceType<typeof ModalReward> | null>(null)
 const modalQuery = ref<InstanceType<typeof ModalQuery> | null>(null)
 const modalRoute = ref<InstanceType<typeof ModalRoute> | null>(null)
 const modalDice = ref<InstanceType<typeof ModalDice> | null>(null)
-const animateDice = ref<InstanceType<typeof AnimateDice> | null>(null)
+const animateCrab = ref<InstanceType<typeof AnimateCrab> | null>(null)
 const animateSky = ref<InstanceType<typeof AnimateSky> | null>(null)
 
 // 活动数据
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
+// 拥有的骰子数量
+const diceCountCustom = ref(0)
+const diceCountRandom = ref(0)
 // 随机骰子数值
 const diceNum = ref(1)
-// 是否正在播放骰子动画
-const isDiceAnimating = ref(false)
+// 是否正在播放螃蟹动画
+const isCrabAnimating = ref(false)
 // 当前位置，0-49
-let curPosition = 35
+let curPosition = 0
+// 记录 move 之前的位置
+let prePosition = 0
 // 当前路线
 let curRoute = 'A' as Route // A、B
 // 剩余步数
 let remainingSteps = 0
+// 骰子类型
+// TODO: 类型
+let diceType = 'random_dice'
+// 骰子数值
+let diceValue = 0
+// 路线选择
+let choices: Record<string, number> | null = null
+// 是否结束一圈
+const isEnd = ref(false)
+// 当前奖励
+const curRewards = ref<Rewards>([{ count: 10, name: 'heytea_coupon' }])
+// 喜茶优惠券
+const heyteaRewards = ref<HeyteaRewards>([{ type: '', code: '' }])
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -254,7 +282,6 @@ watch(
 )
 
 onMounted(() => {
-  // modalQuery.value?.open()
   try {
     if (gameUid.value !== '') {
       handleDiceData()
@@ -264,12 +291,6 @@ onMounted(() => {
   }
   Session.set(sessionIsVisitedKey, true)
 })
-
-// 动画测试
-function test(): void {
-  remainingSteps = 3
-  animateSkyMove()
-}
 
 /**
  * @function setAnimateSkyPosition
@@ -367,7 +388,26 @@ function animateSkyIdle(): void {
  * @description 点击万能骰子
  */
 function handleDiceSelect(): void {
+  if (diceCountCustom.value === 0) {
+    showToast('遥鲲飞机不足')
+    return
+  }
   modalDice.value?.open()
+}
+
+/**
+ * @function chooseDiceNum
+ * @description 选择万能骰子点数
+ * @param num 选择的点数
+ */
+function chooseDiceNum(num: number): void {
+  diceCountCustom.value--
+  diceType = 'custom_dice'
+  calculateRemainingSteps(num)
+  diceValue = num
+  setTimeout(() => {
+    animateSkyMove()
+  }, 200)
 }
 
 /**
@@ -375,29 +415,45 @@ function handleDiceSelect(): void {
  * @description 点击随机骰子
  */
 function handleDiceRandom(): void {
-  if (isDiceAnimating.value) {
+  if (diceCountRandom.value === 0) {
+    showToast('蟹蟹的士不足')
     return
   }
-  isDiceAnimating.value = true
-  // 生成1-6的随机数
-  const random = Math.floor(Math.random() * 6) + 1
-  console.log('生成的随机数: ', random)
-  diceNum.value = random
-  const animationName = `num_${diceNum.value}`
-  setTimeout(() => {
-    animateDice.value?.playAnimation(animationName, false)
-  }, 200)
+  if (isCrabAnimating.value) {
+    return
+  }
+  isCrabAnimating.value = true
+  diceCountRandom.value--
+  getRandomDiceNum(gameUid.value)
+    .then((res: any) => {
+      console.log('res: ', res)
+      diceNum.value = res.value
+      diceType = 'random_dice'
+      const animationName = `in_${diceNum.value}`
+      setTimeout(() => {
+        overlay.value?.classList.add('opacity-50')
+        animateCrab.value?.playAnimation(animationName, false)
+      }, 200)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 /**
- * @function onAnimateDiceComplete
- * @description 随机骰子动画完成
+ * @function onAnimateCrabComplete
+ * @description 随机骰子（螃蟹）动画完成
  */
-function onAnimateDiceComplete(): void {
-  console.log('随机骰子动画完成')
-  isDiceAnimating.value = false
-  remainingSteps = diceNum.value
-  animateSkyMove()
+function onAnimateCrabComplete(): void {
+  console.log('随机骰子（螃蟹）动画完成')
+  isCrabAnimating.value = false
+  // 剩余步数可能和骰子点数不一致，move 传参步数需要和骰子点数一致
+  calculateRemainingSteps(diceNum.value)
+  diceValue = diceNum.value
+  overlay.value?.classList.remove('opacity-50')
+  setTimeout(() => {
+    animateSkyMove()
+  }, 200)
 }
 
 /**
@@ -420,6 +476,7 @@ function setCurPositionForward(): void {
   }
 }
 
+// sky 动画加载成功
 function onAnimateSkySuccess(): void {
   animateSkyIdle()
 }
@@ -437,11 +494,27 @@ function OnAnimateSkyComplete(entry: any): void {
     remainingSteps--
     setCurPositionForward()
     if (remainingSteps > 0) {
-      animateSkyMove()
+      setTimeout(() => {
+        animateSkyMove()
+      }, 100)
     } else {
-      animateSkyIdle()
+      animateSkyOver()
     }
   }
+}
+
+/**
+ * @function animateSkyOver
+ * @description 角色动画 move 完成
+ */
+function animateSkyOver(): void {
+  // 在 move 结束时，请求 move 接口
+  handleDiceMove()
+  // fix: 动效，转角仍然有卡一帧的问题
+  // 异步 100 ms 执行 idle，但是转向 front 仍然比较明显
+  setTimeout(() => {
+    animateSkyIdle()
+  }, 100)
 }
 
 /**
@@ -456,8 +529,14 @@ function chooseRoute(route: Route): void {
       let animation = ANIMATION.RIGHT_MOVE
       if (curRoute === 'A') {
         animation = ANIMATION.RIGHT_MOVE
+        choices = {
+          '7': 8,
+        }
       } else {
         animation = ANIMATION.FRONT_MOVE
+        choices = {
+          '7': 36,
+        }
       }
       animateSkyPlay(curPosition, animation)
     }, 200)
@@ -465,15 +544,16 @@ function chooseRoute(route: Route): void {
 }
 
 /**
- * @function chooseDiceNum
- * @description 选择万能骰子点数
- * @param num 选择的点数
+ * @function calculateRemainingSteps
+ * @description 计算剩余步数
  */
-function chooseDiceNum(num: number): void {
-  remainingSteps = num
-  setTimeout(() => {
-    animateSkyMove()
-  }, 200)
+function calculateRemainingSteps(num: number): void {
+  // 判断是否是最后一步
+  if (curPosition > 30 && curPosition < 36 && curPosition + num > 36) {
+    remainingSteps = 36 - curPosition
+  } else {
+    remainingSteps = num
+  }
 }
 
 // px -> vw
@@ -510,6 +590,11 @@ function handleDiceData(): void {
   getDiceMapData(gameUid.value)
     .then((res) => {
       console.log('res: ', res)
+      curPosition = res.data.cur_pos
+      prePosition = res.data.cur_pos
+      diceCountCustom.value = Number(res.data.custom_dice)
+      diceCountRandom.value = Number(res.data.random_dice)
+      heyteaRewards.value = res.data.heytea_reward
     })
     .catch((error) => {
       showToast(error.message)
@@ -517,47 +602,42 @@ function handleDiceData(): void {
 }
 
 /**
- * @function 领奖
- * @param task 任务id
- * @param status 状态
- * @param rewardId 第几个奖励节点
- * @param index 任务索引
- * @returns {void}
+ * @function handleDiceMove
+ * @description 走格子移动
  */
-// function handleReward(
-//   task: string,
-//   status: string,
-//   rewardId: number,
-//   index: number,
-// ): void {
-//   if (status === 'redeemed') {
-//     return
-//   }
-//   if (status === 'wait') {
-//     showToast('还未完成任务')
-//     return
-//   }
-//   claimMissionReward({
-//     event: EVENT_NAME,
-//     task,
-//     rewardId,
-//   })
-//     .then((res) => {
-//       const rewards = res.data.rewards
-//       modalReward.value?.openModal()
-//       curRewards.value = {
-//         name: Object.keys(rewards)[0],
-//         count: Number(Object.values(rewards)[0]),
-//       }
-//       // 更新页面数据
-//       activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
-//       // 更新红点
-//       setRedDot()
-//     })
-//     .catch((error) => {
-//       showToast(error.message)
-//     })
-// }
+function handleDiceMove(): void {
+  diceMove({
+    user: gameUid.value,
+    cur_pos: prePosition,
+    dice_type: diceType,
+    dice_value: diceValue,
+    choices,
+  })
+    .then((res) => {
+      console.log('move res: ', res)
+      curPosition = res.data.cur_pos
+      prePosition = res.data.cur_pos
+      isEnd.value = res.data.is_end
+      diceCountCustom.value = Number(res.data.custom_dice)
+      diceCountRandom.value = Number(res.data.random_dice)
+      const rewards = res.data.rewards
+      if (rewards?.length > 0) {
+        modalReward.value?.open()
+        curRewards.value = rewards
+      }
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+/**
+ * @function handleRewardQuery
+ * @description 打开中奖查询
+ */
+function handleRewardQuery(): void {
+  modalQuery.value?.open()
+}
 </script>
 
 <style lang="scss" scoped>
@@ -598,17 +678,17 @@ function handleDiceData(): void {
 }
 .title {
   position: absolute;
-  left: 432px;
-  top: 593px;
-  width: 776px;
-  height: 348px;
+  left: 530px;
+  top: 607px;
+  width: 678px;
+  height: 313px;
   background-image: url('@/assets/images/dice-map/title.png');
 }
 .help {
   position: absolute;
   width: 80px;
   height: 80px;
-  top: 110px;
+  top: 95px;
   right: -20px;
 }
 .dice-item {
@@ -622,9 +702,14 @@ function handleDiceData(): void {
   background-image: url('@/assets/images/dice-map/dice-random.png');
 }
 .dice-num {
+  font-size: 40px;
   box-shadow:
     0 0 10px rgba(188, 255, 195, 0.68),
     0 0 2px rgba(188, 255, 195, 0.68);
+
+  &-mini {
+    font-size: 32px;
+  }
 }
 .nav {
   left: 27px;
@@ -716,59 +801,59 @@ function handleDiceData(): void {
   will-change: transform;
 
   &-pos6 {
-    left: 1238px;
-    top: 918px;
-    width: 76px;
-    height: 104px;
-    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+    left: 1228px;
+    top: 908px;
+    width: 97px;
+    height: 125px;
+    background-image: url('@/assets/images/common/reward/reward-heytea_token.png');
   }
 
   &-pos13 {
-    left: 1684px;
-    top: 522px;
-    width: 115px;
-    height: 126px;
+    left: 1676px;
+    top: 514px;
+    width: 130px;
+    height: 141px;
     background-image: url('@/assets/images/dice-map/reward-fireworks.png');
   }
 
   &-pos16 {
-    left: 1693px;
-    top: 264px;
-    width: 76px;
-    height: 104px;
-    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+    left: 1683px;
+    top: 254px;
+    width: 97px;
+    height: 125px;
+    background-image: url('@/assets/images/common/reward/reward-heytea_token.png');
   }
 
   &-pos28 {
-    left: 312px;
-    top: 164px;
-    width: 73px;
-    height: 111px;
+    left: 304px;
+    top: 156px;
+    width: 89px;
+    height: 126px;
     background-image: url('@/assets/images/dice-map/reward-random.png');
   }
 
   &-pos30 {
-    left: 302px;
-    top: 357px;
-    width: 76px;
-    height: 104px;
-    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+    left: 292px;
+    top: 347px;
+    width: 97px;
+    height: 125px;
+    background-image: url('@/assets/images/common/reward/reward-heytea_token.png');
   }
 
   &-pos45 {
-    left: 739px;
-    top: 331px;
-    width: 143px;
-    height: 129px;
-    background-image: url('@/assets/images/dice-map/reward-rainbow.png');
+    left: 732px;
+    top: 324px;
+    width: 158px;
+    height: 144px;
+    background-image: url('@/assets/images/dice-map/reward-trail_red.png');
   }
 
   &-pos48 {
-    left: 1072px;
-    top: 264px;
-    width: 76px;
-    height: 104px;
-    background-image: url('@/assets/images/dice-map/reward-heytea.png');
+    left: 1062px;
+    top: 254px;
+    width: 97px;
+    height: 125px;
+    background-image: url('@/assets/images/common/reward/reward-heytea_token.png');
   }
 }
 @keyframes floatAndScale {

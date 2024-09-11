@@ -311,7 +311,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '旅行尾迹地图',
+    label: '因光而遇 因遇而喜',
     value: 'activitycenter_dice_map',
     routeName: 'DiceMap',
     isNew: false,
