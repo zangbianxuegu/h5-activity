@@ -32,3 +32,40 @@ export function capitalizeFirstLetter(str: string): string {
   }
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+export const animateCSS = (
+  elementOrSelector: any,
+  animation: string,
+  prefix = 'animate__',
+  animationSpeed = 'animate__slow',
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    const animationName = animation.includes('animate__')
+      ? `${animation}`
+      : `${prefix}${animation}`
+    let node: HTMLElement | null = null
+    if (elementOrSelector instanceof HTMLElement) {
+      node = elementOrSelector
+    } else if (typeof elementOrSelector === 'string') {
+      node = document.querySelector(elementOrSelector)
+    } else {
+      reject(new Error('请传入正确的元素或选择器'))
+    }
+    const animateAddClass = [`${prefix}animated`, animationName, animationSpeed]
+    if (node) {
+      node.classList.add(...animateAddClass)
+
+      function handleAnimationEnd(event: {
+        stopPropagation: () => void
+      }): void {
+        event.stopPropagation()
+        node && node.classList.remove(...animateAddClass)
+        resolve()
+      }
+
+      node.addEventListener('animationend', handleAnimationEnd, { once: true })
+    } else {
+      reject(new Error('Element not found'))
+    }
+  })
+}
