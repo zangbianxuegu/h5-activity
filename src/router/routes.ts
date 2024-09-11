@@ -364,4 +364,22 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dice_map',
     },
   },
+  {
+    path: '/dice-mission',
+    name: 'DiceMission',
+    component: () => import('@/views/DiceMission'),
+    meta: {
+      title: '飞行里程碑',
+      module: 'activitycenter_dice_mission',
+    },
+  },
+  {
+    path: '/dice-store',
+    name: 'DiceStore',
+    component: () => import('@/views/DiceStore'),
+    meta: {
+      title: '纪念品商店',
+      module: 'activitycenter_dice_store',
+    },
+  },
 ]
