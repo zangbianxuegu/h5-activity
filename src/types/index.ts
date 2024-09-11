@@ -1,4 +1,4 @@
-export * from './common/global'
+export * from './common/global.d'
 export * from './common/base'
 export * from './common/activity'
 export * from './common/request'

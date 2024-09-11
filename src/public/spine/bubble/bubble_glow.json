@@ -1,0 +1,101 @@
+{
+  "skeleton": {
+    "hash": "cS0k/KFNB+Q",
+    "spine": "4.1.24",
+    "x": -194.04,
+    "y": -150.75,
+    "width": 405.09,
+    "height": 307.42,
+    "images": "./xunhuan/",
+    "audio": ""
+  },
+  "bones": [{ "name": "root" }],
+  "slots": [
+    { "name": "dianji_00000", "bone": "root", "attachment": "dianji_000" },
+    { "name": "xunhuan_00000", "bone": "root", "attachment": "xunhuan_000" }
+  ],
+  "skins": [
+    {
+      "name": "default",
+      "attachments": {
+        "dianji_00000": {
+          "dianji_000": {
+            "x": 11.05,
+            "y": -0.75,
+            "width": 400,
+            "height": 300,
+            "sequence": { "count": 40, "start": 0, "digits": 2 }
+          }
+        },
+        "xunhuan_00000": {
+          "xunhuan_000": {
+            "x": 5.96,
+            "y": 6.67,
+            "width": 400,
+            "height": 300,
+            "sequence": { "count": 60, "start": 0, "digits": 2 }
+          }
+        }
+      }
+    }
+  ],
+  "animations": {
+    "get": {
+      "slots": {
+        "dianji_00000": {
+          "rgba": [
+            { "color": "ffffffff", "curve": "stepped" },
+            { "time": 1.3, "color": "ffffffff" },
+            { "time": 1.3333, "color": "ffffff00" }
+          ]
+        },
+        "xunhuan_00000": {
+          "rgba": [
+            { "color": "ffffff00", "curve": "stepped" },
+            { "time": 1.3, "color": "ffffff00" }
+          ]
+        }
+      },
+      "attachments": {
+        "default": {
+          "dianji_00000": {
+            "dianji_000": {
+              "sequence": [
+                { "mode": "loop", "delay": 0.0333 },
+                { "time": 1.3, "mode": "loop", "index": 39 }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "loop": {
+      "slots": {
+        "dianji_00000": {
+          "rgba": [
+            { "color": "ffffff00", "curve": "stepped" },
+            { "time": 1.9667, "color": "ffffff00" }
+          ]
+        },
+        "xunhuan_00000": {
+          "rgba": [
+            { "color": "ffffffff", "curve": "stepped" },
+            { "time": 1.9667, "color": "ffffffff" }
+          ]
+        }
+      },
+      "attachments": {
+        "default": {
+          "xunhuan_00000": {
+            "xunhuan_000": {
+              "sequence": [
+                { "mode": "loop", "delay": 0.0333 },
+                { "time": 1.9667, "mode": "loop", "index": 59 }
+              ]
+            }
+          }
+        }
+      }
+    }
+  }
+}
