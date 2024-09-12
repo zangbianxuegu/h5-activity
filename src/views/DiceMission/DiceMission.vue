@@ -618,7 +618,7 @@ const spineAnimate = (domId: string): void => {
           padTop: '0%',
           padBottom: '0%',
         },
-        success: (player) => {
+        success: () => {
           const spineItem = spineAnimateDataList.find(
             (e: SpineAnimateData) => e.domId === domId,
           )
