@@ -8,19 +8,19 @@
       </h2>
     </template>
     <template #content>
-      <ul class="list">
+      <ul v-if="props.heyteaRewards.length > 0" class="list">
         <li
           v-for="item in props.heyteaRewards"
           :key="item.code"
           class="item flex items-center"
         >
-          <div class="item-name w-1/2 bg-no-repeat">
+          <div class="item-name w-3/5 bg-no-repeat">
             <span class="font-medium text-[#399cf3]">{{
               heyteaRewardText[item.type as keyof typeof heyteaRewardText]
             }}</span>
           </div>
-          <div class="relative w-1/2">
-            <span class="mr-4 inline-block w-full text-center text-[#399cf3]">{{
+          <div class="relative w-2/5">
+            <span class="mx-4 inline-block w-full text-[#399cf3]">{{
               item.code
             }}</span>
             <button
@@ -32,9 +32,12 @@
           </div>
         </li>
       </ul>
+      <div v-else class="list flex items-center justify-center text-gray-500">
+        暂无中奖记录
+      </div>
     </template>
     <template #footer>
-      <p class="h-[140px] text-center text-[#adadad]">
+      <p class="text-center text-[32px] text-[#adadad]">
         「喜茶券兑换路径」：复制券码—打开喜茶GO小程序—「我的」—「喜茶券」—「兑换喜茶券」—输入券码—兑换使用复制兑换码进行兑换
       </p>
     </template>
@@ -117,7 +120,7 @@ defineExpose({
 .list {
   margin: 40px auto 0;
   width: 995px;
-  height: 490px;
+  height: 560px;
 }
 .item {
   margin-bottom: 20px;
