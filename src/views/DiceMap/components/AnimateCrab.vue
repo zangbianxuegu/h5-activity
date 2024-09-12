@@ -41,6 +41,9 @@ onMounted(() => {
     },
     // 加载完成回调函数
     success: (player) => {
+      console.log(
+        'crab: The skeleton and its assets have been successfully loaded.',
+      )
       // 初始加载完成之后清空动画
       player.animationState?.setEmptyAnimation(0, 0)
       // 监听动画完成事件

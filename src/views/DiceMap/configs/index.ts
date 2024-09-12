@@ -18,7 +18,9 @@ export const ANIMATION: Record<string, Animation> = {
 }
 
 // 坐标位置
-// 每个格子的中心位置
+// x, y 为每个格子的中心位置坐标
+// 左上角格子（27）的左上角坐标（240, 93）
+// 格子大小为 160 * 94，所以27 的中心点为（320, 140）
 export const coordinates: Coordinate[] = [
   // 0
   {
@@ -325,17 +327,6 @@ export const coordinates: Coordinate[] = [
 // 路线
 export type Route = 'A' | 'B'
 
-export const routes = {
-  A: [
-    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-    21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-  ],
-  B: [
-    0, 1, 2, 3, 4, 5, 6, 7, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48,
-    49, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-  ],
-}
-
 // 角色动画尺寸
 export const animateSkySizes = {
   right_idle: {
@@ -392,4 +383,5 @@ export const directions = {
 }
 
 // 地图奖励
+// TODO: 地图奖励
 export const mapRewards = {}

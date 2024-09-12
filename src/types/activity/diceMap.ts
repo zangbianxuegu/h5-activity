@@ -19,3 +19,5 @@ interface HeyteaReward {
 }
 
 export type HeyteaRewards = HeyteaReward[]
+
+export type DiceType = 'random_dice' | 'custom_dice'

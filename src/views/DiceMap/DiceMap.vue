@@ -42,10 +42,6 @@
                 </li>
               </ul>
             </nav>
-            <!-- 开始 -->
-            <div class="start absolute bg-contain">
-              <span class="sr-only">开始</span>
-            </div>
             <!-- 螃蟹 -->
             <div class="crab absolute right-0 top-[104px] bg-contain">
               <!-- 左眼 -->
@@ -92,7 +88,7 @@
                 >
               </button>
             </div>
-            <!-- 格子 -->
+            <!-- 格子 勿删-->
             <!-- <div
               class="row absolute left-[240px] top-[93px] flex h-[940px] w-[1600px] flex-wrap"
             >
@@ -102,7 +98,20 @@
                 :key="index"
               ></div>
             </div> -->
+            <!-- 已完成圈数 -->
+            <p class="turns" v-if="turns > 0">已完成圈数：{{ turns }}</p>
             <!-- 地图上显示的奖励 -->
+            <!-- 位置1：喜遇券 30 -->
+            <div
+              v-if="turns > 0"
+              class="start absolute bg-contain bg-no-repeat"
+            >
+              <div class="reward reward-pos0 bg-contain"></div>
+            </div>
+            <!-- 开始 -->
+            <div v-else class="start-text absolute bg-contain">
+              <span class="sr-only">开始</span>
+            </div>
             <!-- 位置 6：喜茶 -->
             <div class="reward reward-pos6 bg-contain"></div>
             <!-- 位置 13：烟花 -->
@@ -121,8 +130,8 @@
             <AnimateSky
               ref="animateSky"
               class="absolute h-[400px] w-[450px]"
-              json-path="./spine/yuyan/yuyan.json"
-              atlas-path="./spine/yuyan/yuyan.atlas"
+              json-path="./spine/dice-map/yuyan/yuyan.json"
+              atlas-path="./spine/dice-map/yuyan/yuyan.atlas"
               @success="onAnimateSkySuccess"
               @complete="OnAnimateSkyComplete"
             />
@@ -134,8 +143,8 @@
             <AnimateCrab
               ref="animateCrab"
               class="absolute left-[638px] top-[227px] z-20 h-[686px] w-[764px]"
-              jsonPath="./spine/crab/crab.json"
-              atlasPath="./spine/crab/crab.atlas"
+              jsonPath="./spine/dice-map/crab/crab.json"
+              atlasPath="./spine/dice-map/crab/crab.atlas"
               @complete="onAnimateCrabComplete"
             />
           </section>
@@ -157,8 +166,9 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
+import { useStorage } from '@vueuse/core'
 import { getDiceMapData, getRandomDiceNum, diceMove } from '@/apis/diceMap'
-import type { DesignConfig, HeyteaRewards, Rewards } from '@/types'
+import type { DesignConfig, DiceType, HeyteaRewards, Rewards } from '@/types'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
@@ -229,7 +239,7 @@ const diceNum = ref(1)
 // 是否正在播放螃蟹动画
 const isCrabAnimating = ref(false)
 // 当前位置，0-49
-let curPosition = 0
+let curPosition = 3
 // 记录 move 之前的位置
 let prePosition = 0
 // 当前路线
@@ -237,8 +247,7 @@ let curRoute = 'A' as Route // A、B
 // 剩余步数
 let remainingSteps = 0
 // 骰子类型
-// TODO: 类型
-let diceType = 'random_dice'
+let diceType: DiceType = 'random_dice'
 // 骰子数值
 let diceValue = 0
 // 路线选择
@@ -249,6 +258,8 @@ const isEnd = ref(false)
 const curRewards = ref<Rewards>([{ count: 10, name: 'heytea_coupon' }])
 // 喜茶优惠券
 const heyteaRewards = ref<HeyteaRewards>([{ type: '', code: '' }])
+// 已完成圈数
+const turns = useStorage('dice-map-turns', 0)
 
 const sessionIsVisitedKey = 'isVisitedDiceMap'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -389,7 +400,7 @@ function animateSkyIdle(): void {
  */
 function handleDiceSelect(): void {
   if (diceCountCustom.value === 0) {
-    showToast('遥鲲飞机不足')
+    showToast('暂时没有遥鲲路过，可在光遇见喜中获取')
     return
   }
   modalDice.value?.open()
@@ -416,7 +427,7 @@ function chooseDiceNum(num: number): void {
  */
 function handleDiceRandom(): void {
   if (diceCountRandom.value === 0) {
-    showToast('蟹蟹的士不足')
+    showToast('暂时没有蟹蟹路过，可在光遇见喜中获取')
     return
   }
   if (isCrabAnimating.value) {
@@ -445,7 +456,6 @@ function handleDiceRandom(): void {
  * @description 随机骰子（螃蟹）动画完成
  */
 function onAnimateCrabComplete(): void {
-  console.log('随机骰子（螃蟹）动画完成')
   isCrabAnimating.value = false
   // 剩余步数可能和骰子点数不一致，move 传参步数需要和骰子点数一致
   calculateRemainingSteps(diceNum.value)
@@ -595,6 +605,17 @@ function handleDiceData(): void {
       diceCountCustom.value = Number(res.data.custom_dice)
       diceCountRandom.value = Number(res.data.random_dice)
       heyteaRewards.value = res.data.heytea_reward
+      // 测试
+      // heyteaRewards.value = [
+      //   {
+      //     type: 'heytea_coupon',
+      //     code: '12123',
+      //   },
+      //   {
+      //     type: 'heytea_half',
+      //     code: '222222',
+      //   },
+      // ]
     })
     .catch((error) => {
       showToast(error.message)
@@ -618,6 +639,9 @@ function handleDiceMove(): void {
       curPosition = res.data.cur_pos
       prePosition = res.data.cur_pos
       isEnd.value = res.data.is_end
+      if (isEnd.value) {
+        turns.value++
+      }
       diceCountCustom.value = Number(res.data.custom_dice)
       diceCountRandom.value = Number(res.data.random_dice)
       const rewards = res.data.rewards
@@ -732,7 +756,22 @@ function handleRewardQuery(): void {
     background-image: url('@/assets/images/dice-map/btn-query.png');
   }
 }
+.turns {
+  position: absolute;
+  left: 246px;
+  top: 1028px;
+  margin-top: 20px;
+  font-size: 38px;
+  color: #ddffd1;
+}
 .start {
+  left: 246px;
+  top: 935px;
+  width: 156px;
+  height: 93px;
+  background-image: url('@/assets/images/dice-map/start-bg.png');
+}
+.start-text {
   left: 277px;
   bottom: 140px;
   width: 85px;
@@ -799,6 +838,14 @@ function handleRewardQuery(): void {
   position: absolute;
   animation: floatAndScale 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   will-change: transform;
+
+  &-pos0 {
+    left: 32px;
+    top: -24px;
+    width: 91px;
+    height: 120px;
+    background-image: url('@/assets/images/common/reward/reward-heytea_token_yellow.png');
+  }
 
   &-pos6 {
     left: 1228px;

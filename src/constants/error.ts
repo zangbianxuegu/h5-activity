@@ -125,7 +125,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
-  // 获取走格子数据
+  // 扔随机骰子
   throw_random_dice: {
     400: {
       'insuf random dice': '蟹蟹的士数量不足',

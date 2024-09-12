@@ -53,7 +53,9 @@ onMounted(() => {
     },
     // 加载完成回调函数
     success: (player) => {
-      console.log('The skeleton and its assets have been successfully loaded.')
+      console.log(
+        'yuyan: The skeleton and its assets have been successfully loaded.',
+      )
       loading.value = false
       emit('success')
       // 监听动画完成事件
