@@ -193,7 +193,7 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
+import { getPlayerMissionData } from '@/utils/request'
 import type { DesignConfig, Event, EventName } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
@@ -722,47 +722,7 @@ function handleReward(
       })
     }
   }
-
-  return
-  const status = reward.status
-
-  if (status === 'redeemed') {
-    return
-  }
-  if (status === 'wait') {
-    showToast('还未完成任务')
-    return
-  }
-
-  const claimMissionRewardData: {
-    event: string
-    task: string
-    rewardId: number
-    expect?: string
-  } = {
-    event: EVENT_NAME,
-    task: taskName,
-    rewardId: Number(rewardIndex + 1),
-  }
-  claimMissionReward(claimMissionRewardData)
-    .then((res) => {
-      currentTask.taskName = taskName
-      currentTask.taskIndex = taskIndex
-      currentTask.reward = reward
-      currentTask.rewardIndex = rewardIndex
-      const rewards = res.data.rewards
-      curRewards.value = {
-        name: Object.keys(rewards)[0],
-        count: Number(Object.values(rewards)[0]),
-      }
-
-      modalReward.value?.openModal()
-      updateActivityDataRewardStatusNoRequest()
-      setRedDot()
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+  return Promise.resolve()
 }
 </script>
 
