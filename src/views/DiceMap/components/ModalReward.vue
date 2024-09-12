@@ -24,7 +24,7 @@
             :class="[isHeyteaCoupon ? 'h-[172px] w-[289px]' : 'w-[200px]']"
             alt="reward image"
           />
-          <figcaption class="mt-2 text-[#399cf3]">
+          <figcaption class="mt-2 text-[40px] text-[#399cf3]">
             {{ rewardsText[props.rewards[0].name as keyof RewardsName] }}
             <span v-if="!isHeyteaCoupon">*{{ props.rewards[0].count }}</span>
           </figcaption>
