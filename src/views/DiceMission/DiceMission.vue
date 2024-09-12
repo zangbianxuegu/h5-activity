@@ -40,10 +40,11 @@
                       ]"
                     >
                       <div v-if="taskIndex < 6" class="reward-bubble-container">
-                        <div
+                        <!-- <div
                           :id="reward.name"
                           class="reward-can-dynamic-bubble"
-                        ></div>
+                        ></div> -->
+                        <!-- <CanRewardBubbleAnimation></CanRewardBubbleAnimation> -->
                         <div
                           v-if="reward.status === 'wait'"
                           :class="[
@@ -203,6 +204,7 @@ import { useActivityStore } from '@/stores/diceMission'
 import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
 import gsap from 'gsap'
 import { SpinePlayer } from '@esotericsoftware/spine-player'
+// import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -418,7 +420,7 @@ const taskList = computed(() => {
             : activity.award[rewardIndex] === 0 &&
                 activity.value >= activity.stages[rewardIndex]
               ? 'can'
-              : 'can'
+              : 'wait'
         if (resObject.status === 'can') {
           void nextTick(() => {
             if (task.name === 'use_candle') {
@@ -598,8 +600,8 @@ const spineAnimate = (domId: string): void => {
       spine: null as unknown as SpinePlayer,
     })
   }
-  console.log(1, domId)
   const dom = document.querySelector(`#${domId}`)
+  console.log(1, domId, dom)
   if (dom) {
     const spine = new SpinePlayer(
       document.querySelector(`#${domId}`) as HTMLElement,
@@ -703,7 +705,7 @@ function handleReward(
   taskIndex: number,
   reward: Reward,
   rewardIndex: number,
-): Promise<void> {
+): Promise<void> | void {
   currentTask.taskName = taskName
   currentTask.taskIndex = taskIndex
   currentTask.reward = reward
@@ -722,7 +724,46 @@ function handleReward(
       })
     }
   }
-  return Promise.resolve()
+
+  // const status = reward.status
+
+  // if (status === 'redeemed') {
+  //   return
+  // }
+  // if (status === 'wait') {
+  //   showToast('还未完成任务')
+  //   return
+  // }
+
+  // const claimMissionRewardData: {
+  //   event: string
+  //   task: string
+  //   rewardId: number
+  //   expect?: string
+  // } = {
+  //   event: EVENT_NAME,
+  //   task: taskName,
+  //   rewardId: Number(rewardIndex + 1),
+  // }
+  // claimMissionReward(claimMissionRewardData)
+  //   .then((res) => {
+  //     currentTask.taskName = taskName
+  //     currentTask.taskIndex = taskIndex
+  //     currentTask.reward = reward
+  //     currentTask.rewardIndex = rewardIndex
+  //     const rewards = res.data.rewards
+  //     curRewards.value = {
+  //       name: Object.keys(rewards)[0],
+  //       count: Number(Object.values(rewards)[0]),
+  //     }
+
+  //     modalReward.value?.openModal()
+  //     updateActivityDataRewardStatusNoRequest()
+  //     setRedDot()
+  //   })
+  //   .catch((error) => {
+  //     showToast(error.message)
+  //   })
 }
 </script>
 
