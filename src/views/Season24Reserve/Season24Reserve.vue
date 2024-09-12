@@ -103,8 +103,10 @@ const prodUrl = 'https://sky.h5.163.com/game/'
 const isProd = ref(window.location.href.includes(prodUrl))
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946'
+// const pathDev =
+//   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=66bf49c30d3a2d1bd8ae4341&utm_medium=GMC&utm_source=kf.ma75&wsSubGameInfoId=66bf49c30d3a2d1bd8ae4341'
 const pathDev =
-  '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=66bf49c30d3a2d1bd8ae4341&utm_medium=GMC&utm_source=kf.ma75&wsSubGameInfoId=66bf49c30d3a2d1bd8ae4341'
+  '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946'
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev
 // 打开微信小程序传参，运营提供
