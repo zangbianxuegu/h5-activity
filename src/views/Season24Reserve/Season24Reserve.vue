@@ -5,7 +5,7 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1 class="title overflow-hidden bg-contain indent-[-9999px]">
-              期待在姆明季 能与你再次相遇 10.8-10.23
+              期待在姆明季 能与你再次相遇 10.8-10.17
             </h1>
             <div class="help bg-contain" @click="handleHelp"></div>
           </div>
@@ -31,7 +31,7 @@
         <template #content>
           <p class="modal-text">
             <span class="font-semibold">活动时间：</span
-            >2024年10月8日-2024年10月23日
+            >2024年10月8日-2024年10月17日
           </p>
           <p class="modal-text">
             <span class="font-semibold">活动内容：</span>
