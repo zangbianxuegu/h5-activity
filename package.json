@@ -16,9 +16,12 @@
     "commitlint": "commitlint --config commitlint.config.js -e -V"
   },
   "dependencies": {
+    "@vueuse/core": "^11.0.3",
     "animate.css": "^4.1.1",
     "axios": "^1.5.1",
     "dayjs": "^1.11.10",
+    "gsap": "^3.12.5",
+    "lottie-web": "^5.12.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
     "vant": "^4.6.8",
@@ -28,6 +31,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
+    "@esotericsoftware/spine-player": "^4.2.58",
     "@types/dom-view-transitions": "^1.0.3",
     "@types/eslint": "^8.44.3",
     "@types/lodash.throttle": "^4.1.9",

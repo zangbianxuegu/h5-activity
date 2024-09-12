@@ -26,3 +26,13 @@ export interface FriendshipStore2024 {
   token_info: TokenInfo
   sprite_exchange_store: SpriteExchangeStore
 }
+
+export enum TOKEN_NAME_ENUM {
+  DICE_STORE = 'heytea_token',
+}
+export interface BaseStore {
+  token_info: Record<TOKEN_NAME_ENUM, number>
+  sprite_exchange_store: SpriteExchangeStore
+}
+
+export interface DiceStore extends BaseStore {}
