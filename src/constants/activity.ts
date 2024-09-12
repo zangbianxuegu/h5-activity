@@ -58,6 +58,8 @@ export const NEW_ACTIVITY_LIST = [
   'activitycenter_summerday_2024',
   'activitycenter_season24_reserve',
   'activitycenter_dice_map',
+  'activitycenter_dice_mission',
+  'activitycenter_dice_store',
 ]
 
 // 所有活动
@@ -90,4 +92,6 @@ export const ACTIVITY_LIST = [
   'activitycenter_summerday_2024',
   'activitycenter_season24_reserve',
   'activitycenter_dice_map',
+  'activitycenter_dice_mission',
+  'activitycenter_dice_store',
 ]
