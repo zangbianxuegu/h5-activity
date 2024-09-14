@@ -138,7 +138,7 @@
             <!-- 螃蟹动画 -->
             <div
               ref="overlay"
-              class="overlay pointer-events-none fixed inset-0 z-10 bg-black opacity-0 transition-opacity duration-200"
+              class="overlay fixed inset-0 z-10 hidden bg-black opacity-0 transition-opacity duration-200"
             ></div>
             <AnimateCrab
               ref="animateCrab"
@@ -236,10 +236,8 @@ const diceCountCustom = ref(0)
 const diceCountRandom = ref(0)
 // 随机骰子数值
 const diceNum = ref(1)
-// 是否正在播放螃蟹动画
-const isCrabAnimating = ref(false)
 // 当前位置，0-49
-let curPosition = 3
+let curPosition = 0
 // 记录 move 之前的位置
 let prePosition = 0
 // 当前路线
@@ -252,6 +250,12 @@ let diceType: DiceType = 'random_dice'
 let diceValue = 0
 // 路线选择
 let choices: Record<string, number> | null = null
+// 角色动画是否已加载完成
+const isAnimateSkyLoaded = ref(false)
+// 是否已获取数据
+const isDiceDataLoaded = ref(false)
+// 是否正在移动：从选择步数或随机步数动画->角色移动->请求move接口完成
+const isMoving = ref(false)
 // 是否结束一圈
 const isEnd = ref(false)
 // 当前奖励
@@ -273,8 +277,8 @@ if (!isVisited) {
 }
 
 /**
- * @function 监听游戏uid
- * @description 因为gameUid可能在进入页面时还未获取到，所以需要监听游戏uid
+ * 监听游戏uid
+ * 因为gameUid可能在进入页面时还未获取到，所以需要监听游戏uid
  */
 watch(
   () => gameUid.value,
@@ -290,6 +294,19 @@ watch(
   {
     immediate: true,
   },
+)
+
+/**
+ * 监听是否获取接口数据和动画是否加载完成，开始待机动画
+ */
+watch(
+  [isAnimateSkyLoaded, isDiceDataLoaded],
+  ([newVal1, newVal2]) => {
+    if (newVal1 && newVal2) {
+      animateSkyIdle()
+    }
+  },
+  { immediate: true },
 )
 
 onMounted(() => {
@@ -375,6 +392,7 @@ function animateSkyPlay(position: number, animation: Animation): void {
  * @description 角色移动。根据当前位置和路线选择进行 move 动画。
  */
 function animateSkyMove(): void {
+  isMoving.value = true
   if (curPosition === 7) {
     // 先进行路线选择
     modalRoute.value?.open()
@@ -401,6 +419,9 @@ function animateSkyIdle(): void {
 function handleDiceSelect(): void {
   if (diceCountCustom.value === 0) {
     showToast('暂时没有遥鲲路过，可在光遇见喜中获取')
+    return
+  }
+  if (isMoving.value) {
     return
   }
   modalDice.value?.open()
@@ -430,10 +451,9 @@ function handleDiceRandom(): void {
     showToast('暂时没有蟹蟹路过，可在光遇见喜中获取')
     return
   }
-  if (isCrabAnimating.value) {
+  if (isMoving.value) {
     return
   }
-  isCrabAnimating.value = true
   diceCountRandom.value--
   getRandomDiceNum(gameUid.value)
     .then((res: any) => {
@@ -443,6 +463,7 @@ function handleDiceRandom(): void {
       const animationName = `in_${diceNum.value}`
       setTimeout(() => {
         overlay.value?.classList.add('opacity-50')
+        overlay.value?.classList.remove('hidden')
         animateCrab.value?.playAnimation(animationName, false)
       }, 200)
     })
@@ -456,11 +477,11 @@ function handleDiceRandom(): void {
  * @description 随机骰子（螃蟹）动画完成
  */
 function onAnimateCrabComplete(): void {
-  isCrabAnimating.value = false
   // 剩余步数可能和骰子点数不一致，move 传参步数需要和骰子点数一致
   calculateRemainingSteps(diceNum.value)
   diceValue = diceNum.value
   overlay.value?.classList.remove('opacity-50')
+  overlay.value?.classList.add('hidden')
   setTimeout(() => {
     animateSkyMove()
   }, 200)
@@ -488,7 +509,7 @@ function setCurPositionForward(): void {
 
 // sky 动画加载成功
 function onAnimateSkySuccess(): void {
-  animateSkyIdle()
+  isAnimateSkyLoaded.value = true
 }
 
 /**
@@ -599,7 +620,7 @@ function handleHelp(): void {
 function handleDiceData(): void {
   getDiceMapData(gameUid.value)
     .then((res) => {
-      console.log('res: ', res)
+      isDiceDataLoaded.value = true
       curPosition = res.data.cur_pos
       prePosition = res.data.cur_pos
       diceCountCustom.value = Number(res.data.custom_dice)
@@ -635,7 +656,7 @@ function handleDiceMove(): void {
     choices,
   })
     .then((res) => {
-      console.log('move res: ', res)
+      isMoving.value = false
       curPosition = res.data.cur_pos
       prePosition = res.data.cur_pos
       isEnd.value = res.data.is_end

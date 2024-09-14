@@ -17,6 +17,13 @@ export const FRIENDSHIP_2024_LIST = [
   'activitycenter_poster_friendship_2024',
 ]
 
+// 2024国庆走格子活动
+export const DICE_MAP_LIST = [
+  'activitycenter_dice_map',
+  'activitycenter_dice_mission',
+  'activitycenter_dice_store',
+]
+
 // 菜单中字体颜色显示蓝色的活动
 export const MAIN_ACTIVITY_LIST = [
   'activity_sanrio_2024',
@@ -38,28 +45,6 @@ export const NO_NEED_STATISTICS_LIST = [
   'return_buff_reunion',
   'return_buff_setout',
   'return_buff_together',
-]
-
-// 新活动，重构 store 之后的活动
-// TODO: 待删除
-export const NEW_ACTIVITY_LIST = [
-  'activitycenter_anniversary_store_2024',
-  ...FRIENDSHIP_2024_LIST,
-  'activitycenter_tournament_of_triumph_1',
-  'activitycenter_tournament_of_triumph_2',
-  'activitycenter_tournament_of_triumph_3',
-  'activitycenter_rainbow1_2024',
-  'activitycenter_rainbow2_2024',
-  'activitycenter_qixi_2024',
-  'activitycenter_season23_start',
-  'activitycenter_season23_reserve',
-  'activitycenter_nationalday1_2024',
-  'activitycenter_season23_sprint',
-  'activitycenter_summerday_2024',
-  'activitycenter_season24_reserve',
-  'activitycenter_dice_map',
-  'activitycenter_dice_mission',
-  'activitycenter_dice_store',
 ]
 
 // 所有活动
@@ -91,7 +76,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_season23_sprint',
   'activitycenter_summerday_2024',
   'activitycenter_season24_reserve',
-  'activitycenter_dice_map',
-  'activitycenter_dice_mission',
-  'activitycenter_dice_store',
+  ...DICE_MAP_LIST,
 ]
