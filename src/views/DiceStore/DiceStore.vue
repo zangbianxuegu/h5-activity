@@ -6,7 +6,7 @@
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           >
-            纪念品商店
+            喜遇商店
             <div
               class="date-help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
@@ -198,13 +198,13 @@ const rewardMap = {
   ],
   6: [
     {
-      name: '随机骰子',
+      name: '蟹蟹的士',
       img: 'random_dice',
     },
   ],
   7: [
     {
-      name: '自定义骰子',
+      name: '遥鲲飞机',
       img: 'custom_dice',
     },
   ],
@@ -712,8 +712,10 @@ onMounted(() => {
   }
   .exchange-count {
     position: absolute;
-    right: 30px;
+    right: 20px;
     color: #b4c2ee;
+    display: inline-block;
+    width: 36px;
   }
 }
 .exchange-special {
