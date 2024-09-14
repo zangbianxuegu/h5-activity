@@ -318,14 +318,14 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '飞行里程碑',
+    label: '光遇见喜',
     value: 'activitycenter_dice_mission',
     routeName: 'DiceMission',
     isNew: false,
     hasUnclaimedReward: false,
   },
   {
-    label: '纪念品商店',
+    label: '喜遇商店',
     value: 'activitycenter_dice_store',
     routeName: 'DiceStore',
     isNew: false,
