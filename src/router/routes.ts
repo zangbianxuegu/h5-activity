@@ -369,7 +369,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'DiceMission',
     component: () => import('@/views/DiceMission'),
     meta: {
-      title: '飞行里程碑',
+      title: '光遇见喜',
       module: 'activitycenter_dice_mission',
     },
   },
@@ -378,7 +378,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'DiceStore',
     component: () => import('@/views/DiceStore'),
     meta: {
-      title: '纪念品商店',
+      title: '喜遇商店',
       module: 'activitycenter_dice_store',
     },
   },

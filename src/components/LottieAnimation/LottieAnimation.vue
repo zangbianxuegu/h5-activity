@@ -1,5 +1,5 @@
 <template>
-  <div ref="lottieContainer" class="lottie-container"></div>
+  <div ref="lottieContainer" class="lottie-container" v-if="visible"></div>
 </template>
 
 <script lang="ts" setup>
@@ -7,6 +7,7 @@ import type { AnimationItem, RendererType } from 'lottie-web'
 import Lottie from 'lottie-web'
 
 interface Props {
+  initAutoRender?: boolean
   path?: string
   animationData?: any
   loop?: number | boolean
@@ -30,37 +31,78 @@ const defaultConfig: LottieConfig = {
   renderer: 'svg',
 }
 
-let lottieAnimationItem: AnimationItem = null as unknown as AnimationItem
+const lottieAnimationItem = ref<AnimationItem>()
 
+/**
+ * 渲染lottie动画
+ */
 const renderLottie = (): void => {
   if (!lottieContainer.value) return
   const lottieConfig: LottieConfig = {
     container: lottieContainer.value,
     ...props,
   }
-  // if (props.path) {
-  //   lottieConfig.path = props.path
-  // } else if (props.animationData) {
-  //   lottieConfig.animationData = props.animationData
-  // }
-  lottieAnimationItem = Lottie.loadAnimation(
+
+  lottieAnimationItem.value = Lottie.loadAnimation(
     Object.assign({}, defaultConfig, lottieConfig),
   )
-  console.log('config', Object.assign({}, defaultConfig, lottieConfig))
 }
-onMounted(() => {
-  renderLottie()
-})
-const pause = (): void => {
-  console.log('pause')
 
-  lottieAnimationItem.pause()
+/**
+ * 初始化lottie动画
+ */
+const initLottie = (): void => {
+  renderLottie()
 }
+
+const pause = (): void => {
+  lottieAnimationItem.value?.pause()
+}
+
+/**
+ * 销毁lottie动画并卸载组件
+ */
+const visible = ref(true)
+const destroyAndUnmount = (): void => {
+  visible.value = false
+}
+
+/**
+ * 获取动画实例，供父组件调用lottie实例相关方法
+ */
 const getLottieAnimationItem = (): AnimationItem => {
-  return lottieAnimationItem
+  return lottieAnimationItem?.value as AnimationItem
 }
+
+/**
+ * 切换lottie动画，外部同步切换动画属性即可，切换动画是异步执行
+ */
+const switchLottieAnimation = async (): Promise<void> => {
+  lottieAnimationItem.value?.stop()
+  lottieAnimationItem.value?.destroy()
+  await nextTick(() => {
+    renderLottie()
+  })
+}
+
+onMounted(() => {
+  if (props.initAutoRender) {
+    renderLottie()
+  }
+})
+
+onBeforeUnmount(() => {
+  if (lottieAnimationItem.value) {
+    lottieAnimationItem.value.stop()
+    lottieAnimationItem.value.destroy()
+  }
+})
+
 defineExpose({
   getLottieAnimationItem,
   pause,
+  switchLottieAnimation,
+  initLottie,
+  destroyAndUnmount,
 })
 </script>
