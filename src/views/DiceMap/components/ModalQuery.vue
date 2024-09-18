@@ -15,16 +15,16 @@
           class="item flex items-center"
         >
           <div class="item-name w-3/5 bg-no-repeat">
-            <span class="font-medium text-[#399cf3]">{{
+            <span class="text-[40px] text-[#399cf3]">{{
               heyteaRewardText[item.type as keyof typeof heyteaRewardText]
             }}</span>
           </div>
           <div class="relative w-2/5">
-            <span class="mx-4 inline-block w-full text-[#399cf3]">{{
+            <span class="mx-4 inline-block w-full text-[40px] text-[#399cf3]">{{
               item.code
             }}</span>
             <button
-              class="copy absolute bg-contain"
+              class="copy absolute bg-contain bg-no-repeat"
               @click="copyToClipboard(item.code)"
             >
               <span class="sr-only">复制</span>
@@ -129,9 +129,15 @@ defineExpose({
   width: 995px;
   height: 90px;
   line-height: 90px;
+  overflow: hidden;
   background-color: #fff;
 
   &-name {
+    height: 90px;
+    line-height: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     background-image: url('@/assets/images/dice-map/modal-query-divider.png');
     background-position: right center;
     background-size: 3px 87px;
