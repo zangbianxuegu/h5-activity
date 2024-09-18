@@ -85,9 +85,11 @@
       <!-- 兑换弹框 -->
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
-          <div class="confirm-get-reward-modal-content flex h-full flex-col">
+          <div class="confirm-get-reward-modal-content flex h-[500px] flex-col">
             <div>
-              <p class="reward-title">是否兑换“{{ curRewards[0].name }}”？</p>
+              <p class="reward-title mt-8">
+                是否兑换“{{ curRewards[0].name }}”？
+              </p>
             </div>
             <div class="flex flex-1 items-center justify-center">
               <div class="flex items-center justify-around">
@@ -118,7 +120,7 @@
           </div>
         </template>
         <template #footer>
-          <div class="relative z-10 -mt-10 flex justify-around">
+          <div class="relative z-10 mt-4 flex justify-around">
             <button
               class="btn btn-cancel rounded-md text-white"
               type="button"
