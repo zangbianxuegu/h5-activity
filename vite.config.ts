@@ -52,6 +52,7 @@ export default defineConfig({
     //   cert: fs.readFileSync('C:/Users/wb.chenzhao01/10.227.198.175.pem'),
     // },
     // host: '0.0.0.0',
+    https: false,
     port: 5173,
   },
   build: {
