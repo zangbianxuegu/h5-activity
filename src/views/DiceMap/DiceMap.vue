@@ -20,7 +20,7 @@
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
             <!-- 导航按钮 -->
-            <nav class="nav absolute">
+            <nav class="nav absolute z-10">
               <ul>
                 <li class="nav-item nav-dice bg-contain">
                   <RouterLink to="/dice-mission" class="block h-full w-full">
@@ -433,6 +433,7 @@ function handleDiceSelect(): void {
  * @param num 选择的点数
  */
 function chooseDiceNum(num: number): void {
+  isMoving.value = true
   diceCountCustom.value--
   diceType = 'custom_dice'
   calculateRemainingSteps(num)
@@ -454,6 +455,7 @@ function handleDiceRandom(): void {
   if (isMoving.value) {
     return
   }
+  isMoving.value = true
   diceCountRandom.value--
   getRandomDiceNum(gameUid.value)
     .then((res: any) => {
@@ -621,6 +623,7 @@ function handleDiceData(): void {
   getDiceMapData(gameUid.value)
     .then((res) => {
       isDiceDataLoaded.value = true
+      turns.value = res.data.round_count
       curPosition = res.data.cur_pos
       prePosition = res.data.cur_pos
       diceCountCustom.value = Number(res.data.custom_dice)
@@ -630,11 +633,11 @@ function handleDiceData(): void {
       // heyteaRewards.value = [
       //   {
       //     type: 'heytea_coupon',
-      //     code: '12123',
+      //     code: 'ed64q7cfxrm1',
       //   },
       //   {
       //     type: 'heytea_half',
-      //     code: '222222',
+      //     code: 'ed64q7cfxrm2',
       //   },
       // ]
     })
