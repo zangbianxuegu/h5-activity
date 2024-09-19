@@ -87,13 +87,12 @@ function isMainNavItem(item: MenuItem): boolean {
 
 // 菜单点击事件
 function handleNav(curItem: MenuItem): void {
-  void router.push({ name: 'FileTest' })
-  // if (isMenuItemActive(curItem)) {
-  //   return
-  // }
-  // void router.push({ name: curItem.routeName }).catch((err) => {
-  //   console.error('Failed to navigate: ', err)
-  // })
+  if (isMenuItemActive(curItem)) {
+    return
+  }
+  void router.push({ name: curItem.routeName }).catch((err) => {
+    console.error('Failed to navigate: ', err)
+  })
 }
 
 // 菜单导航 icon

@@ -29,11 +29,11 @@
           </div>
         </div>
       </van-collapse-item>
-      <van-collapse-item title="请求协议频率与数据容量" name="2">
+      <!-- <van-collapse-item title="请求协议频率与数据容量" name="2">
       </van-collapse-item>
       <van-collapse-item title="web生成或拼接图片" name="3"></van-collapse-item>
       <van-collapse-item title="图片放大展示" name="4"></van-collapse-item>
-      <van-collapse-item title="分享功能" name="5"></van-collapse-item>
+      <van-collapse-item title="分享功能" name="5"></van-collapse-item> -->
     </van-collapse>
   </div>
 </template>
