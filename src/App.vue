@@ -12,7 +12,7 @@
       <div>
         <RouterLink
           to="/file-test"
-          class="nav-debug mb-4 flex w-full border px-2 text-center"
+          class="nav-debug mb-4 block h-10 w-full border text-center leading-10"
           >file-test</RouterLink
         >
         <a

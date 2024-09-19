@@ -1,134 +1,162 @@
 <template>
-  <div class="flex h-full w-full items-center">
-    <van-collapse v-model="activeNames" accordion>
-      <van-collapse-item title="文件上传下载功能" name="1">
-        <div class="container-row">
-          <div class="header-row">
-            <h1>UI组件上传：</h1>
-          </div>
-          <div class="body-row">
-            <van-uploader
-              v-model="fileList"
-              reupload
-              max-count="2"
-              :after-read="afterRead"
-              :before-read="beforeRead"
-            />
-          </div>
-        </div>
-        <div class="container-row">
-          <div class="header-row">
-            <h1>原生组件上传：</h1>
-          </div>
-          <div class="body-row">
-            <van-button @click="getFileInfo" type="primary" size="small"
-              >获取上传文件信息</van-button
-            >
-            <input type="file" id="fileInput" accept="*" />
-            <img id="imagePreview" alt="Image Preview" />
-          </div>
-        </div>
-      </van-collapse-item>
-      <!-- <van-collapse-item title="请求协议频率与数据容量" name="2">
-      </van-collapse-item>
-      <van-collapse-item title="web生成或拼接图片" name="3"></van-collapse-item>
-      <van-collapse-item title="图片放大展示" name="4"></van-collapse-item>
-      <van-collapse-item title="分享功能" name="5"></van-collapse-item> -->
-    </van-collapse>
-  </div>
+  <form>
+    <div>
+      <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+      <input
+        type="file"
+        id="image_uploads"
+        name="image_uploads"
+        accept=".png"
+        multiple
+      />
+    </div>
+    <div class="preview">
+      <p>No files currently selected for upload</p>
+    </div>
+    <div>
+      <button>Submit</button>
+    </div>
+  </form>
 </template>
 
 <script setup lang="ts">
-const activeNames = ref('1')
-// 文件上传下载
-const fileList = ref([
-  { url: 'https://fastly.jsdelivr.net/npm/@vant/assets/leaf.jpeg' },
-])
-const afterRead = (file: any): void => {
-  // 此时可以自行将文件上传至服务器
-  console.log('file', file)
-}
-const beforeRead = (file: any): boolean => {
-  console.log('beforeRead')
-  return true
-}
-function getFileInfo(): void {
-  const fileInput = document.getElementById('fileInput') as HTMLInputElement
-  const files = fileInput?.files
-  if (files?.length === 0) {
-    alert('请选择文件')
-  } else {
-    alert('请在log查看文件信息')
-    console.log('files', files)
-  }
-}
-function showImg(): void {
-  const fileInput = document.getElementById('fileInput') as HTMLInputElement
-  fileInput?.addEventListener('change', function (event) {
-    const targetDom = event.target as HTMLInputElement
-    const file = targetDom.files ? targetDom?.files[0] : null // 获取选择的文件
-    console.log('file', file)
-
-    const imagePreview = document.getElementById(
-      'imagePreview',
-    ) as HTMLImageElement
-    if (file) {
-      const reader = new FileReader()
-
-      // 当文件读取完毕后，显示预览图像
-      reader.onload = function (e) {
-        imagePreview.src = e.target?.result as string // 设置图像源
-        imagePreview.style.display = 'block' // 显示图像
-      }
-
-      reader.readAsDataURL(file) // 将文件读取为 Data URL
-    } else {
-      // 如果没有选择文件，则隐藏预览图像
-      imagePreview.style.display = 'none'
-    }
-  })
-}
-function logEnvInfo(): void {
-  console.log('User Agent: ', navigator.userAgent)
-  console.log('Current URL: ', window.location.href)
-  console.log('Page Title: ', document.title)
-  console.log('Browser Language: ', navigator.language)
-  console.log('Platform: ', navigator.platform)
-  console.log(
-    `Window Size: Width: ${window.innerWidth}, Height: ${window.innerHeight}`,
-  )
-}
-
 onMounted(() => {
-  logEnvInfo()
-  showImg()
+  const input = document.querySelector('input')
+  console.log('input: ', input)
+  if (input) {
+    input.style.opacity = '0'
+    input.addEventListener('change', updateImageDisplay)
+  }
 })
-</script>
 
-<style scoped lang="scss">
-* {
-  color: #fff;
-}
-.container-row {
-  .header-row {
-    h1 {
-      font-size: 40px;
-      color: #fff;
+function updateImageDisplay(): void {
+  const preview = document.querySelector('.preview')
+  const input = document.querySelector('input')
+  console.log('preview: ', preview)
+  if (preview) {
+    while (preview.firstChild) {
+      preview.removeChild(preview.firstChild)
+    }
+
+    const curFiles = input?.files
+    console.log('curFiles: ', curFiles)
+    if (curFiles && curFiles.length === 0) {
+      const para = document.createElement('p')
+      para.textContent = 'No files currently selected for upload'
+      preview.appendChild(para)
+    } else if (curFiles) {
+      const list = document.createElement('ol')
+      preview.appendChild(list)
+
+      for (const file of curFiles) {
+        const listItem = document.createElement('li')
+        const para = document.createElement('p')
+
+        if (validFileType(file)) {
+          para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`
+          const image = document.createElement('img')
+          image.src = URL.createObjectURL(file)
+
+          listItem.appendChild(image)
+          listItem.appendChild(para)
+        } else {
+          para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`
+          listItem.appendChild(para)
+        }
+
+        list.appendChild(listItem)
+      }
     }
   }
-  .body-row {
-    display: flex;
+}
+
+// https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+const fileTypes = [
+  // 'image/apng',
+  // 'image/bmp',
+  // 'image/gif',
+  'image/jpeg',
+  // 'image/pjpeg',
+  'image/png',
+  // 'image/svg+xml',
+  // 'image/tiff',
+  // 'image/webp',
+  // 'image/x-icon',
+]
+
+function validFileType(file: File): boolean {
+  return fileTypes.includes(file.type)
+}
+
+function returnFileSize(number: number): string {
+  if (number < 1024) {
+    return number + 'bytes'
+  } else if (number > 1024 && number < 1048576) {
+    return (number / 1024).toFixed(1) + 'KB'
+  } else if (number > 1048576) {
+    return (number / 1048576).toFixed(1) + 'MB'
   }
+  return ''
 }
-#imagePreview {
-  width: 300px;
-  height: 300px;
+</script>
+<style>
+html {
+  font-family: sans-serif;
 }
-:deep(.van-cell) {
+
+form {
   color: #fff;
-  background-color: transparent;
+  background: #ccc;
+  margin: 0 auto;
+  padding: 20px;
+  border: 1px solid black;
+  height: 1000px;
+  overflow: scroll;
 }
-:deep(.van-collapse-item__content) {
-  background-color: transparent;
+
+form ol {
+  padding-left: 0;
+}
+
+form li,
+div > p {
+  background: #eee;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  list-style-type: none;
+  border: 1px solid black;
+}
+
+form img {
+  height: 300px;
+  order: 1;
+}
+
+form p {
+  color: #333;
+  padding-left: 10px;
+}
+
+form label,
+form button {
+  background-color: #7f9ccb;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px ridge black;
+  font-size: 0.8rem;
+  height: auto;
+}
+
+form label:hover,
+form button:hover {
+  background-color: #2d5ba3;
+  color: white;
+}
+
+form label:active,
+form button:active {
+  background-color: #0d3f8f;
+  color: white;
 }
 </style>
