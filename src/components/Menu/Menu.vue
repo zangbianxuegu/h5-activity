@@ -10,7 +10,8 @@
             'nav-item--active': isMenuItemActive(item),
             'nav-item-main--active':
               isMenuItemActive(item) && isMainNavItem(item),
-            'nav-item--new': item.isNew || item.hasUnclaimedReward,
+            'nav-item--new': item.isNew && !item.hasUnclaimedReward,
+            'nav-item--reward': item.hasUnclaimedReward,
           },
         ]"
         @click="handleNav(item)"
@@ -192,6 +193,20 @@ function getNavTextClass(curItem: MenuItem): string[] {
       border-radius: 20px;
       background-color: rgb(184, 25, 26);
       animation: pulse 1.5s infinite;
+    }
+  }
+
+  &--reward {
+    &::after {
+      position: absolute;
+      right: 40px;
+      top: 40px;
+      display: block;
+      content: '';
+      width: 42px;
+      height: 41px;
+      background-image: url('@/assets/images/common/gift.png');
+      background-size: contain;
     }
   }
 
