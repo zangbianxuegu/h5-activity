@@ -437,8 +437,6 @@ const TASK_LIST: Task[] = [
     ],
   },
 ]
-// 是否初始化过taskList
-let isInitTaskList = true
 // 任务列表数据
 const taskList = computed(() => {
   const list = TASK_LIST.map((task) => {
@@ -460,24 +458,32 @@ const taskList = computed(() => {
                 activity.value >= activity.stages[rewardIndex]
               ? 'can'
               : 'wait'
-        if (resObject.status === 'can') {
-          if (isInitTaskList) {
-            void nextTick(() => {
-              if (task.name === 'use_candle') {
-                clickCardRewardAnimate(reward.name)
-              } else {
-                initCanRewardLottie(reward)
-              }
-            })
-          }
-        }
         return resObject
       }),
     }
     return _task
   })
-  isInitTaskList = false
   return list
+})
+
+/**
+ * 观察任务列表数据变化
+ * 初始化待领奖气泡动画
+ */
+watchEffect(() => {
+  taskList.value.forEach((task) => {
+    task.rewards.forEach((reward) => {
+      if (reward.status === 'can') {
+        void nextTick(() => {
+          if (task.name === 'use_candle') {
+            clickCardRewardAnimate(reward.name)
+          } else {
+            initCanRewardLottie(reward)
+          }
+        })
+      }
+    })
+  })
 })
 
 const isCustomDice = (reward: Reward): boolean => {
