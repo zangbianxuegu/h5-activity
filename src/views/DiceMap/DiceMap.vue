@@ -100,16 +100,8 @@
             </div> -->
             <!-- 已完成圈数 -->
             <p class="turns" v-if="turns > 0">已完成圈数：{{ turns }}</p>
-            <!-- 地图上显示的奖励 -->
-            <!-- 位置1：喜遇券 30 -->
-            <div
-              v-if="turns > 0"
-              class="start absolute bg-contain bg-no-repeat"
-            >
-              <div class="reward reward-pos0 bg-contain"></div>
-            </div>
             <!-- 开始 -->
-            <div v-else class="start-text absolute bg-contain">
+            <div class="start absolute bg-contain">
               <span class="sr-only">开始</span>
             </div>
             <!-- 位置 6：喜茶 -->
@@ -789,13 +781,6 @@ function handleRewardQuery(): void {
   color: #ddffd1;
 }
 .start {
-  left: 246px;
-  top: 935px;
-  width: 156px;
-  height: 93px;
-  background-image: url('@/assets/images/dice-map/start-bg.png');
-}
-.start-text {
   left: 277px;
   bottom: 140px;
   width: 85px;
@@ -862,14 +847,6 @@ function handleRewardQuery(): void {
   position: absolute;
   animation: floatAndScale 4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   will-change: transform;
-
-  &-pos0 {
-    left: 32px;
-    top: -24px;
-    width: 91px;
-    height: 120px;
-    background-image: url('@/assets/images/common/reward/reward-heytea_token_yellow.png');
-  }
 
   &-pos6 {
     left: 1228px;
