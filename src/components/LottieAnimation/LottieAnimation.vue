@@ -38,9 +38,6 @@ const lottieAnimationItem = ref<AnimationItem>()
  */
 const renderLottie = (): void => {
   if (!lottieContainer.value) return
-  if (lottieAnimationItem.value) {
-    return
-  }
   const lottieConfig: LottieConfig = {
     container: lottieContainer.value,
     ...props,

@@ -466,25 +466,39 @@ const taskList = computed(() => {
   return list
 })
 
+// 定时器
+let intervalId: NodeJS.Timeout
+// 是否已获取数据
+const isFetched = ref(Session.get(`isFetched-${EVENT_NAME}`))
+
 /**
- * 观察任务列表数据变化
- * 初始化待领奖气泡动画
+ * @function checkSessionStorage
+ * @description 检查是否已获取数据，开始初始待领奖动画
+ * @returns {void}
  */
-watchEffect(() => {
-  taskList.value.forEach((task) => {
-    task.rewards.forEach((reward) => {
-      if (reward.status === 'can') {
-        void nextTick(() => {
-          if (task.name === 'use_candle') {
-            clickCardRewardAnimate(reward.name)
-          } else {
-            initCanRewardLottie(reward)
-          }
-        })
-      }
+function checkSessionStorage(): void {
+  const curIsFetched = Session.get(`isFetched-${EVENT_NAME}`)
+  // 打开活动中心第一次获取或者已获取时
+  if (
+    (curIsFetched === true && isFetched.value === null) ||
+    isFetched.value === true
+  ) {
+    clearInterval(intervalId)
+    taskList.value.forEach((task) => {
+      task.rewards.forEach((reward) => {
+        if (reward.status === 'can') {
+          void nextTick(() => {
+            if (task.name === 'use_candle') {
+              clickCardRewardAnimate(reward.name)
+            } else {
+              initCanRewardLottie(reward)
+            }
+          })
+        }
+      })
     })
-  })
-})
+  }
+}
 
 const isCustomDice = (reward: Reward): boolean => {
   return [
@@ -506,12 +520,18 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 onMounted(() => {
+  // 轮询检查是否已获取数据
+  intervalId = setInterval(checkSessionStorage, 100)
   try {
     getActivityData()
   } catch (error) {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
+})
+
+onUnmounted(() => {
+  clearInterval(intervalId)
 })
 
 // 显示帮助
