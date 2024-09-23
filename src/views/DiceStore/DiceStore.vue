@@ -441,10 +441,6 @@ function handleCancel(): void {
 
 // 确认
 function handleConfirm(): void {
-  // modalReward.value?.closeModal()
-  // showToast('<span class="text-[#ffcb4d]">兑换奖励成功</span>')
-  // triggerReward(curItem.value)
-  // return
   purchaseSpriteToken({
     id: Number(curItem.value.id),
     remainingAmount: curItem.value.remaining_amount,
@@ -458,7 +454,8 @@ function handleConfirm(): void {
       // code = 200 的错误
       const errorMap = {
         fail: '服务器异常，请稍后重试',
-        'not enough store currency': '代币不足，不可兑换',
+        'not enough store currency':
+          curItem.value.id < 6 ? '代币不足，不可兑换' : '蜡烛不足，不可兑换',
         'existing unlock': '已拥有该物品，不可兑换',
         'old data': '兑换发生错误，请稍后重试',
         'exceed limit': '剩余可兑换数量不足',
