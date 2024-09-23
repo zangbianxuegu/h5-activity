@@ -2,12 +2,28 @@
   <form>
     <div>
       <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
+      <!-- 37：gif 读取格式为 JPG -->
       <input
         type="file"
         id="image_uploads"
         name="image_uploads"
-        accept="images/png, images/jpeg"
+        accept="image/png, image/jpeg"
       />
+      <!-- 无法使用 -->
+      <!-- <input
+        type="file"
+        id="image_uploads"
+        name="image_uploads"
+        accept=".png, .jpeg"
+      /> -->
+      <!-- <input
+        type="file"
+        id="image_uploads"
+        name="image_uploads"
+        capture
+        multiple="true"
+        accept="*"
+      /> -->
     </div>
     <div class="preview">
       <p>No files currently selected for upload</p>
