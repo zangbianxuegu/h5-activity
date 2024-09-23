@@ -84,9 +84,5 @@ defineExpose({
     height: 81px;
     background-image: url('@/assets/images/common/modal-close.png');
   }
-
-  &-content {
-    overflow-y: auto;
-  }
 }
 </style>
