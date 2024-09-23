@@ -8,7 +8,10 @@
       </h2>
     </template>
     <template #content>
-      <ul v-if="props.heyteaRewards.length > 0" class="list">
+      <p class="tips text-center text-[32px] text-[#399cf3]">
+        活动结束后无法再查询喜茶券码，请及时兑换！
+      </p>
+      <ul v-if="props.heyteaRewards.length > 0" class="list mt-2">
         <li
           v-for="item in props.heyteaRewards"
           :key="item.code"
@@ -78,8 +81,7 @@ function copyToClipboard(text: string): void {
       .then(() => {
         showToast('优惠券码复制成功')
       })
-      .catch((err) => {
-        console.error('Error copying text: ', err.name, err.message)
+      .catch(() => {
         copyToClipboardFallback(text)
       })
   } else {
@@ -96,10 +98,7 @@ function copyToClipboardFallback(text: string): void {
   try {
     const successful = document.execCommand('copy')
     if (successful) {
-      console.log('Text copied to clipboard using fallback')
       showToast('优惠券码复制成功')
-    } else {
-      console.error('Fallback copy command was unsuccessful')
     }
   } catch (err) {
     console.error('Fallback method error: ', err)
@@ -117,10 +116,15 @@ defineExpose({
   height: 66px;
   background-image: url('@/assets/images/dice-map/modal-query-title.png');
 }
+.tips {
+  margin-top: 20px;
+  height: 40px;
+  line-height: 40px;
+}
 .list {
-  margin: 40px auto 0;
+  margin: 20px auto;
   width: 995px;
-  height: 560px;
+  height: 520px;
 }
 .item {
   margin-bottom: 20px;
