@@ -8,39 +8,48 @@
       </h2>
     </template>
     <template #content>
-      <p class="tips text-center text-[32px] text-[#399cf3]">
-        活动结束后无法再查询喜茶券码，请及时兑换！
-      </p>
-      <ul v-if="props.heyteaRewards.length > 0" class="list mt-2">
-        <li
-          v-for="item in props.heyteaRewards"
-          :key="item.code"
-          class="item flex items-center"
+      <div class="content">
+        <p
+          v-if="props.heyteaRewards && props.heyteaRewards.length > 0"
+          class="tips text-center text-[32px] text-[#399cf3]"
         >
-          <div class="item-name w-3/5 bg-no-repeat">
-            <span class="text-[40px] text-[#399cf3]">{{
-              heyteaRewardText[item.type as keyof typeof heyteaRewardText]
-            }}</span>
-          </div>
-          <div class="relative w-2/5">
-            <span class="mx-4 inline-block w-full text-[40px] text-[#399cf3]">{{
-              item.code
-            }}</span>
-            <button
-              class="copy absolute bg-contain bg-no-repeat"
-              @click="copyToClipboard(item.code)"
-            >
-              <span class="sr-only">复制</span>
-            </button>
-          </div>
-        </li>
-      </ul>
-      <div v-else class="list flex items-center justify-center text-gray-500">
-        暂无中奖记录
+          活动结束后无法再查询喜茶券码，请及时兑换！
+        </p>
+        <ul
+          v-if="props.heyteaRewards && props.heyteaRewards.length > 0"
+          class="list mt-2"
+        >
+          <li
+            v-for="item in props.heyteaRewards"
+            :key="item.code"
+            class="item flex items-center"
+          >
+            <div class="item-name w-3/5 bg-no-repeat">
+              <span class="text-[40px] text-[#399cf3]">{{
+                heyteaRewardText[item.type as keyof typeof heyteaRewardText]
+              }}</span>
+            </div>
+            <div class="relative w-2/5">
+              <span
+                class="mx-4 inline-block w-full text-[40px] text-[#399cf3]"
+                >{{ item.code }}</span
+              >
+              <button
+                class="copy absolute bg-contain bg-no-repeat"
+                @click="copyToClipboard(item.code)"
+              >
+                <span class="sr-only">复制</span>
+              </button>
+            </div>
+          </li>
+        </ul>
+        <div v-else class="list flex items-center justify-center text-gray-500">
+          暂无中奖记录
+        </div>
       </div>
     </template>
     <template #footer>
-      <p class="text-center text-[32px] text-[#adadad]">
+      <p class="footer text-center text-[32px] text-[#adadad]">
         「喜茶券兑换路径」：复制券码—打开喜茶GO小程序—「我的」—「喜茶券」—「兑换喜茶券」—输入券码—兑换使用复制兑换码进行兑换
       </p>
     </template>
@@ -54,7 +63,7 @@ import { showToast } from 'vant'
 const modalQuery = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 interface Props {
-  heyteaRewards: HeyteaRewards
+  heyteaRewards: HeyteaRewards | null
 }
 
 const props = defineProps<Props>()
@@ -116,15 +125,19 @@ defineExpose({
   height: 66px;
   background-image: url('@/assets/images/dice-map/modal-query-title.png');
 }
-.tips {
+.content {
   margin-top: 20px;
+  height: 560px;
+}
+.tips {
   height: 40px;
   line-height: 40px;
 }
 .list {
-  margin: 20px auto;
+  margin: 20px auto 0;
   width: 995px;
   height: 520px;
+  overflow-y: scroll;
 }
 .item {
   margin-bottom: 20px;
@@ -153,5 +166,9 @@ defineExpose({
   width: 50px;
   height: 46px;
   background-image: url('@/assets/images/dice-map/modal-query-copy.png');
+}
+.footer {
+  margin-top: 20px;
+  padding-top: 20px;
 }
 </style>
