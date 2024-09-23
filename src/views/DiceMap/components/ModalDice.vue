@@ -1,7 +1,7 @@
 <template>
   <activity-modal ref="modalDice">
     <template #content>
-      <section class="" aria-labelledby="modalDiceTitle">
+      <section aria-labelledby="modalDiceTitle">
         <h2 class="mt-6 text-center text-[40px] text-[#454545]">请选择点数</h2>
         <div class="box flex w-[828px] flex-wrap justify-center">
           <button
@@ -45,7 +45,7 @@ defineExpose({
 </script>
 <style lang="scss" scoped>
 .box {
-  margin: 20px auto 0;
+  margin: 20px auto;
 }
 .crab {
   position: relative;

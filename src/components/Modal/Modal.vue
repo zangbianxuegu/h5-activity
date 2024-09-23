@@ -86,7 +86,6 @@ defineExpose({
   }
 
   &-content {
-    height: 600px;
     overflow-y: auto;
   }
 }

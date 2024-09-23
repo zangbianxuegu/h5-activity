@@ -6,7 +6,7 @@
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           >
-            飞行里程碑
+            光遇见喜
             <div
               class="date-help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
@@ -37,15 +37,16 @@
                         `reward${rewardIndex + 1}`,
                         `${reward.status}`,
                         'animate__animated',
-                        `${taskIndex === 6 || taskIndex === 7 ? 'animate__flipInX' : 'animate__slideInLeft'}`,
+                        `${taskIndex === 6 || taskIndex === 7 ? 'animate__flipInX' : ''}`,
                       ]"
                     >
                       <div v-if="taskIndex < 6" class="reward-bubble-container">
-                        <!-- <div
+                        <can-reward-bubble-animation
+                          @click.stop
+                          :ref="reward.canRewardLottieRef"
                           :id="reward.name"
                           class="reward-can-dynamic-bubble"
-                        ></div> -->
-                        <!-- <CanRewardBubbleAnimation></CanRewardBubbleAnimation> -->
+                        ></can-reward-bubble-animation>
                         <div
                           v-if="reward.status === 'wait'"
                           :class="[
@@ -195,7 +196,7 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getPlayerMissionData } from '@/utils/request'
+import { claimMissionReward, getPlayerMissionData } from '@/utils/request'
 import type { DesignConfig, Event, EventName } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
@@ -204,8 +205,7 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { useActivityStore } from '@/stores/diceMission'
 import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
 import gsap from 'gsap'
-import { SpinePlayer } from '@esotericsoftware/spine-player'
-// import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -256,8 +256,8 @@ interface RewardsName {
 }
 
 const rewardsText: RewardsName = {
-  random_dice: '随机骰子',
-  custom_dice: '自定义骰子',
+  random_dice: '蟹蟹的士',
+  custom_dice: '遥鲲飞机',
 }
 
 interface Task {
@@ -272,6 +272,7 @@ interface Reward {
   rewardId?: string
   status: 'wait' | 'redeemed' | 'can' | string
   conditionText?: string
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
 }
 
 const EVENT_NAME = 'activitycenter_dice_mission' as EventName
@@ -297,30 +298,45 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '10',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
       {
         name: 'activitycenter_dice_mission_2',
         count: 1,
         status: 'wait',
         conditionText: '20',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
       {
         name: 'activitycenter_dice_mission_3',
         count: 1,
         status: 'wait',
         conditionText: '30',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
       {
         name: 'activitycenter_dice_mission_4',
         count: 1,
         status: 'wait',
         conditionText: '40',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
       {
         name: 'activitycenter_dice_mission_5', // 万能骰子
         count: 1,
         status: 'wait',
         conditionText: '60',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -333,6 +349,9 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '点赞1个纸船',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -345,6 +364,9 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '收集1根蜡烛',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -357,6 +379,9 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '赠送1次心火',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -369,6 +394,9 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '赠送1次爱心',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -381,6 +409,9 @@ const TASK_LIST: Task[] = [
         count: 1,
         status: 'wait',
         conditionText: '完成全部每日任务',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
@@ -392,18 +423,24 @@ const TASK_LIST: Task[] = [
         name: 'activitycenter_dice_mission_11', // 万能骰子
         count: 1,
         status: 'wait',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
       {
         name: 'activitycenter_dice_mission_12', // 万能骰子
         count: 2,
         status: 'wait',
+        canRewardLottieRef: ref() as Ref<
+          Array<InstanceType<typeof CanRewardBubbleAnimation>>
+        >,
       },
     ],
   },
 ]
 // 任务列表数据
 const taskList = computed(() => {
-  return TASK_LIST.map((task) => {
+  const list = TASK_LIST.map((task) => {
     const activity =
       activityData.value.event_data.activitycenter_dice_mission.find(
         (_task) => _task.task_id === task.name,
@@ -422,23 +459,47 @@ const taskList = computed(() => {
                 activity.value >= activity.stages[rewardIndex]
               ? 'can'
               : 'wait'
-        if (resObject.status === 'can') {
-          void nextTick(() => {
-            if (task.name === 'use_candle') {
-              clickCardRewardAnimate(reward.name)
-            } else {
-              setTimeout(() => {
-                spineAnimate(reward.name)
-              }, 1000)
-            }
-          })
-        }
         return resObject
       }),
     }
     return _task
   })
+  return list
 })
+
+// 定时器
+let intervalId: NodeJS.Timeout
+// 是否已获取数据
+const isFetched = ref(Session.get(`isFetched-${EVENT_NAME}`))
+
+/**
+ * @function checkSessionStorage
+ * @description 检查是否已获取数据，开始初始待领奖动画
+ * @returns {void}
+ */
+function checkSessionStorage(): void {
+  const curIsFetched = Session.get(`isFetched-${EVENT_NAME}`)
+  // 打开活动中心第一次获取或者已获取时
+  if (
+    (curIsFetched === true && isFetched.value === null) ||
+    isFetched.value === true
+  ) {
+    clearInterval(intervalId)
+    taskList.value.forEach((task) => {
+      task.rewards.forEach((reward) => {
+        if (reward.status === 'can') {
+          void nextTick(() => {
+            if (task.name === 'use_candle') {
+              clickCardRewardAnimate(reward.name)
+            } else {
+              initCanRewardLottie(reward)
+            }
+          })
+        }
+      })
+    })
+  }
+}
 
 const isCustomDice = (reward: Reward): boolean => {
   return [
@@ -460,12 +521,18 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 onMounted(() => {
+  // 轮询检查是否已获取数据
+  intervalId = setInterval(checkSessionStorage, 100)
   try {
     getActivityData()
   } catch (error) {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
+})
+
+onUnmounted(() => {
+  clearInterval(intervalId)
 })
 
 // 显示帮助
@@ -490,21 +557,14 @@ function setRedDot(): void {
   const hasUnclaimedReward = taskList.some((task) => {
     let res
 
-    // 点击领取奖品更新红点
-    if (currentTask.taskName) {
-      res =
-        task.value >= task.stages[currentTask.rewardIndex] &&
-        task.award[currentTask.rewardIndex] === 0
+    // 初始化时更新红点
+    const arard0Index = task.award.findIndex((award) => award === 0)
+    if (arard0Index === -1) {
+      return false
     } else {
-      // 初始化时更新红点
-      const arard0Index = task.award.findIndex((award) => award === 0)
-      if (arard0Index === -1) {
-        return false
-      } else {
-        const stages0Value = task.stages[arard0Index]
-        if (task.value >= stages0Value) {
-          return true
-        }
+      const stages0Value = task.stages[arard0Index]
+      if (task.value >= stages0Value) {
+        return true
       }
     }
 
@@ -543,7 +603,7 @@ function getActivityData(): void {
 const currentTask = reactive<{
   taskName: string
   taskIndex: number
-  reward: Reward
+  reward: any
   rewardIndex: number
 }>({
   taskName: '',
@@ -587,55 +647,14 @@ const clickBubbleRewardWait = (event: MouseEvent): void => {
     .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
 }
 
-interface SpineAnimateData {
-  domId: string
-  spine: SpinePlayer
-}
-const spineAnimateDataList: SpineAnimateData[] = []
-const spineAnimate = (domId: string): void => {
-  if (spineAnimateDataList.find((e) => e.domId === domId)) {
-    return
-  } else {
-    spineAnimateDataList.push({
-      domId,
-      spine: null as unknown as SpinePlayer,
-    })
-  }
-  const dom = document.querySelector(`#${domId}`)
-  console.log(1, domId, dom)
-  if (dom) {
-    const spine = new SpinePlayer(
-      document.querySelector(`#${domId}`) as HTMLElement,
-      {
-        jsonUrl: './spine/bubble/bubble_glow.json',
-        atlasUrl: './spine/bubble/bubble_glow.atlas',
-        animation: 'loop',
-        preserveDrawingBuffer: false,
-        premultipliedAlpha: true,
-        backgroundColor: '#00000000',
-        showControls: false,
-        alpha: true,
-        viewport: {
-          padLeft: '0%',
-          padRight: '0%',
-          padTop: '0%',
-          padBottom: '0%',
-        },
-        success: () => {
-          const spineItem = spineAnimateDataList.find(
-            (e: SpineAnimateData) => e.domId === domId,
-          )
-          spineItem && (spineItem.spine = spine)
-        },
-      },
-    )
-  }
+const initCanRewardLottie = (reward: Reward): void => {
+  reward.canRewardLottieRef?.value[0].initLottie()
 }
 
-const bubbleBurst = (domId: string): void => {
-  const spine = spineAnimateDataList.find((e) => e.domId === domId)
-    ?.spine as SpinePlayer
-  spine.setAnimation('get', false)
+const bubbleBurst = (domId: string, reward: Reward): void => {
+  if (reward.canRewardLottieRef) {
+    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
+  }
   const redeemedRewardBubbleDom = document.querySelector(
     `.${domId}-redeemed-reward-bubble`,
   )
@@ -691,13 +710,6 @@ const clickCardRewardAnimate = (domId: string): void => {
 
   // 松开时的效果
   dom.addEventListener('mouseup', mouseUpFun)
-
-  // 在鼠标移出按钮时，确保恢复正常状态
-  // dom?.addEventListener('mouseleave', () => {
-  //   setTimeout(() => {
-  //     // gsap.to(dom, { scale: 1, duration: 0.2, ease: 'power1.out' })
-  //   }, 1300)
-  // })
 }
 
 // 领奖
@@ -707,64 +719,56 @@ function handleReward(
   reward: Reward,
   rewardIndex: number,
 ): Promise<void> | void {
-  currentTask.taskName = taskName
-  currentTask.taskIndex = taskIndex
-  currentTask.reward = reward
-  currentTask.rewardIndex = rewardIndex
-  console.log('currentTask', currentTask)
+  const status = reward.status
 
-  if (reward.status === 'can') {
-    if (taskName === 'use_candle') {
-      setTimeout(() => {
-        updateActivityDataRewardStatusNoRequest()
-      }, pressInverval - 100)
-    } else {
-      updateActivityDataRewardStatusNoRequest()
-      void nextTick(() => {
-        bubbleBurst(reward.name)
-      })
-    }
+  if (status === 'redeemed') {
+    return
+  }
+  if (status === 'wait') {
+    showToast('还未完成任务')
+    return
   }
 
-  // const status = reward.status
+  const claimMissionRewardData: {
+    event: string
+    task: string
+    rewardId: number
+    expect?: string
+  } = {
+    event: EVENT_NAME,
+    task: taskName,
+    rewardId: Number(rewardIndex + 1),
+  }
+  claimMissionReward(claimMissionRewardData)
+    .then((res) => {
+      currentTask.taskName = taskName
+      currentTask.taskIndex = taskIndex
+      currentTask.reward = reward
+      currentTask.rewardIndex = rewardIndex
+      const rewards = res.data.rewards
+      curRewards.value = {
+        name: Object.keys(rewards)[0],
+        count: Number(Object.values(rewards)[0]),
+      }
 
-  // if (status === 'redeemed') {
-  //   return
-  // }
-  // if (status === 'wait') {
-  //   showToast('还未完成任务')
-  //   return
-  // }
-
-  // const claimMissionRewardData: {
-  //   event: string
-  //   task: string
-  //   rewardId: number
-  //   expect?: string
-  // } = {
-  //   event: EVENT_NAME,
-  //   task: taskName,
-  //   rewardId: Number(rewardIndex + 1),
-  // }
-  // claimMissionReward(claimMissionRewardData)
-  //   .then((res) => {
-  //     currentTask.taskName = taskName
-  //     currentTask.taskIndex = taskIndex
-  //     currentTask.reward = reward
-  //     currentTask.rewardIndex = rewardIndex
-  //     const rewards = res.data.rewards
-  //     curRewards.value = {
-  //       name: Object.keys(rewards)[0],
-  //       count: Number(Object.values(rewards)[0]),
-  //     }
-
-  //     modalReward.value?.openModal()
-  //     updateActivityDataRewardStatusNoRequest()
-  //     setRedDot()
-  //   })
-  //   .catch((error) => {
-  //     showToast(error.message)
-  //   })
+      if (reward.status === 'can') {
+        if (taskName === 'use_candle') {
+          setTimeout(() => {
+            updateActivityDataRewardStatusNoRequest()
+            setRedDot()
+          }, pressInverval - 100)
+        } else {
+          updateActivityDataRewardStatusNoRequest()
+          setRedDot()
+          void nextTick(() => {
+            bubbleBurst(reward.name, reward)
+          })
+        }
+      }
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 </script>
 
@@ -832,26 +836,32 @@ function handleReward(
 }
 
 .reward-item {
-  width: 220px;
-  // height: 270px;
   position: absolute;
   z-index: 10;
-  // border: 1px solid gray;
-}
-
-.reward-can-dynamic-bubble {
-  width: 296px;
-  height: 296px;
-  position: absolute;
-  top: -66px;
-  left: -70px;
+  // border: 1px solid red;
 }
 
 $reward-bubble-wait-width: 207px;
 $reward-bubble-wait-height: 207px;
+.reward-can-dynamic-bubble {
+  width: $reward-bubble-wait-width + 50px;
+  height: $reward-bubble-wait-height;
+  position: absolute;
+  top: -25px;
+  left: -45px;
+  overflow: hidden;
+  & > :first-child {
+    position: absolute;
+    top: -4px;
+    transform: scale(1.5) !important;
+  }
+}
+
 .reward-bubble-container {
-  width: 266px;
-  height: 266px;
+  // width: 266px;
+  // height: 266px;
+  width: $reward-bubble-wait-width;
+  height: $reward-bubble-wait-height;
   position: relative;
   // border: 1px solid pink;
   .condition-text-online {
@@ -875,10 +885,10 @@ $reward-bubble-wait-height: 207px;
         background-color: rgb(256, 256, 256, 0.3);
         color: #ffffff;
         text-shadow:
-          -1px -1px 0px #8486f9,
-          1px -1px 0px #8486f9,
-          -1px 1px 0px #8486f9,
-          1px 1px 0px #8486f9; /* 轮廓颜色 */
+          -0.8px -0.8px 0px #8486f9,
+          0.8px -0.8px 0px #8486f9,
+          -0.8px 0.8px 0px #8486f9,
+          0.8px 0.8px 0px #8486f9; /* 轮廓颜色 */
       }
       &.condition-text-other {
         color: #ffffff;
@@ -930,14 +940,6 @@ $reward-bubble-wait-height: 207px;
       }
     }
   }
-  // can领奖动态泡泡
-  // .reward-can-dynamic-bubble {
-  //   width: 296px;
-  //   height: 296px;
-  //   position: absolute;
-  //   top: -66px;
-  //   left: -70px;
-  // }
   .can-container {
     width: 187px;
     height: 187px;
@@ -973,8 +975,6 @@ $reward-bubble-wait-height: 207px;
         color: #ffeea6;
         background-color: rgba(211, 211, 211, 0.5);
       }
-      &.condition-text-other {
-      }
     }
   }
   .redeemed-container {
@@ -983,10 +983,10 @@ $reward-bubble-wait-height: 207px;
       &.condition-text-online {
         color: rgba(132, 134, 249, 0.5);
         text-shadow:
-          -1px -1px 0px rgba(0, 0, 0, 0),
-          1px -1px 0px rgba(0, 0, 0, 0),
-          -1px 1px 0px rgba(0, 0, 0, 0.1),
-          1px 1px 0px rgba(0, 0, 0, 0.1); /* 轮廓颜色 */
+          -0.8px -0.8px 0px rgba(0, 0, 0, 0),
+          0.8px -0.8px 0px rgba(0, 0, 0, 0),
+          -0.8px 0.8px 0px rgba(0, 0, 0, 0.1),
+          0.8px 0.8px 0px rgba(0, 0, 0, 0.1); /* 轮廓颜色 */
         background-color: rgba(211, 211, 211, 0.5);
       }
       &.condition-text-other {

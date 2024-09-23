@@ -65,11 +65,7 @@ import type {
   TokenParams,
   UserInfo,
 } from '@/types'
-import {
-  FRIENDSHIP_2024_LIST,
-  FRIENDSHIP_WEEK_2024_LIST,
-  MENU_ITEMS,
-} from '@/constants'
+import { DICE_MAP_LIST, MENU_ITEMS } from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
@@ -94,7 +90,6 @@ const isLoading = ref(false)
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
 const currentChannel = computed(() => baseStore.baseInfo.channel)
-const gameUid = computed(() => baseStore.baseInfo.gameUid)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -170,46 +165,19 @@ function handleToSprite(): void {
 }
 
 /**
- * @function 调整运动会活动排序
+ * @function 调整2024国庆走格子活动
  * @param arr 菜单列表
+ * @param startTime 走格子活动开始时间
  */
-function adjustTournament(arr: Activity[]): Activity[] {
-  let tournamentOfTriumph1Index = -1
-  let tournamentOfTriumph2Index = -1
-
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i].activity === 'activitycenter_tournament_of_triumph_1') {
-      tournamentOfTriumph1Index = i
-    } else if (arr[i].activity === 'activitycenter_tournament_of_triumph_2') {
-      tournamentOfTriumph2Index = i
-    }
-    if (tournamentOfTriumph1Index !== -1 && tournamentOfTriumph2Index !== -1) {
-      if (tournamentOfTriumph1Index > tournamentOfTriumph2Index) {
-        ;[arr[tournamentOfTriumph1Index], arr[tournamentOfTriumph2Index]] = [
-          arr[tournamentOfTriumph2Index],
-          arr[tournamentOfTriumph1Index],
-        ]
-      }
-      break
-    }
-  }
-  return arr
-}
-
-/**
- * @function 调整有友节活动
- * @param arr 菜单列表
- * @param startTime 有友节活动开始时间
- */
-function adjustFriendship2024(arr: Activity[], startTime: number): Activity[] {
+function adjustDiceMap(arr: Activity[], startTime: number): Activity[] {
   // 有友节活动
-  const predefinedActivities = FRIENDSHIP_2024_LIST.map((activityName) =>
+  const predefinedActivities = DICE_MAP_LIST.map((activityName) =>
     arr.find((activity) => activity.activity === activityName),
   ).filter((activity) => activity !== undefined) as Activity[]
 
   // 其余的活动
   const otherActivities = arr.filter(
-    (activity) => !FRIENDSHIP_2024_LIST.includes(activity.activity),
+    (activity) => !DICE_MAP_LIST.includes(activity.activity),
   )
 
   // 合并
@@ -224,29 +192,9 @@ function adjustFriendship2024(arr: Activity[], startTime: number): Activity[] {
   ]
 }
 
-/**
- * @function 过滤二重奏预约活动
- * @description 如果存在白名单，根据白名单显示；否则屏蔽华为、荣耀、抖音渠道
- * @param arr 菜单列表
- * @returns 菜单列表
- */
-function filterSeason23Reverse(arr: Activity[]): Activity[] {
-  return arr.filter((item) => {
-    const whiteList: string[] = []
-    const isInWhiteList = whiteList.includes(gameUid.value)
-    if (whiteList.length > 0 && !isInWhiteList) {
-      return item.activity !== 'activitycenter_season23_reserve'
-    }
-    return !(
-      item.activity === 'activitycenter_season23_reserve' &&
-      ['huawei', 'honor_sdk', 'toutiao_sdk'].includes(currentChannel.value)
-    )
-  })
-}
-
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  let friendship2024StartTime: number = 0
+  let diceMapStartTime: number = 0
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -260,8 +208,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
               ? false
               : activityInfo.has_unclaimed_reward > 0,
         }
-        if (activityName === 'activitycenter_main_friendship_2024') {
-          friendship2024StartTime = activity.startTime
+        if (activityName === 'activitycenter_dice_map') {
+          diceMapStartTime = activity.startTime
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -287,14 +235,10 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     },
     [],
   )
-  // 过滤二重奏预约活动
-  res = filterSeason23Reverse(res)
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
-  // 调整运动会活动排序
-  res = adjustTournament(res)
-  // 调整有友节活动排序
-  res = adjustFriendship2024(res, friendship2024StartTime)
+  // 调整2024国庆走格子活动排序
+  res = adjustDiceMap(res, diceMapStartTime)
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
@@ -387,18 +331,6 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
   return res
 }
 
-// 获取当前有友节周
-function findCurrentFriendshipWeek(activeEvents: Activity[]): number {
-  let res = 0
-  const item = activeEvents.find((item) =>
-    FRIENDSHIP_WEEK_2024_LIST.includes(item.activity),
-  )
-  if (item) {
-    res = FRIENDSHIP_WEEK_2024_LIST.indexOf(item.activity) + 1
-  }
-  return res
-}
-
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
@@ -408,10 +340,6 @@ function getAllEvents(): void {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
       console.log('activeEvents', activeEvents)
-
-      // 获取当前有友节周
-      const currentFriendshipWeek = findCurrentFriendshipWeek(activeEvents)
-      updateBaseInfoItems({ currentFriendshipWeek })
 
       const newMenuData = generateMenuData(MENU_ITEMS, activeEvents)
       console.log('newMenuData: ', newMenuData)

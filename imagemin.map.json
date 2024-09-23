@@ -903,8 +903,6 @@
   "src/assets/images/season23-reserve/bg.jpg": 1721045867985.2966,
   "src/assets/images/season23-reserve/title.png": 1721045867993.1045,
   "src/assets/images/season23-reserve/btn.png": 1721045867995.057,
-  "src/assets/images/season24-reserve/title.png": 1723014438965.665,
-  "src/assets/images/season24-reserve/btn-reserved.png": 1723604589430.998,
   "src/assets/images/nationalday1-2024/task1-reward1-ban.png": 1723010762263.0334,
   "src/assets/images/nationalday1-2024/bg.jpg": 1723010762263.0334,
   "src/assets/images/nationalday1-2024/bg-task.png": 1723010762263.0334,
@@ -997,7 +995,6 @@
   "src/assets/images/summerday-2024/acc-task2-redeemed.png": 1724309770381.6362,
   "src/assets/images/summerday-2024/acc-task2-wait.png": 1724309770381.6362,
   "src/assets/images/dice-map/arrow-up.png": 1726126994240.9375,
-  "src/assets/images/dice-map/btn-dice.png": 1726126994241.9138,
   "src/assets/images/dice-map/btn-store.png": 1726126994241.9138,
   "src/assets/images/dice-map/bg.jpg": 1726126994241.9138,
   "src/assets/images/dice-map/crab-eye-left.png": 1726126994241.9138,
@@ -1073,5 +1070,12 @@
   "src/public/spine/dice-map/yuyan/yuyan.png": 1726126994268.2664,
   "src/assets/images/dice-map/modal-query-title.png": 1726126994242.889,
   "src/assets/images/dice-store/lg-disable.png": 1726126994253.6257,
-  "src/assets/images/dice-map/modal-query-copy.png": 1726126994242.889
+  "src/assets/images/dice-map/modal-query-copy.png": 1726126994242.889,
+  "src/assets/images/common/nav-icon-moomin.png": 1726135924946.5012,
+  "src/assets/images/season24-reserve/bg.jpg": 1726282731526.6924,
+  "src/assets/images/season24-reserve/btn.png": 1726282731526.6924,
+  "src/assets/images/season24-reserve/title.png": 1726282731542.58,
+  "src/assets/images/season24-reserve/btn-reserved.png": 1726282731526.6924,
+  "src/assets/images/dice-map/btn-dice.png": 1726297999505.2058,
+  "src/assets/images/common/gift.png": 1726626910350.3213
 }

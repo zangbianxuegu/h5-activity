@@ -6,7 +6,7 @@
           <h1
             class="title overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           >
-            纪念品商店
+            喜遇商店
             <div
               class="date-help bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
@@ -85,9 +85,11 @@
       <!-- 兑换弹框 -->
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
-          <div class="confirm-get-reward-modal-content flex h-full flex-col">
+          <div class="confirm-get-reward-modal-content flex h-[500px] flex-col">
             <div>
-              <p class="reward-title">是否兑换“{{ curRewards[0].name }}”？</p>
+              <p class="reward-title mt-8">
+                是否兑换“{{ curRewards[0].name }}”？
+              </p>
             </div>
             <div class="flex flex-1 items-center justify-center">
               <div class="flex items-center justify-around">
@@ -118,7 +120,7 @@
           </div>
         </template>
         <template #footer>
-          <div class="relative z-10 -mt-10 flex justify-around">
+          <div class="relative z-10 mt-4 flex justify-around">
             <button
               class="btn btn-cancel rounded-md text-white"
               type="button"
@@ -198,13 +200,13 @@ const rewardMap = {
   ],
   6: [
     {
-      name: '随机骰子',
+      name: '蟹蟹的士',
       img: 'random_dice',
     },
   ],
   7: [
     {
-      name: '自定义骰子',
+      name: '遥鲲飞机',
       img: 'custom_dice',
     },
   ],
@@ -712,8 +714,10 @@ onMounted(() => {
   }
   .exchange-count {
     position: absolute;
-    right: 30px;
+    right: 20px;
     color: #b4c2ee;
+    display: inline-block;
+    width: 36px;
   }
 }
 .exchange-special {

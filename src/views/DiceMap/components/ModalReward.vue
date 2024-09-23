@@ -32,7 +32,9 @@
       </section>
     </template>
     <template #footer v-if="isHeyteaCoupon">
-      <p class="absolute bottom-8 left-0 w-full text-center text-[#adadad]">
+      <p
+        class="absolute bottom-8 left-0 w-full text-center text-[40px] text-[#adadad]"
+      >
         可在【奖励查询】查看中奖历史及详细使用方法
       </p>
     </template>
