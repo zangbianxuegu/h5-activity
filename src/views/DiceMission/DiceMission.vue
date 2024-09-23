@@ -265,6 +265,9 @@ interface Task {
   rewards: Reward[]
 }
 
+/**
+ * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
+ */
 interface Reward {
   name: string
   count: number
@@ -272,6 +275,7 @@ interface Reward {
   status: 'wait' | 'redeemed' | 'can' | string
   conditionText?: string
   canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
+  hadRenderLottie?: Ref<boolean>
 }
 
 const EVENT_NAME = 'activitycenter_dice_mission' as EventName
@@ -300,6 +304,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
       {
         name: 'activitycenter_dice_mission_2',
@@ -309,6 +314,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
       {
         name: 'activitycenter_dice_mission_3',
@@ -318,6 +324,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
       {
         name: 'activitycenter_dice_mission_4',
@@ -327,6 +334,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
       {
         name: 'activitycenter_dice_mission_5', // 万能骰子
@@ -336,6 +344,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -351,6 +360,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -366,6 +376,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -381,6 +392,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -396,6 +408,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -411,6 +424,7 @@ const TASK_LIST: Task[] = [
         canRewardLottieRef: ref() as Ref<
           Array<InstanceType<typeof CanRewardBubbleAnimation>>
         >,
+        hadRenderLottie: ref(false),
       },
     ],
   },
@@ -466,24 +480,9 @@ const taskList = computed(() => {
   return list
 })
 
-// 定时器
-let intervalId: NodeJS.Timeout
-// 是否已获取数据
-const isFetched = ref(Session.get(`isFetched-${EVENT_NAME}`))
-
-/**
- * @function checkSessionStorage
- * @description 检查是否已获取数据，开始初始待领奖动画
- * @returns {void}
- */
-function checkSessionStorage(): void {
-  const curIsFetched = Session.get(`isFetched-${EVENT_NAME}`)
-  // 打开活动中心第一次获取或者已获取时
-  if (
-    (curIsFetched === true && isFetched.value === null) ||
-    isFetched.value === true
-  ) {
-    clearInterval(intervalId)
+watch(
+  () => taskList,
+  () => {
     taskList.value.forEach((task) => {
       task.rewards.forEach((reward) => {
         if (reward.status === 'can') {
@@ -491,14 +490,23 @@ function checkSessionStorage(): void {
             if (task.name === 'use_candle') {
               clickCardRewardAnimate(reward.name)
             } else {
-              initCanRewardLottie(reward)
+              if (reward.hadRenderLottie && !reward.hadRenderLottie.value) {
+                initCanRewardLottie(reward)
+              }
             }
           })
+        } else {
+          if (reward.canRewardLottieRef.value?.[0]) {
+            reward.canRewardLottieRef?.value[0].destroyAnimation()
+          }
         }
       })
     })
-  }
-}
+  },
+  {
+    deep: true,
+  },
+)
 
 const isCustomDice = (reward: Reward): boolean => {
   return [
@@ -520,18 +528,12 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 onMounted(() => {
-  // 轮询检查是否已获取数据
-  intervalId = setInterval(checkSessionStorage, 100)
   try {
     getActivityData()
   } catch (error) {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
-})
-
-onUnmounted(() => {
-  clearInterval(intervalId)
 })
 
 // 显示帮助
@@ -648,6 +650,10 @@ const clickBubbleRewardWait = (event: MouseEvent): void => {
 
 const initCanRewardLottie = (reward: Reward): void => {
   reward.canRewardLottieRef?.value[0].initLottie()
+  // 避免多次更新computed和watch所引起的多次渲染lottie
+  if (reward.hadRenderLottie) {
+    reward.hadRenderLottie.value = true
+  }
 }
 
 const bubbleBurst = (domId: string, reward: Reward): void => {
