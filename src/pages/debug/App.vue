@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-screen flex-col bg-gray-200 p-4">
+  <div class="h-screen overflow-scroll bg-gray-200 p-4">
     <div class="header">
       <van-button
         icon="plus"
@@ -119,12 +119,17 @@
         </div>
       </div>
     </div>
+    <div>
+      <h2 class="my-2">上传控件测试</h2>
+      <file-test></file-test>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { Local } from '@/utils/storage'
 import DebugLink from './components/DebugLink.vue'
+import FileTest from './components/FileTest.vue'
 import { generateUUID } from '@/utils/utils'
 import defaultDebugLinks from './configs/defaultDebugLinks.ts'
 import { showNotify } from 'vant'

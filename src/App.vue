@@ -10,11 +10,6 @@
         <Menu></Menu>
       </div>
       <div>
-        <RouterLink
-          to="/file-test"
-          class="nav-debug mb-4 block h-10 w-full border text-center leading-10"
-          >file-test</RouterLink
-        >
         <a
           v-if="isGameDev || isGame"
           class="nav-debug mb-4 flex w-full justify-center py-2"

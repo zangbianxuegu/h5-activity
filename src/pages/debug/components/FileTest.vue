@@ -6,8 +6,7 @@
         type="file"
         id="image_uploads"
         name="image_uploads"
-        accept=".png"
-        multiple
+        accept="images/png, images/jpeg"
       />
     </div>
     <div class="preview">

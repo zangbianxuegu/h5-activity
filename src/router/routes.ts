@@ -382,9 +382,4 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dice_store',
     },
   },
-  {
-    path: '/file-test',
-    name: 'FileTest',
-    component: () => import('@/views/FileTest'),
-  },
 ]
