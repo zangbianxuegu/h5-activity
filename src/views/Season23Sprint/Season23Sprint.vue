@@ -78,69 +78,73 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <p class="modal-text">
-              <span class="font-semibold">活动时间：</span
-              >2024年9月24日~2024年10月7日
-            </p>
-            <p class="modal-text">
-              <span class="font-semibold">活动内容：</span>
-            </p>
-            <p class="modal-text">
-              1、活动期间，完成全部季节任务，即可领取<span
-                class="text-[#ffcb4d]"
-                >体型重塑*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              2、活动期间，累计收集季节蜡烛，即可领取<span
-                class="text-[#ffcb4d]"
-                >璀璨之星*1，元气满满*1，蜡烛*1</span
-              >；
-            </p>
-            <p class="modal-text">
-              3、活动期间，完成累计登录天数，即可领取<span
-                class="text-[#ffcb4d]"
-                >传信纸船*1，绚丽彩虹*1，爱心*1</span
-              >；
-            </p>
-            <p class="modal-text">
-              4、活动期间，完成二重奏季毕业，即可领取<span
-                class="text-[#ffcb4d]"
-                >下个赛季季节蜡烛*6</span
-              >；
-            </p>
+            <div class="h-[640px] overflow-auto px-4">
+              <p class="modal-text mt-4">
+                <span class="font-semibold">活动时间：</span
+                >2024年9月24日~2024年10月7日
+              </p>
+              <p class="modal-text">
+                <span class="font-semibold">活动内容：</span>
+              </p>
+              <p class="modal-text">
+                1、活动期间，完成全部季节任务，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >体型重塑*2</span
+                >；
+              </p>
+              <p class="modal-text">
+                2、活动期间，累计收集季节蜡烛，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >璀璨之星*1，元气满满*1，蜡烛*1</span
+                >；
+              </p>
+              <p class="modal-text">
+                3、活动期间，完成累计登录天数，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >传信纸船*1，绚丽彩虹*1，爱心*1</span
+                >；
+              </p>
+              <p class="modal-text">
+                4、活动期间，完成二重奏季毕业，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >下个赛季季节蜡烛*6</span
+                >；
+              </p>
+            </div>
           </template>
         </activity-modal>
         <!-- 领奖弹框 -->
         <activity-modal ref="modalReward">
           <template #content>
-            <div
-              v-if="rewardModalType === 'defaultType'"
-              class="flex h-full flex-col"
-            >
-              <p class="modal-text">
-                恭喜你获得
-                <span class="modal-text-blue"
-                  >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                  {{ curRewards.count }}</span
-                >：
-              </p>
-              <div class="flex flex-1 items-center justify-center">
-                <img
-                  class="reward-img"
-                  :src="handleSrc(String(curRewards.name))"
-                  alt="reward"
-                />
+            <div class="h-[640px] overflow-auto px-4">
+              <div
+                v-if="rewardModalType === 'defaultType'"
+                class="flex h-full flex-col"
+              >
+                <p class="modal-text mt-4">
+                  恭喜你获得
+                  <span class="modal-text-blue"
+                    >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                    {{ curRewards.count }}</span
+                  >：
+                </p>
+                <div class="flex flex-1 items-center justify-center">
+                  <img
+                    class="reward-img"
+                    :src="handleSrc(String(curRewards.name))"
+                    alt="reward"
+                  />
+                </div>
               </div>
-            </div>
-            <div v-else>
-              <p class="modal-text">领取奖励说明：</p>
-              <p class="modal-text mt-1">
-                2024年10月18日<span class="text-[#ffcb4d]">新版本更新后</span
-                >，可在游戏内通过<span class="text-[#ffcb4d]">邮件</span
-                >领取<span class="text-[#ffcb4d]">季节蜡烛*6</span
-                >，感谢您的参与！
-              </p>
+              <div v-else>
+                <p class="modal-text mt-4">领取奖励说明：</p>
+                <p class="modal-text mt-1">
+                  2024年10月18日<span class="text-[#ffcb4d]">新版本更新后</span
+                  >，可在游戏内通过<span class="text-[#ffcb4d]">邮件</span
+                  >领取<span class="text-[#ffcb4d]">季节蜡烛*6</span
+                  >，感谢您的参与！
+                </p>
+              </div>
             </div>
           </template>
         </activity-modal>

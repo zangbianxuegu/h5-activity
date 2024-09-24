@@ -55,43 +55,47 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <p class="modal-text">
-              <span class="font-semibold">活动时间：</span
-              >2024年10月1日~2024年10月7日
-            </p>
-            <p class="modal-text">
-              <span class="font-semibold">活动内容：</span>
-            </p>
-            <p class="modal-text">
-              1、活动期间，收集50根蜡烛，即可领取<span class="text-[#ffcb4d]"
-                >红色单边双羽发饰</span
-              >奖励，并在<span class="text-[#ffcb4d]">红色气球</span>、<span
-                class="text-[#ffcb4d]"
-                >红色领结</span
-              >、<span class="text-[#ffcb4d]">小红花发饰</span>、<span
-                class="text-[#ffcb4d]"
-                >爱心*3</span
-              >中任选一个奖励物品；
-            </p>
+            <div class="h-[640px] overflow-auto px-4">
+              <p class="modal-text mt-4">
+                <span class="font-semibold">活动时间：</span
+                >2024年10月1日~2024年10月7日
+              </p>
+              <p class="modal-text">
+                <span class="font-semibold">活动内容：</span>
+              </p>
+              <p class="modal-text">
+                1、活动期间，收集50根蜡烛，即可领取<span class="text-[#ffcb4d]"
+                  >红色单边双羽发饰</span
+                >奖励，并在<span class="text-[#ffcb4d]">红色气球</span>、<span
+                  class="text-[#ffcb4d]"
+                  >红色领结</span
+                >、<span class="text-[#ffcb4d]">小红花发饰</span>、<span
+                  class="text-[#ffcb4d]"
+                  >爱心*3</span
+                >中任选一个奖励物品；
+              </p>
+            </div>
           </template>
         </activity-modal>
         <!-- 领奖弹框 -->
         <activity-modal ref="modalReward">
           <template #content>
-            <div class="flex h-full flex-col">
-              <p class="modal-text">
-                恭喜你获得
-                <span class="modal-text-blue"
-                  >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                  {{ curRewards.count }}</span
-                >：
-              </p>
-              <div class="flex flex-1 items-center justify-center">
-                <img
-                  class="reward-img"
-                  :src="handleSrc(String(curRewards.name))"
-                  alt="reward"
-                />
+            <div class="h-[640px] overflow-auto px-4">
+              <div class="flex h-full flex-col">
+                <p class="modal-text mt-4">
+                  恭喜你获得
+                  <span class="modal-text-blue"
+                    >{{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                    {{ curRewards.count }}</span
+                  >：
+                </p>
+                <div class="flex flex-1 items-center justify-center">
+                  <img
+                    class="reward-img"
+                    :src="handleSrc(String(curRewards.name))"
+                    alt="reward"
+                  />
+                </div>
               </div>
             </div>
           </template>
@@ -99,22 +103,26 @@
         <!-- 兑换弹框 -->
         <activity-modal ref="modalConfirmGetReward" class="reward-box">
           <template #content>
-            <div class="confirm-get-reward-modal-content flex h-full flex-col">
-              <div>
-                <p>
-                  确定要选择【{{
-                    rewardsText[currentTask.reward.name as keyof RewardsName]
-                  }}】吗？
-                </p>
-                <p>选择后，将无法再领取自选范围内的其他奖励</p>
-              </div>
-              <div class="flex flex-1 items-center justify-center">
-                <img
-                  v-if="currentTask.reward.name"
-                  class="reward-img"
-                  :src="handleSrc(String(currentTask.reward.name))"
-                  alt="reward"
-                />
+            <div class="h-[640px] overflow-auto px-4">
+              <div
+                class="confirm-get-reward-modal-content flex h-full flex-col"
+              >
+                <div>
+                  <p class="mt-4">
+                    确定要选择【{{
+                      rewardsText[currentTask.reward.name as keyof RewardsName]
+                    }}】吗？
+                  </p>
+                  <p>选择后，将无法再领取自选范围内的其他奖励</p>
+                </div>
+                <div class="flex flex-1 items-center justify-center">
+                  <img
+                    v-if="currentTask.reward.name"
+                    class="reward-img"
+                    :src="handleSrc(String(currentTask.reward.name))"
+                    alt="reward"
+                  />
+                </div>
               </div>
             </div>
           </template>

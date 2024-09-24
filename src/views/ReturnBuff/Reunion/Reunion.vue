@@ -62,72 +62,76 @@
       </Transition>
       <activity-modal ref="modalHelp">
         <template #content>
-          <p class="modal-text">
-            <span class="font-semibold">参与条件：</span>
-          </p>
-          <p class="modal-text">
-            离开天空王国<span class="text-[#ffcb4d]">≥15天且历史光翼≥30</span
-            >的旅人回归后可参与活动
-          </p>
-          <p class="modal-text mt-4">
-            <span class="font-semibold">参与方式：</span>
-          </p>
-          <p class="modal-text">
-            1、符合参与条件的回归旅人登录游戏并打开“天空王国回归指南”活动页面，即可领取重逢礼<span
-              class="text-[#ffcb4d]"
-              >皮皮猫套装试用魔法</span
-            >；
-          </p>
-          <p class="modal-text">
-            2、解锁每日回归任务，完成后即可回到活动页面领取对应奖励；
-          </p>
-          <p class="modal-text">
-            3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
-              class="text-[#ffcb4d]"
-              >爱心*2、冥龙克星*2、体型重塑*2</span
-            >；
-          </p>
-          <p class="modal-text mt-4">
-            <span class="font-semibold">奖励说明：</span>
-          </p>
-          <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
-          <p class="modal-text">
-            2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
-          </p>
-          <p class="modal-text">
-            3、活动将在旅人<span class="text-[#ffcb4d]">回归后14天后结束</span
-            >，请按时参与并领取奖励～
-          </p>
-          <p class="modal-text">
-            4、参与过回归活动的旅人，30天内将无法再次参与。
-          </p>
+          <div class="h-[640px] overflow-auto px-4">
+            <p class="modal-text mt-4">
+              <span class="font-semibold">参与条件：</span>
+            </p>
+            <p class="modal-text">
+              离开天空王国<span class="text-[#ffcb4d]">≥15天且历史光翼≥30</span
+              >的旅人回归后可参与活动
+            </p>
+            <p class="modal-text mt-4">
+              <span class="font-semibold">参与方式：</span>
+            </p>
+            <p class="modal-text">
+              1、符合参与条件的回归旅人登录游戏并打开“天空王国回归指南”活动页面，即可领取重逢礼<span
+                class="text-[#ffcb4d]"
+                >皮皮猫套装试用魔法</span
+              >；
+            </p>
+            <p class="modal-text">
+              2、解锁每日回归任务，完成后即可回到活动页面领取对应奖励；
+            </p>
+            <p class="modal-text">
+              3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
+                class="text-[#ffcb4d]"
+                >爱心*2、冥龙克星*2、体型重塑*2</span
+              >；
+            </p>
+            <p class="modal-text mt-4">
+              <span class="font-semibold">奖励说明：</span>
+            </p>
+            <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
+            <p class="modal-text">
+              2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
+            </p>
+            <p class="modal-text">
+              3、活动将在旅人<span class="text-[#ffcb4d]">回归后14天后结束</span
+              >，请按时参与并领取奖励～
+            </p>
+            <p class="modal-text">
+              4、参与过回归活动的旅人，30天内将无法再次参与。
+            </p>
+          </div>
         </template>
       </activity-modal>
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
-          <p class="reward-title mt-4">恭喜你获得活动奖励</p>
-          <div class="flex items-center justify-around">
-            <ul
-              :class="[
-                'reward-list mt-6 flex w-full items-center justify-around',
-                `reward-list-${curRewards.length}`,
-              ]"
-            >
-              <li
-                class="reward-item flex flex-col items-center justify-between"
-                v-for="item in curRewards"
-                :key="item.img"
+          <div class="h-[640px] overflow-auto px-4">
+            <p class="reward-title mt-4">恭喜你获得活动奖励</p>
+            <div class="flex items-center justify-around">
+              <ul
+                :class="[
+                  'reward-list mt-6 flex w-full items-center justify-around',
+                  `reward-list-${curRewards.length}`,
+                ]"
               >
-                <div class="reward-img-wrap flex items-center justify-center">
-                  <img
-                    class="reward-img"
-                    :src="handleSrc(item.img)"
-                    alt="reward"
-                  />
-                </div>
-                <p class="reward-name">{{ item.name }}</p>
-              </li>
-            </ul>
+                <li
+                  class="reward-item flex flex-col items-center justify-between"
+                  v-for="item in curRewards"
+                  :key="item.img"
+                >
+                  <div class="reward-img-wrap flex items-center justify-center">
+                    <img
+                      class="reward-img"
+                      :src="handleSrc(item.img)"
+                      alt="reward"
+                    />
+                  </div>
+                  <p class="reward-name">{{ item.name }}</p>
+                </li>
+              </ul>
+            </div>
           </div>
         </template>
       </activity-modal>
