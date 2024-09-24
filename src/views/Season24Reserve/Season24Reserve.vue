@@ -5,7 +5,7 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1 class="title overflow-hidden bg-contain indent-[-9999px]">
-              期待在姆明季 能与你再次相遇 10.8-10.23
+              期待在姆明季 能与你再次相遇 10.8-10.17
             </h1>
             <div class="help bg-contain" @click="handleHelp"></div>
           </div>
@@ -21,29 +21,31 @@
             ]"
             @click="handleToReserve"
           >
-            约定相见
+            <span v-if="isReserved"> 已预约 </span>
+            <span v-else> 约定相见 </span>
           </button>
-          <div class="reward bg-contain"></div>
         </div>
       </div>
       <!-- 活动规则说明 -->
       <activity-modal ref="modalHelp">
         <template #content>
-          <p class="modal-text">
-            <span class="font-semibold">活动时间：</span
-            >2024年10月8日-2024年10月23日
-          </p>
-          <p class="modal-text">
-            <span class="font-semibold">活动内容：</span>
-          </p>
-          <p class="modal-text">
-            活动期间，点击“约定相见”，即可前往小程序预约新季节。
-          </p>
-          <p class="modal-text">
-            完成预约后可获得奖励：<span class="text-[#ffcb4d]"
-              >新季节蜡烛*3</span
-            >，奖励将在新季节首次登录游戏时通过邮件自动发送
-          </p>
+          <div class="h-[640px] overflow-auto px-4">
+            <p class="modal-text mt-4">
+              <span class="font-semibold">活动时间：</span
+              >2024年10月8日-2024年10月17日
+            </p>
+            <p class="modal-text">
+              <span class="font-semibold">活动内容：</span>
+            </p>
+            <p class="modal-text">
+              活动期间，点击“约定相见”，即可前往小程序预约新季节。
+            </p>
+            <p class="modal-text">
+              完成预约后可获得奖励：<span class="text-[#ffcb4d]"
+                >新季节蜡烛*3</span
+              >，奖励将在新季节首次登录游戏时通过邮件自动发送
+            </p>
+          </div>
         </template>
       </activity-modal>
     </div>
@@ -105,6 +107,7 @@ const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946'
 const pathDev =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=66bf49c30d3a2d1bd8ae4341&utm_medium=GMC&utm_source=kf.ma75&wsSubGameInfoId=66bf49c30d3a2d1bd8ae4341'
+// 正式版：0，测试版：1，体验版：2
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev
 // 打开微信小程序传参，运营提供
@@ -207,47 +210,43 @@ function handleHelp(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/season23-reserve/bg.jpg');
+    background-image: url('@/assets/images/season24-reserve/bg.jpg');
   }
 }
 .header {
   position: relative;
-  left: 618px;
-  top: 100px;
-  width: 1090px;
+  left: 444px;
+  top: 96px;
+  width: 1105px;
 }
 .title {
   position: absolute;
-  width: 1090px;
-  height: 301px;
+  width: 1105px;
+  height: 312px;
   background-image: url('@/assets/images/season24-reserve/title.png');
 }
 .help {
   position: absolute;
-  left: 960px;
-  top: 78px;
+  left: 995px;
+  top: 89px;
   width: 61px;
   height: 61px;
   background-image: url('@/assets/images/season23-reserve/help.png');
 }
 .btn {
   position: absolute;
-  right: 136px;
-  bottom: 142px;
-  width: 413px;
-  height: 132px;
-  background-image: url('@/assets/images/season23-reserve/btn.png');
+  right: 187px;
+  bottom: 38px;
+  width: 443px;
+  height: 162px;
+  background-image: url('@/assets/images/season24-reserve/btn.png');
 
   &-reserved {
+    right: 186px;
+    bottom: 37px;
+    width: 445px;
+    height: 164px;
     background-image: url('@/assets/images/season24-reserve/btn-reserved.png');
   }
-}
-.reward {
-  position: absolute;
-  right: 153px;
-  bottom: 274px;
-  width: 160px;
-  height: 69px;
-  background-image: url('@/assets/images/season23-reserve/reward.png');
 }
 </style>

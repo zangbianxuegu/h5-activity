@@ -1,9 +1,5 @@
 import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
-import {
-  FRIENDSHIP_WEEK_2024_LIST,
-  NEW_ACTIVITY_LIST,
-  ERROR_MESSAGES,
-} from '@/constants'
+import { ERROR_MESSAGES } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
@@ -157,7 +153,10 @@ function fetchPlayerMissionData(
         if (res.code === 200) {
           resolve(res)
           _resolve()
-          if (!event) {
+          if (event) {
+            // 存储是否请求过
+            Session.set(`isFetched-${event}`, true)
+          } else {
             // 存储数据
             Session.set('allEvents', res)
           }
@@ -209,50 +208,17 @@ export function getPlayerMissionData({
   return new Promise((resolve, reject) => {
     const now = Date.now()
     if (event) {
-      // TODO
-      // 拆分 activity 的全局状态管理。
-      // 兼容之前的活动，等待 stores/activity.ts 中保存的活动全部下架之后，只需要保留 if 中的逻辑
-      if (NEW_ACTIVITY_LIST.includes(event)) {
-        let cachedData
-        if (FRIENDSHIP_WEEK_2024_LIST.includes(event)) {
-          cachedData = Session.get(
-            'activitycenter_week_friendship_2024',
-          )?.activityData
-        } else {
-          cachedData = Session.get(event)?.activityData
+      // 主要作用是刷新也会保持状态
+      const cachedData = Session.get(event)?.activityData
+      const lastFetchTime = parseInt(Session.get(`lastFetchTime-${event}`)) || 0
+      if (cachedData && now - lastFetchTime < 3500) {
+        const res = {
+          code: 200,
+          data: cachedData,
+          msg: 'ok',
         }
-        const lastFetchTime =
-          parseInt(Session.get(`lastFetchTime-${event}`)) || 0
-        if (cachedData && now - lastFetchTime < 3500) {
-          const res = {
-            code: 200,
-            data: cachedData,
-            msg: 'ok',
-          }
-          resolve(res)
-          return
-        }
-      } else {
-        const cachedData = Session.get('activity')?.eventData[event]
-        const lastFetchTime =
-          parseInt(Session.get(`lastFetchTime-${event}`)) || 0
-        const isFetched = Session.get(`isFetched-${event}`)
-        // 有缓存数据。但是不能依靠这个判断是否应该使用缓存数据，因为 Pinia 中设置了初始值
-        // 当前活动是否缓存过
-        // 距离上一次请求小于 3500
-        if (cachedData && isFetched && now - lastFetchTime < 3500) {
-          const res = {
-            code: 200,
-            data: {
-              event_data: {
-                [event]: cachedData,
-              },
-            },
-            msg: 'ok',
-          }
-          resolve(res)
-          return
-        }
+        resolve(res)
+        return
       }
       let throttledFetch = throttledFetchMap[event]
       if (!throttledFetch) {
@@ -263,8 +229,6 @@ export function getPlayerMissionData({
       }
       // 存储请求时间
       Session.set(`lastFetchTime-${event}`, now.toString())
-      // 存储是否请求过
-      Session.set(`isFetched-${event}`, true)
       throttledFetch({ event, token }, resolve, reject).catch((err: any) => {
         reject(err)
       })

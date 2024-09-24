@@ -355,4 +355,31 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season24_reserve',
     },
   },
+  {
+    path: '/dice-map',
+    name: 'DiceMap',
+    component: () => import('@/views/DiceMap'),
+    meta: {
+      title: '因光而遇 因遇而喜',
+      module: 'activitycenter_dice_map',
+    },
+  },
+  {
+    path: '/dice-mission',
+    name: 'DiceMission',
+    component: () => import('@/views/DiceMission'),
+    meta: {
+      title: '光遇见喜',
+      module: 'activitycenter_dice_mission',
+    },
+  },
+  {
+    path: '/dice-store',
+    name: 'DiceStore',
+    component: () => import('@/views/DiceStore'),
+    meta: {
+      title: '喜遇商店',
+      module: 'activitycenter_dice_store',
+    },
+  },
 ]
