@@ -75,7 +75,6 @@ import { useActivityStore } from '@/stores/activity'
 import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
-import { Session } from '@/utils/storage'
 
 const { isLocal, isGameDev, isGame, isProd } = useEnvironment()
 const jinglingUrl = isProd.value
@@ -109,11 +108,6 @@ interface ActivityData {
   active: number
 }
 type Activities = Record<string, ActivityData>
-
-onBeforeMount(() => {
-  // 处理ios切换账号不清除sessionStorage的问题
-  Session.clear()
-})
 
 onMounted(async () => {
   try {

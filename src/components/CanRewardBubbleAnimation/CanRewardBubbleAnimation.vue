@@ -48,10 +48,9 @@ const playAnimationClickBubble = (): void => {
   void switchLottieAnimation()
 }
 
-// 动画消失
-const hideAnimation = (): void => {
-  if (!animationRef.value) return
-  animationRef.value.getLottieAnimationItem().pause()
+const destroyAnimation = (): void => {
+  if (!animationRef.value?.getLottieAnimationItem()) return
+  animationRef.value.getLottieAnimationItem().destroy()
 }
 
 const initLottie = (): void => {
@@ -63,10 +62,14 @@ onBeforeMount(() => {
   animationRef.value?.destroyAndUnmount()
 })
 
+onBeforeUnmount(() => {
+  animationRef.value?.destroyAndUnmount()
+})
+
 defineExpose({
   playAnimationWaitReward,
   playAnimationClickBubble,
-  hideAnimation,
+  destroyAnimation,
   switchLottieAnimation,
   initLottie,
 })
