@@ -176,8 +176,8 @@ const rewardMap = {
   ],
   2: [
     {
-      name: '元气满满',
-      img: 'energy',
+      name: '体型重塑',
+      img: 'resize_potion',
     },
   ],
   3: [
