@@ -29,21 +29,23 @@
       <!-- 活动规则说明 -->
       <activity-modal ref="modalHelp">
         <template #content>
-          <p class="modal-text">
-            <span class="font-semibold">活动时间：</span
-            >2024年10月8日-2024年10月17日
-          </p>
-          <p class="modal-text">
-            <span class="font-semibold">活动内容：</span>
-          </p>
-          <p class="modal-text">
-            活动期间，点击“约定相见”，即可前往小程序预约新季节。
-          </p>
-          <p class="modal-text">
-            完成预约后可获得奖励：<span class="text-[#ffcb4d]"
-              >新季节蜡烛*3</span
-            >，奖励将在新季节首次登录游戏时通过邮件自动发送
-          </p>
+          <div class="h-[640px] overflow-auto px-4">
+            <p class="modal-text mt-4">
+              <span class="font-semibold">活动时间：</span
+              >2024年10月8日-2024年10月17日
+            </p>
+            <p class="modal-text">
+              <span class="font-semibold">活动内容：</span>
+            </p>
+            <p class="modal-text">
+              活动期间，点击“约定相见”，即可前往小程序预约新季节。
+            </p>
+            <p class="modal-text">
+              完成预约后可获得奖励：<span class="text-[#ffcb4d]"
+                >新季节蜡烛*3</span
+              >，奖励将在新季节首次登录游戏时通过邮件自动发送
+            </p>
+          </div>
         </template>
       </activity-modal>
     </div>
