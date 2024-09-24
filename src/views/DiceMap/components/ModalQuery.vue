@@ -24,16 +24,15 @@
             :key="item.code"
             class="item flex items-center"
           >
-            <div class="item-name w-3/5 bg-no-repeat">
+            <div class="item-name bg-no-repeat">
               <span class="text-[40px] text-[#399cf3]">{{
                 heyteaRewardText[item.type as keyof typeof heyteaRewardText]
               }}</span>
             </div>
-            <div class="relative w-2/5">
-              <span
-                class="mx-4 inline-block w-full text-[40px] text-[#399cf3]"
-                >{{ item.code }}</span
-              >
+            <div class="relative">
+              <span class="inline-block w-full text-[40px] text-[#399cf3]">{{
+                item.code
+              }}</span>
               <button
                 class="copy absolute bg-contain bg-no-repeat"
                 @click="copyToClipboard(item.code)"
@@ -128,22 +127,23 @@ defineExpose({
 .content {
   margin-top: 20px;
   height: 560px;
+  width: 100%;
 }
 .tips {
   height: 40px;
   line-height: 40px;
 }
 .list {
-  margin: 20px auto 0;
-  width: 995px;
+  padding: 0 2px;
+  width: 100%;
   height: 520px;
   overflow-y: scroll;
 }
 .item {
   margin-bottom: 20px;
-  padding: 0 30px 0 32px;
+  padding: 0 22px 0 27px;
   border-radius: 22px;
-  width: 995px;
+  width: 100%;
   height: 90px;
   line-height: 90px;
   overflow: hidden;
@@ -151,6 +151,7 @@ defineExpose({
 
   &-name {
     height: 90px;
+    width: 50%;
     line-height: 90px;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -158,6 +159,10 @@ defineExpose({
     background-image: url('@/assets/images/dice-map/modal-query-divider.png');
     background-position: right center;
     background-size: 3px 87px;
+  }
+  .relative {
+    width: 50%;
+    margin-left: 20px;
   }
 }
 .copy {
