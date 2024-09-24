@@ -79,5 +79,6 @@ defineExpose({
 <style scoped>
 .content {
   height: 640px;
+  overflow: auto;
 }
 </style>
