@@ -109,11 +109,6 @@ interface ActivityData {
 }
 type Activities = Record<string, ActivityData>
 
-onBeforeMount(() => {
-  // 处理ios切换账号不清除sessionStorage的问题
-  Session.clear()
-})
-
 onMounted(async () => {
   try {
     await getBaseInfo()
