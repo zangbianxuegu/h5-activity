@@ -10,7 +10,7 @@ export const useActivityStore = defineStore(
       sprite_exchange_store: {
         store_list: [
           { remaining_amount: 3, price: 60, id: 0 },
-          { remaining_amount: 3, price: 60, id: 1 },
+          { remaining_amount: 5, price: 60, id: 1 },
           { remaining_amount: 5, price: 30, id: 2 },
           { remaining_amount: 5, price: 30, id: 3 },
           { remaining_amount: 5, price: 30, id: 4 },

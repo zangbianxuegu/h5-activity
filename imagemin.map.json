@@ -1036,15 +1036,9 @@
   "src/assets/images/dice-store/bg.jpg": 1726126994253.6257,
   "src/assets/images/dice-store/sell-out.png": 1726126994253.6257,
   "src/assets/images/dice-store/sm-disable.png": 1726126994253.6257,
-  "src/assets/images/dice-store/task1-disable.png": 1726126994253.6257,
   "src/assets/images/dice-store/sm-enable.png": 1726126994253.6257,
-  "src/assets/images/dice-store/task2-disable.png": 1726126994253.6257,
-  "src/assets/images/dice-store/task2-enable.png": 1726126994253.6257,
-  "src/assets/images/dice-store/task1-enable.png": 1726126994253.6257,
   "src/assets/images/dice-store/task4-disable.png": 1726126994253.6257,
-  "src/assets/images/dice-store/task3-enable.png": 1726126994253.6257,
   "src/assets/images/dice-store/task5-disable.png": 1726126994254.6006,
-  "src/assets/images/dice-store/task3-disable.png": 1726126994254.6006,
   "src/assets/images/dice-store/task4-enable.png": 1726126994253.6257,
   "src/assets/images/dice-store/task6-enable.png": 1726126994254.6006,
   "src/assets/images/dice-store/task5-enable.png": 1726126994254.6006,
@@ -1096,5 +1090,11 @@
   "src/public/lottie/bubble/bubble_glow_loop/images/img_5.png": 1727145087722.2598,
   "src/public/lottie/bubble/bubble_glow_loop/images/img_4.png": 1727145087722.2598,
   "src/assets/images/dice-mission/bg.jpg": 1727145087721.2844,
-  "src/public/lottie/bubble/bubble_glow_loop/images/img_6.png": 1727145087724.2122
+  "src/public/lottie/bubble/bubble_glow_loop/images/img_6.png": 1727145087724.2122,
+  "src/assets/images/dice-store/task2-disable.png": 1727165513734.1677,
+  "src/assets/images/dice-store/task1-disable.png": 1727165513734.1677,
+  "src/assets/images/dice-store/task2-enable.png": 1727165513734.1677,
+  "src/assets/images/dice-store/task1-enable.png": 1727165513734.1677,
+  "src/assets/images/dice-store/task3-disable.png": 1727165513734.1677,
+  "src/assets/images/dice-store/task3-enable.png": 1727165513735.1436
 }
