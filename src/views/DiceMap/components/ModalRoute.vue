@@ -1,11 +1,14 @@
 <template>
   <activity-modal ref="modalDirection" :show-close="false">
     <template #content>
-      <section class="" aria-labelledby="modalDirectionTitle">
+      <section
+        class="model-route-container"
+        aria-labelledby="modalDirectionTitle"
+      >
         <h2 class="mt-6 text-center text-[40px] text-[#454545]">
           请选择前进方向
         </h2>
-        <div class="mt-16 flex justify-center pb-8">
+        <div class="flex justify-center pb-8">
           <button
             type="button"
             class="arrow-btn arrow-btn-up cursor-pointer bg-contain bg-no-repeat"
@@ -49,6 +52,11 @@ defineExpose({
 })
 </script>
 <style lang="scss" scoped>
+.model-route-container {
+  & > div {
+    margin-top: 160px;
+  }
+}
 .arrow-btn {
   width: 202px;
   height: 202px;
