@@ -103,7 +103,7 @@
         <!-- 兑换弹框 -->
         <activity-modal ref="modalConfirmGetReward" class="reward-box">
           <template #content>
-            <div class="h-[640px] overflow-auto px-4">
+            <div class="h-[560px] overflow-auto px-4">
               <div
                 class="confirm-get-reward-modal-content flex h-full flex-col"
               >
@@ -127,7 +127,7 @@
             </div>
           </template>
           <template #footer>
-            <div class="relative z-10 -mt-10 flex justify-around">
+            <div class="relative z-10 flex justify-around">
               <button
                 class="btn btn-cancel rounded-md text-white"
                 type="button"
