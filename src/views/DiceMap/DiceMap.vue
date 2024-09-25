@@ -676,6 +676,13 @@ function handleDiceMove(): void {
  * @description 打开中奖查询
  */
 function handleRewardQuery(): void {
+  if (gameUid.value !== '') {
+    try {
+      handleDiceData()
+    } catch (error) {
+      console.error(error)
+    }
+  }
   modalQuery.value?.open()
 }
 </script>
