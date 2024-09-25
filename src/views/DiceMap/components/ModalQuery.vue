@@ -49,7 +49,7 @@
     </template>
     <template #footer>
       <p class="footer text-center text-[32px] text-[#adadad]">
-        「喜茶券兑换路径」：复制券码—打开喜茶GO小程序—「我的」—「喜茶券」—「兑换喜茶券」—输入券码—兑换使用复制兑换码进行兑换
+        「喜茶券兑换路径」：复制券码—打开喜茶GO小程序—「我的」—「喜茶券」—「兑换喜茶券」—输入券码—兑换使用
       </p>
     </template>
   </activity-modal>
