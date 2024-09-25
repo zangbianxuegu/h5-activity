@@ -676,6 +676,9 @@ function handleDiceMove(): void {
  * @description 打开中奖查询
  */
 function handleRewardQuery(): void {
+  if (isMoving.value) {
+    return
+  }
   if (gameUid.value !== '') {
     try {
       handleDiceData()
