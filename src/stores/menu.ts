@@ -69,25 +69,11 @@ export const useMenuStore = defineStore('menu', () => {
     if (curItem?.isNew) {
       void setWebRedDot({ event }).then(() => {
         menuData.value = menuData.value.map((item) => {
-          if (
-            item.value === 'signin' &&
-            item.children &&
-            item.children.length > 0
-          ) {
-            const children = item.children.map((child) => {
-              const isNew = child.value === event ? false : child.isNew
-              return {
-                ...child,
-                isNew,
-              }
-            })
-            return {
-              ...item,
-              children,
-            }
-          }
           return {
-            ...item,
+            hasUnclaimedReward: item.hasUnclaimedReward,
+            label: item.label,
+            value: item.value,
+            routeName: item.routeName,
             isNew: item.value === event ? false : item.isNew,
           }
         })
@@ -112,7 +98,10 @@ export const useMenuStore = defineStore('menu', () => {
       ) {
         const children = item.children.map((child: MenuItem) => {
           return {
-            ...child,
+            isNew: child.isNew,
+            label: child.label,
+            value: child.value,
+            routeName: child.routeName,
             hasUnclaimedReward:
               child.value === event
                 ? hasUnclaimedReward
@@ -123,7 +112,10 @@ export const useMenuStore = defineStore('menu', () => {
           (child: MenuItem) => child.hasUnclaimedReward,
         )
         return {
-          ...item,
+          isNew: item.isNew,
+          label: item.label,
+          value: item.value,
+          routeName: item.routeName,
           children,
           hasUnclaimedReward: hasUnclaimedRewardOfParent,
         }
