@@ -235,15 +235,13 @@ function handleHelp(): void {
 }
 .btn {
   position: absolute;
-  right: 187px;
-  bottom: 38px;
+  right: 381px;
+  bottom: 62px;
   width: 443px;
   height: 162px;
   background-image: url('@/assets/images/season24-reserve/btn.png');
 
   &-reserved {
-    right: 186px;
-    bottom: 37px;
     width: 445px;
     height: 164px;
     background-image: url('@/assets/images/season24-reserve/btn-reserved.png');
