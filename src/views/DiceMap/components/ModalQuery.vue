@@ -34,7 +34,7 @@
                 item.code
               }}</span>
               <button
-                class="copy absolute bg-contain bg-no-repeat"
+                class="copy absolute bg-transparent bg-contain bg-no-repeat"
                 @click="copyToClipboard(item.code)"
               >
                 <span class="sr-only">复制</span>

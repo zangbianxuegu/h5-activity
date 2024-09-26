@@ -129,7 +129,10 @@ export const useMenuStore = defineStore('menu', () => {
         }
       }
       return {
-        ...item,
+        isNew: item.isNew,
+        label: item.label,
+        value: item.value,
+        routeName: item.routeName,
         hasUnclaimedReward:
           item.value === event ? hasUnclaimedReward : item.hasUnclaimedReward,
       }
