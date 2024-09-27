@@ -87,7 +87,20 @@
         <template #content>
           <div class="confirm-get-reward-modal-content flex h-[500px] flex-col">
             <div>
-              <p class="reward-title mt-8">
+              <p
+                v-if="
+                  curRewards[0].name === '蟹蟹的士' ||
+                  curRewards[0].name === '遥鲲飞机'
+                "
+                class="reward-title mt-8"
+              >
+                是否用<span class="text-[#ffcb4d]"
+                  >蜡烛*{{
+                    curRewards[0].name === '蟹蟹的士' ? '3' : '6'
+                  }}</span
+                >兑换{{ curRewards[0].name }}？
+              </p>
+              <p v-else class="reward-title mt-8">
                 是否兑换“{{ curRewards[0].name }}”？
               </p>
             </div>
