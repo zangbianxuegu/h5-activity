@@ -9,6 +9,7 @@ import compression from 'vite-plugin-compression'
 // import basicSsl from '@vitejs/plugin-basic-ssl'
 import mkcert from 'vite-plugin-mkcert'
 import legacy from '@vitejs/plugin-legacy'
+import babel from '@rollup/plugin-babel'
 
 export default defineConfig({
   root: './src/',
@@ -16,6 +17,14 @@ export default defineConfig({
   envDir: resolve(__dirname),
   plugins: [
     vue(),
+    babel({
+      babelHelpers: 'bundled',
+      presets: [['@babel/preset-env', { targets: '> 0.01%, not dead' }]],
+      plugins: ['@babel/plugin-transform-spread'],
+      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+      include: ['src/**/*'],
+      exclude: ['**/node_modules/**', '**/*.scss', '**/*.css'],
+    }),
     Components({
       resolvers: [VantResolver()],
       dts: true,
