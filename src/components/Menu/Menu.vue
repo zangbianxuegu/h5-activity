@@ -58,9 +58,7 @@ const computedMenuData = computed<MenuItem[]>(() => {
         (child) => child.hasUnclaimedReward,
       )
       return {
-        label: menuItem.label,
-        value: menuItem.value,
-        routeName: menuItem.routeName,
+        ...menuItem,
         isNew,
         hasUnclaimedReward,
       }
