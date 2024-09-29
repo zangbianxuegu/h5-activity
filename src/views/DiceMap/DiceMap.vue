@@ -60,7 +60,7 @@
               <!-- 万能骰子，选择点数 -->
               <button
                 type="button"
-                class="dice-item dice-select relative cursor-pointer bg-contain"
+                class="dice-item dice-select relative cursor-pointer bg-transparent bg-contain"
                 aria-label="选择点数的万能骰子"
                 @click="handleDiceSelect"
               >
@@ -75,7 +75,7 @@
               <!-- 随机骰子 -->
               <button
                 type="button"
-                class="dice-item dice-random relative cursor-pointer bg-contain"
+                class="dice-item dice-random relative cursor-pointer bg-transparent bg-contain"
                 aria-label="随机骰子"
                 @click="handleDiceRandom"
               >
@@ -676,6 +676,16 @@ function handleDiceMove(): void {
  * @description 打开中奖查询
  */
 function handleRewardQuery(): void {
+  if (isMoving.value) {
+    return
+  }
+  if (gameUid.value !== '') {
+    try {
+      handleDiceData()
+    } catch (error) {
+      console.error(error)
+    }
+  }
   modalQuery.value?.open()
 }
 </script>

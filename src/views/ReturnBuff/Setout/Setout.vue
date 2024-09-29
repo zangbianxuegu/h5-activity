@@ -86,8 +86,8 @@
       </Transition>
       <activity-modal ref="modalHelp">
         <template #content>
-          <div class="h-[640px] overflow-auto px-4">
-            <p class="modal-text mt-4">
+          <div class="h-[640px] overflow-auto px-2">
+            <p class="modal-text">
               <span class="font-semibold">参与条件：</span>
             </p>
             <p class="modal-text">
@@ -100,30 +100,30 @@
             <p class="modal-text">
               1、完成收集蜡烛10/20/30根任务，即可依次解锁奖励<span
                 class="text-[#ffcb4d]"
-                >漂浮*1、光能药剂*1、元气满满*1</span
+                >漂浮*2、光能药剂*2、元气满满*2</span
               >；
             </p>
             <p class="modal-text">
               2、完成使用蜡烛10/20/30根任务，即可依次解锁奖励<span
                 class="text-[#ffcb4d]"
-                >蜡烛*1、蜡烛*2、蜡烛*3</span
+                >蜡烛*2、蜡烛*4、蜡烛*6</span
               >；
             </p>
             <p class="modal-text">
               3、完成向好友赠送心火5/10/15次任务，即可依次解锁奖励<span
                 class="text-[#ffcb4d]"
-                >篝火*1、畅谈长桌*1、秋千*1</span
+                >篝火*2、畅谈长桌*2、秋千*2</span
               >；
             </p>
             <p class="modal-text">
               4、完成使用魔法5/10/15次任务，即可依次解锁奖励<span
                 class="text-[#ffcb4d]"
-                >随机发型魔法*1、随机斗篷魔法*1、随机裤子魔法*1</span
+                >随机发型魔法*2、随机斗篷魔法*2、随机裤子魔法*2</span
               >；
             </p>
             <p class="modal-text">
               5、完成10个节点任务，即可领取启程礼<span class="text-[#ffcb4d]"
-                >爱心*2、留影蜡烛*2、彩虹尾迹*2</span
+                >爱心*3、留影蜡烛*3、彩虹尾迹*3</span
               >。
             </p>
             <p class="modal-text mt-4">
@@ -145,7 +145,7 @@
       </activity-modal>
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
-          <div class="h-[640px] overflow-auto px-4">
+          <div class="h-[640px] overflow-auto px-2">
             <p class="reward-title mt-4">恭喜你获得活动奖励</p>
             <div class="flex items-center justify-around">
               <ul
@@ -189,87 +189,87 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 const rewardMap = {
   return_collect_candle_1: [
     {
-      name: '漂浮魔法*1',
+      name: '漂浮魔法*2',
       img: 'gravity',
     },
   ],
   return_collect_candle_2: [
     {
-      name: '光能药剂*1',
+      name: '光能药剂*2',
       img: 'energy_potion',
     },
   ],
   return_collect_candle_3: [
     {
-      name: '元气满满*1',
+      name: '元气满满*2',
       img: 'energy',
     },
   ],
   return_use_candle_1: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
   ],
   return_use_candle_2: [
     {
-      name: '蜡烛*2',
+      name: '蜡烛*4',
       img: 'candles',
     },
   ],
   return_use_candle_3: [
     {
-      name: '蜡烛*3',
+      name: '蜡烛*6',
       img: 'candles',
     },
   ],
   return_send_heard_wax_1: [
     {
-      name: '篝火*1',
+      name: '篝火*2',
       img: 'bonfire',
     },
   ],
   return_send_heard_wax_2: [
     {
-      name: '畅谈长桌*1',
+      name: '畅谈长桌*2',
       img: 'table',
     },
   ],
   return_send_heard_wax_3: [
     {
-      name: '秋千*1',
+      name: '秋千*2',
       img: 'swing',
     },
   ],
   return_use_consumable_1: [
     {
-      name: '随机发型魔法*1',
+      name: '随机发型魔法*2',
       img: 'hair',
     },
   ],
   return_use_consumable_2: [
     {
-      name: '随机斗篷魔法*1',
+      name: '随机斗篷魔法*2',
       img: 'cloak',
     },
   ],
   return_use_consumable_3: [
     {
-      name: '随机衣服魔法*1',
+      name: '随机衣服魔法*2',
       img: 'clothes',
     },
   ],
   return_buff_normal_extra: [
     {
-      name: '爱心*2',
+      name: '爱心*3',
       img: 'heart',
     },
     {
-      name: '留影蜡烛*2',
+      name: '留影蜡烛*3',
       img: 'recording_candle',
     },
     {
-      name: '彩虹尾迹*2',
+      name: '彩虹尾迹*3',
       img: 'trail_rainbow',
     },
   ],

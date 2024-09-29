@@ -9,7 +9,7 @@
             :key="index"
             type="button"
             :class="[
-              'crab cursor-pointer bg-contain bg-no-repeat',
+              'crab cursor-pointer bg-transparent bg-contain bg-no-repeat',
               `crab-${index}`,
             ]"
             :aria-label="String(index + 1)"

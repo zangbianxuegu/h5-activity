@@ -69,23 +69,6 @@ export const useMenuStore = defineStore('menu', () => {
     if (curItem?.isNew) {
       void setWebRedDot({ event }).then(() => {
         menuData.value = menuData.value.map((item) => {
-          if (
-            item.value === 'signin' &&
-            item.children &&
-            item.children.length > 0
-          ) {
-            const children = item.children.map((child) => {
-              const isNew = child.value === event ? false : child.isNew
-              return {
-                ...child,
-                isNew,
-              }
-            })
-            return {
-              ...item,
-              children,
-            }
-          }
           return {
             ...item,
             isNew: item.value === event ? false : item.isNew,

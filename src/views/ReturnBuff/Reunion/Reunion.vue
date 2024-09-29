@@ -62,8 +62,8 @@
       </Transition>
       <activity-modal ref="modalHelp">
         <template #content>
-          <div class="h-[640px] overflow-auto px-4">
-            <p class="modal-text mt-4">
+          <div class="h-[640px] overflow-auto px-2">
+            <p class="modal-text">
               <span class="font-semibold">参与条件：</span>
             </p>
             <p class="modal-text">
@@ -85,7 +85,7 @@
             <p class="modal-text">
               3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
                 class="text-[#ffcb4d]"
-                >爱心*2、冥龙克星*2、体型重塑*2</span
+                >爱心*3、冥龙克星*3、体型重塑*3</span
               >；
             </p>
             <p class="modal-text mt-4">
@@ -107,7 +107,7 @@
       </activity-modal>
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
-          <div class="h-[640px] overflow-auto px-4">
+          <div class="h-[640px] overflow-auto px-2">
             <p class="reward-title mt-4">恭喜你获得活动奖励</p>
             <div class="flex items-center justify-around">
               <ul
@@ -171,8 +171,8 @@ const rewardMap = {
   ],
   return_buff_sprite_1: [
     {
-      name: '蜡烛*1',
-      img: 'candles',
+      name: '炫彩步尘*1',
+      img: 'flair_flower',
     },
     {
       name: '随机面具试用魔法*1',
@@ -201,7 +201,7 @@ const rewardMap = {
   ],
   return_buff_sprite_4: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
     {
@@ -211,7 +211,7 @@ const rewardMap = {
   ],
   return_buff_sprite_5: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
     {
@@ -221,7 +221,7 @@ const rewardMap = {
   ],
   return_buff_sprite_6: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
     {
@@ -231,25 +231,25 @@ const rewardMap = {
   ],
   return_buff_sprite_7: [
     {
-      name: '蜡烛*1',
+      name: '蜡烛*2',
       img: 'candles',
     },
     {
-      name: '爱心*1',
+      name: '爱心*2',
       img: 'heart',
     },
   ],
   return_buff_sprite_extra: [
     {
-      name: '爱心*2',
+      name: '爱心*3',
       img: 'heart',
     },
     {
-      name: '冥龙克星*2',
+      name: '冥龙克星*3',
       img: 'repellant_krill',
     },
     {
-      name: '体型重塑*2',
+      name: '体型重塑*3',
       img: 'resize_potion',
     },
   ],
@@ -417,6 +417,7 @@ if (!isVisited) {
 }
 
 onMounted(() => {
+  // modalReward.value?.openModal()
   try {
     getActivityData()
   } catch (error) {
