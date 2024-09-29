@@ -30,7 +30,6 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "@babel/plugin-transform-spread": "^7.24.7",
     "@babel/preset-env": "^7.25.4",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",

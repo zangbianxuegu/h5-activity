@@ -6,7 +6,6 @@ import Components from 'unplugin-vue-components/vite'
 import { VantResolver } from '@vant/auto-import-resolver'
 import { visualizer } from 'rollup-plugin-visualizer'
 import compression from 'vite-plugin-compression'
-// import basicSsl from '@vitejs/plugin-basic-ssl'
 import mkcert from 'vite-plugin-mkcert'
 import legacy from '@vitejs/plugin-legacy'
 import babel from '@rollup/plugin-babel'
@@ -17,14 +16,6 @@ export default defineConfig({
   envDir: resolve(__dirname),
   plugins: [
     vue(),
-    babel({
-      babelHelpers: 'bundled',
-      presets: [['@babel/preset-env', { targets: '> 0.01%, not dead' }]],
-      plugins: ['@babel/plugin-transform-spread'],
-      extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
-      include: ['src/**/*'],
-      exclude: ['**/node_modules/**', '**/*.scss', '**/*.css'],
-    }),
     Components({
       resolvers: [VantResolver()],
       dts: true,
@@ -42,7 +33,6 @@ export default defineConfig({
       ext: '.gz',
       deleteOriginFile: false,
     }),
-    // basicSsl(),
     mkcert(),
     legacy({
       targets: ['ios >= 9', 'android >= 4.2', 'chrome > 30', '> 1%'],
@@ -56,11 +46,6 @@ export default defineConfig({
   },
   server: {
     hmr: true,
-    // https: {
-    //   key: fs.readFileSync('C:/Users/wb.chenzhao01/10.227.198.175-key.pem'),
-    //   cert: fs.readFileSync('C:/Users/wb.chenzhao01/10.227.198.175.pem'),
-    // },
-    // host: '0.0.0.0',
     port: 5173,
   },
   build: {
@@ -89,6 +74,19 @@ export default defineConfig({
           }
         },
       },
+      plugins: [
+        babel({
+          presets: [['@babel/preset-env', { targets: '> 0.01%, not dead' }]],
+          extensions: ['.js', '.jsx', '.ts', '.tsx', '.vue'],
+          include: ['src/**/*'],
+          exclude: [
+            '**/node_modules/**',
+            'src/assets/**',
+            '**/*.scss',
+            '**/*.css',
+          ],
+        }),
+      ],
     },
   },
 })
