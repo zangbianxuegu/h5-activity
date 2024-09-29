@@ -338,4 +338,11 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '因为被爱 所以看见',
+    value: 'activitycenter_season24_start',
+    routeName: 'Season24Start',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]
