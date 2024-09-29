@@ -87,7 +87,7 @@
       <activity-modal ref="modalHelp">
         <template #content>
           <div class="h-[640px] overflow-auto px-2">
-            <p class="modal-text mt-4">
+            <p class="modal-text">
               <span class="font-semibold">参与条件：</span>
             </p>
             <p class="modal-text">
