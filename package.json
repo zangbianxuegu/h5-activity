@@ -29,13 +29,9 @@
     "vue": "^3.3.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "@babel/plugin-transform-spread": "^7.24.7",
-    "@babel/preset-env": "^7.25.4",
     "@commitlint/cli": "^17.7.1",
     "@commitlint/config-conventional": "^17.7.0",
     "@esotericsoftware/spine-player": "^4.2.58",
-    "@rollup/plugin-babel": "^6.0.4",
     "@types/dom-view-transitions": "^1.0.3",
     "@types/eslint": "^8.44.3",
     "@types/lodash.throttle": "^4.1.9",
