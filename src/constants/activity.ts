@@ -76,5 +76,6 @@ export const ACTIVITY_LIST = [
   'activitycenter_season23_sprint',
   'activitycenter_summerday_2024',
   'activitycenter_season24_reserve',
+  'activitycenter_season24_start',
   ...DICE_MAP_LIST,
 ]
