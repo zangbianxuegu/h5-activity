@@ -122,6 +122,8 @@
     <div>
       <h2 class="my-2">上传控件测试</h2>
       <file-test></file-test>
+      <h2 class="my-2">分享功能测试</h2>
+      <share></share>
     </div>
   </div>
 </template>
@@ -130,6 +132,7 @@
 import { Local } from '@/utils/storage'
 import DebugLink from './components/DebugLink.vue'
 import FileTest from './components/FileTest.vue'
+import Share from './components/Share.vue'
 import { generateUUID } from '@/utils/utils'
 import defaultDebugLinks from './configs/defaultDebugLinks.ts'
 import { showNotify } from 'vant'
