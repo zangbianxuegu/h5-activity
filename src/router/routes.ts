@@ -382,4 +382,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dice_store',
     },
   },
+  {
+    path: '/season24-start',
+    name: 'Season24Start',
+    component: () => import('@/views/Season24Start'),
+    meta: {
+      title: '因为被爱 所以看见',
+      module: 'activitycenter_season24_start',
+    },
+  },
 ]

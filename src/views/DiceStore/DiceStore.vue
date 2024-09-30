@@ -87,7 +87,28 @@
         <template #content>
           <div class="confirm-get-reward-modal-content flex h-[500px] flex-col">
             <div>
-              <p class="reward-title mt-8">
+              <div
+                v-if="
+                  curRewards[0].name === '蟹蟹的士' ||
+                  curRewards[0].name === '遥鲲飞机'
+                "
+                class="reward-title mt-8"
+              >
+                <p>
+                  是否用<span class="text-[#ffcb4d]"
+                    >蜡烛*{{
+                      curRewards[0].name === '蟹蟹的士' ? '3' : '6'
+                    }}</span
+                  >兑换{{ curRewards[0].name }}？
+                </p>
+                <p>
+                  （使用后可以在活动棋盘上以<span class="text-[#ffcb4d]">{{
+                    curRewards[0].name === '蟹蟹的士' ? '随机步数' : '指定步数'
+                  }}</span
+                  >进行移动）
+                </p>
+              </div>
+              <p v-else class="reward-title mt-8">
                 是否兑换“{{ curRewards[0].name }}”？
               </p>
             </div>
