@@ -391,4 +391,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season24_start',
     },
   },
+  {
+    path: '/halloweentreasure-2024',
+    name: 'Halloweentreasure2024',
+    component: () => import('@/views/HalloweenTreasure2024'),
+    meta: {
+      title: '惊吓？惊喜！出奇寻宝',
+      module: 'activitycenter_halloweentreasure_2024',
+    },
+  },
 ]
