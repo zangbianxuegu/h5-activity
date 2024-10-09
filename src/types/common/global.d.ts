@@ -8,4 +8,7 @@ export interface UseEnvironmentReturn {
   isGame: Ref<boolean>
   isGameDev: Ref<boolean>
   isProd: Ref<boolean>
+  isIos: boolean
+  isAndroid: boolean
+  isWb: boolean
 }

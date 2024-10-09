@@ -1,26 +1,38 @@
 import { showToast } from 'vant'
-import type { INSTALLED_PACKAGE, NGSHARE_SHARE_CHANNEL } from './types'
+import type {
+  ANDROID_INSTALLED_PACKAGE,
+  IOS_INSTALLED_PACKAGE,
+  NGSHARE_SHARE_CHANNEL,
+  NgshareCheckChannelIsExistToNativeConfig,
+} from './types'
 import {
   installedPackageList,
   ngshareShareChannelMap,
   NGSHARE_CONTENT_TYPE,
 } from './types'
+import { useEnvironment } from '@/composables/useEnvironment'
+
+const { isAndroid, isIos } = useEnvironment()
 
 export function ngshareCheckChannelIsExist(
-  installedPackage: INSTALLED_PACKAGE | undefined | '',
+  installedPackage:
+    | ANDROID_INSTALLED_PACKAGE
+    | IOS_INSTALLED_PACKAGE
+    | undefined
+    | '',
 ): Promise<{
   isExist: boolean
 }> {
   const resolveRes = {
     isExist: false,
   }
+  let isSuccessNativeCallback = false
   return new Promise((resolve, reject) => {
     if (!installedPackage) reject(new Error('请传入查询渠道'))
-    window.UniSDKJSBridge.postMsgToNative({
+    const config: NgshareCheckChannelIsExistToNativeConfig = {
       methodId: 'execute_extend_func',
       reqData: {
-        methodId: 'hasPackageInstalled',
-        appId: installedPackage,
+        methodId: isAndroid ? 'hasPackageInstalled' : 'hasAppInstalled',
         callback_mode: 'web',
       },
       callback: {
@@ -32,15 +44,30 @@ export function ngshareCheckChannelIsExist(
           const resObj = JSON.parse(respJSONString)
           resolveRes.isExist = resObj.result
           if (!resObj.result) {
-            const packageObj = installedPackageList.find(
-              (e) => e.packageId === installedPackage,
+            const packageObj = installedPackageList.find((e) =>
+              isAndroid
+                ? e.androidPackage === installedPackage
+                : e.iosPackage === installedPackage,
             )
-            showToast(`${packageObj?.name}未安装`)
+            showToast(`您未安装${packageObj?.name}，请安装后重试！`)
           }
+          isSuccessNativeCallback = true
           resolve(resolveRes)
         },
       },
-    })
+    }
+    if (isAndroid) {
+      config.reqData.appId = installedPackage as string
+    } else if (isIos) {
+      config.reqData.urlScheme = installedPackage as string
+    }
+
+    window.UniSDKJSBridge.postMsgToNative(config)
+    setTimeout(() => {
+      if (!isSuccessNativeCallback) {
+        reject(new Error('检查渠道失败'))
+      }
+    }, 2000)
   })
 }
 
@@ -56,13 +83,17 @@ export const ngshareByH5 = async (
     contentTypeConfig = {
       text,
       title,
-      u3dshareThumb, // 分享缩略图地址(安卓必传)
       link,
       desc,
+      u3dshareThumb, // 分享缩略图地址(安卓必传)
+      shareThumb: u3dshareThumb, // 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
     }
   }
+  const ngshareChannel = ngshareShareChannelMap.get(shareChannel)
   const { isExist } = await ngshareCheckChannelIsExist(
-    ngshareShareChannelMap.get(shareChannel)?.installedPackage,
+    isAndroid
+      ? ngshareChannel?.androidInstalledPackage
+      : ngshareChannel?.iosInstalledPackage,
   )
   if (isExist) {
     window.UniSDKJSBridge.postMsgToNative({

@@ -26,19 +26,64 @@ interface ShareOption {
 const showShare = ref(false)
 const options: ShareOption[] = [
   {
-    name: '微信',
-    icon: 'wechat',
-    shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
-  },
-  {
     name: '微信朋友圈',
     icon: 'wechat',
     shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
   },
   {
+    name: '微信',
+    icon: 'wechat',
+    shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
+  },
+  {
+    name: '抖音',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.DOU_YIN,
+  },
+  {
+    name: '哔哩哔哩',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.BILIBILI,
+  },
+  {
     name: '微博',
     icon: 'weibo',
     shareChannel: NGSHARE_SHARE_CHANNEL.WEI_BO,
+  },
+  {
+    name: '网易大神好友',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+  },
+  {
+    name: '小红书',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
+  },
+  {
+    name: 'QQ',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.QQ,
+  },
+  {
+    name: 'QQ空间',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.QQ_ZONE,
+  },
+  {
+    name: '快手',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
+  },
+  {
+    name: 'facebook',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.FACEBOOK,
+  },
+  {
+    name: '网易大神圈子',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
   },
 ]
 
@@ -46,7 +91,7 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
   await ngshareByH5(NGSHARE_CONTENT_TYPE.LINK, option.shareChannel, {
     text: '分享文本',
     title: '分享标题',
-    link: 'http://10.227.199.103:5173/#/reward-interaction',
+    link: 'http://10.227.199.103:5173/pages/debug/index.html',
     desc: '分享说明',
     // u3dshareThumb: '', // 分享缩略图地址(安卓必传)
   })
@@ -56,7 +101,6 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
 const onClickShareBtn = async (): Promise<void> => {
   showShare.value = true
 }
-onMounted(() => {})
 </script>
 <style>
 html {
