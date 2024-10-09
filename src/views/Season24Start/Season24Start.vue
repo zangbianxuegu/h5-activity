@@ -48,7 +48,6 @@
                 >
                   <div class="relative">
                     <can-reward-bubble-animation
-                      v-if="item.status === 'can'"
                       @click.stop="
                         handleReward(
                           $event,
@@ -143,7 +142,7 @@
                           )
                         "
                         :ref="item.canRewardLottieRef"
-                        :id="item.id"
+                        :id="`${item.value}${item.id}`"
                         class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble"
                       ></can-reward-bubble-animation>
                       <div
@@ -610,12 +609,12 @@ function handleReward(
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
+      await bubbleBurst(task, item)
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
       activityStore.updateActivityData(activityData.value)
       // 更新红点
       setRedDot()
-      bubbleBurst(rewardId, task, item)
     })
     .catch((error) => {
       showToast(error.message)
@@ -658,14 +657,14 @@ watchEffect(() => {
   allTasks.value.forEach(handleTask)
 })
 
-const bubbleBurst = (rewardId: number, domId: string, reward: Reward): void => {
+const bubbleBurst = async (domId: string, reward: Reward): Promise<void> => {
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   const redeemedRewardBubbleDom = document.querySelector(
-    `.${domId}-redeemed-reward-bubble-${rewardId}`,
+    `.${domId}-redeemed-reward-bubble-${reward.id}`,
   )
-  gsap
+  await gsap
     .timeline()
     .to(redeemedRewardBubbleDom, {
       scaleY: 0.8,
