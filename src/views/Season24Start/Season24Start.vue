@@ -65,7 +65,7 @@
                     <div
                       v-if="item.status === 'wait'"
                       :class="[
-                        'wait-container task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                       ]"
@@ -73,7 +73,7 @@
                     <div
                       v-if="item.status === 'can'"
                       :class="[
-                        'can-container task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                       ]"
@@ -81,7 +81,7 @@
                     <div
                       v-if="item.status === 'redeemed'"
                       :class="[
-                        'redeemed-container task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                         `${item.value}-redeemed-reward-bubble-${item.id}`,
@@ -91,7 +91,7 @@
                 </div>
                 <p
                   :class="[
-                    'mt-1 w-[300px] whitespace-pre-line text-wrap text-center text-xs text-white',
+                    'mt-1 w-[300px] whitespace-pre-line text-wrap text-center text-xs',
                     `${item.status === 'can' ? 'text-[#ffeea9]' : item.status === 'redeemed' ? 'text-[#ccc]' : 'text-white'}`,
                   ]"
                 >
@@ -148,7 +148,7 @@
                       <div
                         v-if="item.status === 'wait'"
                         :class="[
-                          'wait-container acc-task-item animate__animated animate__fadeIn',
+                          'acc-task-item animate__animated animate__fadeIn',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                         ]"
@@ -156,7 +156,7 @@
                       <div
                         v-if="item.status === 'can'"
                         :class="[
-                          'can-container acc-task-item animate__animated animate__fadeIn',
+                          'acc-task-item animate__animated animate__fadeIn',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                         ]"
@@ -164,7 +164,7 @@
                       <div
                         v-if="item.status === 'redeemed'"
                         :class="[
-                          'redeemed-container acc-task-item animate__animated animate__fadeIn',
+                          'acc-task-item animate__animated animate__fadeIn',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                           `${item.value}-redeemed-reward-bubble-${item.id}`,
@@ -609,7 +609,7 @@ function handleReward(
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      await bubbleBurst(task, item)
+      await bubbleBurst(event, item)
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
       activityStore.updateActivityData(activityData.value)
@@ -657,28 +657,32 @@ watchEffect(() => {
   allTasks.value.forEach(handleTask)
 })
 
-const bubbleBurst = async (domId: string, reward: Reward): Promise<void> => {
+const bubbleBurst = async (
+  event: MouseEvent,
+  reward: Reward,
+): Promise<void> => {
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
-  const redeemedRewardBubbleDom = document.querySelector(
-    `.${domId}-redeemed-reward-bubble-${reward.id}`,
-  )
+  // 果冻效果
+  clickBubbleRewardWait(event)
+  const target = event.target
+  // 溅射效果
   await gsap
     .timeline()
-    .to(redeemedRewardBubbleDom, {
+    .to(target, {
       scaleY: 0.8,
       duration: 0.2,
       ease: 'power1.in',
       opacity: 0.3,
     }) // 垂直压挤
-    .to(redeemedRewardBubbleDom, {
+    .to(target, {
       scaleY: 1.1,
       duration: 0.2,
       ease: 'power1.out',
       opacity: 0.7,
     }) // 垂直拉伸
-    .to(redeemedRewardBubbleDom, {
+    .to(target, {
       scaleY: 1,
       duration: 0.2,
       ease: 'power1.out',
@@ -804,7 +808,7 @@ const bubbleBurst = async (domId: string, reward: Reward): Promise<void> => {
   bottom: 3px;
 }
 .progress-bar {
-  width: 1050px;
+  width: 1048px;
   height: 22px;
   background-repeat: no-repeat;
   background-size: contain;
@@ -855,51 +859,5 @@ $reward-bubble-wait-height: 207px;
   height: 150px;
   top: 60px;
   left: 26px;
-}
-.reward-bubble-container {
-  width: $reward-bubble-wait-width;
-  height: $reward-bubble-wait-height;
-  position: relative;
-  .wait-container,
-  .redeemed-container {
-    div {
-      width: $reward-bubble-wait-width;
-      height: $reward-bubble-wait-height;
-      position: absolute;
-      &.dice-custom-wait {
-        background-image: url('@/assets/images/dice-mission/dice-cusdom-bubble-wait.png');
-      }
-      &.dice-random-wait {
-        background-image: url('@/assets/images/dice-mission/dice-random-bubble-wait.png');
-      }
-      &.dice-custom-redeemed {
-        background-image: url('@/assets/images/dice-mission/dice-cusdom-bubble-redeemed.png');
-      }
-      &.dice-random-redeemed {
-        background-image: url('@/assets/images/dice-mission/dice-random-bubble-redeemed.png');
-      }
-    }
-  }
-  .can-container {
-    .reward-dice {
-      width: 226px;
-      height: 226px;
-      position: absolute;
-      background-position: center;
-      background-repeat: no-repeat;
-      &.can-reward-dice-custom {
-        top: -36px;
-        left: -32px;
-        background-size: 76px 86px;
-        background-image: url('@/assets/images/dice-mission/reward-custom_dice.png');
-      }
-      &.can-reward-dice-random {
-        top: -36px;
-        left: -32px;
-        background-size: 76px 86px;
-        background-image: url('@/assets/images/dice-mission/reward-random_dice.png');
-      }
-    }
-  }
 }
 </style>
