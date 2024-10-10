@@ -613,6 +613,9 @@ function handleReward(
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
       activityStore.updateActivityData(activityData.value)
+      showToast(
+        `恭喜你获得${rewardsText[curRewards.value.name as keyof RewardsName]} * ${curRewards.value.count}`,
+      )
       // 更新红点
       setRedDot()
     })
