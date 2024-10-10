@@ -65,7 +65,7 @@
                     <div
                       v-if="item.status === 'wait'"
                       :class="[
-                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                       ]"
@@ -73,7 +73,7 @@
                     <div
                       v-if="item.status === 'can'"
                       :class="[
-                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                       ]"
@@ -81,7 +81,7 @@
                     <div
                       v-if="item.status === 'redeemed'"
                       :class="[
-                        'task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                        'task-item animate__animated animate__fadeIn bg-contain',
                         `task-item${index + 1}`,
                         `${item.status}`,
                         `${item.value}-redeemed-reward-bubble-${item.id}`,
@@ -677,19 +677,19 @@ const bubbleBurst = async (
       scaleY: 0.8,
       duration: 0.2,
       ease: 'power1.in',
-      opacity: 0.3,
+      opacity: 0.9,
     }) // 垂直压挤
     .to(target, {
       scaleY: 1.1,
       duration: 0.2,
       ease: 'power1.out',
-      opacity: 0.7,
+      opacity: 0.5,
     }) // 垂直拉伸
     .to(target, {
       scaleY: 1,
       duration: 0.2,
       ease: 'power1.out',
-      opacity: 1,
+      opacity: 0,
     }) // 再次垂直压挤
 }
 </script>
