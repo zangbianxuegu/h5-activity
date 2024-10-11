@@ -2,6 +2,8 @@
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="season24-start flex h-screen">
       <div class="season24-start-main">
+        <div class="moomin-logo"></div>
+        <div class="copyright"></div>
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -22,27 +24,85 @@
             <!-- 任务列表 -->
             <h2 id="taskListHeading" class="sr-only">任务列表</h2>
             <ul
-              class="task-list clear-both bg-cover"
+              class="task-list clear-both flex bg-cover"
               aria-labelledby="taskListHeading"
             >
               <li
                 v-for="(item, index) in taskList"
                 :key="item.id"
-                :class="[
-                  'task-item animate__animated animate__fadeIn animate__slow bg-contain',
-                  `task-item${index + 1}`,
-                  `${item.status}`,
-                ]"
-                :aria-label="`任务 ${index + 1}: ${item.title}`"
-                @click="handleReward(item.value, item.status, 1, index)"
+                class="flex flex-col items-center"
               >
-                <p class="task-text sr-only">{{ item.title }}</p>
+                <div
+                  :class="[`${item.status}`]"
+                  :aria-label="`任务 ${index + 1}: ${item.title}`"
+                  @click="
+                    handleReward(
+                      $event,
+                      item.value,
+                      item.status,
+                      1,
+                      index,
+                      item,
+                    )
+                  "
+                >
+                  <div class="relative">
+                    <can-reward-bubble-animation
+                      @click.stop="
+                        handleReward(
+                          $event,
+                          item.value,
+                          item.status,
+                          1,
+                          index,
+                          item,
+                        )
+                      "
+                      :ref="item.canRewardLottieRef"
+                      :id="item.value"
+                      class="reward-can-dynamic-bubble"
+                    ></can-reward-bubble-animation>
+                    <div
+                      v-if="item.status === 'wait'"
+                      :class="[
+                        'task-item animate__animated animate__fadeIn bg-contain',
+                        `task-item${index + 1}`,
+                        `${item.status}`,
+                      ]"
+                    ></div>
+                    <div
+                      v-if="item.status === 'can'"
+                      :class="[
+                        'task-item animate__animated animate__fadeIn bg-contain',
+                        `task-item${index + 1}`,
+                        `${item.status}`,
+                      ]"
+                    ></div>
+                    <div
+                      v-if="item.status === 'redeemed'"
+                      :class="[
+                        'task-item animate__animated animate__fadeIn bg-contain',
+                        `task-item${index + 1}`,
+                        `${item.status}`,
+                        `${item.value}-redeemed-reward-bubble-${item.id}`,
+                      ]"
+                    ></div>
+                  </div>
+                </div>
+                <p
+                  :class="[
+                    'mt-1 w-[300px] whitespace-pre-line text-wrap text-center text-xs',
+                    `${item.status === 'can' ? 'text-[#ffeea9]' : item.status === 'redeemed' ? 'text-[#ccc]' : 'text-white'}`,
+                  ]"
+                >
+                  {{ item.title }}
+                </p>
               </li>
             </ul>
             <!-- 收集姆明季蜡烛 -->
             <h2 id="accTaskListHeading" class="sr-only">收集姆明季蜡烛</h2>
             <div
-              class="absolute bottom-[250px] left-[170px] flex w-[1350px] items-center"
+              class="absolute bottom-[270px] left-[140px] flex w-[1350px] items-center"
             >
               <div class="acc-task-title"></div>
               <div :class="`progress-bar progress-bar${accTaskStep}`"></div>
@@ -53,15 +113,70 @@
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  :class="[
-                    'acc-task-item animate__animated animate__fadeIn flex items-end justify-center bg-contain pb-3',
-                    `acc-task-item${index + 1}`,
-                    `${item.status}`,
-                  ]"
-                  :aria-label="`累计任务 ${index + 1}: ${item.title}`"
-                  @click="handleReward(item.value, item.status, item.id, 4)"
+                  class="relative"
                 >
-                  <p class="text-xs text-white">{{ (index + 1) * 10 }}</p>
+                  <div
+                    class="flex items-end justify-center bg-contain"
+                    :aria-label="`累计任务 ${index + 1}: ${item.title}`"
+                    @click="
+                      handleReward(
+                        $event,
+                        item.value,
+                        item.status,
+                        item.id,
+                        4,
+                        item,
+                      )
+                    "
+                  >
+                    <div class="relative">
+                      <can-reward-bubble-animation
+                        @click.stop="
+                          handleReward(
+                            $event,
+                            item.value,
+                            item.status,
+                            item.id,
+                            4,
+                            item,
+                          )
+                        "
+                        :ref="item.canRewardLottieRef"
+                        :id="`${item.value}${item.id}`"
+                        class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble"
+                      ></can-reward-bubble-animation>
+                      <div
+                        v-if="item.status === 'wait'"
+                        :class="[
+                          'acc-task-item animate__animated animate__fadeIn',
+                          `acc-task-item${index + 1}`,
+                          `${item.status}`,
+                        ]"
+                      ></div>
+                      <div
+                        v-if="item.status === 'can'"
+                        :class="[
+                          'acc-task-item animate__animated animate__fadeIn',
+                          `acc-task-item${index + 1}`,
+                          `${item.status}`,
+                        ]"
+                      ></div>
+                      <div
+                        v-if="item.status === 'redeemed'"
+                        :class="[
+                          'acc-task-item animate__animated animate__fadeIn',
+                          `acc-task-item${index + 1}`,
+                          `${item.status}`,
+                          `${item.value}-redeemed-reward-bubble-${item.id}`,
+                        ]"
+                      ></div>
+                    </div>
+                  </div>
+                  <p
+                    class="auto absolute bottom-1.5 left-0 right-0 text-center text-xs text-white"
+                  >
+                    {{ (index + 1) * 10 }}
+                  </p>
                 </li>
               </ul>
             </div>
@@ -152,6 +267,8 @@ import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { useActivityStore } from '@/stores/season24Start'
+import gsap from 'gsap'
+import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 
 interface Rewards {
   name: string
@@ -163,15 +280,27 @@ interface RewardsName {
   candles: string
   heart: string
   resize_potion: string
-  muming_candle: string
+  season_candle: string
 }
+/**
+ * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
+ */
+interface Reward {
+  id: number
+  value: string
+  title: string
+  status: 'wait' | 'redeemed' | 'can' | string
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
+  hadRenderLottie?: Ref<boolean>
+}
+
 const rewardsText: RewardsName = {
   table: '畅谈长桌',
   glow: '璀璨之星',
   candles: '蜡烛',
   heart: '爱心',
   resize_potion: '体型重塑',
-  muming_candle: '姆明季蜡烛',
+  season_candle: '姆明季蜡烛',
 }
 const curRewards: Ref<Rewards> = ref({
   name: 'table',
@@ -183,26 +312,42 @@ const TASK_LIST = [
   {
     id: 1,
     value: 'activitycenter_season24_start_m1',
-    title: '帮助迪琪带领妮妮去见姆明一家',
+    title: '帮助迪琪带领妮\n妮去见姆明一家',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
   {
     id: 2,
     value: 'activitycenter_season24_start_m2',
-    title: '探索妮妮的内心世界',
+    title: '探索妮妮\n的内心世界',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
   {
     id: 3,
     value: 'activitycenter_season24_start_m3',
-    title: '兑换一件新季节外观',
+    title: '兑换一件\n新季节外观',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
   {
     id: 4,
     value: 'login_days',
     title: '累计登录5天',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
 ]
 // 累计任务列表
@@ -210,20 +355,32 @@ const ACC_TASK_LIST = [
   {
     id: 1,
     value: 'collecting_season_candles',
-    title: '收集夏之日代币20个',
+    title: '收集姆明季蜡烛10个',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
   {
     id: 2,
     value: 'collecting_season_candles',
-    title: '收集夏之日代币30个',
+    title: '收集姆明季蜡烛20个',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
   {
     id: 3,
     value: 'collecting_season_candles',
-    title: '收集夏之日代币50个',
+    title: '收集姆明季蜡烛30个',
     status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
   },
 ]
 
@@ -425,16 +582,19 @@ function getActivityData(): void {
  * @returns {void}
  */
 function handleReward(
+  event: MouseEvent,
   task: string,
   status: string,
   rewardId: number,
   index: number,
+  item: Reward,
 ): void {
   if (status === 'redeemed') {
     return
   }
   if (status === 'wait') {
     showToast('还未完成任务')
+    clickBubbleRewardWait(event)
     return
   }
   claimMissionReward({
@@ -442,21 +602,95 @@ function handleReward(
     task,
     rewardId,
   })
-    .then((res) => {
+    .then(async (res) => {
       const rewards = res.data.rewards
-      modalReward.value?.openModal()
+      // modalReward.value?.openModal()
       curRewards.value = {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
+      await bubbleBurst(event, item)
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[rewardId - 1] = 1
+      activityStore.updateActivityData(activityData.value)
+      showToast(
+        `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
+      )
       // 更新红点
       setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+// 奖品wait状态点击果冻效果
+const clickBubbleRewardWait = (event: MouseEvent): void => {
+  const dom = event.target
+  gsap
+    .timeline()
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
+    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
+}
+
+const initCanRewardLottie = (reward: Reward): void => {
+  reward.canRewardLottieRef?.value[0].initLottie()
+  // 避免多次更新computed和watch所引起的多次渲染lottie
+  if (reward.hadRenderLottie) {
+    reward.hadRenderLottie.value = true
+  }
+}
+
+const allTasks = computed(() => [...taskList.value, ...accTaskList.value])
+const handleTask = (task: Reward): void => {
+  if (task.status === 'can') {
+    void nextTick(() => {
+      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
+        initCanRewardLottie(task)
+      }
+    })
+  } else {
+    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
+  }
+}
+watchEffect(() => {
+  allTasks.value.forEach(handleTask)
+})
+
+const bubbleBurst = async (
+  event: MouseEvent,
+  reward: Reward,
+): Promise<void> => {
+  if (reward.canRewardLottieRef) {
+    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
+  }
+  // 果冻效果
+  clickBubbleRewardWait(event)
+  const target = event.target
+  // 溅射效果
+  await gsap
+    .timeline()
+    .to(target, {
+      scaleY: 0.8,
+      duration: 0.2,
+      ease: 'power1.in',
+      opacity: 0.9,
+    }) // 垂直压挤
+    .to(target, {
+      scaleY: 1.1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0.5,
+    }) // 垂直拉伸
+    .to(target, {
+      scaleY: 1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0,
+    }) // 再次垂直压挤
 }
 </script>
 
@@ -493,13 +727,35 @@ function handleReward(
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/season24-start/bg.jpg');
+    background-image: url('@/assets/images/season24-start/bg.png');
+    .moomin-logo {
+      position: absolute;
+      left: 30px;
+      top: 30px;
+      width: 348px;
+      height: 55px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      background-image: url('@/assets/images/season24-start/moomin-logo.png');
+    }
+    .copyright {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      width: 541px;
+      height: 165px;
+      background-repeat: no-repeat;
+      background-position: center;
+      background-size: cover;
+      background-image: url('@/assets/images/season24-start/copyright.png');
+    }
   }
 }
 .title {
   position: absolute;
-  left: 170px;
-  top: 159px;
+  left: 140px;
+  top: 130px;
   width: 1305px;
   height: 217px;
   background-image: url('@/assets/images/season24-start/title.png');
@@ -511,11 +767,12 @@ function handleReward(
   top: 62px;
   right: 40px;
   background-image: url('@/assets/images/season24-start/help.png');
+  background-repeat: no-repeat;
 }
 .task-list {
   position: absolute;
-  left: 140px;
-  top: 331px;
+  left: 110px;
+  top: 300px;
   padding: 64px 39px 105px 90px;
   width: 1350px;
   height: 499px;
@@ -526,8 +783,8 @@ function handleReward(
 .task-item {
   float: left;
   margin-right: 0px;
-  width: 296px;
-  height: 320px;
+  width: 300px;
+  height: 234px;
 }
 @for $i from 1 through 4 {
   .task-item#{$i} {
@@ -554,7 +811,7 @@ function handleReward(
   bottom: 3px;
 }
 .progress-bar {
-  width: 1050px;
+  width: 1048px;
   height: 22px;
   background-repeat: no-repeat;
   background-size: contain;
@@ -573,6 +830,7 @@ function handleReward(
 @for $i from 1 through 3 {
   .acc-task-item#{$i} {
     background-repeat: no-repeat;
+    background-size: contain;
     &.wait {
       background-image: url('@/assets/images/season24-start/acc-task#{$i}-wait.png');
     }
@@ -583,5 +841,26 @@ function handleReward(
       background-image: url('@/assets/images/season24-start/acc-task#{$i}-redeemed.png');
     }
   }
+}
+$reward-bubble-wait-width: 207px;
+$reward-bubble-wait-height: 207px;
+.reward-can-dynamic-bubble {
+  width: $reward-bubble-wait-width + 50px;
+  height: $reward-bubble-wait-height;
+  position: absolute;
+  top: 0px;
+  left: 18px;
+  // overflow: hidden;
+  & > :first-child {
+    position: absolute;
+    top: -12px;
+    transform: scale(1.9) !important;
+  }
+}
+.acc-reward-can-dynamic-bubble {
+  width: 200px;
+  height: 150px;
+  top: 60px;
+  left: 26px;
 }
 </style>

@@ -78,5 +78,6 @@ export const ACTIVITY_LIST = [
   'activitycenter_season24_reserve',
   'activitycenter_season24_start',
   ...DICE_MAP_LIST,
-  'activitycenter_Halloweentreasure_2024',
+  'activitycenter_halloweentreasure_2024',
+  'activitycenter_Halloweentask_2024',
 ]
