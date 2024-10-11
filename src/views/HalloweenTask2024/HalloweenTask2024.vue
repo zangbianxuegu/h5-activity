@@ -18,58 +18,120 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section class="daily-task-list">
+          <section>
             <h2 class="sr-only">每日任务</h2>
-            <ul>
-              <li class="text-white">任务</li>
+            <ul class="daily-task-list">
+              <li
+                v-for="item in dailyTaskList"
+                :key="item.id"
+                class="mb-[18px] flex items-center justify-between"
+              >
+                <p class="mt-[21px] text-[32px] text-white">{{ item.title }}</p>
+                <div :class="[`daily-task-item`, `${item.status}`]"></div>
+              </li>
+            </ul>
+            <h2 class="sr-only">每周任务</h2>
+            <ul class="weekly-task-list">
+              <li
+                v-for="item in weeklyTaskList"
+                :key="item.id"
+                class="mb-[18px] flex items-center justify-between"
+              >
+                <p class="mt-[16px] text-[32px] text-white">{{ item.title }}</p>
+                <div :class="[`weekly-task-item`, `${item.status}`]"></div>
+              </li>
+            </ul>
+            <h2 class="sr-only">捣蛋清单</h2>
+            <ul class="trick-task-list">
+              <li
+                v-for="item in trickTaskList"
+                :key="item.id"
+                class="mb-[22px] flex items-center justify-between"
+              >
+                <p class="trick-bg text-[32px] text-white">{{ item.title }}</p>
+                <div :class="[`trick-task-item`, `${item.status}`]"></div>
+              </li>
             </ul>
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section aria-labelledby="activity-rules-title">
+            <section
+              aria-labelledby="activity-rules-title"
+              class="h-[680px] overflow-y-scroll p-4"
+            >
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年8月29日~2024年9月11日
+                2024年10月26日~2024年11月15日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
                 <li>
-                  活动期间，体验一次捉迷藏玩法，即可领取
-                  <span class="text-[#ffcb4d]">篝火点心礼包试用魔法*2</span>
+                  活动期间，被骑扫帚的皮皮猫炸飞一次，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
                 </li>
                 <li>
-                  活动期间，使用一次沙滩球魔法，即可领取
-                  <span class="text-[#ffcb4d]">沙滩弹球*2</span>
+                  活动期间，找到戴帽子的螃蟹，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
                 </li>
                 <li>
-                  活动期间，兑换一件夏之日物品，即可领取
-                  <span class="text-[#ffcb4d]">遥鲲泳圈试用魔法*2</span>
+                  活动期间，成功击败怪物，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
                 </li>
                 <li>
-                  活动期间，累计登录5天，即可领取
-                  <span class="text-[#ffcb4d]">体型重塑*2</span>
+                  活动期间，逃脱滚动螃蟹的追击，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
                 </li>
                 <li>
-                  活动期间，收集夏之日代币，即可领取：
+                  活动期间，使用【万圣节】代币兑换任意外观，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
+                </li>
+                <li>
+                  活动期间，触发扫帚制作间的陷阱，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
+                </li>
+                <li>
+                  活动期间，在活动场景的衣柜换装，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
+                </li>
+                <li>
+                  活动期间，完成一次魔法扫帚的练习，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
+                </li>
+                <li>
+                  活动期间，获得40个活动代币，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
+                </li>
+                <li>
+                  活动期间，每日完成下列任务，可获得对应捣蛋挖宝次数：
                   <div class="grid grid-cols-3">
-                    <span>收集数目</span>
-                    <span class="col-span-2">对应奖励</span>
-                    <span>20个</span>
+                    <span>每日任务</span>
+                    <span class="col-span-2">奖励</span>
+                    <span>获得1个活动代币</span>
                     <span class="col-span-2 text-[#ffcb4d]"
-                      >璀璨之星魔法*1</span
+                      >捣蛋挖宝次数*1</span
                     >
-                    <span>30个</span>
+                    <span>使用1次万圣节魔法</span>
                     <span class="col-span-2 text-[#ffcb4d]"
-                      >夏日冲浪礼包试用魔法*1</span
+                      >捣蛋挖宝次数*1</span
                     >
-                    <span>50个</span>
-                    <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>
+                    <span>感受魔法大锅的洗礼</span>
+                    <span class="col-span-2 text-[#ffcb4d]"
+                      >捣蛋挖宝次数*1</span
+                    >
+                    <span>收集南瓜烛火</span>
+                    <span class="col-span-2 text-[#ffcb4d]"
+                      >捣蛋挖宝次数*1</span
+                    >
                   </div>
+                </li>
+                <li>
+                  活动期间，每周领取礼物螃蟹送出的魔法，即可领取
+                  <span class="text-[#ffcb4d]">捣蛋挖宝*3</span>
                 </li>
               </ul>
             </section>
@@ -81,10 +143,167 @@
 </template>
 
 <script setup lang="ts">
-import type { DesignConfig } from '@/types'
+import { showToast } from 'vant'
+import { getPlayerMissionData } from '@/utils/request'
+import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import { useMenuStore } from '@/stores/menu'
+import { useActivityStore } from '@/stores/halloweenTask2024'
+
+// 每日列表
+const DAILY_TASK_LIST = [
+  {
+    id: 1,
+    value: 'activitycenter_Halloweentask_2024_m10',
+    title: '收集一个活动代币',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 2,
+    value: 'use_consumables',
+    title: '使用一次万圣节魔法',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 3,
+    value: 'activitycenter_Halloweentask_2024_m12',
+    title: '感受魔法大锅的洗礼',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 4,
+    value: 'activitycenter_Halloweentask_2024_m13',
+    title: '点燃南瓜收集烛火',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+]
+
+// 每周任务
+const WEEKLY_TASK_LIST = [
+  {
+    id: 1,
+    value: 'activitycenter_Halloweentask_2024_m14',
+    title: '领取礼物螃蟹送出的魔法',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+]
+
+// 捣蛋清单
+const TRICK_TASK_LIST = [
+  {
+    id: 1,
+    value: 'activitycenter_Halloweentask_2024_m1',
+    title: '被骑扫帚的皮皮猫炸飞',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 2,
+    value: 'activitycenter_Halloweentask_2024_m2',
+    title: '找到戴帽子的螃蟹',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 3,
+    value: 'activitycenter_Halloweentask_2024_m3',
+    title: '成功打败怪物',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 4,
+    value: 'activitycenter_Halloweentask_2024_m4',
+    title: '逃脱滚动螃蟹的追击',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 5,
+    value: 'activitycenter_Halloweentask_2024_m5',
+    title: '使用代币进行兑换物品',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 6,
+    value: 'activitycenter_Halloweentask_2024_m6',
+    title: '触发扫帚制作间的陷阱',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 7,
+    value: 'activitycenter_Halloweentask_2024_m7',
+    title: '在活动场景的衣柜换装',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 8,
+    value: 'activitycenter_Halloweentask_2024_m8',
+    title: '完成一次魔法扫帚的练习',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+  {
+    id: 9,
+    value: 'collecting_event_candles',
+    title: '获得40个活动代币',
+    status: 'wait',
+    canRewardLottieRef: ref() as Ref<
+      Array<InstanceType<typeof CanRewardBubbleAnimation>>
+    >,
+    hadRenderLottie: ref(false),
+  },
+]
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -119,7 +338,65 @@ useResponsiveStyles(designConfig)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // 活动数据
-// const EVENT_NAME = 'activitycenter_halloweentask_2024'
+const EVENT_NAME = 'activitycenter_Halloweentask_2024'
+const menuStore = useMenuStore()
+const activityStore = useActivityStore()
+const activityData = computed(() => activityStore.activityData)
+
+// 任务排序
+const taskOrderMap = new Map(
+  [...DAILY_TASK_LIST, ...WEEKLY_TASK_LIST, ...TRICK_TASK_LIST].map(
+    (task, index) => [task.value, index],
+  ),
+)
+
+// 每日任务列表
+const dailyTaskList = computed(() => {
+  return DAILY_TASK_LIST.map((item, index) => {
+    const activity = activityData.value.event_data[EVENT_NAME][index]
+    return {
+      ...item,
+      status:
+        activity.award[0] === 1
+          ? 'redeemed'
+          : activity.award[0] === 0 && activity.value >= activity.stages[0]
+            ? 'can'
+            : 'wait',
+    }
+  })
+})
+
+// 每周任务
+const weeklyTaskList = computed(() => {
+  return WEEKLY_TASK_LIST.map((item, index) => {
+    const activity = activityData.value.event_data[EVENT_NAME][index]
+    return {
+      ...item,
+      status:
+        activity.award[0] === 1
+          ? 'redeemed'
+          : activity.award[0] === 0 && activity.value >= activity.stages[0]
+            ? 'can'
+            : 'wait',
+    }
+  })
+})
+
+// 捣蛋清单
+const trickTaskList = computed(() => {
+  return TRICK_TASK_LIST.map((item, index) => {
+    const activity = activityData.value.event_data[EVENT_NAME][index]
+    return {
+      ...item,
+      status:
+        activity.award[0] === 1
+          ? 'redeemed'
+          : activity.award[0] === 0 && activity.value >= activity.stages[0]
+            ? 'can'
+            : 'wait',
+    }
+  })
+})
 
 const sessionIsVisitedKey = 'isVisitedHalloweentask2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -134,12 +411,77 @@ if (!isVisited) {
 
 onMounted(() => {
   try {
-    // getActivityData()
+    getActivityData()
   } catch (error) {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
 })
+
+/**
+ * @function 检查是否有未领奖
+ * @param {Event[]} tasks 任务列表
+ * @returns {boolean} 是否有未领奖
+ */
+function checkHasUnclaimedReward(tasks: Event[]): boolean {
+  // 检查1-4项，任务列表
+  const tasksValid = tasks
+    .slice(0, 4)
+    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
+  // 检查第5项，累计任务
+  const accTask = tasks[4]
+  const accTasksValid = accTask.stages.some(
+    (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
+  )
+  return tasksValid || accTasksValid
+}
+
+/**
+ * @function 设置红点
+ * @returns {void}
+ */
+function setRedDot(): void {
+  const hasUnclaimedReward = checkHasUnclaimedReward(
+    activityData.value.event_data[EVENT_NAME],
+  )
+  console.log('hasUnclaimedReward: ', hasUnclaimedReward)
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
+}
+
+/**
+ * @function 获取任务进度
+ * @returns {void}
+ */
+function getActivityData(): void {
+  getPlayerMissionData({ event: EVENT_NAME })
+    .then((res) => {
+      const data = res.data
+      const tasklist = data.event_data[EVENT_NAME].filter(
+        (item: Event) => !Object.prototype.hasOwnProperty.call(item, 'ticket'),
+      )
+      const newActivityData = {
+        ...data,
+        event_data: {
+          activitycenter_Halloweentask_2024: tasklist.sort(
+            (a: Event, b: Event) => {
+              const orderA =
+                taskOrderMap.get(a.task_id) ?? DAILY_TASK_LIST.length
+              const orderB =
+                taskOrderMap.get(b.task_id) ?? DAILY_TASK_LIST.length
+              return orderA - orderB
+            },
+          ),
+        },
+      }
+      // 更新缓存活动数据
+      activityStore.updateActivityData(newActivityData)
+      console.log('activityStore: ', activityStore)
+      setRedDot()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
 
 /**
  * @function 显示帮助
@@ -196,9 +538,77 @@ function handleHelp(): void {
 }
 .daily-task-list {
   position: absolute;
-  left: 410px;
-  top: 420px;
-  width: 1350px;
-  height: 499px;
+  left: 400px;
+  top: 408px;
+  width: 388px;
+  height: 500px;
+  .daily-task-item {
+    width: 90px;
+    height: 73px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &.wait {
+      background-image: url('@/assets/images/halloween-task-2024/wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/halloween-task-2024/can.png');
+    }
+    &.redeemed {
+      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
+    }
+  }
+}
+.weekly-task-list {
+  position: absolute;
+  left: 350px;
+  bottom: 204px;
+  .weekly-task-item {
+    width: 90px;
+    height: 73px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    &.wait {
+      background-image: url('@/assets/images/halloween-task-2024/wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/halloween-task-2024/can.png');
+    }
+    &.redeemed {
+      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
+    }
+  }
+}
+.trick-task-list {
+  position: absolute;
+  left: 920px;
+  top: 444px;
+  height: 520px;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  .trick-bg {
+    padding-left: 160px;
+    width: 785px;
+    height: 85px;
+    line-height: 85px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-image: url('@/assets/images/halloween-task-2024/row.png');
+  }
+  .trick-task-item {
+    width: 120px;
+    height: 92px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    margin-left: -180px;
+    &.wait {
+      background-image: url('@/assets/images/halloween-task-2024/wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/halloween-task-2024/can.png');
+    }
+    &.redeemed {
+      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
+    }
+  }
 }
 </style>
