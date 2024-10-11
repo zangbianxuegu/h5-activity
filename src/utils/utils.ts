@@ -69,3 +69,29 @@ export const animateCSS = (
     }
   })
 }
+
+/**
+ * @description 将设计稿像素大小转换为实际适配大小
+ * @param {string} px 设计稿像素值
+ * @returns {string} 转换的像素值
+ */
+const calculatePxToViewport = (px: number): string => {
+  const DESIGN_WIDTH = 2560
+  const clientWidth = document.documentElement.clientWidth
+  return Math.round((px / DESIGN_WIDTH) * clientWidth) + 'px'
+}
+
+/**
+ * @description 样式对象转换：将设计稿像素大小转换为实际适配大小
+ * @param {Record<string, number>} styleObj 样式对象
+ * @returns {Record<string, number>} 转换后的样式对象
+ */
+export const generateDynamicStyles = (
+  styleObj: Record<string, number>,
+): Record<string, string> => {
+  const dynamicStyles: Record<string, string> = {}
+  for (const [key, value] of Object.entries(styleObj)) {
+    dynamicStyles[key] = calculatePxToViewport(value)
+  }
+  return dynamicStyles
+}

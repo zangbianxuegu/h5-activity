@@ -397,7 +397,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/HalloweenTreasure2024'),
     meta: {
       title: '惊吓？惊喜！出奇寻宝',
-      module: 'activitycenter_halloweentreasure_2024',
+      module: 'activitycenter_Halloweentreasure_2024',
     },
   },
 ]
