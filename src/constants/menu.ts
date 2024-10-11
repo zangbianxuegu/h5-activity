@@ -339,6 +339,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '不给糖果就捣蛋！',
+    value: 'activitycenter_Halloweentask_2024',
+    routeName: 'HalloweenTask2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '惊吓？惊喜！ 出奇寻宝',
     value: 'activitycenter_Halloweentreasure_2024',
     routeName: 'Halloweentreasure2024',
@@ -346,9 +353,9 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '不给糖果就捣蛋！',
-    value: 'activitycenter_Halloweentask_2024',
-    routeName: 'HalloweenTask2024',
+    label: '魔法坩埚 惊喜无限',
+    value: 'activitycenter_Halloweenpass_2024',
+    routeName: 'Halloweenpass2024',
     isNew: false,
     hasUnclaimedReward: false,
   },

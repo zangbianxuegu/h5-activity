@@ -22,8 +22,6 @@ export const useActivityStore = defineStore(
             score: '',
             awarded_types: [],
             award: [0],
-            map: [1, 2],
-            ticket: 10,
           },
         ],
       },

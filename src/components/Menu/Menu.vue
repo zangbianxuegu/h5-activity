@@ -262,7 +262,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   }
 
   &-halloweentreasure {
-    width: 240px;
+    width: 260px;
   }
 }
 </style>

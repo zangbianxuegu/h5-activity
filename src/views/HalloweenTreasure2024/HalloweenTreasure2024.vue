@@ -67,25 +67,6 @@
               </div>
             </div>
 
-            <!-- 砖 -->
-            <div class="brick-list absolute flex flex-wrap">
-              <div
-                v-for="(_, rowIndex) in 6"
-                :key="rowIndex"
-                class="flex w-full"
-              >
-                <div
-                  v-for="(_, colIndex) in 12"
-                  :key="colIndex"
-                  :class="[
-                    'brick w-1/12 bg-cover',
-                    { 'opacity-0': isDigged(rowIndex, colIndex) },
-                    getBrickClass(rowIndex, colIndex),
-                  ]"
-                ></div>
-              </div>
-            </div>
-
             <!-- 坑 -->
             <div class="absolute flex flex-wrap">
               <div
@@ -100,7 +81,6 @@
                     'hole w-1/12 bg-transparent bg-cover opacity-0',
                     { 'opacity-100': isDigged(rowIndex, colIndex) },
                   ]"
-                  @click="handleDig(rowIndex, colIndex)"
                 >
                   <div
                     v-if="hasHoleBorder(rowIndex, colIndex, 'left')"
@@ -140,6 +120,26 @@
                     class="hole-bottom-right bg-transparent bg-cover"
                   ></div>
                 </div>
+              </div>
+            </div>
+
+            <!-- 砖 -->
+            <div class="brick-list absolute flex flex-wrap">
+              <div
+                v-for="(_, rowIndex) in 6"
+                :key="rowIndex"
+                class="flex w-full"
+              >
+                <div
+                  v-for="(_, colIndex) in 12"
+                  :key="colIndex"
+                  :class="[
+                    'brick w-1/12 bg-cover',
+                    { 'opacity-0': isDigged(rowIndex, colIndex) },
+                    getBrickClass(rowIndex, colIndex),
+                  ]"
+                  @click="handleDig(rowIndex, colIndex)"
+                ></div>
               </div>
             </div>
 
