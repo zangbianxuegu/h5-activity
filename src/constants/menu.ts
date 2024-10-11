@@ -339,8 +339,8 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '惊吓？惊喜！出奇寻宝',
-    value: 'activitycenter_halloweentreasure_2024',
+    label: '惊吓？惊喜！ 出奇寻宝',
+    value: 'activitycenter_Halloweentreasure_2024',
     routeName: 'Halloweentreasure2024',
     isNew: false,
     hasUnclaimedReward: false,

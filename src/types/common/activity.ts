@@ -32,6 +32,8 @@ export interface Event {
   awarded_types: any[]
   task_names?: string[]
   ban_award_types?: any[]
+  map?: number[]
+  ticket?: number
 }
 
 type SingleEventData<K extends EventName> = {

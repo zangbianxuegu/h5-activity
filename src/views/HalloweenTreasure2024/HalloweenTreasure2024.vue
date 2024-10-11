@@ -1,24 +1,158 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="summerday flex h-screen">
-      <div class="summerday-main">
+    <div class="halloween flex h-screen">
+      <div class="halloween-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
-            <div class="sr-only">
-              惊吓？惊喜！出奇寻宝
-              <p>
-                <time datetime="2024-10-26">10.26</time>-
-                <time datetime="2024-11-15">11.15</time>
-              </p>
+          <section>
+            <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+              <div class="sr-only">
+                惊吓？惊喜！出奇寻宝
+                <p>
+                  <time datetime="2024-10-26">10.26</time>-
+                  <time datetime="2024-11-15">11.15</time>
+                </p>
+              </div>
+              <div
+                class="help cursor-pointer bg-contain"
+                @click="handleHelp"
+              ></div>
+            </h1>
+            <!-- 铲数 -->
+            <div class="shovel">
+              <div class="shovel-icon bg-cover"></div>
+              <div class="shovel-count flex justify-center">
+                {{ Number(shovelCount) > 0 ? shovelCount : 0 }}
+              </div>
             </div>
-            <div
-              class="help cursor-pointer bg-contain"
-              @click="handleHelp"
-            ></div>
-          </h1>
+          </section>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section></section>
+          <section class="treasure-map">
+            <!-- 奖励 -->
+            <div class="reward absolute h-full w-full">
+              <div class="repellant_krill bg-cover">
+                <span class="sr-only">冥龙</span>
+              </div>
+              <div class="crab crab1 bg-cover">
+                <span class="sr-only">螃蟹</span>
+              </div>
+              <div class="crab crab2 bg-cover">
+                <span class="sr-only">螃蟹</span>
+              </div>
+              <div class="pumpkin_crab bg-cover">
+                <span class="sr-only">南瓜螃蟹</span>
+              </div>
+              <div class="cat bg-cover">
+                <span class="sr-only">皮皮猫</span>
+              </div>
+              <div class="candy candy1 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy2 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy3 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy4 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div
+                v-for="item in spiderWebs"
+                :key="item"
+                class="spider-web bg-cover"
+                :style="getSpiderWebStyle(item)"
+              >
+                <span class="sr-only">蜘蛛网</span>
+              </div>
+            </div>
+
+            <!-- 砖 -->
+            <div class="brick-list absolute flex flex-wrap">
+              <div
+                v-for="(_, rowIndex) in 6"
+                :key="rowIndex"
+                class="flex w-full"
+              >
+                <div
+                  v-for="(_, colIndex) in 12"
+                  :key="colIndex"
+                  :class="[
+                    'brick w-1/12 bg-cover',
+                    { 'opacity-0': isDigged(rowIndex, colIndex) },
+                    getBrickClass(rowIndex, colIndex),
+                  ]"
+                ></div>
+              </div>
+            </div>
+
+            <!-- 坑 -->
+            <div class="absolute flex flex-wrap">
+              <div
+                v-for="(_, rowIndex) in 6"
+                :key="rowIndex"
+                class="flex w-full"
+              >
+                <div
+                  v-for="(_, colIndex) in 12"
+                  :key="colIndex"
+                  :class="[
+                    'hole w-1/12 bg-transparent bg-cover opacity-0',
+                    { 'opacity-100': isDigged(rowIndex, colIndex) },
+                  ]"
+                  @click="handleDig(rowIndex, colIndex)"
+                >
+                  <div
+                    v-if="hasHoleBorder(rowIndex, colIndex, 'left')"
+                    class="hole-left bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="hasHoleBorder(rowIndex, colIndex, 'right')"
+                    class="hole-right bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="hasHoleBorder(rowIndex, colIndex, 'top')"
+                    class="hole-top bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="hasHoleBorder(rowIndex, colIndex, 'bottom')"
+                    class="hole-bottom bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="
+                      hasHoleBorder(rowIndex, colIndex, 'top') &&
+                      hasHoleBorder(rowIndex, colIndex, 'left')
+                    "
+                    class="hole-top-left bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="
+                      hasHoleBorder(rowIndex, colIndex, 'bottom') &&
+                      hasHoleBorder(rowIndex, colIndex, 'left')
+                    "
+                    class="hole-bottom-left bg-transparent bg-cover"
+                  ></div>
+                  <div
+                    v-if="
+                      hasHoleBorder(rowIndex, colIndex, 'bottom') &&
+                      hasHoleBorder(rowIndex, colIndex, 'right')
+                    "
+                    class="hole-bottom-right bg-transparent bg-cover"
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 挖宝动画 -->
+            <AnimateDig
+              ref="animateDig"
+              class="absolute left-[110px] top-[-180px] hidden h-[300px] w-[250px]"
+              json-path="./spine/halloween-2024/2024Halloween.json"
+              atlas-path="./spine/halloween-2024/2024Halloween.atlas"
+              @success="onAnimateDigSuccess"
+              @complete="onAnimateDigComplete"
+            />
+          </section>
         </Transition>
         <footer class="footer flex w-full justify-center">
           <p class="tips">点击土块挖掘宝藏，活动截止日期：11月16日0点</p>
@@ -26,47 +160,33 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section aria-labelledby="activity-rules-title">
+            <section class="px-4" aria-labelledby="activity-rules-title">
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
-              <h3 class="modal-text">
+              <h3 class="modal-text mt-4">
                 <span class="font-semibold">活动时间：</span>
-                2024年8月29日~2024年9月11日
+                2024年10月26日~2024年11月15日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
+              <p>活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：</p>
               <ul class="modal-text list-inside list-decimal">
+                <li>每次挖宝均可获得10捣蛋币的奖励</li>
                 <li>
-                  活动期间，体验一次捉迷藏玩法，即可领取
-                  <span class="text-[#ffcb4d]">篝火点心礼包试用魔法*2</span>
-                </li>
-                <li>
-                  活动期间，使用一次沙滩球魔法，即可领取
-                  <span class="text-[#ffcb4d]">沙滩弹球*2</span>
-                </li>
-                <li>
-                  活动期间，兑换一件夏之日物品，即可领取
-                  <span class="text-[#ffcb4d]">遥鲲泳圈试用魔法*2</span>
-                </li>
-                <li>
-                  活动期间，累计登录5天，即可领取
-                  <span class="text-[#ffcb4d]">体型重塑*2</span>
-                </li>
-                <li>
-                  活动期间，收集夏之日代币，即可领取：
+                  挖出宝藏可获得额外捣蛋币奖励，对应奖励如
                   <div class="grid grid-cols-3">
-                    <span>收集数目</span>
-                    <span class="col-span-2">对应奖励</span>
-                    <span>20个</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >璀璨之星魔法*1</span
-                    >
-                    <span>30个</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >夏日冲浪礼包试用魔法*1</span
-                    >
-                    <span>50个</span>
-                    <span class="col-span-2 text-[#ffcb4d]">爱心*2</span>
+                    <span>宝藏：</span>
+                    <span class="col-span-2">奖励</span>
+                    <span>糖果</span>
+                    <span class="col-span-2 text-[#ffcb4d]">20</span>
+                    <span>皮皮猫</span>
+                    <span class="col-span-2 text-[#ffcb4d]">80</span>
+                    <span>螃蟹</span>
+                    <span class="col-span-2 text-[#ffcb4d]">30</span>
+                    <span>冥龙</span>
+                    <span class="col-span-2 text-[#ffcb4d]">100</span>
+                    <span>南瓜螃蟹</span>
+                    <span class="col-span-2 text-[#ffcb4d]">50</span>
                   </div>
                 </li>
               </ul>
@@ -79,10 +199,16 @@
 </template>
 
 <script setup lang="ts">
+import { showToast } from 'vant'
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
-import ActivityModal from '@/components/Modal'
+import { generateDynamicStyles } from '@/utils/utils'
+import { getPlayerMissionData } from '@/utils/request'
+import { treasureHunt } from '@/apis/halloween'
+import { useActivityStore } from '@/stores/halloweenTreasure2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import ActivityModal from '@/components/Modal'
+import AnimateDig from './components/AnimateDig.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -113,11 +239,42 @@ const designConfig: DesignConfig = {
 // 缩放系数
 useResponsiveStyles(designConfig)
 
+interface Adjacent {
+  left: number | null
+  right: number | null
+  top: number | null
+  bottom: number | null
+}
+
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const animateDig = ref<InstanceType<typeof AnimateDig> | null>(null)
 
 // 活动数据
-// const EVENT_NAME = 'activitycenter_halloweentreasure_2024'
+const EVENT_NAME = 'activitycenter_Halloweentreasure_2024'
+const activityStore = useActivityStore()
+const activityData = computed(() => activityStore.activityData)
+// 铲数
+const shovelCount = computed(
+  () => Number(activityData.value.event_data[EVENT_NAME][0].ticket) ?? 0,
+)
+// 已经挖开的格子
+const openedBricks = computed(() => {
+  const digged = activityData.value.event_data[EVENT_NAME][0].map
+  if (digged) {
+    return digged
+  }
+  return []
+})
+// 蜘蛛网位置
+const spiderWebs = [
+  2, 3, 6, 9, 11, 15, 21, 24, 25, 29, 30, 35, 36, 43, 45, 52, 57, 61, 65, 67,
+]
+// 当前格子id
+let curGridId = 0
+let curRowIndex = 0
+let curColIndex = 0
+let curHalloweenTokenCount = '10'
 
 const sessionIsVisitedKey = 'isVisitedHalloweentreasure2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -132,7 +289,7 @@ if (!isVisited) {
 
 onMounted(() => {
   try {
-    // getActivityData()
+    getActivityData()
   } catch (error) {
     console.error(error)
   }
@@ -140,11 +297,204 @@ onMounted(() => {
 })
 
 /**
- * @function 显示帮助
+ * @function handleHelp
+ * @description 显示帮助
  * @returns {void}
  */
 function handleHelp(): void {
   modalHelp.value?.openModal()
+}
+
+/**
+ * @function getActivityData
+ * @description 获取任务进度
+ * @returns {void}
+ */
+function getActivityData(): void {
+  getPlayerMissionData({ event: EVENT_NAME })
+    .then((res) => {
+      const data = res.data
+      const newActivityData = {
+        ...data,
+        event_data: {
+          [EVENT_NAME]: data.event_data[EVENT_NAME],
+        },
+      }
+      // 更新缓存活动数据
+      activityStore.updateActivityData(newActivityData)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+/**
+ * @function getSpiderWebStyle
+ * @description 获取蜘蛛网样式
+ * @param {number} item 格子位置
+ * @returns {Record<string, string>} 样式对象
+ */
+function getSpiderWebStyle(item: number): Record<string, string> {
+  const left = (item % 12) * 141 + 8
+  const top = Math.floor(item / 12) * 118
+  return generateDynamicStyles({ left, top })
+}
+
+/**
+ * @function getBrickStyle
+ * @description 获取砖块类
+ * @param {number} rowIndex 行索引
+ * @param {number} colIndex 列索引
+ * @returns {string} 砖块类
+ */
+function getBrickClass(rowIndex: number, colIndex: number): string {
+  const patterns = [
+    ['brick1', 'brick2'],
+    ['brick3', 'brick4'],
+    ['brick5', 'brick6'],
+  ]
+  const patternIndex = rowIndex % 3
+  const pattern = patterns[patternIndex]
+  return pattern[colIndex % 2]
+}
+
+/**
+ * @function hasHoleBorder
+ * @description 判断是否有坑边
+ * @param {number} rowIndex 行索引
+ * @param {number} colIndex 列索引
+ * @param {keyof Adjacent} border 坑边，left、right、top、bottom
+ * @returns {boolean} 是否有坑边
+ */
+function hasHoleBorder(
+  rowIndex: number,
+  colIndex: number,
+  border: keyof Adjacent,
+): boolean {
+  if (isDigged(rowIndex, colIndex)) {
+    const adjacent = getAdjacent(rowIndex, colIndex)
+    return (
+      adjacent[border] === null ||
+      !openedBricks.value.includes(adjacent[border] as number)
+    )
+  }
+  return false
+}
+
+/**
+ * @description 获取相邻格子位置
+ * @param {number} rowIndex 行索引
+ * @param {number} colIndex 列索引
+ * @returns {Adjacent} 相邻格子位置
+ */
+function getAdjacent(rowIndex: number, colIndex: number): Adjacent {
+  return {
+    left: colIndex > 0 ? rowIndex * 12 + colIndex - 1 : null,
+    right: colIndex < 11 ? rowIndex * 12 + colIndex + 1 : null,
+    top: rowIndex > 0 ? (rowIndex - 1) * 12 + colIndex : null,
+    bottom: rowIndex < 5 ? (rowIndex + 1) * 12 + colIndex : null,
+  }
+}
+
+/**
+ * @description 判断砖块是否挖过
+ * @param {number} rowIndex 行索引
+ * @param {number} colIndex 列索引
+ * @returns {boolean} 是否挖过
+ */
+function isDigged(rowIndex: number, colIndex: number): boolean {
+  const index = rowIndex * 12 + colIndex
+  return openedBricks.value.includes(index)
+}
+
+/**
+ * @description 挖宝
+ * @param {number} rowIndex 行索引
+ * @param {number} colIndex 列索引
+ * @returns {void}
+ */
+function handleDig(rowIndex: number, colIndex: number): void {
+  console.log('挖宝开始')
+  console.log('rowIndex: ', rowIndex)
+  console.log('colIndex: ', colIndex)
+  // 已经挖过
+  if (openedBricks.value?.length >= 72) {
+    showToast('已经全部挖完了~')
+    return
+  }
+  const index = rowIndex * 12 + colIndex
+  if (openedBricks.value?.includes(index)) {
+    showToast('已经挖过了~')
+    return
+  }
+  if (shovelCount.value <= 0) {
+    showToast('没有挖宝次数')
+    return
+  }
+  curRowIndex = rowIndex
+  curColIndex = colIndex
+  curGridId = rowIndex * 12 + colIndex
+  // 设置挖宝动画
+  if (animateDig.value) {
+    const newStyle = generateDynamicStyles({
+      width: 250,
+      height: 300,
+      left: -31 + 141 * curColIndex,
+      top: -180 + 118 * curRowIndex,
+    })
+    Object.assign(animateDig.value.$el.style, newStyle)
+    animateDig.value.$el.classList.remove('hidden')
+    animateDig.value.playAnimation('shovel', false)
+  }
+}
+
+/**
+ * @function onAnimateDigSuccess
+ * @description 动画加载成功回调函数
+ * @returns void
+ */
+function onAnimateDigSuccess(): void {
+  console.log('动画加载成功')
+}
+
+/**
+ * @function onAnimateDigComplete
+ * @description 挖宝动画完成回调函数
+ * @param entry
+ */
+function onAnimateDigComplete(entry: any): void {
+  console.log('动画完成')
+  if (entry.animation.name.includes('shovel')) {
+    treasureHunt({
+      event: EVENT_NAME,
+      task: `${EVENT_NAME}_m1`,
+      grid_id: curGridId,
+    })
+      .then((res) => {
+        activityData.value.event_data[EVENT_NAME][0].map?.push(curGridId)
+        activityData.value.event_data[EVENT_NAME][0].ticket =
+          res.remaining_tickets
+        curHalloweenTokenCount = res.rewards.halloween_token
+        // 设置金币动画
+        if (animateDig.value) {
+          const newStyle = generateDynamicStyles({
+            width: 250,
+            height: 200,
+            left: 55 + 141 * curColIndex,
+            top: -100 + 118 * curRowIndex,
+          })
+          Object.assign(animateDig.value.$el.style, newStyle)
+          animateDig.value.playAnimation('species', false)
+        }
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
+  }
+  if (entry.animation.name.includes('species')) {
+    showToast(`捣蛋币+${curHalloweenTokenCount}`)
+    animateDig.value?.$el.classList.add('hidden')
+  }
 }
 </script>
 
@@ -167,7 +517,7 @@ function handleHelp(): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.summerday {
+.halloween {
   position: relative;
   width: 2100px;
 
@@ -235,5 +585,189 @@ function handleHelp(): void {
     right: 0;
     transform: scaleX(-1);
   }
+}
+.shovel {
+  position: absolute;
+  right: 174px;
+  top: 204px;
+  width: 204px;
+  height: 67px;
+
+  &-icon {
+    position: absolute;
+    left: 2px;
+    top: -10px;
+    width: 68px;
+    height: 77px;
+    background-image: url('@/assets/images/halloween-treasure-2024/shovel.png');
+  }
+
+  &-count {
+    margin-top: 16px;
+    padding: 0 25px 0 70px;
+    border-radius: 51px;
+    width: 204px;
+    height: 51px;
+    line-height: 51px;
+    font-size: 45px;
+    color: #fff;
+    background: rgba(#8b7ab2, $alpha: 0.85);
+  }
+}
+.treasure-map {
+  position: absolute;
+  left: 177px;
+  top: 305px;
+  width: 1689px;
+  height: 705px;
+  background: #5d316d;
+}
+.brick {
+  width: 147px;
+  height: 126px;
+  margin-right: -6px;
+  margin-bottom: -8px;
+}
+.hole {
+  width: 141px;
+  height: 118px;
+  position: relative;
+
+  &-left {
+    position: absolute;
+    left: -5px;
+    top: -2px;
+    width: 17px;
+    height: 123px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-left.png');
+  }
+
+  &-right {
+    position: absolute;
+    right: -8px;
+    top: -2px;
+    width: 8px;
+    height: 123px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-right.png');
+  }
+
+  &-top {
+    position: absolute;
+    top: -5px;
+    left: 5px;
+    width: 141px;
+    height: 18px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-top.png');
+  }
+
+  &-bottom {
+    position: absolute;
+    left: 0px;
+    bottom: -5px;
+    width: 141px;
+    height: 10px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-bottom.png');
+  }
+
+  &-top-left {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    width: 12px;
+    height: 10px;
+    // border: 1px solid red;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-top-left.png');
+  }
+
+  &-bottom-left {
+    position: absolute;
+    left: 12px;
+    bottom: 4px;
+    width: 6px;
+    height: 6px;
+    // border: 1px solid red;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-bottom-left.png');
+  }
+
+  &-bottom-right {
+    position: absolute;
+    right: 0px;
+    bottom: 4px;
+    width: 4px;
+    height: 4px;
+    // border: 1px solid red;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-bottom-right.png');
+  }
+}
+@for $i from 1 through 6 {
+  .brick#{$i} {
+    background-image: url('@/assets/images/halloween-treasure-2024/brick#{$i}.png');
+  }
+}
+.repellant_krill {
+  position: absolute;
+  left: 299px;
+  top: 271px;
+  width: 252px;
+  height: 419px;
+  background-image: url('@/assets/images/halloween-treasure-2024/reward-repellant_krill.png');
+}
+.crab {
+  position: absolute;
+  width: 244px;
+  height: 188px;
+  background-image: url('@/assets/images/halloween-treasure-2024/reward-crab.png');
+}
+.crab1 {
+  left: 26px;
+  top: 34px;
+}
+.crab2 {
+  left: 729px;
+  top: 381px;
+}
+.pumpkin_crab {
+  position: absolute;
+  left: 1003px;
+  top: 145px;
+  width: 245px;
+  height: 198px;
+  background-image: url('@/assets/images/halloween-treasure-2024/reward-pumpkin_crab.png');
+}
+.cat {
+  position: absolute;
+  left: 1429px;
+  top: 370px;
+  width: 257px;
+  height: 321px;
+  background-image: url('@/assets/images/halloween-treasure-2024/reward-cat.png');
+}
+.candy {
+  position: absolute;
+  width: 115px;
+  height: 155px;
+  background-image: url('@/assets/images/halloween-treasure-2024/reward-candy.png');
+}
+.candy1 {
+  left: 725px;
+  top: 32px;
+}
+.candy2 {
+  left: 1430px;
+  top: 32px;
+}
+.candy3 {
+  left: 22px;
+  top: 516px;
+}
+.candy4 {
+  left: 1150px;
+  top: 516px;
+}
+.spider-web {
+  position: absolute;
+  width: 124px;
+  height: 118px;
+  background-image: url('@/assets/images/halloween-treasure-2024/spider-web.png');
 }
 </style>
