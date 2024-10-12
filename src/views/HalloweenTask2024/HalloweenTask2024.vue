@@ -28,7 +28,7 @@
               >
                 <p
                   :class="[
-                    'mt-[21px] text-[32px]',
+                    'mt-[10px] text-[32px]',
                     `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
                   ]"
                 >
@@ -814,7 +814,7 @@ function handleHelp(): void {
   height: 500px;
   .daily-task-item {
     width: 90px;
-    height: 73px;
+    height: 75px;
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -825,7 +825,7 @@ function handleHelp(): void {
   bottom: 204px;
   .weekly-task-item {
     width: 90px;
-    height: 73px;
+    height: 75px;
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -838,7 +838,7 @@ function handleHelp(): void {
   overflow-x: hidden;
   overflow-y: scroll;
   .trick-bg {
-    padding-left: 160px;
+    padding-left: 164px;
     width: 785px;
     height: 85px;
     line-height: 85px;
