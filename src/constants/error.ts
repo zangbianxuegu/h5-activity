@@ -146,7 +146,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
-  // 走格子移动
+  // 万圣节寻宝
   treasure_hunt: {
     400: {
       'repeat request': '请求频繁，请稍后重试',
@@ -157,6 +157,16 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'invalid grid id': '请求异常，请稍后重试',
       'invalid event or task': '无效的活动或任务，请稍后重试',
       'unknown error': '服务器异常，请稍后重试',
+      'invalid user': '身份验证失败，请稍后重试',
+      'not recently online': '非法请求，请在游戏内打开',
+    },
+  },
+
+  // 万圣节抽奖
+  lottery: {
+    400: {
+      'repeat request': '请求频繁，请稍后重试',
+      'invalid event or task': '无效的活动或任务，请稍后重试',
       'invalid user': '身份验证失败，请稍后重试',
       'not recently online': '非法请求，请在游戏内打开',
     },

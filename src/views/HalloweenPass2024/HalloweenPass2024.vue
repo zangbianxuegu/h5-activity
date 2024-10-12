@@ -4,7 +4,9 @@
       <div class="halloween-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <section>
-            <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+            <h1
+              class="title relative z-10 overflow-hidden bg-contain bg-no-repeat"
+            >
               <div class="sr-only">
                 魔法坩埚 惊喜无限
                 <p>
@@ -17,11 +19,31 @@
                 @click="handleHelp"
               ></div>
             </h1>
+            <!-- 捣蛋币数 -->
+            <div class="token">
+              <div class="token-icon bg-cover"></div>
+              <div class="token-count flex justify-center">
+                {{ tokenCount }}
+              </div>
+            </div>
           </section>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section class="">
-            <button type="button" class="btn bg-transparent bg-cover">
+          <section class="lottery absolute bottom-0 left-0 right-0 top-0">
+            <div class="tips flex items-center justify-center bg-cover">
+              <span v-if="isFirstLottery" class="text-[40px] text-[#fff29c]"
+                >首次免费</span
+              >
+              <template v-else>
+                <div class="tips-icon bg-cover"></div>
+                <span class="tips-text text-[#fffae9]">100/次</span>
+              </template>
+            </div>
+            <button
+              type="button"
+              class="btn bg-transparent bg-cover"
+              @click="drawLottery"
+            >
               <span class="sr-only">抽取礼物</span>
             </button>
           </section>
@@ -29,7 +51,10 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section class="px-4" aria-labelledby="activity-rules-title">
+            <section
+              class="h-[640px] overflow-auto px-4"
+              aria-labelledby="activity-rules-title"
+            >
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text mt-4">
                 <span class="font-semibold">活动时间：</span>
@@ -38,28 +63,59 @@
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
-              <p>活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：</p>
+              <p>活动期间，玩家可以使用免费抽奖次数进行一次抽奖</p>
               <ul class="modal-text list-inside list-decimal">
-                <li>每次挖宝均可获得10捣蛋币的奖励</li>
                 <li>
-                  挖出宝藏可获得额外捣蛋币奖励，对应奖励如
-                  <div class="grid grid-cols-3">
-                    <span>宝藏：</span>
-                    <span class="col-span-2">奖励</span>
-                    <span>糖果</span>
-                    <span class="col-span-2 text-[#ffcb4d]">20</span>
-                    <span>皮皮猫</span>
-                    <span class="col-span-2 text-[#ffcb4d]">80</span>
-                    <span>螃蟹</span>
-                    <span class="col-span-2 text-[#ffcb4d]">30</span>
-                    <span>冥龙</span>
-                    <span class="col-span-2 text-[#ffcb4d]">100</span>
-                    <span>南瓜螃蟹</span>
-                    <span class="col-span-2 text-[#ffcb4d]">50</span>
-                  </div>
+                  活动期间，玩家可以使用100捣蛋币进行一次抽奖，将在如下奖励中随机抽取：
                 </li>
+                <li>
+                  冥龙克星*1，螃蟹恶作剧*1，糖果恶作剧*1，女巫长发试用魔法*1，枯叶斗篷试用魔法*1
+                </li>
+                <li>
+                  枯木桌椅试用魔法*1，哥特长靴试用魔法*1，螃蟹南瓜头饰试用魔法*1，吸蟹伯爵面具礼包试用魔法*1
+                </li>
+                <li>
+                  吸蟹伯爵斗篷礼包试用魔法*1，哥特螃蟹长袍试用魔法*1，蛛丝斗篷礼包试用魔法*1，皮皮猫装扮礼包试用魔法*1
+                </li>
+                <li>
+                  冥龙南瓜礼包试用魔法*1，猫耳发型试用魔法*1，皮皮猫礼包试用魔法*1，恶作剧飞行扫帚礼包试用魔法*2
+                </li>
+                <li>
+                  蛛网朋克礼包试用魔法*1，疯女巫长裙礼包试用魔法*1，巫树犄角礼包试用魔法*1，蜡烛*3，爱心*1
+                </li>
+                <li>
+                  鬼蝠斗篷试用魔法*1，南瓜帽试用魔法*1，蛛网斗篷礼包试用魔法*1，女巫帽礼包试用魔法*1
+                </li>
+                <li>漂浮魔法*1，璀璨之星魔法*1，元气满满魔法*1，</li>
+                <li>体型重塑*2，绚丽彩虹*2</li>
               </ul>
             </section>
+          </template>
+        </activity-modal>
+        <!-- 领奖弹框 -->
+        <activity-modal ref="modalReward">
+          <template #content>
+            <div class="h-[640px] overflow-auto px-4">
+              <section
+                class="flex h-full flex-col"
+                aria-labelledby="modalRewardTitle"
+              >
+                <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
+                <p class="modal-text mt-4">
+                  恭喜你获得
+                  <span class="modal-text-blue">
+                    {{ rewardsText[curRewards.name as keyof RewardsName] }} *
+                    {{ curRewards.count }} </span
+                  >：
+                </p>
+                <div class="flex flex-1 items-center justify-center">
+                  <img
+                    :src="handleSrc(String(curRewards.name))"
+                    alt="reward image"
+                  />
+                </div>
+              </section>
+            </div>
           </template>
         </activity-modal>
       </div>
@@ -72,7 +128,8 @@ import { showToast } from 'vant'
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import { getPlayerMissionData } from '@/utils/request'
-import { useActivityStore } from '@/stores/halloweenTreasure2024'
+import { halloweenLottery } from '@/apis/halloween'
+import { useActivityStore } from '@/stores/halloweenPass2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
 
@@ -107,14 +164,37 @@ useResponsiveStyles(designConfig)
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // 活动数据
-const EVENT_NAME = 'activitycenter_Halloweentreasure_2024'
+const EVENT_NAME = 'activitycenter_Halloweenpass_2024'
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-console.log('activityData: ', activityData)
+// 捣蛋币数
+const tokenCount = computed(() =>
+  Number(activityData.value.token_info.halloween_token),
+)
+// 是否首次抽奖
+const isFirstLottery = computed(() => activityData.value.draw_id <= 0)
 
-const sessionIsVisitedKey = 'isVisitedHalloweentreasure2024'
+interface Rewards {
+  name: string
+  count: number
+}
+interface RewardsName {
+  candles: string
+  heart: string
+}
+const rewardsText: RewardsName = {
+  candles: '蜡烛',
+  heart: '爱心',
+}
+const curRewards: Ref<Rewards> = ref({
+  name: 'candles',
+  count: 3,
+})
+
+const sessionIsVisitedKey = 'isVisitedHalloweenpass2024'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -144,6 +224,20 @@ function handleHelp(): void {
 }
 
 /**
+ * @function 处理 img src
+ * @param name 奖励名
+ * @returns {string} 图片路径
+ */
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../assets/images/common/reward/reward-${name}.png`,
+    import.meta.url,
+  ).href
+
+  return imgSrc
+}
+
+/**
  * @function getActivityData
  * @description 获取任务进度
  * @returns {void}
@@ -152,14 +246,47 @@ function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
       const data = res.data
-      const newActivityData = {
-        ...data,
-        event_data: {
-          [EVENT_NAME]: data.event_data[EVENT_NAME],
-        },
-      }
       // 更新缓存活动数据
-      activityStore.updateActivityData(newActivityData)
+      activityStore.updateActivityData(data)
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+/**
+ * @function drawLottery
+ * @description 抽奖
+ * @returns void
+ */
+function drawLottery(): void {
+  if (!isFirstLottery.value && tokenCount.value < 100) {
+    showToast('捣蛋币不足！请去【出奇寻宝】获取！')
+    return
+  }
+  halloweenLottery({
+    event: EVENT_NAME,
+    token_count: tokenCount.value,
+  })
+    .then((res) => {
+      // code = 200 的错误
+      const errorMap = {
+        'not enough token': '捣蛋币不足！请去【出奇寻宝】获取！',
+        'old data': '数据异常，请稍后重试',
+        'exceeded draw limit': '奖励已全部抽完',
+      }
+      if (res.msg !== 'ok') {
+        showToast(errorMap[res.msg as keyof typeof errorMap])
+        return
+      }
+      const rewards = res.rewards
+      modalReward.value?.openModal()
+      curRewards.value = {
+        name: Object.keys(rewards)[0],
+        count: Number(Object.values(rewards)[0]),
+      }
+      activityData.value.token_info.halloween_token = res.token_count
+      activityData.value.draw_id = res.draw_id
     })
     .catch((error) => {
       showToast(error.message)
@@ -215,15 +342,64 @@ function getActivityData(): void {
   position: absolute;
   width: 109px;
   height: 109px;
-  left: 538px;
-  top: 300px;
+  left: 544px;
+  top: 304px;
   background-image: url('@/assets/images/halloween-pass-2024/help.png');
+}
+.token {
+  position: absolute;
+  right: 71px;
+  top: 74px;
+  width: 204px;
+  height: 70px;
+
+  &-icon {
+    position: absolute;
+    left: 11px;
+    top: 0;
+    width: 49px;
+    height: 70px;
+    background-image: url('@/assets/images/halloween-pass-2024/halloween-token.png');
+  }
+
+  &-count {
+    margin-top: 16px;
+    padding: 0 25px 0 60px;
+    border-radius: 51px;
+    width: 204px;
+    height: 51px;
+    line-height: 51px;
+    font-size: 45px;
+    color: #fff;
+    background: rgba(#8b7ab2, $alpha: 0.85);
+  }
+}
+.tips {
+  position: absolute;
+  left: 50%;
+  bottom: 220px;
+  transform: translate3d(-50%, 0, 0);
+  width: 317px;
+  height: 57px;
+  background-image: url('@/assets/images/halloween-pass-2024/rect-bg.png');
+
+  &-icon {
+    margin-top: -2px;
+    width: 49px;
+    height: 70px;
+    background-image: url('@/assets/images/halloween-pass-2024/halloween-token.png');
+  }
+
+  &-text {
+    margin-left: 20px;
+    font-size: 40px;
+  }
 }
 .btn {
   position: absolute;
   left: 50%;
   bottom: 65px;
-  transform: translate3d(-50%, -50%, 0);
+  transform: translate3d(-50%, 0, 0);
   width: 423px;
   height: 142px;
   background-image: url('@/assets/images/halloween-pass-2024/btn.png');

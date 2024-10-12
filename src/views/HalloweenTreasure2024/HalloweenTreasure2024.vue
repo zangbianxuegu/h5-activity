@@ -28,45 +28,6 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section class="treasure-map">
-            <!-- 奖励 -->
-            <div class="reward absolute h-full w-full">
-              <div class="repellant_krill bg-cover">
-                <span class="sr-only">冥龙</span>
-              </div>
-              <div class="crab crab1 bg-cover">
-                <span class="sr-only">螃蟹</span>
-              </div>
-              <div class="crab crab2 bg-cover">
-                <span class="sr-only">螃蟹</span>
-              </div>
-              <div class="pumpkin_crab bg-cover">
-                <span class="sr-only">南瓜螃蟹</span>
-              </div>
-              <div class="cat bg-cover">
-                <span class="sr-only">皮皮猫</span>
-              </div>
-              <div class="candy candy1 bg-cover">
-                <span class="sr-only">糖果</span>
-              </div>
-              <div class="candy candy2 bg-cover">
-                <span class="sr-only">糖果</span>
-              </div>
-              <div class="candy candy3 bg-cover">
-                <span class="sr-only">糖果</span>
-              </div>
-              <div class="candy candy4 bg-cover">
-                <span class="sr-only">糖果</span>
-              </div>
-              <div
-                v-for="item in spiderWebs"
-                :key="item"
-                class="spider-web bg-cover"
-                :style="getSpiderWebStyle(item)"
-              >
-                <span class="sr-only">蜘蛛网</span>
-              </div>
-            </div>
-
             <!-- 坑 -->
             <div class="absolute flex flex-wrap">
               <div
@@ -77,10 +38,7 @@
                 <div
                   v-for="(_, colIndex) in 12"
                   :key="colIndex"
-                  :class="[
-                    'hole w-1/12 bg-transparent bg-cover opacity-0',
-                    { 'opacity-100': isDigged(rowIndex, colIndex) },
-                  ]"
+                  class="hole w-1/12 bg-transparent bg-cover"
                 >
                   <div
                     v-if="hasHoleBorder(rowIndex, colIndex, 'left')"
@@ -120,6 +78,45 @@
                     class="hole-bottom-right bg-transparent bg-cover"
                   ></div>
                 </div>
+              </div>
+            </div>
+
+            <!-- 奖励 -->
+            <div class="reward absolute h-full w-full">
+              <div class="repellant_krill bg-cover">
+                <span class="sr-only">冥龙</span>
+              </div>
+              <div class="crab crab1 bg-cover">
+                <span class="sr-only">螃蟹</span>
+              </div>
+              <div class="crab crab2 bg-cover">
+                <span class="sr-only">螃蟹</span>
+              </div>
+              <div class="pumpkin_crab bg-cover">
+                <span class="sr-only">南瓜螃蟹</span>
+              </div>
+              <div class="cat bg-cover">
+                <span class="sr-only">皮皮猫</span>
+              </div>
+              <div class="candy candy1 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy2 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy3 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div class="candy candy4 bg-cover">
+                <span class="sr-only">糖果</span>
+              </div>
+              <div
+                v-for="item in spiderWebs"
+                :key="item"
+                class="spider-web bg-cover"
+                :style="getSpiderWebStyle(item)"
+              >
+                <span class="sr-only">蜘蛛网</span>
               </div>
             </div>
 
@@ -204,7 +201,7 @@ import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import { generateDynamicStyles } from '@/utils/utils'
 import { getPlayerMissionData } from '@/utils/request'
-import { treasureHunt } from '@/apis/halloween'
+import { halloweenTreasureHunt } from '@/apis/halloween'
 import { useActivityStore } from '@/stores/halloweenTreasure2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
@@ -465,7 +462,7 @@ function onAnimateDigSuccess(): void {
 function onAnimateDigComplete(entry: any): void {
   console.log('动画完成')
   if (entry.animation.name.includes('shovel')) {
-    treasureHunt({
+    halloweenTreasureHunt({
       event: EVENT_NAME,
       task: `${EVENT_NAME}_m1`,
       grid_id: curGridId,
@@ -632,6 +629,17 @@ function onAnimateDigComplete(entry: any): void {
   width: 141px;
   height: 118px;
   position: relative;
+  background-position: center center;
+
+  &:nth-child(2n) {
+    background-size: 123px 99px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-bg2.png');
+  }
+
+  &:nth-child(2n + 1) {
+    background-size: 129px 101px;
+    background-image: url('@/assets/images/halloween-treasure-2024/hole-bg1.png');
+  }
 
   &-left {
     position: absolute;

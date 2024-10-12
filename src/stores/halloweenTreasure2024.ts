@@ -1,4 +1,4 @@
-// 2024 万圣节寻宝活动
+// 2024 万圣节惊吓惊喜出奇寻宝（挖宝）
 import { defineStore } from 'pinia'
 import type { ActivityData } from '@/types'
 
