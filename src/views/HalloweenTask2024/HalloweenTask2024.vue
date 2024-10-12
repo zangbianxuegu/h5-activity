@@ -19,12 +19,13 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
+            <!-- 每日任务列表 -->
             <h2 class="sr-only">每日任务</h2>
             <ul class="daily-task-list">
               <li
                 v-for="item in dailyTaskList"
                 :key="item.value"
-                class="mb-[18px] flex items-center justify-between"
+                class="mb-[16px] flex items-center justify-between"
               >
                 <p
                   :class="[
@@ -60,12 +61,12 @@
                     :class="[
                       'daily-task-item animate__animated animate__fadeIn bg-contain',
                       `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
                     ]"
                   ></div>
                 </div>
               </li>
             </ul>
+            <!-- 每周任务 -->
             <h2 class="sr-only">每周任务</h2>
             <ul class="weekly-task-list">
               <li
@@ -107,12 +108,12 @@
                     :class="[
                       'weekly-task-item animate__animated animate__fadeIn bg-contain',
                       `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
                     ]"
                   ></div>
                 </div>
               </li>
             </ul>
+            <!-- 捣蛋清单 -->
             <h2 class="sr-only">捣蛋清单</h2>
             <ul class="trick-task-list">
               <li
@@ -154,7 +155,6 @@
                     :class="[
                       'trick-task-item animate__animated animate__fadeIn bg-contain',
                       `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
                     ]"
                   ></div>
                 </div>
@@ -178,41 +178,11 @@
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
-                <li>
-                  活动期间，被骑扫帚的皮皮猫炸飞一次，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，找到戴帽子的螃蟹，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，成功击败怪物，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，逃脱滚动螃蟹的追击，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，使用【万圣节】代币兑换任意外观，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，触发扫帚制作间的陷阱，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，在活动场景的衣柜换装，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，完成一次魔法扫帚的练习，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
-                </li>
-                <li>
-                  活动期间，获得40个活动代币，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
+                <li v-for="item in taskInfoList" :key="item.name">
+                  活动期间，{{ item.name }}，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >捣蛋挖宝次数*{{ item.count }}</span
+                  >
                 </li>
                 <li>
                   活动期间，每日完成下列任务，可获得对应捣蛋挖宝次数：
@@ -239,7 +209,7 @@
                 </li>
                 <li>
                   活动期间，每周领取礼物螃蟹送出的魔法，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*3</span>
+                  <span class="text-[#ffcb4d]">捣蛋挖宝次数*3</span>
                 </li>
               </ul>
             </section>
@@ -282,13 +252,25 @@ interface Reward {
 }
 
 const rewardsText: RewardsName = {
-  ticket: '捣蛋挖宝',
+  ticket: '捣蛋挖宝次数',
 }
 
 const curRewards: Ref<Rewards> = ref({
-  name: 'table',
-  count: 2,
+  name: 'ticket',
+  count: 1,
 })
+
+const taskInfoList = [
+  { name: '被骑扫帚的皮皮猫炸飞一次', count: 1 },
+  { name: '找到戴帽子的螃蟹', count: 1 },
+  { name: '成功击败怪物', count: 1 },
+  { name: '逃脱滚动螃蟹的追击', count: 1 },
+  { name: '使用【万圣节】代币兑换任意外观', count: 1 },
+  { name: '触发扫帚制作间的陷阱', count: 1 },
+  { name: '在活动场景的衣柜换装', count: 1 },
+  { name: '完成一次魔法扫帚的练习', count: 2 },
+  { name: '获得40个活动代币', count: 2 },
+]
 
 // 每日列表
 const DAILY_TASK_LIST = [
@@ -522,8 +504,7 @@ const weeklyTaskList = computed(() => {
 // 捣蛋清单
 const trickTaskList = computed(() => {
   return TRICK_TASK_LIST.map((item, index) => {
-    const tasklistIndex = index + 5
-    const activity = activityData.value.event_data[EVENT_NAME][tasklistIndex]
+    const activity = activityData.value.event_data[EVENT_NAME][index + 5]
     return {
       ...item,
       status:
@@ -808,13 +789,14 @@ function handleHelp(): void {
 }
 .daily-task-list {
   position: absolute;
-  left: 400px;
+  left: 394px;
   top: 408px;
-  width: 388px;
-  height: 500px;
+  width: 400px;
+  white-space: nowrap;
+  word-break: keep-all;
   .daily-task-item {
     width: 90px;
-    height: 75px;
+    height: 76px;
     background-repeat: no-repeat;
     background-size: cover;
   }
@@ -839,7 +821,7 @@ function handleHelp(): void {
   overflow-y: scroll;
   .trick-bg {
     padding-left: 164px;
-    width: 785px;
+    width: 790px;
     height: 85px;
     line-height: 85px;
     background-repeat: no-repeat;
@@ -856,10 +838,10 @@ function handleHelp(): void {
 }
 .reward-can-dynamic-bubble {
   width: 90px;
-  height: 90px;
+  height: 75px;
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 12px;
+  right: -4px;
   & > :first-child {
     position: absolute;
     top: -12px;
@@ -867,9 +849,9 @@ function handleHelp(): void {
   }
 }
 .trick-reward-can-dynamic-bubble {
-  width: 108px;
-  height: 82px;
+  width: 102px;
+  height: 78px;
   top: 18px;
-  right: 70px;
+  right: 68px;
 }
 </style>
