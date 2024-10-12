@@ -126,6 +126,8 @@
       <share></share>
       <h2 class="my-2">deeplink回跳游戏功能测试</h2>
       <deep-link></deep-link>
+      <h2 class="my-2">H5图片生成</h2>
+      <generate-img></generate-img>
     </div>
   </div>
 </template>
@@ -136,6 +138,7 @@ import DebugLink from './components/DebugLink.vue'
 import FileTest from './components/FileTest.vue'
 import Share from './components/Share.vue'
 import DeepLink from './components/DeepLink.vue'
+import GenerateImg from './components/GenerateImg.vue'
 import { generateUUID } from '@/utils/utils'
 import defaultDebugLinks from './configs/defaultDebugLinks.ts'
 import { showNotify } from 'vant'

@@ -21,6 +21,7 @@
     "axios": "^1.5.1",
     "dayjs": "^1.11.10",
     "gsap": "^3.12.5",
+    "html2canvas": "^1.4.1",
     "lottie-web": "^5.12.2",
     "pinia": "^2.1.7",
     "pinia-plugin-persistedstate": "^3.2.1",
