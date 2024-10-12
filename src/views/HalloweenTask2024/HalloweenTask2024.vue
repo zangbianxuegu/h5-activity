@@ -23,33 +23,141 @@
             <ul class="daily-task-list">
               <li
                 v-for="item in dailyTaskList"
-                :key="item.id"
+                :key="item.value"
                 class="mb-[18px] flex items-center justify-between"
               >
-                <p class="mt-[21px] text-[32px] text-white">{{ item.title }}</p>
-                <div :class="[`daily-task-item`, `${item.status}`]"></div>
+                <p
+                  :class="[
+                    'mt-[21px] text-[32px]',
+                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
+                  ]"
+                >
+                  {{ item.title }}
+                </p>
+                <div class="relative" @click="handleReward($event, 1, item)">
+                  <can-reward-bubble-animation
+                    @click.stop="handleReward($event, 1, item)"
+                    :ref="item.canRewardLottieRef"
+                    :id="item.value"
+                    class="reward-can-dynamic-bubble"
+                  ></can-reward-bubble-animation>
+                  <div
+                    v-if="item.status === 'wait'"
+                    :class="[
+                      'daily-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'can'"
+                    :class="[
+                      'daily-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'redeemed'"
+                    :class="[
+                      'daily-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                      `${item.value}-redeemed-reward-bubble-${item.id}`,
+                    ]"
+                  ></div>
+                </div>
               </li>
             </ul>
             <h2 class="sr-only">每周任务</h2>
             <ul class="weekly-task-list">
               <li
                 v-for="item in weeklyTaskList"
-                :key="item.id"
+                :key="item.value"
                 class="mb-[18px] flex items-center justify-between"
               >
-                <p class="mt-[16px] text-[32px] text-white">{{ item.title }}</p>
-                <div :class="[`weekly-task-item`, `${item.status}`]"></div>
+                <p
+                  :class="[
+                    `mt-[16px] text-[32px]`,
+                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
+                  ]"
+                >
+                  {{ item.title }}
+                </p>
+                <div class="relative" @click="handleReward($event, 1, item)">
+                  <can-reward-bubble-animation
+                    @click.stop="handleReward($event, 1, item)"
+                    :ref="item.canRewardLottieRef"
+                    :id="item.value"
+                    class="reward-can-dynamic-bubble"
+                  ></can-reward-bubble-animation>
+                  <div
+                    v-if="item.status === 'wait'"
+                    :class="[
+                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'can'"
+                    :class="[
+                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'redeemed'"
+                    :class="[
+                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                      `${item.value}-redeemed-reward-bubble-${item.id}`,
+                    ]"
+                  ></div>
+                </div>
               </li>
             </ul>
             <h2 class="sr-only">捣蛋清单</h2>
             <ul class="trick-task-list">
               <li
                 v-for="item in trickTaskList"
-                :key="item.id"
+                :key="item.value"
                 class="mb-[22px] flex items-center justify-between"
               >
-                <p class="trick-bg text-[32px] text-white">{{ item.title }}</p>
-                <div :class="[`trick-task-item`, `${item.status}`]"></div>
+                <p
+                  :class="[
+                    `trick-bg text-[32px]`,
+                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#afafaf]' : 'text-white'}`,
+                  ]"
+                >
+                  {{ item.title }}
+                </p>
+                <div class="relative" @click="handleReward($event, 1, item)">
+                  <can-reward-bubble-animation
+                    @click.stop="handleReward($event, 1, item)"
+                    :ref="item.canRewardLottieRef"
+                    :id="item.value"
+                    class="reward-can-dynamic-bubble trick-reward-can-dynamic-bubble"
+                  ></can-reward-bubble-animation>
+                  <div
+                    v-if="item.status === 'wait'"
+                    :class="[
+                      'trick-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'can'"
+                    :class="[
+                      'trick-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                  <div
+                    v-if="item.status === 'redeemed'"
+                    :class="[
+                      'trick-task-item animate__animated animate__fadeIn bg-contain',
+                      `${item.status}`,
+                      `${item.value}-redeemed-reward-bubble-${item.id}`,
+                    ]"
+                  ></div>
+                </div>
               </li>
             </ul>
           </section>
@@ -144,14 +252,43 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getPlayerMissionData } from '@/utils/request'
+import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/halloweenTask2024'
+import gsap from 'gsap'
+import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+
+interface Rewards {
+  name: string
+  count: number
+}
+interface RewardsName {
+  ticket: string
+}
+/**
+ * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
+ */
+interface Reward {
+  id: number
+  value: string
+  title: string
+  status: 'wait' | 'redeemed' | 'can' | string
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
+  hadRenderLottie?: Ref<boolean>
+}
+
+const rewardsText: RewardsName = {
+  ticket: '捣蛋挖宝',
+}
+
+const curRewards: Ref<Rewards> = ref({
+  name: 'table',
+  count: 2,
+})
 
 // 每日列表
 const DAILY_TASK_LIST = [
@@ -368,8 +505,8 @@ const dailyTaskList = computed(() => {
 
 // 每周任务
 const weeklyTaskList = computed(() => {
-  return WEEKLY_TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT_NAME][index]
+  return WEEKLY_TASK_LIST.map((item) => {
+    const activity = activityData.value.event_data[EVENT_NAME][4]
     return {
       ...item,
       status:
@@ -385,7 +522,8 @@ const weeklyTaskList = computed(() => {
 // 捣蛋清单
 const trickTaskList = computed(() => {
   return TRICK_TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT_NAME][index]
+    const tasklistIndex = index + 5
+    const activity = activityData.value.event_data[EVENT_NAME][tasklistIndex]
     return {
       ...item,
       status:
@@ -484,6 +622,129 @@ function getActivityData(): void {
 }
 
 /**
+ * @function 领奖
+ * @param task 任务id
+ * @param status 状态
+ * @param rewardId 第几个奖励节点
+ * @param index 任务索引
+ * @returns {void}
+ */
+function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
+  const { value, status } = item
+  if (status === 'redeemed') {
+    return
+  }
+  if (status === 'wait') {
+    showToast('还未完成任务')
+    clickBubbleRewardWait(event)
+    return
+  }
+  claimMissionReward({
+    event: EVENT_NAME,
+    task: value,
+    rewardId,
+  })
+    .then(async (res) => {
+      const rewards = res.data.rewards
+      curRewards.value = {
+        name: Object.keys(rewards)[0],
+        count: Number(Object.values(rewards)[0]),
+      }
+      await bubbleBurst(event, item)
+      // 更新页面数据
+      const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
+        (item) => {
+          return item.task_id === value
+        },
+      )
+      activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
+        1
+      // activityStore.updateActivityData(activityData.value)
+      showToast(
+        `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
+      )
+      // 更新红点
+      setRedDot()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+const initCanRewardLottie = (reward: Reward): void => {
+  reward.canRewardLottieRef?.value[0].initLottie()
+  // 避免多次更新computed和watch所引起的多次渲染lottie
+  if (reward.hadRenderLottie) {
+    reward.hadRenderLottie.value = true
+  }
+}
+
+const allTasks = computed(() => [
+  ...dailyTaskList.value,
+  ...weeklyTaskList.value,
+  ...trickTaskList.value,
+])
+const handleTask = (task: Reward): void => {
+  if (task.status === 'can') {
+    void nextTick(() => {
+      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
+        initCanRewardLottie(task)
+      }
+    })
+  } else {
+    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
+  }
+}
+watchEffect(() => {
+  allTasks.value.forEach(handleTask)
+})
+
+// 奖品wait状态点击果冻效果
+const clickBubbleRewardWait = (event: MouseEvent): void => {
+  const dom = event.target
+  gsap
+    .timeline()
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
+    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
+}
+
+const bubbleBurst = async (
+  event: MouseEvent,
+  reward: Reward,
+): Promise<void> => {
+  if (reward.canRewardLottieRef) {
+    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
+  }
+  // 果冻效果
+  clickBubbleRewardWait(event)
+  const target = event.target
+  // 溅射效果
+  await gsap
+    .timeline()
+    .to(target, {
+      scaleY: 0.8,
+      duration: 0.2,
+      ease: 'power1.in',
+      opacity: 0.9,
+    }) // 垂直压挤
+    .to(target, {
+      scaleY: 1.1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0.5,
+    }) // 垂直拉伸
+    .to(target, {
+      scaleY: 1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0,
+    }) // 再次垂直压挤
+}
+
+/**
  * @function 显示帮助
  * @returns {void}
  */
@@ -536,6 +797,15 @@ function handleHelp(): void {
   right: 318px;
   background-image: url('@/assets/images/halloween-task-2024/help.png');
 }
+.wait {
+  background-image: url('@/assets/images/halloween-task-2024/wait.png');
+}
+.can {
+  background-image: url('@/assets/images/halloween-task-2024/can.png');
+}
+.redeemed {
+  background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
+}
 .daily-task-list {
   position: absolute;
   left: 400px;
@@ -547,15 +817,6 @@ function handleHelp(): void {
     height: 73px;
     background-repeat: no-repeat;
     background-size: cover;
-    &.wait {
-      background-image: url('@/assets/images/halloween-task-2024/wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/halloween-task-2024/can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
-    }
   }
 }
 .weekly-task-list {
@@ -567,15 +828,6 @@ function handleHelp(): void {
     height: 73px;
     background-repeat: no-repeat;
     background-size: cover;
-    &.wait {
-      background-image: url('@/assets/images/halloween-task-2024/wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/halloween-task-2024/can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
-    }
   }
 }
 .trick-task-list {
@@ -600,15 +852,24 @@ function handleHelp(): void {
     background-repeat: no-repeat;
     background-size: cover;
     margin-left: -180px;
-    &.wait {
-      background-image: url('@/assets/images/halloween-task-2024/wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/halloween-task-2024/can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
-    }
   }
+}
+.reward-can-dynamic-bubble {
+  width: 90px;
+  height: 90px;
+  position: absolute;
+  top: 0;
+  right: 0;
+  & > :first-child {
+    position: absolute;
+    top: -12px;
+    transform: scale(1.9) !important;
+  }
+}
+.trick-reward-can-dynamic-bubble {
+  width: 108px;
+  height: 82px;
+  top: 18px;
+  right: 70px;
 }
 </style>
