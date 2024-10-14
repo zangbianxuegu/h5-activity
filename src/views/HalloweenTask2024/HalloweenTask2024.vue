@@ -19,147 +19,15 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <!-- 每日任务列表 -->
-            <h2 class="sr-only">每日任务</h2>
-            <ul class="daily-task-list">
-              <li
-                v-for="item in dailyTaskList"
-                :key="item.value"
-                class="mb-[16px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    'mt-[10px] text-[32px]',
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
-            <!-- 每周任务 -->
-            <h2 class="sr-only">每周任务</h2>
-            <ul class="weekly-task-list">
-              <li
-                v-for="item in weeklyTaskList"
-                :key="item.value"
-                class="mb-[18px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    `mt-[16px] text-[32px]`,
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
-            <!-- 捣蛋清单 -->
-            <h2 class="sr-only">捣蛋清单</h2>
-            <ul class="trick-task-list">
-              <li
-                v-for="item in trickTaskList"
-                :key="item.value"
-                class="mb-[22px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    `trick-bg text-[32px]`,
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#afafaf]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble trick-reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
+            <TaskList
+              v-for="(tasks, type) in taskLists"
+              :key="type"
+              :title="titles[type]"
+              :tasks="tasks"
+              :listClass="`${type}-task-list`"
+              :itemClass="`${type}-task-item`"
+              @reward="handleReward"
+            />
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -230,7 +98,8 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/halloweenTask2024'
 import gsap from 'gsap'
-import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import TaskList from './components/TaskList.vue'
 
 interface Rewards {
   name: string
@@ -517,6 +386,18 @@ const trickTaskList = computed(() => {
   })
 })
 
+const taskLists = computed(() => ({
+  daily: dailyTaskList.value,
+  weekly: weeklyTaskList.value,
+  trick: trickTaskList.value,
+}))
+
+const titles: Record<string, string> = {
+  daily: '每日任务',
+  weekly: '每周任务',
+  trick: '捣蛋清单',
+}
+
 const sessionIsVisitedKey = 'isVisitedHalloweentask2024'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
@@ -604,10 +485,9 @@ function getActivityData(): void {
 
 /**
  * @function 领奖
- * @param task 任务id
- * @param status 状态
- * @param rewardId 第几个奖励节点
- * @param index 任务索引
+ * @param event 鼠标事件
+ * @param rewardId 第几个奖励节点 不传默认1
+ * @param item 任务项
  * @returns {void}
  */
 function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
@@ -777,81 +657,5 @@ function handleHelp(): void {
   top: 250px;
   right: 318px;
   background-image: url('@/assets/images/halloween-task-2024/help.png');
-}
-.wait {
-  background-image: url('@/assets/images/halloween-task-2024/wait.png');
-}
-.can {
-  background-image: url('@/assets/images/halloween-task-2024/can.png');
-}
-.redeemed {
-  background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
-}
-.daily-task-list {
-  position: absolute;
-  left: 394px;
-  top: 408px;
-  width: 400px;
-  white-space: nowrap;
-  word-break: keep-all;
-  .daily-task-item {
-    width: 90px;
-    height: 76px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-}
-.weekly-task-list {
-  position: absolute;
-  left: 350px;
-  bottom: 204px;
-  .weekly-task-item {
-    width: 90px;
-    height: 75px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-}
-.trick-task-list {
-  position: absolute;
-  left: 920px;
-  top: 444px;
-  height: 520px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  .trick-bg {
-    padding-left: 164px;
-    width: 790px;
-    height: 85px;
-    line-height: 85px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-image: url('@/assets/images/halloween-task-2024/row.png');
-  }
-  .trick-task-item {
-    width: 120px;
-    height: 92px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin-left: -180px;
-  }
-}
-.reward-can-dynamic-bubble {
-  width: 90px;
-  height: 75px;
-  position: absolute;
-  top: 12px;
-  right: -4px;
-  & > :first-child {
-    position: absolute;
-    top: -12px;
-    transform: scale(1.9) !important;
-  }
-}
-.trick-reward-can-dynamic-bubble {
-  width: 102px;
-  height: 78px;
-  top: 18px;
-  right: 68px;
 }
 </style>
