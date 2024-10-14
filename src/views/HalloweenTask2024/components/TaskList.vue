@@ -7,7 +7,7 @@
         :key="item.value"
         :class="[
           'flex items-center justify-between',
-          `mb-[${props.title === '捣蛋清单' ? '22' : '16'}px]`,
+          `${props.title === '捣蛋清单' ? 'mb-[22px]' : 'mb-[16px]'}`,
         ]"
       >
         <p :class="getTextClass(item.status)">
@@ -61,8 +61,9 @@ const getTextClass = (status: string): Array<string | object> => [
     'text-[#fff1ad]': status === 'can',
     'text-[#d9d9d9]': status === 'redeemed',
     'text-white': status === 'wait',
+    'mt-[10px]': props.title === '每日任务',
+    'mt-[16px]': props.title === '每周任务',
     'trick-bg': props.title === '捣蛋清单',
-    'mt-[10px]': props.title !== '捣蛋清单',
   },
 ]
 const getItemClass = (status: string): string[] => [
@@ -89,23 +90,17 @@ const getItemClass = (status: string): string[] => [
   width: 400px;
   white-space: nowrap;
   word-break: keep-all;
-  .daily-task-item {
-    width: 90px;
-    height: 76px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
 }
 .weekly-task-list {
   position: absolute;
   left: 350px;
   bottom: 204px;
-  .weekly-task-item {
-    width: 90px;
-    height: 75px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
+}
+.task-item {
+  width: 90px;
+  height: 76px;
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .trick-task-list {
   position: absolute;

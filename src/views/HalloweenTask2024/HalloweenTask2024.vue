@@ -19,13 +19,15 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
+            <!-- 任务列表组件 -->
+            <!-- 遍历 taskLists 对象，为每种类型的任务创建一个 TaskList 组件 -->
             <TaskList
               v-for="(tasks, type) in taskLists"
               :key="type"
               :title="titles[type]"
               :tasks="tasks"
               :listClass="`${type}-task-list`"
-              :itemClass="`${type}-task-item`"
+              :itemClass="`task-item ${type}-task-item`"
               @reward="handleReward"
             />
           </section>
@@ -54,22 +56,22 @@
                 </li>
                 <li>
                   活动期间，每日完成下列任务，可获得对应捣蛋挖宝次数：
-                  <div class="grid grid-cols-3">
-                    <span>每日任务</span>
+                  <div class="grid grid-cols-4">
+                    <span class="col-span-2">每日任务</span>
                     <span class="col-span-2">奖励</span>
-                    <span>获得1个活动代币</span>
+                    <span class="col-span-2">获得1个活动代币</span>
                     <span class="col-span-2 text-[#ffcb4d]"
                       >捣蛋挖宝次数*1</span
                     >
-                    <span>使用1次万圣节魔法</span>
+                    <span class="col-span-2">使用1次万圣节魔法</span>
                     <span class="col-span-2 text-[#ffcb4d]"
                       >捣蛋挖宝次数*1</span
                     >
-                    <span>感受魔法大锅的洗礼</span>
+                    <span class="col-span-2">感受魔法大锅的洗礼</span>
                     <span class="col-span-2 text-[#ffcb4d]"
                       >捣蛋挖宝次数*1</span
                     >
-                    <span>收集南瓜烛火</span>
+                    <span class="col-span-2">收集南瓜烛火</span>
                     <span class="col-span-2 text-[#ffcb4d]"
                       >捣蛋挖宝次数*1</span
                     >
@@ -306,16 +308,10 @@ onMounted(() => {
  * @returns {boolean} 是否有未领奖
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 检查1-4项，任务列表
-  const tasksValid = tasks
-    .slice(0, 4)
-    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
-  // 检查第5项，累计任务
-  const accTask = tasks[4]
-  const accTasksValid = accTask.stages.some(
-    (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
+  // 检查1-14项，任务列表
+  return tasks.some(
+    (task) => task.value >= task.stages[0] && task.award[0] === 0,
   )
-  return tasksValid || accTasksValid
 }
 
 /**
@@ -414,35 +410,58 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
     })
 }
 
+/**
+ * @function 初始化可领取奖励的Lottie动画
+ * @param {Reward} reward - 奖励对象
+ * @returns {void}
+ */
 const initCanRewardLottie = (reward: Reward): void => {
+  // 初始化Lottie动画
   reward.canRewardLottieRef?.value[0].initLottie()
   // 避免多次更新computed和watch所引起的多次渲染lottie
   if (reward.hadRenderLottie) {
+    // 标记Lottie动画已经渲染
     reward.hadRenderLottie.value = true
   }
 }
 
+// 所有任务列表 将每日任务、每周任务和捣蛋清单任务合并成一个数组
 const allTasks = computed(() => [
   ...dailyTaskList.value,
   ...weeklyTaskList.value,
   ...trickTaskList.value,
 ])
+
+/**
+ * @function 处理任务状态
+ * @param {Reward} task - 任务对象
+ * @returns {void}
+ */
 const handleTask = (task: Reward): void => {
   if (task.status === 'can') {
+    // 使用 nextTick 确保 DOM 更新后再执行
     void nextTick(() => {
+      // 检查是否需要初始化 Lottie 动画
       if (task.hadRenderLottie && !task.hadRenderLottie.value) {
         initCanRewardLottie(task)
       }
     })
   } else {
+    // 如果任务状态不是 'can'，销毁相关的 Lottie 动画
     task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
   }
 }
+
+// 监视所有任务的变化，并为每个任务执行处理
 watchEffect(() => {
   allTasks.value.forEach(handleTask)
 })
 
-// 奖品wait状态点击果冻效果
+/**
+ * @function 奖品等待状态点击果冻效果
+ * @param {MouseEvent} event - 鼠标事件
+ * @returns {void}
+ */
 const clickBubbleRewardWait = (event: MouseEvent): void => {
   const dom = event.target
   gsap
@@ -450,14 +469,21 @@ const clickBubbleRewardWait = (event: MouseEvent): void => {
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
     .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
     .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直拉伸
     .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
 }
 
+/**
+ * @function 气泡爆炸动画
+ * @param {MouseEvent} event - 鼠标事件
+ * @param {Reward} reward - 奖励对象
+ * @returns {Promise<void>}
+ */
 const bubbleBurst = async (
   event: MouseEvent,
   reward: Reward,
 ): Promise<void> => {
+  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
@@ -484,7 +510,7 @@ const bubbleBurst = async (
       duration: 0.2,
       ease: 'power1.out',
       opacity: 0,
-    }) // 再次垂直压挤
+    }) // 再次垂直压挤并淡出
 }
 
 /**

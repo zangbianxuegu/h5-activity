@@ -339,7 +339,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '不给糖果就捣蛋！',
+    label: '不给糖果 就捣蛋！',
     value: 'activitycenter_Halloweentask_2024',
     routeName: 'HalloweenTask2024',
     isNew: false,
