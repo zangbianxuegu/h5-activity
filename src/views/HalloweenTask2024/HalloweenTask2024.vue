@@ -19,147 +19,15 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <h2 class="sr-only">每日任务</h2>
-            <ul class="daily-task-list">
-              <li
-                v-for="item in dailyTaskList"
-                :key="item.value"
-                class="mb-[18px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    'mt-[10px] text-[32px]',
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'daily-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
-            <h2 class="sr-only">每周任务</h2>
-            <ul class="weekly-task-list">
-              <li
-                v-for="item in weeklyTaskList"
-                :key="item.value"
-                class="mb-[18px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    `mt-[16px] text-[32px]`,
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#d9d9d9]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'weekly-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
-            <h2 class="sr-only">捣蛋清单</h2>
-            <ul class="trick-task-list">
-              <li
-                v-for="item in trickTaskList"
-                :key="item.value"
-                class="mb-[22px] flex items-center justify-between"
-              >
-                <p
-                  :class="[
-                    `trick-bg text-[32px]`,
-                    `${item.status === 'can' ? 'text-[#fff1ad]' : item.status === 'redeemed' ? 'text-[#afafaf]' : 'text-white'}`,
-                  ]"
-                >
-                  {{ item.title }}
-                </p>
-                <div class="relative" @click="handleReward($event, 1, item)">
-                  <can-reward-bubble-animation
-                    @click.stop="handleReward($event, 1, item)"
-                    :ref="item.canRewardLottieRef"
-                    :id="item.value"
-                    class="reward-can-dynamic-bubble trick-reward-can-dynamic-bubble"
-                  ></can-reward-bubble-animation>
-                  <div
-                    v-if="item.status === 'wait'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'can'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
-                  ></div>
-                  <div
-                    v-if="item.status === 'redeemed'"
-                    :class="[
-                      'trick-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                      `${item.value}-redeemed-reward-bubble-${item.id}`,
-                    ]"
-                  ></div>
-                </div>
-              </li>
-            </ul>
+            <TaskList
+              v-for="(tasks, type) in taskLists"
+              :key="type"
+              :title="titles[type]"
+              :tasks="tasks"
+              :listClass="`${type}-task-list`"
+              :itemClass="`${type}-task-item`"
+              @reward="handleReward"
+            />
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -178,41 +46,11 @@
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
-                <li>
-                  活动期间，被骑扫帚的皮皮猫炸飞一次，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，找到戴帽子的螃蟹，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，成功击败怪物，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，逃脱滚动螃蟹的追击，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，使用【万圣节】代币兑换任意外观，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，触发扫帚制作间的陷阱，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，在活动场景的衣柜换装，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*1</span>
-                </li>
-                <li>
-                  活动期间，完成一次魔法扫帚的练习，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
-                </li>
-                <li>
-                  活动期间，获得40个活动代币，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*2</span>
+                <li v-for="item in taskInfoList" :key="item.name">
+                  活动期间，{{ item.name }}，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >捣蛋挖宝次数*{{ item.count }}</span
+                  >
                 </li>
                 <li>
                   活动期间，每日完成下列任务，可获得对应捣蛋挖宝次数：
@@ -239,7 +77,7 @@
                 </li>
                 <li>
                   活动期间，每周领取礼物螃蟹送出的魔法，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝*3</span>
+                  <span class="text-[#ffcb4d]">捣蛋挖宝次数*3</span>
                 </li>
               </ul>
             </section>
@@ -260,7 +98,8 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/halloweenTask2024'
 import gsap from 'gsap'
-import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import TaskList from './components/TaskList.vue'
 
 interface Rewards {
   name: string
@@ -282,164 +121,73 @@ interface Reward {
 }
 
 const rewardsText: RewardsName = {
-  ticket: '捣蛋挖宝',
+  ticket: '捣蛋挖宝次数',
 }
 
 const curRewards: Ref<Rewards> = ref({
-  name: 'table',
-  count: 2,
+  name: 'ticket',
+  count: 1,
+})
+
+const taskInfoList = [
+  { name: '被骑扫帚的皮皮猫炸飞一次', count: 1 },
+  { name: '找到戴帽子的螃蟹', count: 1 },
+  { name: '成功击败怪物', count: 1 },
+  { name: '逃脱滚动螃蟹的追击', count: 1 },
+  { name: '使用【万圣节】代币兑换任意外观', count: 1 },
+  { name: '触发扫帚制作间的陷阱', count: 1 },
+  { name: '在活动场景的衣柜换装', count: 1 },
+  { name: '完成一次魔法扫帚的练习', count: 2 },
+  { name: '获得40个活动代币', count: 2 },
+]
+
+// 创建任务的函数
+const taskItem = (
+  id: number,
+  value: string,
+  title: string,
+  status = 'wait',
+  canRewardLottieRef = ref() as Ref<
+    Array<InstanceType<typeof CanRewardBubbleAnimation>>
+  >,
+  hadRenderLottie = ref(false),
+): Reward => ({
+  id,
+  value,
+  title,
+  status,
+  canRewardLottieRef,
+  hadRenderLottie,
 })
 
 // 每日列表
 const DAILY_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m10',
-    title: '收集一个活动代币',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 2,
-    value: 'use_consumables',
-    title: '使用一次万圣节魔法',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 3,
-    value: 'activitycenter_Halloweentask_2024_m12',
-    title: '感受魔法大锅的洗礼',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 4,
-    value: 'activitycenter_Halloweentask_2024_m13',
-    title: '点燃南瓜收集烛火',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(1, 'activitycenter_Halloweentask_2024_m10', '收集一个活动代币'),
+  taskItem(2, 'use_consumables', '使用一次万圣节魔法'),
+  taskItem(3, 'activitycenter_Halloweentask_2024_m12', '感受魔法大锅的洗礼'),
+  taskItem(4, 'activitycenter_Halloweentask_2024_m13', '点燃南瓜收集烛火'),
 ]
 
 // 每周任务
 const WEEKLY_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m14',
-    title: '领取礼物螃蟹送出的魔法',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(
+    1,
+    'activitycenter_Halloweentask_2024_m14',
+    '领取礼物螃蟹送出的魔法',
+  ),
 ]
 
 // 捣蛋清单
 const TRICK_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m1',
-    title: '被骑扫帚的皮皮猫炸飞',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 2,
-    value: 'activitycenter_Halloweentask_2024_m2',
-    title: '找到戴帽子的螃蟹',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 3,
-    value: 'activitycenter_Halloweentask_2024_m3',
-    title: '成功打败怪物',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 4,
-    value: 'activitycenter_Halloweentask_2024_m4',
-    title: '逃脱滚动螃蟹的追击',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 5,
-    value: 'activitycenter_Halloweentask_2024_m5',
-    title: '使用代币进行兑换物品',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 6,
-    value: 'activitycenter_Halloweentask_2024_m6',
-    title: '触发扫帚制作间的陷阱',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 7,
-    value: 'activitycenter_Halloweentask_2024_m7',
-    title: '在活动场景的衣柜换装',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 8,
-    value: 'activitycenter_Halloweentask_2024_m8',
-    title: '完成一次魔法扫帚的练习',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 9,
-    value: 'collecting_event_candles',
-    title: '获得40个活动代币',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(1, 'activitycenter_Halloweentask_2024_m1', '被骑扫帚的皮皮猫炸飞'),
+  taskItem(2, 'activitycenter_Halloweentask_2024_m2', '找到戴帽子的螃蟹'),
+  taskItem(3, 'activitycenter_Halloweentask_2024_m3', '成功打败怪物'),
+  taskItem(4, 'activitycenter_Halloweentask_2024_m4', '逃脱滚动螃蟹的追击'),
+  taskItem(5, 'activitycenter_Halloweentask_2024_m5', '使用代币进行兑换物品'),
+  taskItem(6, 'activitycenter_Halloweentask_2024_m6', '触发扫帚制作间的陷阱'),
+  taskItem(7, 'activitycenter_Halloweentask_2024_m7', '在活动场景的衣柜换装'),
+  taskItem(8, 'activitycenter_Halloweentask_2024_m8', '完成一次魔法扫帚的练习'),
+  taskItem(9, 'collecting_event_candles', '获得40个活动代币'),
 ]
 
 // 设计稿宽
@@ -487,54 +235,50 @@ const taskOrderMap = new Map(
   ),
 )
 
+// 获取任务状态
+const getTaskStatus = (activity: Event): string => {
+  const { award, value, stages } = activity
+  if (award?.[0] === 1) return 'redeemed'
+  if (award?.[0] === 0 && value >= stages?.[0]) return 'can'
+  return 'wait'
+}
+
+// 创建任务列表
+const createTaskList = (
+  taskList: Reward[],
+  startIndex: number = 0,
+): ComputedRef<Reward[]> => {
+  return computed(() => {
+    return taskList.map((item, index) => {
+      const activity =
+        activityData.value.event_data[EVENT_NAME][index + startIndex]
+      return {
+        ...item,
+        status: getTaskStatus(activity),
+      }
+    })
+  })
+}
+
 // 每日任务列表
-const dailyTaskList = computed(() => {
-  return DAILY_TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT_NAME][index]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
-
+const dailyTaskList = createTaskList(DAILY_TASK_LIST)
 // 每周任务
-const weeklyTaskList = computed(() => {
-  return WEEKLY_TASK_LIST.map((item) => {
-    const activity = activityData.value.event_data[EVENT_NAME][4]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
-
+const weeklyTaskList = createTaskList(WEEKLY_TASK_LIST, 4)
 // 捣蛋清单
-const trickTaskList = computed(() => {
-  return TRICK_TASK_LIST.map((item, index) => {
-    const tasklistIndex = index + 5
-    const activity = activityData.value.event_data[EVENT_NAME][tasklistIndex]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
+const trickTaskList = createTaskList(TRICK_TASK_LIST, 5)
+
+// 任务列表
+const taskLists = computed(() => ({
+  daily: dailyTaskList.value,
+  weekly: weeklyTaskList.value,
+  trick: trickTaskList.value,
+}))
+
+const titles: Record<string, string> = {
+  daily: '每日任务',
+  weekly: '每周任务',
+  trick: '捣蛋清单',
+}
 
 const sessionIsVisitedKey = 'isVisitedHalloweentask2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -623,10 +367,9 @@ function getActivityData(): void {
 
 /**
  * @function 领奖
- * @param task 任务id
- * @param status 状态
- * @param rewardId 第几个奖励节点
- * @param index 任务索引
+ * @param event 鼠标事件
+ * @param rewardId 第几个奖励节点 不传默认1
+ * @param item 任务项
  * @returns {void}
  */
 function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
@@ -796,80 +539,5 @@ function handleHelp(): void {
   top: 250px;
   right: 318px;
   background-image: url('@/assets/images/halloween-task-2024/help.png');
-}
-.wait {
-  background-image: url('@/assets/images/halloween-task-2024/wait.png');
-}
-.can {
-  background-image: url('@/assets/images/halloween-task-2024/can.png');
-}
-.redeemed {
-  background-image: url('@/assets/images/halloween-task-2024/redeemed.png');
-}
-.daily-task-list {
-  position: absolute;
-  left: 400px;
-  top: 408px;
-  width: 388px;
-  height: 500px;
-  .daily-task-item {
-    width: 90px;
-    height: 75px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-}
-.weekly-task-list {
-  position: absolute;
-  left: 350px;
-  bottom: 204px;
-  .weekly-task-item {
-    width: 90px;
-    height: 75px;
-    background-repeat: no-repeat;
-    background-size: cover;
-  }
-}
-.trick-task-list {
-  position: absolute;
-  left: 920px;
-  top: 444px;
-  height: 520px;
-  overflow-x: hidden;
-  overflow-y: scroll;
-  .trick-bg {
-    padding-left: 164px;
-    width: 785px;
-    height: 85px;
-    line-height: 85px;
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-image: url('@/assets/images/halloween-task-2024/row.png');
-  }
-  .trick-task-item {
-    width: 120px;
-    height: 92px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    margin-left: -180px;
-  }
-}
-.reward-can-dynamic-bubble {
-  width: 90px;
-  height: 90px;
-  position: absolute;
-  top: 0;
-  right: 0;
-  & > :first-child {
-    position: absolute;
-    top: -12px;
-    transform: scale(1.9) !important;
-  }
-}
-.trick-reward-can-dynamic-bubble {
-  width: 108px;
-  height: 82px;
-  top: 18px;
-  right: 70px;
 }
 </style>

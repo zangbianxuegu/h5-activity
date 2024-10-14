@@ -9,7 +9,6 @@ export const useActivityStore = defineStore(
       {
         event_data: {
           activitycenter_Halloweentask_2024: [
-            // { ticket: -1 },
             {
               value: 0,
               task_id: 'activitycenter_Halloweentask_2024_m14',
