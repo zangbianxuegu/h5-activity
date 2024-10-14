@@ -236,7 +236,7 @@ const taskOrderMap = new Map(
 )
 
 // 获取任务状态
-const getTaskStatus = (activity: any): string => {
+const getTaskStatus = (activity: Event): string => {
   const { award, value, stages } = activity
   if (award?.[0] === 1) return 'redeemed'
   if (award?.[0] === 0 && value >= stages?.[0]) return 'can'
@@ -245,9 +245,9 @@ const getTaskStatus = (activity: any): string => {
 
 // 创建任务列表
 const createTaskList = (
-  taskList: any[],
+  taskList: Reward[],
   startIndex: number = 0,
-): ComputedRef<object[]> => {
+): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
       const activity =
