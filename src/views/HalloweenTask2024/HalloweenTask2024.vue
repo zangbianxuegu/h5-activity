@@ -141,156 +141,53 @@ const taskInfoList = [
   { name: '获得40个活动代币', count: 2 },
 ]
 
+// 创建任务的函数
+const taskItem = (
+  id: number,
+  value: string,
+  title: string,
+  status = 'wait',
+  canRewardLottieRef = ref() as Ref<
+    Array<InstanceType<typeof CanRewardBubbleAnimation>>
+  >,
+  hadRenderLottie = ref(false),
+): Reward => ({
+  id,
+  value,
+  title,
+  status,
+  canRewardLottieRef,
+  hadRenderLottie,
+})
+
 // 每日列表
 const DAILY_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m10',
-    title: '收集一个活动代币',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 2,
-    value: 'use_consumables',
-    title: '使用一次万圣节魔法',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 3,
-    value: 'activitycenter_Halloweentask_2024_m12',
-    title: '感受魔法大锅的洗礼',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 4,
-    value: 'activitycenter_Halloweentask_2024_m13',
-    title: '点燃南瓜收集烛火',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(1, 'activitycenter_Halloweentask_2024_m10', '收集一个活动代币'),
+  taskItem(2, 'use_consumables', '使用一次万圣节魔法'),
+  taskItem(3, 'activitycenter_Halloweentask_2024_m12', '感受魔法大锅的洗礼'),
+  taskItem(4, 'activitycenter_Halloweentask_2024_m13', '点燃南瓜收集烛火'),
 ]
 
 // 每周任务
 const WEEKLY_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m14',
-    title: '领取礼物螃蟹送出的魔法',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(
+    1,
+    'activitycenter_Halloweentask_2024_m14',
+    '领取礼物螃蟹送出的魔法',
+  ),
 ]
 
 // 捣蛋清单
 const TRICK_TASK_LIST = [
-  {
-    id: 1,
-    value: 'activitycenter_Halloweentask_2024_m1',
-    title: '被骑扫帚的皮皮猫炸飞',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 2,
-    value: 'activitycenter_Halloweentask_2024_m2',
-    title: '找到戴帽子的螃蟹',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 3,
-    value: 'activitycenter_Halloweentask_2024_m3',
-    title: '成功打败怪物',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 4,
-    value: 'activitycenter_Halloweentask_2024_m4',
-    title: '逃脱滚动螃蟹的追击',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 5,
-    value: 'activitycenter_Halloweentask_2024_m5',
-    title: '使用代币进行兑换物品',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 6,
-    value: 'activitycenter_Halloweentask_2024_m6',
-    title: '触发扫帚制作间的陷阱',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 7,
-    value: 'activitycenter_Halloweentask_2024_m7',
-    title: '在活动场景的衣柜换装',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 8,
-    value: 'activitycenter_Halloweentask_2024_m8',
-    title: '完成一次魔法扫帚的练习',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
-  {
-    id: 9,
-    value: 'collecting_event_candles',
-    title: '获得40个活动代币',
-    status: 'wait',
-    canRewardLottieRef: ref() as Ref<
-      Array<InstanceType<typeof CanRewardBubbleAnimation>>
-    >,
-    hadRenderLottie: ref(false),
-  },
+  taskItem(1, 'activitycenter_Halloweentask_2024_m1', '被骑扫帚的皮皮猫炸飞'),
+  taskItem(2, 'activitycenter_Halloweentask_2024_m2', '找到戴帽子的螃蟹'),
+  taskItem(3, 'activitycenter_Halloweentask_2024_m3', '成功打败怪物'),
+  taskItem(4, 'activitycenter_Halloweentask_2024_m4', '逃脱滚动螃蟹的追击'),
+  taskItem(5, 'activitycenter_Halloweentask_2024_m5', '使用代币进行兑换物品'),
+  taskItem(6, 'activitycenter_Halloweentask_2024_m6', '触发扫帚制作间的陷阱'),
+  taskItem(7, 'activitycenter_Halloweentask_2024_m7', '在活动场景的衣柜换装'),
+  taskItem(8, 'activitycenter_Halloweentask_2024_m8', '完成一次魔法扫帚的练习'),
+  taskItem(9, 'collecting_event_candles', '获得40个活动代币'),
 ]
 
 // 设计稿宽
@@ -338,54 +235,39 @@ const taskOrderMap = new Map(
   ),
 )
 
+// 获取任务状态
+const getTaskStatus = (activity: any): string => {
+  const { award, value, stages } = activity
+  if (award?.[0] === 1) return 'redeemed'
+  if (award?.[0] === 0 && value >= stages?.[0]) return 'can'
+  return 'wait'
+}
+
+// 创建任务列表
+const createTaskList = (
+  taskList: any[],
+  startIndex: number = 0,
+): ComputedRef<object[]> => {
+  return computed(() => {
+    return taskList.map((item, index) => {
+      const activity =
+        activityData.value.event_data[EVENT_NAME][index + startIndex]
+      return {
+        ...item,
+        status: getTaskStatus(activity),
+      }
+    })
+  })
+}
+
 // 每日任务列表
-const dailyTaskList = computed(() => {
-  return DAILY_TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT_NAME][index]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
-
+const dailyTaskList = createTaskList(DAILY_TASK_LIST)
 // 每周任务
-const weeklyTaskList = computed(() => {
-  return WEEKLY_TASK_LIST.map((item) => {
-    const activity = activityData.value.event_data[EVENT_NAME][4]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
-
+const weeklyTaskList = createTaskList(WEEKLY_TASK_LIST, 4)
 // 捣蛋清单
-const trickTaskList = computed(() => {
-  return TRICK_TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT_NAME][index + 5]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
+const trickTaskList = createTaskList(TRICK_TASK_LIST, 5)
 
+// 任务列表
 const taskLists = computed(() => ({
   daily: dailyTaskList.value,
   weekly: weeklyTaskList.value,
