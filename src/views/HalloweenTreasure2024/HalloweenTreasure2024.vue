@@ -267,11 +267,29 @@ const openedBricks = computed(() => {
 const spiderWebs = [
   2, 3, 6, 9, 11, 15, 21, 24, 25, 29, 30, 35, 36, 43, 45, 52, 57, 61, 65, 67,
 ]
+// 宝藏位置
+const candy = [5, 10, 17, 22, 48, 60, 56, 68]
+const cat = [46, 47, 58, 59, 70, 71]
+const crab = [0, 1, 12, 13, 41, 42, 53, 54]
+const pumpkinCrab = [19, 20, 31, 32]
+const repellantKrill = [26, 27, 38, 39, 50, 51, 62, 63]
+const treasureMap: Record<string, number[]> = {
+  糖果: candy,
+  皮皮猫: cat,
+  螃蟹: crab,
+  南瓜螃蟹: pumpkinCrab,
+  冥龙克星: repellantKrill,
+}
 // 当前格子id
 let curGridId = 0
 let curRowIndex = 0
 let curColIndex = 0
+// 当前代币数
 let curHalloweenTokenCount = '10'
+// 是否正在挖
+let isDigging = false
+// 是否挖到宝藏
+let isObtaindTreasure = false
 
 const sessionIsVisitedKey = 'isVisitedHalloweentreasure2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -414,6 +432,15 @@ function handleDig(rowIndex: number, colIndex: number): void {
   console.log('挖宝开始')
   console.log('rowIndex: ', rowIndex)
   console.log('colIndex: ', colIndex)
+  // 正在挖
+  if (isDigging) {
+    return
+  }
+  // 没有挖宝次数
+  if (shovelCount.value <= 0) {
+    showToast('没有挖宝次数')
+    return
+  }
   // 已经挖过
   if (openedBricks.value?.length >= 72) {
     showToast('已经全部挖完了~')
@@ -424,10 +451,7 @@ function handleDig(rowIndex: number, colIndex: number): void {
     showToast('已经挖过了~')
     return
   }
-  if (shovelCount.value <= 0) {
-    showToast('没有挖宝次数')
-    return
-  }
+  isDigging = true
   curRowIndex = rowIndex
   curColIndex = colIndex
   curGridId = rowIndex * 12 + colIndex
@@ -472,6 +496,7 @@ function onAnimateDigComplete(entry: any): void {
         activityData.value.event_data[EVENT_NAME][0].ticket =
           res.remaining_tickets
         curHalloweenTokenCount = res.rewards.halloween_token
+        isObtaindTreasure = res.is_obtaind_treasure
         // 设置金币动画
         if (animateDig.value) {
           const newStyle = generateDynamicStyles({
@@ -489,8 +514,22 @@ function onAnimateDigComplete(entry: any): void {
       })
   }
   if (entry.animation.name.includes('species')) {
-    showToast(`捣蛋币+${curHalloweenTokenCount}`)
+    if (isObtaindTreasure) {
+      let treasureName = ''
+      for (const [name, ids] of Object.entries(treasureMap)) {
+        if (ids.includes(curGridId)) {
+          treasureName = name
+          break
+        }
+      }
+      showToast(
+        `恭喜您挖到了${treasureName}宝藏，获得捣蛋币*${curHalloweenTokenCount}`,
+      )
+    } else {
+      showToast(`捣蛋币+${curHalloweenTokenCount}`)
+    }
     animateDig.value?.$el.classList.add('hidden')
+    isDigging = false
   }
 }
 </script>

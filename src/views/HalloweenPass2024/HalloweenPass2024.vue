@@ -101,18 +101,30 @@
                 aria-labelledby="modalRewardTitle"
               >
                 <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
-                <p class="modal-text mt-4">
-                  恭喜你获得
-                  <span class="modal-text-blue">
-                    {{ rewardsText[curRewards.name as keyof RewardsName] }} *
-                    {{ curRewards.count }} </span
-                  >：
-                </p>
+                <p class="modal-text mt-4">恭喜你获得：</p>
                 <div class="flex flex-1 items-center justify-center">
-                  <img
-                    :src="handleSrc(String(curRewards.name))"
-                    alt="reward image"
-                  />
+                  <ul
+                    :class="[
+                      'reward-list flex w-full items-center justify-around',
+                      `reward-list-${curRewards.length}`,
+                    ]"
+                  >
+                    <li
+                      class="reward-item flex flex-col items-center justify-between"
+                      v-for="item in curRewards"
+                      :key="item.name"
+                    >
+                      <img
+                        class="reward-img"
+                        :src="handleSrc(item.name)"
+                        alt="reward"
+                      />
+                      <p class="reward-name">
+                        {{ rewardsText[item.name as keyof RewardsName] }}
+                        * {{ item.count }}
+                      </p>
+                    </li>
+                  </ul>
                 </div>
               </section>
             </div>
@@ -177,22 +189,89 @@ const tokenCount = computed(() =>
 // 是否首次抽奖
 const isFirstLottery = computed(() => activityData.value.draw_id <= 0)
 
-interface Rewards {
-  name: string
-  count: number
-}
+// interface Rewards {
+//   name: string
+//   count: number
+// }
 interface RewardsName {
+  repellant_krill: string
+  candle_trick: string
+  crab_rock_trick: string
+  currency_trick: string
+  outfit_hair_witchhair: string
+  outfit_wing_witheredcape: string
+  outfit_prop_mischieftable: string
+  outfit_feet_goth: string
+  outfit_horn_pumpkincrab: string
+  outfit_mask_crabula: string
+  outfit_wing_crabula: string
+  outfit_body_goth: string
+  outfit_wing_cobweb: string
+  outfit_wing_catcape: string
+  outfit_prop_mischiefpumpkin: string
+  outfit_hair_cathair: string
+  outfit_prop_mischiefcat: string
+  outfit_prop_mischiefbroom: string
+  outfit_hair_spiderhair: string
+  outfit_body_witchbody: string
+  outfit_horn_witheredhorn: string
+  outfit_wing_bat: string
+  outfit_hair_pumpkin: string
+  outfit_wing_webcape: string
+  outfit_hair_witchhat: string
+  gravity: string
+  glow: string
+  energy: string
+  resize_potion: string
+  trail_rainbow: string
   candles: string
   heart: string
 }
+
 const rewardsText: RewardsName = {
+  repellant_krill: '冥龙克星',
+  candle_trick: '蜡烛恶作剧',
+  crab_rock_trick: '螃蟹恶作剧',
+  currency_trick: '糖果恶作剧',
+  outfit_hair_witchhair: '女巫长发试用魔法',
+  outfit_wing_witheredcape: '枯叶斗篷试用魔法',
+  outfit_prop_mischieftable: '枯木桌椅试用魔法',
+  outfit_feet_goth: '哥特长靴试用魔法',
+  outfit_horn_pumpkincrab: '螃蟹南瓜头饰试用魔法',
+  outfit_mask_crabula: '吸蟹伯爵面具礼包试用魔法',
+  outfit_wing_crabula: '吸蟹伯爵斗篷礼包试用魔法',
+  outfit_body_goth: '哥特螃蟹长袍试用魔法',
+  outfit_wing_cobweb: '蛛丝斗篷礼包试用魔法',
+  outfit_wing_catcape: '皮皮猫装扮礼包试用魔法',
+  outfit_prop_mischiefpumpkin: '冥龙南瓜礼包试用魔法',
+  outfit_hair_cathair: '猫耳发型试用魔法',
+  outfit_prop_mischiefcat: '皮皮猫礼包试用魔法',
+  outfit_prop_mischiefbroom: '恶作剧飞行扫帚礼包试用魔法',
+  outfit_hair_spiderhair: '蛛网朋克礼包试用魔法',
+  outfit_body_witchbody: '疯女巫长裙礼包试用魔法',
+  outfit_horn_witheredhorn: '巫树犄角礼包试用魔法',
+  outfit_wing_bat: '鬼蝠斗篷试用魔法',
+  outfit_hair_pumpkin: '南瓜帽试用魔法',
+  outfit_wing_webcape: '蛛网斗篷礼包试用魔法',
+  outfit_hair_witchhat: '女巫帽礼包试用魔法',
+  gravity: '漂浮魔法',
+  glow: '璀璨之星魔法',
+  energy: '元气满满魔法',
+  resize_potion: '体型重塑',
+  trail_rainbow: '彩虹尾迹',
   candles: '蜡烛',
   heart: '爱心',
 }
-const curRewards: Ref<Rewards> = ref({
-  name: 'candles',
-  count: 3,
-})
+const curRewards = ref([
+  {
+    name: 'outfit_hair_pumpkin',
+    count: 1,
+  },
+  // {
+  //   name: 'outfit_horn_pumpkincrab',
+  //   count: 1,
+  // },
+])
 
 const sessionIsVisitedKey = 'isVisitedHalloweenpass2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -206,6 +285,7 @@ if (!isVisited) {
 }
 
 onMounted(() => {
+  // modalReward.value?.openModal()
   try {
     getActivityData()
   } catch (error) {
@@ -230,7 +310,7 @@ function handleHelp(): void {
  */
 function handleSrc(name: string): string {
   const imgSrc = new URL(
-    `../../assets/images/common/reward/reward-${name}.png`,
+    `../../assets/images/halloween-pass-2024/reward/${name}.png`,
     import.meta.url,
   ).href
 
@@ -281,10 +361,10 @@ function drawLottery(): void {
       }
       const rewards = res.rewards
       modalReward.value?.openModal()
-      curRewards.value = {
-        name: Object.keys(rewards)[0],
-        count: Number(Object.values(rewards)[0]),
-      }
+      curRewards.value = Object.entries(rewards).map(([name, count]) => ({
+        name,
+        count: Number(count),
+      }))
       activityData.value.token_info.halloween_token = res.token_count
       activityData.value.draw_id = res.draw_id
     })
@@ -403,5 +483,23 @@ function drawLottery(): void {
   width: 423px;
   height: 142px;
   background-image: url('@/assets/images/halloween-pass-2024/btn.png');
+}
+.reward-list {
+  &-1 {
+    width: 80%;
+    .reward-img {
+      width: 400px;
+    }
+  }
+  &-2 {
+    width: 100%;
+    .reward-img {
+      width: 300px;
+    }
+  }
+}
+.reward-name {
+  font-size: 30px;
+  color: #666;
 }
 </style>

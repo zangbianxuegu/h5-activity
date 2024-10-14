@@ -24,6 +24,13 @@ export const DICE_MAP_LIST = [
   'activitycenter_dice_store',
 ]
 
+// 2024万圣节活动
+export const HALLOWEEN_2024_LIST = [
+  'activitycenter_Halloweentask_2024',
+  'activitycenter_Halloweentreasure_2024',
+  'activitycenter_Halloweenpass_2024',
+]
+
 // 菜单中字体颜色显示蓝色的活动
 export const MAIN_ACTIVITY_LIST = [
   'activity_sanrio_2024',
@@ -78,7 +85,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_season24_reserve',
   'activitycenter_season24_start',
   ...DICE_MAP_LIST,
-  'activitycenter_Halloweentask_2024',
-  'activitycenter_halloweentreasure_2024',
-  'activitycenter_Halloweenpass_2024',
+  ...HALLOWEEN_2024_LIST,
 ]
