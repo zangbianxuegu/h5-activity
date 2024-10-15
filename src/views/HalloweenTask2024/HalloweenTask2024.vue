@@ -375,7 +375,7 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
   }
   if (status === 'wait') {
     showToast('还未完成任务')
-    clickBubbleRewardWait(event)
+    clickBubbleReward(event)
     return
   }
   claimMissionReward({
@@ -458,11 +458,11 @@ watchEffect(() => {
 })
 
 /**
- * @function 奖品等待状态点击果冻效果
+ * @function 点击气泡弹弹弹的果冻效果
  * @param {MouseEvent} event - 鼠标事件
  * @returns {void}
  */
-const clickBubbleRewardWait = (event: MouseEvent): void => {
+const clickBubbleReward = (event: MouseEvent): void => {
   const dom = event.target
   gsap
     .timeline()
@@ -488,7 +488,7 @@ const bubbleBurst = async (
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   // 果冻效果
-  clickBubbleRewardWait(event)
+  clickBubbleReward(event)
   const target = event.target
   // 溅射效果
   await gsap
