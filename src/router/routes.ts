@@ -391,4 +391,31 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season24_start',
     },
   },
+  {
+    path: '/halloweentask-2024',
+    name: 'HalloweenTask2024',
+    component: () => import('@/views/HalloweenTask2024'),
+    meta: {
+      title: '不给糖果就捣蛋！',
+      module: 'activitycenter_Halloweentask_2024',
+    },
+  },
+  {
+    path: '/halloweentreasure-2024',
+    name: 'Halloweentreasure2024',
+    component: () => import('@/views/HalloweenTreasure2024'),
+    meta: {
+      title: '惊吓？惊喜！出奇寻宝',
+      module: 'activitycenter_Halloweentreasure_2024',
+    },
+  },
+  {
+    path: '/halloweenpass-2024',
+    name: 'Halloweenpass2024',
+    component: () => import('@/views/HalloweenPass2024'),
+    meta: {
+      title: '魔法坩埚 惊喜无限',
+      module: 'activitycenter_Halloweenpass_2024',
+    },
+  },
 ]

@@ -145,4 +145,30 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'insuf dice': '骰子数量不足',
     },
   },
+
+  // 万圣节寻宝
+  treasure_hunt: {
+    400: {
+      'repeat request': '请求频繁，请稍后重试',
+      'not enough treasure hunt tickets':
+        '挖宝次数不足，请在不给糖果就捣蛋活动中获取',
+      'id has already been selected': '格子已经挖过',
+      'all grids have been selected': '所有的格子都被挖过了',
+      'invalid grid id': '请求异常，请稍后重试',
+      'invalid event or task': '无效的活动或任务，请稍后重试',
+      'unknown error': '服务器异常，请稍后重试',
+      'invalid user': '身份验证失败，请稍后重试',
+      'not recently online': '非法请求，请在游戏内打开',
+    },
+  },
+
+  // 万圣节抽奖
+  lottery: {
+    400: {
+      'repeat request': '请求频繁，请稍后重试',
+      'invalid event or task': '无效的活动或任务，请稍后重试',
+      'invalid user': '身份验证失败，请稍后重试',
+      'not recently online': '非法请求，请在游戏内打开',
+    },
+  },
 }
