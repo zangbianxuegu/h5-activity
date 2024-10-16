@@ -91,7 +91,7 @@
                 </div>
                 <p
                   :class="[
-                    'mt-1 w-[300px] whitespace-pre-line text-wrap text-center text-xs',
+                    'mt-0.5 w-[300px] whitespace-pre-line text-wrap text-center text-[34px] leading-tight',
                     `${item.status === 'can' ? 'text-[#ffeea9]' : item.status === 'redeemed' ? 'text-[#ccc]' : 'text-white'}`,
                   ]"
                 >
@@ -173,7 +173,7 @@
                     </div>
                   </div>
                   <p
-                    class="auto absolute bottom-1.5 left-0 right-0 text-center text-xs text-white"
+                    class="auto absolute bottom-1.5 left-0 right-0 text-center text-[34px] text-white"
                   >
                     {{ (index + 1) * 10 }}
                   </p>
@@ -185,7 +185,7 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section aria-labelledby="activity-rules-title">
+            <section aria-labelledby="activity-rules-title" class="p-4">
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
@@ -731,7 +731,7 @@ const bubbleBurst = async (
     .moomin-logo {
       position: absolute;
       left: 30px;
-      top: 30px;
+      top: 27px;
       width: 348px;
       height: 55px;
       background-repeat: no-repeat;
