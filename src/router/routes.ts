@@ -418,4 +418,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_Halloweenpass_2024',
     },
   },
+  {
+    path: '/doubleeleven-2024-2',
+    name: 'DoubleEleven2024_2',
+    component: () => import('@/views/DoubleEleven2024_2'),
+    meta: {
+      title: '遇见惊喜',
+      module: 'activitycenter_double_eleven_2024_2',
+    },
+  },
 ]

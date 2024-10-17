@@ -360,6 +360,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '遇见惊喜',
+    value: 'activitycenter_double_eleven_2024_2',
+    routeName: 'DoubleEleven2024_2',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
