@@ -43,8 +43,6 @@ onMounted(() => {
     },
     // 加载完成回调函数
     success: (player) => {
-      console.log('The skeleton and its assets have been successfully loaded.')
-      emit('success')
       // 监听动画完成事件
       player.animationState?.addListener({
         complete: function (entry) {

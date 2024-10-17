@@ -82,32 +82,53 @@
             </div>
 
             <!-- 奖励 -->
-            <div class="reward absolute h-full w-full">
-              <div class="repellant_krill bg-cover">
+            <div
+              :class="[
+                'reward absolute h-full w-full',
+                isLoaded ? 'opacity-100' : 'opacity-0',
+              ]"
+            >
+              <div
+                class="repellant_krill animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">冥龙</span>
               </div>
-              <div class="crab crab1 bg-cover">
+              <div
+                class="crab crab1 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">螃蟹</span>
               </div>
-              <div class="crab crab2 bg-cover">
+              <div
+                class="crab crab2 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">螃蟹</span>
               </div>
-              <div class="pumpkin_crab bg-cover">
+              <div
+                class="pumpkin_crab animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">南瓜螃蟹</span>
               </div>
-              <div class="cat bg-cover">
+              <div class="cat animate__animated animate__fadeIn bg-cover">
                 <span class="sr-only">皮皮猫</span>
               </div>
-              <div class="candy candy1 bg-cover">
+              <div
+                class="candy candy1 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">糖果</span>
               </div>
-              <div class="candy candy2 bg-cover">
+              <div
+                class="candy candy2 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">糖果</span>
               </div>
-              <div class="candy candy3 bg-cover">
+              <div
+                class="candy candy3 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">糖果</span>
               </div>
-              <div class="candy candy4 bg-cover">
+              <div
+                class="candy candy4 animate__animated animate__fadeIn bg-cover"
+              >
                 <span class="sr-only">糖果</span>
               </div>
               <div
@@ -131,7 +152,7 @@
                   v-for="(_, colIndex) in 12"
                   :key="colIndex"
                   :class="[
-                    'brick w-1/12 bg-cover',
+                    'brick w-1/12 bg-cover transition',
                     { 'opacity-0': isDigged(rowIndex, colIndex) },
                     getBrickClass(rowIndex, colIndex),
                   ]"
@@ -146,7 +167,6 @@
               class="absolute left-[110px] top-[-180px] hidden h-[300px] w-[250px]"
               json-path="./spine/halloween-2024/2024Halloween.json"
               atlas-path="./spine/halloween-2024/2024Halloween.atlas"
-              @success="onAnimateDigSuccess"
               @complete="onAnimateDigComplete"
             />
           </section>
@@ -171,19 +191,19 @@
                 <li>每次挖宝均可获得10捣蛋币的奖励</li>
                 <li>
                   挖出宝藏可获得额外捣蛋币奖励，对应奖励如
-                  <div class="grid grid-cols-3">
-                    <span>宝藏：</span>
-                    <span class="col-span-2">奖励</span>
+                  <div class="grid grid-cols-2">
+                    <span>宝藏</span>
+                    <span>奖励</span>
                     <span>糖果</span>
-                    <span class="col-span-2 text-[#ffcb4d]">20</span>
+                    <span class="text-[#ffcb4d]">20</span>
                     <span>皮皮猫</span>
-                    <span class="col-span-2 text-[#ffcb4d]">80</span>
+                    <span class="text-[#ffcb4d]">80</span>
                     <span>螃蟹</span>
-                    <span class="col-span-2 text-[#ffcb4d]">30</span>
+                    <span class="text-[#ffcb4d]">30</span>
                     <span>冥龙</span>
-                    <span class="col-span-2 text-[#ffcb4d]">100</span>
+                    <span class="text-[#ffcb4d]">100</span>
                     <span>南瓜螃蟹</span>
-                    <span class="col-span-2 text-[#ffcb4d]">50</span>
+                    <span class="text-[#ffcb4d]">50</span>
                   </div>
                 </li>
               </ul>
@@ -263,6 +283,8 @@ const openedBricks = computed(() => {
   }
   return []
 })
+// 页面是否已加载完成
+const isLoaded = ref(false)
 // 蜘蛛网位置
 const spiderWebs = [
   2, 3, 6, 9, 11, 15, 21, 24, 25, 29, 30, 35, 36, 43, 45, 52, 57, 61, 65, 67,
@@ -304,12 +326,25 @@ if (!isVisited) {
 
 onMounted(() => {
   try {
+    if (document.readyState === 'complete') {
+      showRewards()
+    } else {
+      window.addEventListener('load', showRewards)
+    }
     getActivityData()
   } catch (error) {
     console.error(error)
   }
   Session.set(sessionIsVisitedKey, true)
 })
+
+/**
+ * @description 显示奖励
+ * @returns {void}
+ */
+function showRewards(): void {
+  isLoaded.value = true
+}
 
 /**
  * @function handleHelp
@@ -351,7 +386,7 @@ function getActivityData(): void {
  */
 function getSpiderWebStyle(item: number): Record<string, string> {
   const left = (item % 12) * 141 + 8
-  const top = Math.floor(item / 12) * 118
+  const top = Math.floor(item / 12) * 118 + 2
   return generateDynamicStyles({ left, top })
 }
 
@@ -429,9 +464,6 @@ function isDigged(rowIndex: number, colIndex: number): boolean {
  * @returns {void}
  */
 function handleDig(rowIndex: number, colIndex: number): void {
-  console.log('挖宝开始')
-  console.log('rowIndex: ', rowIndex)
-  console.log('colIndex: ', colIndex)
   // 正在挖
   if (isDigging) {
     return
@@ -470,21 +502,11 @@ function handleDig(rowIndex: number, colIndex: number): void {
 }
 
 /**
- * @function onAnimateDigSuccess
- * @description 动画加载成功回调函数
- * @returns void
- */
-function onAnimateDigSuccess(): void {
-  console.log('动画加载成功')
-}
-
-/**
  * @function onAnimateDigComplete
  * @description 挖宝动画完成回调函数
  * @param entry
  */
 function onAnimateDigComplete(entry: any): void {
-  console.log('动画完成')
   if (entry.animation.name.includes('shovel')) {
     halloweenTreasureHunt({
       event: EVENT_NAME,
