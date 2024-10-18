@@ -177,7 +177,10 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section class="px-4" aria-labelledby="activity-rules-title">
+            <section
+              class="h-[640px] overflow-auto px-4"
+              aria-labelledby="activity-rules-title"
+            >
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text mt-4">
                 <span class="font-semibold">活动时间：</span>
@@ -186,7 +189,9 @@
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
-              <p>活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：</p>
+              <p class="modal-text">
+                活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：
+              </p>
               <ul class="modal-text list-inside list-decimal">
                 <li>每次挖宝均可获得10捣蛋币的奖励</li>
                 <li>
