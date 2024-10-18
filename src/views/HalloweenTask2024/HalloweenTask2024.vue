@@ -167,7 +167,7 @@ const DAILY_TASK_LIST = [
   taskItem(1, 'activitycenter_Halloweentask_2024_m10', '收集一个活动代币'),
   taskItem(2, 'use_consumables', '使用一次万圣节魔法'),
   taskItem(3, 'activitycenter_Halloweentask_2024_m12', '感受魔法大锅的洗礼'),
-  taskItem(4, 'activitycenter_Halloweentask_2024_m13', '点燃南瓜收集烛火'),
+  taskItem(4, 'activitycenter_Halloweentask_2024_m13', '收集南瓜烛火'),
 ]
 
 // 每周任务
