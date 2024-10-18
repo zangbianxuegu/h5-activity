@@ -31,24 +31,30 @@
                 aria-labelledby="taskListHeading"
               >
                 <li
-                  v-for="item in Column"
+                  v-for="(item, rowIndex) in Column"
                   :key="item.value"
                   :class="[
-                    'task-item-left mb-2 flex items-center justify-between',
+                    'mb-2 flex items-center justify-between',
                     `task-item-${index === 0 ? 'left' : 'right'}`,
                   ]"
-                  :aria-label="`任务 ${index + 1}: ${item.title}`"
+                  :aria-label="`任务: ${item.title}`"
                 >
-                  <p class="ml-4 text-[42px] font-semibold text-[#2f6c5e]">
+                  <p
+                    class="ml-4 w-[500px] text-[42px] font-semibold text-[#2f6c5e]"
+                  >
                     {{ item.title }}
                   </p>
-                  <div
-                    :class="[
-                      'animate__animated animate__fadeIn animate__slow reward',
-                      `${item.status}`,
-                    ]"
-                    @click="handleReward(item, 1)"
-                  ></div>
+                  <div class="flex">
+                    <div
+                      v-for="(_, i) in index === 0 ? 1 : rowIndex === 0 ? 2 : 3"
+                      :key="i"
+                      :class="[
+                        'animate__animated animate__fadeIn animate__slow reward',
+                        `${item.status}`,
+                      ]"
+                      @click="handleReward(item, 1)"
+                    ></div>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -62,18 +68,18 @@
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="relative"
+                  class="flex h-[300px] flex-col items-center"
                 >
                   <div
                     :class="[
-                      'acc-task-item animate__animated animate__fadeIn flex items-end justify-center bg-contain',
+                      'acc-task-item animate__animated animate__fadeIn bg-contain',
                       `${item.status}`,
                     ]"
                     :aria-label="`累计任务 ${index + 1}: ${item.title}`"
                     @click="handleReward(item, 1)"
                   ></div>
                   <p
-                    class="auto absolute bottom-[-18px] left-0 right-0 rounded-3xl bg-white text-center text-[34px] text-[#f48100]"
+                    class="mt-[5px] w-[100px] rounded-3xl bg-white text-center text-[34px] text-[#f48100]"
                   >
                     {{ (index + 1) * 10 }}
                   </p>
@@ -486,21 +492,20 @@ function handleHelp(): void {
 }
 .title {
   position: absolute;
-  left: -90px;
-  top: 50px;
-  width: 805px;
-  height: 117px;
+  left: 100px;
+  top: 54px;
+  width: 620px;
+  height: 116px;
   background-repeat: no-repeat;
-  background-position: center;
-  background-size: contain;
   background-image: url('@/assets/images/double-eleven-2024-2/title.png');
 }
 .help {
   position: absolute;
-  width: 71px;
-  height: 71px;
-  top: 250px;
-  right: 318px;
+  width: 80px;
+  height: 80px;
+  left: 400px;
+  top: 54px;
+  background-repeat: no-repeat;
   background-image: url('@/assets/images/double-eleven-2024-2/help.png');
 }
 .task-list {
@@ -522,7 +527,7 @@ function handleHelp(): void {
   width: 900px;
   height: 150px;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 100% 100%;
   background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-right.png');
 }
 .task-item {
@@ -534,7 +539,7 @@ function handleHelp(): void {
   background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-left.png');
 }
 .reward {
-  margin-right: 100px;
+  margin-right: 10px;
   width: 150px;
   height: 150px;
   background-repeat: no-repeat;
@@ -577,7 +582,7 @@ function handleHelp(): void {
   width: 180px;
   height: 180px;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   &.wait {
     background-image: url('@/assets/images/double-eleven-2024-2/love-wait.png');
   }
