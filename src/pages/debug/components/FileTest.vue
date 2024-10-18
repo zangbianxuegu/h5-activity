@@ -3,12 +3,16 @@
     <div>
       <label for="image_uploads">Choose images to upload (PNG, JPG)</label>
       <!-- 37：gif 读取格式为 JPG -->
-      <input
+      <input type="file" id="image_uploads" name="image_uploads" accept="*" />
+
+      <!-- ios正常，android浏览器正常，但客户端中不能显示图片 -->
+      <!-- <input
         type="file"
         id="image_uploads"
         name="image_uploads"
-        accept="image/png, image/jpeg"
-      />
+        accept="image/jpeg, image/png, image/jpg"
+      /> -->
+
       <!-- 无法使用 -->
       <!-- <input
         type="file"
@@ -35,6 +39,8 @@
 </template>
 
 <script setup lang="ts">
+import { showToast } from 'vant'
+
 onMounted(() => {
   const input = document.querySelector('input')
   console.log('input: ', input)
@@ -42,7 +48,49 @@ onMounted(() => {
     input.style.opacity = '0'
     input.addEventListener('change', updateImageDisplay)
   }
+  getImageInfo()
 })
+
+const getImageInfo = (): void => {
+  document
+    .getElementById('image_uploads')
+    ?.addEventListener('change', function (event) {
+      const target = event.target as HTMLInputElement
+      const files = target.files as FileList
+      const file = files[0]
+
+      // 设置允许的文件格式和文件大小限制（例如：2 MB）
+      const allowedTypes = ['image/jpeg', 'image/png']
+      const maxSize = 2 * 1024 * 1024 // 2 MB
+
+      if (file) {
+        // 检查文件类型
+        if (!allowedTypes.includes(file.type)) {
+          showToast('上传失败，只能上传png和jpg')
+          return
+        }
+        // 检查文件大小
+        if (file.size > maxSize) {
+          showToast('所传文件过大')
+          return
+        }
+        const reader = new FileReader()
+
+        reader.onload = function (e) {
+          const img = new Image()
+
+          img.onload = function () {
+            console.log(img)
+            console.log(`宽度: ${img.width}, 高度: ${img.height}`)
+          }
+
+          img.src = e.target?.result as string // 使用 FileReader 读取的图片数据
+        }
+
+        reader.readAsDataURL(file) // 读取文件为 Data URL
+      }
+    })
+}
 
 function updateImageDisplay(): void {
   const preview = document.querySelector('.preview')

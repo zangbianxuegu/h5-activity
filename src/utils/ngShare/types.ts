@@ -151,6 +151,11 @@ export const installedPackageList = [
     iosPackage: IOS_INSTALLED_PACKAGE.DA_SHEN,
     name: '网易大神',
   },
+  {
+    androidPackage: ANDROID_INSTALLED_PACKAGE.XIAO_HONG_SHU,
+    iosPackage: IOS_INSTALLED_PACKAGE.XIAO_HONG_SHU,
+    name: '小红书',
+  },
 ]
 
 export interface ShareChannelMapInfo {

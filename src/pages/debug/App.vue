@@ -128,6 +128,8 @@
       <deep-link></deep-link>
       <h2 class="my-2">H5图片生成</h2>
       <generate-img></generate-img>
+      <h2 class="my-2">裁切</h2>
+      <cut-test></cut-test>
     </div>
   </div>
 </template>
@@ -139,6 +141,7 @@ import FileTest from './components/FileTest.vue'
 import Share from './components/Share.vue'
 import DeepLink from './components/DeepLink.vue'
 import GenerateImg from './components/GenerateImg.vue'
+import CutTest from './components/CutTest.vue'
 import { generateUUID } from '@/utils/utils'
 import defaultDebugLinks from './configs/defaultDebugLinks.ts'
 import { showNotify } from 'vant'

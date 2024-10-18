@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- <van-button @click="onClickDownloadImg">下载图片</van-button> -->
+    <van-button @click="onClickDownloadImg">下载图片</van-button>
     <!-- <van-button @click="onClickPreview">预览</van-button> -->
     <van-button @click="uploadWork">上传作品</van-button>
     <van-button @click="submitWrok">我要投稿</van-button>
@@ -86,6 +86,12 @@ const workInfo = ref({
   workName: '光遇',
   workIntroduce: '劈里啪啦说了一大堆',
   img: '',
+  currentUploadFileFullName: '',
+})
+
+const serverConfig = reactive({
+  serverUrl: 'http://10.227.199.103:7897',
+  serverResourcePath: '/images',
 })
 
 const previewData = ref({
@@ -98,21 +104,12 @@ const uploadWork = (): void => {
 }
 
 // 下载浏览器图片
-// const onClickDownloadImg = async (): Promise<void> => {
-//   const userWork = document.getElementById('user-work-container') as HTMLElement
-//   const userWorkAddInfo = document.querySelector(
-//     '.ps_ignore-user-wrok-upload-container',
-//   ) as HTMLElement
-//   const clonedNode = userWork.cloneNode(true)
-//   userWorkAddInfo.appendChild(clonedNode)
-//   await html2canvas(userWorkAddInfo).then((canvas) => {
-//     const imgData = canvas.toDataURL('image/png')
-//     const link = document.createElement('a')
-//     link.href = imgData
-//     link.download = 'download.png'
-//     link.click()
-//   })
-// }
+const onClickDownloadImg = async (): Promise<void> => {
+  const link = document.createElement('a')
+  link.href = `${serverConfig.serverUrl}${serverConfig.serverResourcePath}/${workInfo.value.currentUploadFileFullName}`
+  link.download = `${workInfo.value.currentUploadFileFullName}`
+  link.click()
+}
 
 const listenUploadImgChange = (): void => {
   document
@@ -223,6 +220,7 @@ const confirmSubmitWork = async (): Promise<void> => {
               body: formData,
             },
           )
+          workInfo.value.currentUploadFileFullName = `${uuid}.png`
           const result = await response.json()
           console.log(result)
           showToast(result.message)

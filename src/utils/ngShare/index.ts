@@ -88,6 +88,13 @@ export const ngshareByH5 = async (
       u3dshareThumb, // 分享缩略图地址(安卓必传)
       shareThumb: u3dshareThumb, // 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
     }
+  } else if (contentType === NGSHARE_CONTENT_TYPE.IMAGE) {
+    const { text, title, image } = configForType
+    contentTypeConfig = {
+      text,
+      title,
+      image,
+    }
   }
   const ngshareChannel = ngshareShareChannelMap.get(shareChannel)
   const { isExist } = await ngshareCheckChannelIsExist(
@@ -100,7 +107,7 @@ export const ngshareByH5 = async (
       methodId: 'execute_extend_func',
       reqData: {
         methodId: 'ngshareExtend', // 简易分享的methodId为ntShare
-        channel: 'ngshare', // 客户端打包有勾选ngshareextend二级渠道，则为ngshare_extend，否则为ngshare
+        channel: 'ngshare_extend', // 客户端打包有勾选ngshareextend二级渠道，则为ngshare_extend，否则为ngshare
         source: 'webview',
         type: contentType,
         shareChannel,

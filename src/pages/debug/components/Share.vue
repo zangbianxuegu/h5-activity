@@ -51,50 +51,74 @@ const options: ShareOption[] = [
     shareChannel: NGSHARE_SHARE_CHANNEL.WEI_BO,
   },
   {
-    name: '网易大神好友',
+    name: '网易大神圈子',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
   },
   {
     name: '小红书',
     icon: 'weibo',
     shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
   },
-  {
-    name: 'QQ',
-    icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.QQ,
-  },
-  {
-    name: 'QQ空间',
-    icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.QQ_ZONE,
-  },
-  {
-    name: '快手',
-    icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
-  },
-  {
-    name: 'facebook',
-    icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.FACEBOOK,
-  },
-  {
-    name: '网易大神圈子',
-    icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
-  },
+  // {
+  //   name: '网易大神好友',
+  //   icon: 'weibo',
+  //   shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+  // },
+  // {
+  //   name: 'QQ',
+  //   icon: 'weibo',
+  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ,
+  // },
+  // {
+  //   name: 'QQ空间',
+  //   icon: 'weibo',
+  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ_ZONE,
+  // },
+  // {
+  //   name: '快手',
+  //   icon: 'weibo',
+  //   shareChannel: NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
+  // },
+  // {
+  //   name: 'facebook',
+  //   icon: 'weibo',
+  //   shareChannel: NGSHARE_SHARE_CHANNEL.FACEBOOK,
+  // },
 ]
 
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
-  await ngshareByH5(NGSHARE_CONTENT_TYPE.LINK, option.shareChannel, {
-    text: '分享文本',
-    title: '分享标题',
-    link: 'http://10.227.199.103:5173/pages/debug/index.html',
-    desc: '分享说明',
-    // u3dshareThumb: '', // 分享缩略图地址(安卓必传)
-  })
+  const shareLinkList = [
+    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
+    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
+    NGSHARE_SHARE_CHANNEL.WEI_BO,
+  ]
+  const shareImgList = [
+    NGSHARE_SHARE_CHANNEL.BILIBILI,
+    NGSHARE_SHARE_CHANNEL.DOU_YIN,
+    NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
+  ]
+  const contentType = shareLinkList.includes(option.shareChannel)
+    ? NGSHARE_CONTENT_TYPE.LINK
+    : NGSHARE_CONTENT_TYPE.IMAGE
+  let shareConfig = {}
+  if (shareLinkList.includes(option.shareChannel)) {
+    shareConfig = {
+      text: '分享文本',
+      title: '分享标题',
+      link: 'http://10.227.199.103:5173/pages/debug/index.html',
+      desc: '分享说明',
+      // u3dshareThumb: '', // 分享缩略图地址(安卓必传)
+    }
+  } else if (shareImgList.includes(option.shareChannel)) {
+    shareConfig = {
+      text: '分享文本',
+      title: '分享标题',
+      image:
+        'https://img2.baidu.com/it/u=1337068678,3064275007&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=750',
+    }
+  }
+  await ngshareByH5(contentType, option.shareChannel, shareConfig)
   showShare.value = false
 }
 
