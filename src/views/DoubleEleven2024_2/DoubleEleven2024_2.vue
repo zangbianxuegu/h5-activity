@@ -45,7 +45,7 @@
                   <p
                     class="ml-4 w-[500px] text-[36px] font-semibold text-[#2f6c5e]"
                   >
-                    {{ item.title }} (0/11)
+                    {{ item.title }} ({{ item.val }}/11)
                   </p>
                   <div class="flex">
                     <div
@@ -84,7 +84,7 @@
                       `${item.status}`,
                     ]"
                     :aria-label="`累计任务 ${index + 1}: ${item.title}`"
-                    @click="handleReward(item, 1)"
+                    @click="handleReward(item, index + 1)"
                   ></div>
                   <p
                     class="mt-[4px] w-[100px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
@@ -109,45 +109,43 @@
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年11月11日~2024年11月17日
+                2024年11月11日~2024年11月22日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
-                <li v-for="item in taskInfoList" :key="item.name">
-                  活动期间，{{ item.name }}，即可领取
-                  <span class="text-[#ffcb4d]"
-                    >捣蛋挖宝次数*{{ item.count }}</span
+                <li>
+                  赠送11次心火，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*1</span
                   >
                 </li>
                 <li>
-                  活动期间，每日完成下列任务，可获得对应捣蛋挖宝次数：
-                  <div class="grid grid-cols-4">
-                    <span class="col-span-2">每日任务</span>
-                    <span class="col-span-2">奖励</span>
-                    <span class="col-span-2">获得1个活动代币</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >捣蛋挖宝次数*1</span
-                    >
-                    <span class="col-span-2">使用1次万圣节魔法</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >捣蛋挖宝次数*1</span
-                    >
-                    <span class="col-span-2">感受魔法大锅的洗礼</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >捣蛋挖宝次数*1</span
-                    >
-                    <span class="col-span-2">收集南瓜烛火</span>
-                    <span class="col-span-2 text-[#ffcb4d]"
-                      >捣蛋挖宝次数*1</span
-                    >
-                  </div>
+                  点赞11次纸船留言，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*1</span
+                  >
                 </li>
                 <li>
-                  活动期间，每周领取礼物螃蟹送出的魔法，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝次数*3</span>
+                  使用11次魔法商店的魔法，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*2</span
+                  >
                 </li>
+                <li>
+                  收集11根季节蜡烛，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*2</span
+                  >
+                </li>
+                <li>
+                  给11位好友赠送爱心，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*3</span
+                  >
+                </li>
+                （打开惊喜礼包后可在<span class="text-[#ffcb4d]"
+                  >爱心、蜡烛、姆明季蜡烛、体型重塑、彩虹尾迹、留影蜡烛、共享空间、畅谈长桌、秋千</span
+                >中随机抽取一个）<br />
+                另外，活动期间<span class="text-[#ffcb4d]"
+                  >每累计使用20根蜡烛，可领取1个爱心，最多领取5次</span
+                >
               </ul>
             </section>
           </template>
@@ -172,7 +170,15 @@ interface Rewards {
   count: number
 }
 interface RewardsName {
-  ticket: string
+  heart: '爱心'
+  candles: '蜡烛'
+  season_candle: '季节蜡烛'
+  recording_candle: '留影蜡烛'
+  sharedspace_candle: '共享空间'
+  table: '畅谈长桌'
+  swing: '秋千'
+  resize_potion: '体型重塑'
+  trail_rainbow: '彩虹尾迹'
 }
 
 interface Reward {
@@ -180,28 +186,25 @@ interface Reward {
   value: string
   title: string
   status: 'wait' | 'redeemed' | 'can' | string
+  val: number
 }
 
 const rewardsText: RewardsName = {
-  ticket: '捣蛋挖宝次数',
+  heart: '爱心',
+  candles: '蜡烛',
+  season_candle: '季节蜡烛',
+  recording_candle: '留影蜡烛',
+  sharedspace_candle: '共享空间',
+  table: '畅谈长桌',
+  swing: '秋千',
+  resize_potion: '体型重塑',
+  trail_rainbow: '彩虹尾迹',
 }
 
 const curRewards: Ref<Rewards> = ref({
-  name: 'ticket',
+  name: 'heart',
   count: 1,
 })
-
-const taskInfoList = [
-  { name: '被骑扫帚的皮皮猫炸飞一次', count: 1 },
-  { name: '找到戴帽子的螃蟹', count: 1 },
-  { name: '成功击败怪物', count: 1 },
-  { name: '逃脱滚动螃蟹的追击', count: 1 },
-  { name: '使用【万圣节】代币兑换任意外观', count: 1 },
-  { name: '触发扫帚制作间的陷阱', count: 1 },
-  { name: '在活动场景的衣柜换装', count: 1 },
-  { name: '完成一次魔法扫帚的练习', count: 2 },
-  { name: '获得40个活动代币', count: 2 },
-]
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -247,26 +250,30 @@ const taskItem = (
   value: string,
   title: string,
   status = 'wait',
+  val = 0,
 ): Reward => ({
   id,
   value,
   title,
   status,
+  val,
 })
 
 // 任务列表
 const TASK_LIST = [
-  taskItem(1, `${EVENT_NAME}_m1`, '赠送11次心火'),
-  taskItem(2, `${EVENT_NAME}_m2`, '点赞11次纸船留言'),
-  taskItem(3, `${EVENT_NAME}_m3`, '使用11次魔法商店的魔法'),
-  taskItem(4, `${EVENT_NAME}_m4`, '收集11根季节蜡烛'),
-  taskItem(5, `${EVENT_NAME}_m5`, '给11位好友赠送爱心'),
+  taskItem(1, 'send_heart_friends', '赠送11次心火'),
+  taskItem(2, 'like_message_boat', '点赞11次纸船留言'),
+  taskItem(3, 'use_consumables', '使用11次魔法商店的魔法'),
+  taskItem(4, 'collecting_season_candles', '收集11根季节蜡烛'),
+  taskItem(5, 'send_heart_wax_friend', '给11位好友赠送爱心'),
 ]
 
 // 累计任务
 const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
-  taskItem(i + 1, 'use_season_candles', `使用蜡烛${(i + 1) * 20}个`),
+  taskItem(i + 1, 'use_candle', `使用蜡烛${(i + 1) * 20}个`),
 )
+
+const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 // 任务排序
 const taskOrderMap = new Map(
@@ -293,12 +300,11 @@ const createTaskList = (
     return taskList.map((item, index) => {
       const awardIndex = isAccTask ? index : 0
       const activity =
-        activityData.value.event_data[EVENT_NAME][
-          isAccTask ? ACC_TASK_ACTIVITY_INDEX : index
-        ]
+        eventData.value[isAccTask ? ACC_TASK_ACTIVITY_INDEX : index]
       const { award, value, stages } = activity
       return {
         ...item,
+        val: value,
         status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
       }
     })
@@ -349,7 +355,7 @@ function checkHasUnclaimedReward(tasks: Event[]): boolean {
   const tasksValid = tasks
     .slice(0, 5)
     .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
-  // 检查第5项，累计任务
+  // 检查第6项，累计任务
   const accTask = tasks[5]
   const accTasksValid = accTask.stages.some(
     (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
@@ -362,9 +368,7 @@ function checkHasUnclaimedReward(tasks: Event[]): boolean {
  * @returns {void}
  */
 function setRedDot(): void {
-  const hasUnclaimedReward = checkHasUnclaimedReward(
-    activityData.value.event_data[EVENT_NAME],
-  )
+  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
   console.log('hasUnclaimedReward: ', hasUnclaimedReward)
   menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
@@ -377,13 +381,10 @@ function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
       const data = res.data
-      const tasklist = data.event_data[EVENT_NAME].filter(
-        (item: Event) => !Object.prototype.hasOwnProperty.call(item, 'ticket'),
-      )
       const newActivityData = {
         ...data,
         event_data: {
-          activitycenter_double_eleven_2024_2: tasklist.sort(
+          activitycenter_double_eleven_2024_2: data.event_data[EVENT_NAME].sort(
             (a: Event, b: Event) => {
               const orderA = taskOrderMap.get(a.task_id) ?? TASK_LIST.length
               const orderB = taskOrderMap.get(b.task_id) ?? TASK_LIST.length
@@ -429,14 +430,11 @@ function handleReward(item: Reward, rewardId: number): void {
         count: Number(Object.values(rewards)[0]),
       }
       // 更新页面数据
-      const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
-        (item) => {
-          return item.task_id === value
-        },
-      )
+      const taskIndex = eventData.value.findIndex((item) => {
+        return item.task_id === value
+      })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
-      // activityStore.updateActivityData(activityData.value)
       showToast(
         `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
       )
