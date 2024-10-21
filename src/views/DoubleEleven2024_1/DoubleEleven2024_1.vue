@@ -103,7 +103,7 @@ useResponsiveStyles(designConfig)
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 
-const sessionIsVisitedKey = 'isVisitedDoubleEleven2024-2'
+const sessionIsVisitedKey = 'isVisitedDoubleEleven2024-1'
 const isVisited = Session.get(sessionIsVisitedKey)
 const headTransitionName = ref('')
 if (!isVisited) {
@@ -120,22 +120,10 @@ function handleHelp(): void {
 </script>
 
 <style lang="scss" scoped>
-.fade-in-body-enter-active {
-  transition: opacity 1s ease-out;
-}
-.fade-in-body-enter-from {
-  opacity: 0.2;
-}
 .fade-in-head-enter-active {
   transition: opacity 1s ease-out 0.2s;
 }
 .fade-in-head-enter-from {
-  opacity: 0.2;
-}
-.fade-in-main-enter-active {
-  transition: opacity 1s ease-out 0.5s;
-}
-.fade-in-main-enter-from {
   opacity: 0.2;
 }
 .double-eleven {

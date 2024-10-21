@@ -574,11 +574,11 @@ function handleHelp(): void {
   background-size: 100% 100%;
   background-image: url('@/assets/images/double-eleven-2024-2/progress-bar2.png');
 }
-// @for $i from 0 through 3 {
-//   .progress-bar#{$i} {
-//     background-image: url('@/assets/images/double-eleven-2024-2/progress-bar#{$i}.png');
-//   }
-// }
+@for $i from 0 through 5 {
+  .progress-bar#{$i} {
+    background-image: url('@/assets/images/double-eleven-2024-2/progress-bar#{$i}.png');
+  }
+}
 .acc-task-item {
   width: 180px;
   height: 180px;
