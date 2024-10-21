@@ -79,7 +79,7 @@
                 </li>
                 <li>
                   活动期间，每周领取礼物螃蟹送出的魔法，即可领取
-                  <span class="text-[#ffcb4d]">捣蛋挖宝次数*3</span>
+                  <span class="text-[#ffcb4d]">捣蛋挖宝次数*1</span>
                 </li>
               </ul>
             </section>
