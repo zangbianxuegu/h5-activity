@@ -87,13 +87,18 @@
                     @click="handleReward(item, index + 1)"
                   ></div>
                   <p
-                    class="mt-[4px] w-[100px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
+                    class="mt-[8px] w-[100px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
                   >
-                    {{ (index + 1) * 10 }}
+                    {{ (index + 1) * 20 }}
                   </p>
                 </li>
               </ul>
-              <div :class="`progress-bar progress-bar${accTaskStep}`"></div>
+              <div class="progress-container">
+                <div
+                  class="progress-bar"
+                  :style="`width: ${accTaskValue}%;`"
+                ></div>
+              </div>
             </div>
             <p class="sr-only">
               活动期间，完成指定任务可获得惊喜礼包，打开后可随机获得爱心、蜡烛、季节蜡烛、稀有魔法等奖励
@@ -318,14 +323,8 @@ const taskList = createTaskList(TASK_LIST, false)
 // 累积任务列表
 const accTaskList = createTaskList(ACC_TASK_LIST, true)
 
-// 累计任务进度条
-const accTaskStep = computed(() => {
-  let step = accTaskList.value.findIndex((item) => {
-    return item.status === 'wait'
-  })
-  step = step === -1 ? 5 : step
-  return step
-})
+// 累计任务完成值
+const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value)
 
 const sessionIsVisitedKey = 'isVisitedDoubleEleven2024-2'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -395,6 +394,8 @@ function getActivityData(): void {
           ),
         },
       }
+      accTaskValue.value =
+        newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       console.log('activityStore: ', activityStore)
@@ -557,18 +558,19 @@ function handleHelp(): void {
     background-image: url('@/assets/images/double-eleven-2024-2/redeemed.png');
   }
 }
-.progress-bar {
-  width: 1700px;
-  height: 22px;
-  margin-top: 200px;
+.progress-container {
+  width: 1720px;
+  height: 16px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 210px;
   margin-left: 160px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-image: url('@/assets/images/double-eleven-2024-2/progress-bar2.png');
-}
-@for $i from 0 through 5 {
-  .progress-bar#{$i} {
-    background-image: url('@/assets/images/double-eleven-2024-2/progress-bar#{$i}.png');
+  .progress-bar {
+    height: 16px;
+    background-color: #fff;
+    border-radius: 8px;
+    transition: width 0.4s ease;
   }
 }
 .acc-task-item {
