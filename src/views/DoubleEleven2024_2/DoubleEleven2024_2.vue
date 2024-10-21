@@ -25,7 +25,10 @@
             <h2 id="taskListHeading" class="sr-only">任务列表</h2>
             <div class="task-list flex justify-between">
               <ul
-                v-for="(Column, index) in taskColumns"
+                v-for="(Column, index) in [
+                  taskList.slice(0, 2),
+                  taskList.slice(2, 5),
+                ]"
                 :key="index"
                 class="mb-2"
                 aria-labelledby="taskListHeading"
@@ -40,9 +43,9 @@
                   :aria-label="`任务: ${item.title}`"
                 >
                   <p
-                    class="ml-4 w-[500px] text-[42px] font-semibold text-[#2f6c5e]"
+                    class="ml-4 w-[500px] text-[36px] font-semibold text-[#2f6c5e]"
                   >
-                    {{ item.title }}
+                    {{ item.title }} (0/11)
                   </p>
                   <div class="flex">
                     <div
@@ -61,8 +64,13 @@
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
             <div class="absolute bottom-[140px] left-0 flex">
+              <div
+                class="absolute bottom-[-18px] left-[100px] h-[60px] w-[200px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
+              >
+                使用蜡烛
+              </div>
               <ul
-                class="absolute bottom-0 left-[300px] top-0 m-auto flex w-[1590px] justify-between"
+                class="absolute bottom-0 left-[460px] top-0 m-auto flex w-[1490px] justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
@@ -79,7 +87,7 @@
                     @click="handleReward(item, 1)"
                   ></div>
                   <p
-                    class="mt-[5px] w-[100px] rounded-3xl bg-white text-center text-[34px] text-[#f48100]"
+                    class="mt-[4px] w-[100px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
                   >
                     {{ (index + 1) * 10 }}
                   </p>
@@ -302,11 +310,6 @@ const taskList = createTaskList(TASK_LIST, false)
 // 累积任务列表
 const accTaskList = createTaskList(ACC_TASK_LIST, true)
 
-const taskColumns = computed(() => [
-  taskList.value.slice(0, 2),
-  taskList.value.slice(2, 5),
-])
-
 // 累计任务进度条
 const accTaskStep = computed(() => {
   let step = accTaskList.value.findIndex((item) => {
@@ -517,14 +520,14 @@ function handleHelp(): void {
   height: 499px;
 }
 .task-item-left {
-  width: 900px;
+  width: 800px;
   height: 150px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
   background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-left.png');
 }
 .task-item-right {
-  width: 900px;
+  width: 1000px;
   height: 150px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -565,12 +568,12 @@ function handleHelp(): void {
 //   bottom: 3px;
 // }
 .progress-bar {
-  width: 1800px;
+  width: 1700px;
   height: 22px;
   margin-top: 200px;
-  margin-left: 100px;
+  margin-left: 160px;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: 100% 100%;
   background-image: url('@/assets/images/double-eleven-2024-2/progress-bar2.png');
 }
 // @for $i from 0 through 3 {
