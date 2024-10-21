@@ -9,8 +9,8 @@
             <div class="sr-only">
               遇见惊喜
               <p>
-                <time datetime="2024-10-26">11.11</time>-
-                <time datetime="2024-11-15">11.17</time>
+                <time datetime="2024-11-11">11.11</time>-
+                <time datetime="2024-11-17">11.17</time>
               </p>
             </div>
             <div
@@ -93,9 +93,11 @@
                   </p>
                 </li>
               </ul>
-              <!-- <div class="acc-task-title"></div> -->
               <div :class="`progress-bar progress-bar${accTaskStep}`"></div>
             </div>
+            <p class="sr-only">
+              活动期间，完成指定任务可获得惊喜礼包，打开后可随机获得爱心、蜡烛、季节蜡烛、稀有魔法等奖励
+            </p>
             <p class="tips"></p>
           </section>
         </Transition>
@@ -353,10 +355,10 @@ onMounted(() => {
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
   // 检查1-5项，任务列表
   const tasksValid = tasks
-    .slice(0, 5)
+    .slice(0, ACC_TASK_ACTIVITY_INDEX)
     .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
   // 检查第6项，累计任务
-  const accTask = tasks[5]
+  const accTask = tasks[ACC_TASK_ACTIVITY_INDEX]
   const accTasksValid = accTask.stages.some(
     (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
   )
@@ -555,16 +557,6 @@ function handleHelp(): void {
     background-image: url('@/assets/images/double-eleven-2024-2/redeemed.png');
   }
 }
-// .acc-task-title {
-//   width: 230px;
-//   height: 70px;
-//   background-image: url('@/assets/images/double-eleven-2024-2/collect-title.png');
-//   background-repeat: no-repeat;
-//   background-size: cover;
-//   margin-right: 10px;
-//   position: relative;
-//   bottom: 3px;
-// }
 .progress-bar {
   width: 1700px;
   height: 22px;

@@ -1,4 +1,4 @@
-// 2024 夏之日活动
+// 2024 双十一活动
 import { defineStore } from 'pinia'
 import type { ActivityData } from '@/types'
 

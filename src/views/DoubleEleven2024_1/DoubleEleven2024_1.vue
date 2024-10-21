@@ -8,13 +8,21 @@
           <div class="sr-only">
             魔法畅享
             <p>
-              <time datetime="2024-10-26">11.11</time>-
-              <time datetime="2024-11-15">11.17</time>
+              <time datetime="2024-11-11">11.11</time>-
+              <time datetime="2024-11-17">11.17</time>
             </p>
           </div>
           <div class="help cursor-pointer bg-contain" @click="handleHelp"></div>
         </h1>
       </Transition>
+      <section>
+        <p class="sr-only">
+          1.活动期间，魔法工坊每日先祖特供，多种魔法免费领取体验
+        </p>
+        <p class="sr-only">
+          2.魔法工坊买一送一，可使用蜡烛兑换任意魔法并立刻获得“再来一瓶”
+        </p>
+      </section>
       <!-- 活动规则弹框 -->
       <activity-modal ref="modalHelp">
         <template #content>
@@ -109,6 +117,10 @@ const headTransitionName = ref('')
 if (!isVisited) {
   headTransitionName.value = 'fade-in-head'
 }
+
+onMounted(() => {
+  Session.set(sessionIsVisitedKey, true)
+})
 
 /**
  * @function 显示帮助
