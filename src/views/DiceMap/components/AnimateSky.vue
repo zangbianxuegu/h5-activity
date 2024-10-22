@@ -81,6 +81,18 @@ onMounted(() => {
   }
 })
 
+onBeforeUnmount(() => {
+  player?.dispose()
+  player = null
+  spineContainer.value = null
+})
+
+onUnmounted(() => {
+  player?.dispose()
+  player = null
+  spineContainer.value = null
+})
+
 /**
  * @function playAnimation
  * @description 播放动画

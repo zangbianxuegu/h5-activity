@@ -55,8 +55,8 @@ importers:
         specifier: ^17.7.0
         version: 17.8.1
       '@esotericsoftware/spine-player':
-        specifier: ^4.2.58
-        version: 4.2.58
+        specifier: ^4.2.61
+        version: 4.2.61
       '@rollup/plugin-babel':
         specifier: ^6.0.4
         version: 6.0.4(@babel/core@7.25.2)(rollup@4.18.0)
@@ -1044,14 +1044,14 @@ packages:
     resolution: {integrity: sha512-Ys+3g2TaW7gADOJzPt83SJtCDhMjndcDMFVQ/Tj9iA1BfJzFKD9mAUXT3OenpuPHbI6P/myECxRJrofUsDx/5g==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@esotericsoftware/spine-core@4.2.58':
-    resolution: {integrity: sha512-xaENXgzwcmB6ug0Lx9jeIKEpZdyqHuCv//FlWTcmemQnLePgUYj2fbKoOaPwC7m1JrdR/08MFMXCF1AhJ0dcFA==}
+  '@esotericsoftware/spine-core@4.2.61':
+    resolution: {integrity: sha512-dz3diru64rGQNKohgIlN6Mp5brpvEn1MuOOETiOvKu7zPOT5oI/sTLjRhtgBrqNUMWrFXhac9vh++vV0MCuvPA==}
 
-  '@esotericsoftware/spine-player@4.2.58':
-    resolution: {integrity: sha512-+NW6wXXGkwtp+duV74sLJMo5ucMyb8rt7TYOXlfzyL7k8CvJLEYHEVLwJ2AyNEac6RV960WGRbMWNbOgwadBzg==}
+  '@esotericsoftware/spine-player@4.2.61':
+    resolution: {integrity: sha512-GVPL2NiUWLHWnu4d67v40SHYu2PdB0IwWAOYepj82+NXK0d6Sm+xMmSRNGlFvnHzFOM1v3T27MCe/ppkW7FDBQ==}
 
-  '@esotericsoftware/spine-webgl@4.2.58':
-    resolution: {integrity: sha512-rsHl7T+Z4mqQ2JmbO0NqDfdGFg/qA6M81AvO9WtpDDy4LqUf6lx+ltC+8KChAEVcWd/FyjJzaetwKDHKDI1u+g==}
+  '@esotericsoftware/spine-webgl@4.2.61':
+    resolution: {integrity: sha512-msBk+Bu13CW3xZXCvD4w4tLnF5Mr2kAVG+OA+/BhYeCSocYddtLYFPnuTV7NnPinADlQVtuV5gITyEMycog+Qw==}
 
   '@humanwhocodes/config-array@0.11.14':
     resolution: {integrity: sha512-3T8LkOmg45BV5FICb15QQMsyUSWrQ8AygVfC7ZG32zOalnqrilm018ZVCw0eapXux8FtA33q8PSRSstjee3jSg==}
@@ -6142,15 +6142,15 @@ snapshots:
 
   '@eslint/js@8.57.0': {}
 
-  '@esotericsoftware/spine-core@4.2.58': {}
+  '@esotericsoftware/spine-core@4.2.61': {}
 
-  '@esotericsoftware/spine-player@4.2.58':
+  '@esotericsoftware/spine-player@4.2.61':
     dependencies:
-      '@esotericsoftware/spine-webgl': 4.2.58
+      '@esotericsoftware/spine-webgl': 4.2.61
 
-  '@esotericsoftware/spine-webgl@4.2.58':
+  '@esotericsoftware/spine-webgl@4.2.61':
     dependencies:
-      '@esotericsoftware/spine-core': 4.2.58
+      '@esotericsoftware/spine-core': 4.2.61
 
   '@humanwhocodes/config-array@0.11.14':
     dependencies:
