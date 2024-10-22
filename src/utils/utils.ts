@@ -33,6 +33,18 @@ export function capitalizeFirstLetter(str: string): string {
   return str.charAt(0).toUpperCase() + str.slice(1)
 }
 
+/**
+ * @function checkCanUseSpineAnimation
+ * @description 判断是否可以使用 Spine 动画
+ * @returns {boolean}
+ */
+// fix: BUG #60826 【闪退】【线上】华为渠道服，活动中心闪退 https://ma75.pm.netease.com/v6/issues/60826
+export function checkCanUseSpineAnimation(): boolean {
+  const ua = navigator.userAgent
+  const pattern = /PBEM00|PBET00|PBDM00|PAFM00|PCAM00/i
+  return !pattern.test(ua)
+}
+
 export const animateCSS = (
   elementOrSelector: any,
   animation: string,
