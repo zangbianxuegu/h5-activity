@@ -23,33 +23,30 @@
           <section>
             <!-- 任务列表 -->
             <h2 id="taskListHeading" class="sr-only">任务列表</h2>
-            <div class="task-list flex justify-between">
-              <ul
-                v-for="(Column, index) in [
-                  taskList.slice(0, 2),
-                  taskList.slice(2, 5),
-                ]"
-                :key="index"
-                class="mb-2"
-                aria-labelledby="taskListHeading"
-              >
+            <div class="task-list flex">
+              <ul aria-labelledby="taskListHeading">
                 <li
-                  v-for="(item, rowIndex) in Column"
+                  v-for="(item, index) in taskList"
                   :key="item.value"
                   :class="[
-                    'mb-2 flex items-center justify-between',
-                    `task-item-${index === 0 ? 'left' : 'right'}`,
+                    'task-item mb-[10px] flex items-center justify-between',
+                    `task-item-${item.status}`,
                   ]"
                   :aria-label="`任务: ${item.title}`"
                 >
-                  <p
-                    class="ml-4 w-[500px] text-[36px] font-semibold text-[#2f6c5e]"
-                  >
-                    {{ item.title }} ({{ item.val }}/11)
+                  <p class="ml-[110px] w-[600px] pl-[16px] text-[36px]">
+                    <span
+                      :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-white'}`"
+                      >{{ item.title }}</span
+                    >
+                    <span
+                      :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-[#fef282]'}`"
+                      >（{{ item.val }}/11）</span
+                    >
                   </p>
-                  <div class="flex">
+                  <div class="mr-[4px] flex">
                     <div
-                      v-for="(_, i) in index === 0 ? 1 : rowIndex === 0 ? 2 : 3"
+                      v-for="(_, i) in index <= 1 ? 1 : index <= 3 ? 2 : 3"
                       :key="i"
                       :class="[
                         'animate__animated animate__fadeIn animate__slow reward',
@@ -63,20 +60,21 @@
             </div>
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
-            <div class="absolute bottom-[140px] left-0 flex">
+            <div class="absolute bottom-[150px] left-0 flex">
               <div
-                class="absolute bottom-[-18px] left-[100px] h-[60px] w-[200px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
+                class="absolute bottom-[-18px] left-[100px] h-[60px] w-[200px] rounded-3xl text-center text-[34px] leading-[60px] text-white"
+                style="background-color: rgba(93, 132, 255, 0.4)"
               >
                 使用蜡烛
               </div>
               <ul
-                class="absolute bottom-0 left-[460px] top-0 m-auto flex w-[1490px] justify-between"
+                class="absolute bottom-0 left-[510px] top-0 m-auto flex w-[1420px] justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="flex h-[300px] flex-col items-center"
+                  class="flex h-[250px] flex-col items-center justify-between"
                 >
                   <div
                     :class="[
@@ -87,7 +85,7 @@
                     @click="handleReward(item, index + 1)"
                   ></div>
                   <p
-                    class="mt-[8px] w-[100px] rounded-3xl bg-white py-[1px] text-center text-[34px] text-[#f48100]"
+                    class="h-[36px] text-center text-[36px] leading-[36px] text-white"
                   >
                     {{ (index + 1) * 20 }}
                   </p>
@@ -103,7 +101,7 @@
             <p class="sr-only">
               活动期间，完成指定任务可获得惊喜礼包，打开后可随机获得爱心、蜡烛、季节蜡烛、稀有魔法等奖励
             </p>
-            <p class="tips"></p>
+            <p class="tip"></p>
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -147,9 +145,9 @@
                     >惊喜礼包*3</span
                   >
                 </li>
-                （打开惊喜礼包后可在<span class="text-[#ffcb4d]"
+                (打开惊喜礼包后可在<span class="text-[#ffcb4d]"
                   >爱心、蜡烛、姆明季蜡烛、体型重塑、彩虹尾迹、留影蜡烛、共享空间、畅谈长桌、秋千</span
-                >中随机抽取一个）<br />
+                >中随机抽取一个)<br />
                 另外，活动期间<span class="text-[#ffcb4d]"
                   >每累计使用20根蜡烛，可领取1个爱心，最多领取5次</span
                 >
@@ -491,61 +489,49 @@ function handleHelp(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/double-eleven-2024-2/bg.png');
+    background-image: url('@/assets/images/double-eleven-2024-2/bg.jpg');
   }
 }
 .title {
   position: absolute;
-  left: 100px;
-  top: 54px;
-  width: 620px;
-  height: 116px;
+  left: 130px;
+  top: 64px;
+  width: 946px;
+  height: 171px;
   background-repeat: no-repeat;
   background-image: url('@/assets/images/double-eleven-2024-2/title.png');
 }
 .help {
   position: absolute;
-  width: 80px;
-  height: 80px;
-  left: 400px;
-  top: 54px;
+  width: 69px;
+  height: 69px;
+  left: 730px;
+  top: 94px;
   background-repeat: no-repeat;
   background-image: url('@/assets/images/double-eleven-2024-2/help.png');
 }
 .task-list {
   position: absolute;
-  left: 100px;
-  top: 220px;
+  left: 910px;
+  top: 34px;
   padding: 0;
   width: 1850px;
   height: 499px;
 }
-.task-item-left {
-  width: 800px;
-  height: 150px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-left.png');
-}
-.task-item-right {
-  width: 1000px;
-  height: 150px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-  background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-right.png');
-}
 .task-item {
   margin-right: 70px;
-  width: 230px;
-  height: 320px;
+  width: 1046px;
+  height: 139px;
   background-repeat: no-repeat;
-  background-size: contain;
-  background-image: url('@/assets/images/double-eleven-2024-2/reward-bg-left.png');
+  background-size: 100% 100%;
+  background-image: url('@/assets/images/double-eleven-2024-2/row-bg.png');
+}
+.task-item-redeemed {
+  background-image: url('@/assets/images/double-eleven-2024-2/row-bg-redeemed.png');
 }
 .reward {
-  margin-right: 10px;
-  width: 150px;
-  height: 150px;
+  width: 140px;
+  height: 129px;
   background-repeat: no-repeat;
   background-size: contain;
   &.wait {
@@ -559,43 +545,55 @@ function handleHelp(): void {
   }
 }
 .progress-container {
-  width: 1720px;
+  width: 1510px;
   height: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
-  overflow: hidden;
-  margin-top: 210px;
-  margin-left: 160px;
+  margin-top: 182px;
+  margin-left: 330px;
   .progress-bar {
     height: 16px;
-    background-color: #fff;
+    background-color: #ffd972;
     border-radius: 8px;
     transition: width 0.4s ease;
+    position: relative;
+  }
+  .progress-bar::after {
+    content: '';
+    position: absolute;
+    right: -30px;
+    top: -22px;
+    height: 65px;
+    width: 60px;
+    background-image: url('@/assets/images/double-eleven-2024-2/star.png');
+    background-repeat: no-repeat;
+    background-size: contain;
+    transition: right 0.4s ease;
   }
 }
 .acc-task-item {
-  width: 180px;
-  height: 180px;
+  width: 240px;
+  height: 190px;
   background-repeat: no-repeat;
   background-size: cover;
   &.wait {
-    background-image: url('@/assets/images/double-eleven-2024-2/love-wait.png');
+    background-image: url('@/assets/images/double-eleven-2024-2/heart-wait.png');
   }
   &.can {
-    background-image: url('@/assets/images/double-eleven-2024-2/love-can.png');
+    background-image: url('@/assets/images/double-eleven-2024-2/heart-can.png');
   }
   &.redeemed {
-    background-image: url('@/assets/images/double-eleven-2024-2/love-redeemed.png');
+    background-image: url('@/assets/images/double-eleven-2024-2/heart-redeemed.png');
   }
 }
-.tips {
+.tip {
   position: absolute;
-  left: 100px;
-  bottom: -420px;
-  width: 1850px;
-  height: 499px;
+  left: 124px;
+  bottom: 30px;
+  width: 17040px;
+  height: 31px;
   background-repeat: no-repeat;
   background-size: contain;
-  background-image: url('@/assets/images/double-eleven-2024-2/text.png');
+  background-image: url('@/assets/images/double-eleven-2024-2/tip.png');
 }
 </style>
