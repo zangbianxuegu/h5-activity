@@ -419,16 +419,13 @@ onMounted(() => {
  * @returns {boolean} 是否有未领奖
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 检查1-5项，任务列表
-  const tasksValid = tasks
-    .slice(0, ACC_TASK_ACTIVITY_INDEX)
-    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
-  // 检查第6项，累计任务
-  const accTask = tasks[ACC_TASK_ACTIVITY_INDEX]
-  const accTasksValid = accTask.stages.some(
-    (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
-  )
-  return tasksValid || accTasksValid
+  // 使用some方法遍历任务列表，对每个任务的阶段进行检查
+  return tasks.some((task) => {
+    // 判断任务值是否达到或超过当前阶段要求，且奖励未领取
+    return task.stages.some(
+      (item, index) => task.value >= item && task.award[index] === 0,
+    )
+  })
 }
 
 /**
