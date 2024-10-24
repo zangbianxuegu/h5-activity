@@ -434,7 +434,6 @@ function checkHasUnclaimedReward(tasks: Event[]): boolean {
  */
 function setRedDot(): void {
   const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
-  console.log('hasUnclaimedReward: ', hasUnclaimedReward)
   menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 
@@ -462,7 +461,6 @@ function getActivityData(): void {
         newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
-      console.log('activityStore: ', activityStore)
       setRedDot()
     })
     .catch((error) => {
