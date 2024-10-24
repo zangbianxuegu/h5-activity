@@ -26,8 +26,8 @@
             <div class="task-list flex">
               <ul aria-labelledby="taskListHeading">
                 <li
-                  v-for="(item, index) in taskList"
-                  :key="item.value"
+                  v-for="(item, index) in allTaskList"
+                  :key="item.title"
                   :class="[
                     'task-item mb-[10px] flex items-center justify-between',
                     `task-item-${item.status}`,
@@ -44,16 +44,27 @@
                       >（{{ item.val }}/11）</span
                     >
                   </p>
-                  <div class="mr-[4px] flex">
+                  <div class="flex">
                     <div
-                      v-for="(_, i) in index <= 1 ? 1 : index <= 3 ? 2 : 3"
+                      v-for="(v, i) in item.content"
                       :key="i"
-                      :class="[
-                        'animate__animated animate__fadeIn animate__slow reward',
-                        `${item.status}`,
-                      ]"
-                      @click="handleReward(item, 1)"
-                    ></div>
+                      class="relative mr-[4px]"
+                      @click="handleReward($event, v, i + 1)"
+                    >
+                      <can-reward-bubble-animation
+                        @click.stop="handleReward($event, v, i + 1)"
+                        :ref="v.canRewardLottieRef"
+                        :id="`${v.value}${index}${i}`"
+                        class="reward-can-dynamic-bubble"
+                      ></can-reward-bubble-animation>
+                      <div
+                        v-if="['wait', 'can', 'redeemed'].includes(v.status)"
+                        :class="[
+                          'reward animate__animated animate__fadeIn bg-contain',
+                          v.status,
+                        ]"
+                      ></div>
+                    </div>
                   </div>
                 </li>
               </ul>
@@ -77,13 +88,24 @@
                   class="flex h-[250px] flex-col items-center justify-between"
                 >
                   <div
-                    :class="[
-                      'acc-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}`,
-                    ]"
+                    class="relative"
                     :aria-label="`累计任务 ${index + 1}: ${item.title}`"
-                    @click="handleReward(item, index + 1)"
-                  ></div>
+                    @click="handleReward($event, item, index + 1)"
+                  >
+                    <can-reward-bubble-animation
+                      @click.stop="handleReward($event, item, 1 + 1)"
+                      :ref="item.canRewardLottieRef"
+                      :id="item.value"
+                      class="acc-reward-can-dynamic-bubble"
+                    ></can-reward-bubble-animation>
+                    <div
+                      v-if="['wait', 'can', 'redeemed'].includes(item.status)"
+                      :class="[
+                        'acc-task-item animate__animated animate__fadeIn bg-contain',
+                        item.status,
+                      ]"
+                    ></div>
+                  </div>
                   <p
                     class="h-[36px] text-center text-[36px] leading-[36px] text-white"
                   >
@@ -94,7 +116,7 @@
               <div class="progress-container">
                 <div
                   class="progress-bar"
-                  :style="`width: ${accTaskValue}%;`"
+                  :style="`width: ${accTaskValue > 100 ? 100 : accTaskValue}%;`"
                 ></div>
               </div>
             </div>
@@ -120,29 +142,9 @@
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
-                <li>
-                  赠送11次心火，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*1</span
-                  >
-                </li>
-                <li>
-                  点赞11次纸船留言，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*1</span
-                  >
-                </li>
-                <li>
-                  使用11次魔法商店的魔法，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*2</span
-                  >
-                </li>
-                <li>
-                  收集11根季节蜡烛，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*2</span
-                  >
-                </li>
-                <li>
-                  给11位好友赠送爱心，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*3</span
+                <li v-for="item in taskRuleInfo" :key="item.description">
+                  {{ item.description }}，即可领取<span class="text-[#ffcb4d]"
+                    >惊喜礼包*{{ item.rewardCount }}</span
                   >
                 </li>
                 (打开惊喜礼包后可在<span class="text-[#ffcb4d]"
@@ -169,6 +171,8 @@ import ActivityModal from '@/components/Modal'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/doubleEleven2024'
+import gsap from 'gsap'
+import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 
 interface Rewards {
   name: string
@@ -192,8 +196,20 @@ interface Reward {
   title: string
   status: 'wait' | 'redeemed' | 'can' | string
   val: number
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
+  hadRenderLottie?: Ref<boolean>
 }
 
+// 定义任务规则数组
+const taskRuleInfo = [
+  { description: '赠送11次心火', rewardCount: 1 },
+  { description: '点赞11次纸船留言', rewardCount: 1 },
+  { description: '使用11次魔法商店的魔法', rewardCount: 2 },
+  { description: '收集11根季节蜡烛', rewardCount: 2 },
+  { description: '给11位好友赠送爱心', rewardCount: 3 },
+]
+
+// 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
   heart: '爱心',
   candles: '蜡烛',
@@ -206,6 +222,7 @@ const rewardsText: RewardsName = {
   trail_rainbow: '彩虹尾迹',
 }
 
+// 当前奖励
 const curRewards: Ref<Rewards> = ref({
   name: 'heart',
   count: 1,
@@ -256,21 +273,48 @@ const taskItem = (
   title: string,
   status = 'wait',
   val = 0,
+  canRewardLottieRef = ref() as Ref<
+    Array<InstanceType<typeof CanRewardBubbleAnimation>>
+  >,
+  hadRenderLottie = ref(false),
 ): Reward => ({
   id,
   value,
   title,
   status,
   val,
+  canRewardLottieRef,
+  hadRenderLottie,
 })
 
 // 任务列表
 const TASK_LIST = [
-  taskItem(1, 'send_heart_friends', '赠送11次心火'),
+  taskItem(1, 'send_heart_wax_friend', '赠送11次心火'),
   taskItem(2, 'like_message_boat', '点赞11次纸船留言'),
   taskItem(3, 'use_consumables', '使用11次魔法商店的魔法'),
   taskItem(4, 'collecting_season_candles', '收集11根季节蜡烛'),
-  taskItem(5, 'send_heart_wax_friend', '给11位好友赠送爱心'),
+  taskItem(5, 'send_heart_friends', '给11位好友赠送爱心'),
+]
+
+// 任务一 赠送11次心火
+const TASK_LIST1 = [taskItem(1, 'send_heart_wax_friend', '赠送11次心火')]
+// 任务二 点赞11次纸船留言
+const TASK_LIST2 = [taskItem(1, 'like_message_boat', '点赞11次纸船留言')]
+// 任务三 使用11次魔法商店的魔法
+const TASK_LIST3 = [
+  taskItem(1, 'use_consumables', '使用11次魔法商店的魔法'),
+  taskItem(2, 'use_consumables', '使用11次魔法商店的魔法'),
+]
+// 任务四 收集11根季节蜡烛
+const TASK_LIST4 = [
+  taskItem(1, 'collecting_season_candles', '收集11根季节蜡烛'),
+  taskItem(2, 'collecting_season_candles', '收集11根季节蜡烛'),
+]
+// 任务五 给11位好友赠送爱心
+const TASK_LIST5 = [
+  taskItem(1, 'send_heart_friends', '给11位好友赠送爱心'),
+  taskItem(2, 'send_heart_friends', '给11位好友赠送爱心'),
+  taskItem(3, 'send_heart_friends', '给11位好友赠送爱心'),
 ]
 
 // 累计任务
@@ -278,6 +322,7 @@ const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
   taskItem(i + 1, 'use_candle', `使用蜡烛${(i + 1) * 20}个`),
 )
 
+// activityData中存储各个事件数据的对象
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 // 任务排序
@@ -299,27 +344,51 @@ const ACC_TASK_ACTIVITY_INDEX = 5
 // 创建任务列表
 const createTaskList = (
   taskList: Reward[],
-  isAccTask: boolean,
+  activityIndex: number,
 ): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
-      const awardIndex = isAccTask ? index : 0
-      const activity =
-        eventData.value[isAccTask ? ACC_TASK_ACTIVITY_INDEX : index]
+      const activity = eventData.value[activityIndex]
       const { award, value, stages } = activity
       return {
         ...item,
         val: value,
-        status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
+        status: getTaskStatus(award[index], value, stages[index]),
       }
     })
   })
 }
 
-// 任务列表
-const taskList = createTaskList(TASK_LIST, false)
+// 创建各个任务列表，根据活动数据动态更新任务状态
+const taskList1 = createTaskList(TASK_LIST1, 0) // 赠送11次心火任务
+const taskList2 = createTaskList(TASK_LIST2, 1) // 点赞11次纸船留言任务
+const taskList3 = createTaskList(TASK_LIST3, 2) // 使用11次魔法商店的魔法任务
+const taskList4 = createTaskList(TASK_LIST4, 3) // 收集11根季节蜡烛任务
+const taskList5 = createTaskList(TASK_LIST5, 4) // 给11位好友赠送爱心任务
+
+// 所有任务列表
+const allTaskList = computed(() => {
+  return [
+    { title: '赠送11次心火', content: taskList1.value },
+    { title: '点赞11次纸船留言', content: taskList2.value },
+    { title: '使用11次魔法商店的魔法', content: taskList3.value },
+    { title: '收集11根季节蜡烛', content: taskList4.value },
+    { title: '给11位好友赠送爱心', content: taskList5.value },
+  ].map((item) => {
+    return {
+      ...item,
+      // 获取任务完成值
+      val: item.content[0].val,
+      // 判断任务是否全部完成
+      status: item.content.every((reward) => reward.status === 'redeemed')
+        ? 'redeemed'
+        : '',
+    }
+  })
+})
+
 // 累积任务列表
-const accTaskList = createTaskList(ACC_TASK_LIST, true)
+const accTaskList = createTaskList(ACC_TASK_LIST, 5)
 
 // 累计任务完成值
 const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value)
@@ -406,17 +475,19 @@ function getActivityData(): void {
 
 /**
  * @function 领奖
+ * @param event 鼠标事件
  * @param item 任务项
  * @param rewardId 第几个奖励节点 不传默认1
  * @returns {void}
  */
-function handleReward(item: Reward, rewardId: number): void {
+function handleReward(event: MouseEvent, item: Reward, rewardId: number): void {
   const { value, status } = item
   if (status === 'redeemed') {
     return
   }
   if (status === 'wait') {
     showToast('还未完成任务')
+    clickBubbleReward(event)
     return
   }
   claimMissionReward({
@@ -430,6 +501,7 @@ function handleReward(item: Reward, rewardId: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
+      await bubbleBurst(event, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
         return item.task_id === value
@@ -453,6 +525,116 @@ function handleReward(item: Reward, rewardId: number): void {
  */
 function handleHelp(): void {
   modalHelp.value?.openModal()
+}
+
+/**
+ * @function 初始化可领取奖励的Lottie动画
+ * @param {Reward} reward - 奖励对象
+ * @returns {void}
+ */
+const initCanRewardLottie = (reward: Reward): void => {
+  // 初始化Lottie动画
+  reward.canRewardLottieRef?.value[0].initLottie()
+  // 避免多次更新computed和watch所引起的多次渲染lottie
+  if (reward.hadRenderLottie) {
+    // 标记Lottie动画已经渲染
+    reward.hadRenderLottie.value = true
+  }
+}
+
+/**
+ * @constant allTasks
+ * @description 计算属性，合并所有任务列表
+ * @returns {ComputedRef<Array>} 包含所有任务的数组
+ */
+const allTasks = computed(() => [
+  ...taskList1.value,
+  ...taskList2.value,
+  ...taskList3.value,
+  ...taskList4.value,
+  ...taskList5.value,
+  ...accTaskList.value,
+])
+
+/**
+ * @function 处理任务
+ * @param {Reward} task - 任务对象
+ * @returns {void}
+ */
+const handleTask = (task: Reward): void => {
+  if (task.status === 'can') {
+    // 使用 nextTick 确保在 DOM 更新后执行
+    void nextTick(() => {
+      // 检查是否需要初始化 Lottie 动画
+      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
+        initCanRewardLottie(task)
+      }
+    })
+  } else {
+    // 如果任务状态不是 'can'，销毁相关的 Lottie 动画
+    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
+  }
+}
+
+// 监视所有任务的变化，并对每个任务执行处理
+watchEffect(() => {
+  allTasks.value.forEach(handleTask)
+})
+
+/**
+ * @function 点击气泡弹弹弹的果冻效果
+ * @param {MouseEvent} event - 鼠标事件
+ * @returns {void}
+ */
+const clickBubbleReward = (event: MouseEvent): void => {
+  const dom = event.target
+  gsap
+    .timeline()
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
+    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直拉伸
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
+}
+
+/**
+ * @function 气泡爆炸动画
+ * @param {MouseEvent} event - 鼠标事件
+ * @param {Reward} reward - 奖励对象
+ * @returns {Promise<void>}
+ */
+const bubbleBurst = async (
+  event: MouseEvent,
+  reward: Reward,
+): Promise<void> => {
+  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
+  if (reward.canRewardLottieRef) {
+    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
+  }
+  // 果冻效果
+  clickBubbleReward(event)
+  const target = event.target
+  // 溅射效果
+  await gsap
+    .timeline()
+    .to(target, {
+      scaleY: 0.8,
+      duration: 0.2,
+      ease: 'power1.in',
+      opacity: 0.9,
+    }) // 垂直压挤
+    .to(target, {
+      scaleY: 1.1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0.5,
+    }) // 垂直拉伸
+    .to(target, {
+      scaleY: 1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0,
+    }) // 再次垂直压挤并淡出
 }
 </script>
 
@@ -512,7 +694,7 @@ function handleHelp(): void {
 }
 .task-list {
   position: absolute;
-  left: 910px;
+  left: 900px;
   top: 34px;
   padding: 0;
   width: 1850px;
@@ -520,7 +702,7 @@ function handleHelp(): void {
 }
 .task-item {
   margin-right: 70px;
-  width: 1046px;
+  width: 1060px;
   height: 139px;
   background-repeat: no-repeat;
   background-size: 100% 100%;
@@ -595,5 +777,31 @@ function handleHelp(): void {
   background-repeat: no-repeat;
   background-size: contain;
   background-image: url('@/assets/images/double-eleven-2024-2/tip.png');
+}
+$reward-bubble-wait-width: 120px;
+$reward-bubble-wait-height: 120px;
+.reward-can-dynamic-bubble {
+  width: $reward-bubble-wait-width + 20px;
+  height: $reward-bubble-wait-height;
+  position: absolute;
+  top: 16px;
+  left: 0;
+  & > :first-child {
+    position: absolute;
+    top: -12px;
+    transform: scale(1.7) !important;
+  }
+}
+.acc-reward-can-dynamic-bubble {
+  width: 180px;
+  height: 130px;
+  position: absolute;
+  top: 40px;
+  left: 30px;
+  & > :first-child {
+    position: absolute;
+    top: -12px;
+    transform: scale(1.9) !important;
+  }
 }
 </style>
