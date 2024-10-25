@@ -162,15 +162,13 @@
             </div>
 
             <!-- 挖宝动画 -->
-            <template v-if="canUseSpine">
-              <SpinePlayer
-                ref="animateDig"
-                class="absolute left-[110px] top-[-180px] hidden h-[300px] w-[250px]"
-                json-path="./spine/halloween-2024/2024Halloween/2024Halloween.json"
-                atlas-path="./spine/halloween-2024/2024Halloween/2024Halloween.atlas"
-                @complete="onAnimateDigComplete"
-              />
-            </template>
+            <SpinePlayer
+              ref="animateDig"
+              class="absolute left-[110px] top-[-180px] hidden h-[300px] w-[250px]"
+              json-path="./spine/halloween-2024/2024Halloween/2024Halloween.json"
+              atlas-path="./spine/halloween-2024/2024Halloween/2024Halloween.atlas"
+              @complete="onAnimateDigComplete"
+            />
           </section>
         </Transition>
         <footer class="footer flex w-full justify-center">
@@ -226,7 +224,7 @@
 import { showToast } from 'vant'
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
-import { generateDynamicStyles, checkCanUseSpineAnimation } from '@/utils/utils'
+import { generateDynamicStyles } from '@/utils/utils'
 import { getPlayerMissionData } from '@/utils/request'
 import { halloweenTreasureHunt } from '@/apis/halloween'
 import { useActivityStore } from '@/stores/halloweenTreasure2024'
@@ -330,9 +328,6 @@ if (!isVisited) {
   headTransitionName.value = 'fade-in-head'
   mainTransitionName.value = 'fade-in-main'
 }
-
-// 是否使用 Spine 动画
-const canUseSpine = ref(checkCanUseSpineAnimation())
 
 onMounted(() => {
   try {
@@ -497,21 +492,17 @@ function handleDig(rowIndex: number, colIndex: number): void {
   curRowIndex = rowIndex
   curColIndex = colIndex
   curGridId = rowIndex * 12 + colIndex
-  if (canUseSpine.value) {
-    // 设置挖宝动画
-    if (animateDig.value) {
-      const newStyle = generateDynamicStyles({
-        width: 250,
-        height: 300,
-        left: -31 + 141 * curColIndex,
-        top: -180 + 118 * curRowIndex,
-      })
-      Object.assign(animateDig.value.$el.style, newStyle)
-      animateDig.value.$el.classList.remove('hidden')
-      animateDig.value.playAnimation('shovel', false)
-    }
-  } else {
-    huntTreasure()
+  // 设置挖宝动画
+  if (animateDig.value) {
+    const newStyle = generateDynamicStyles({
+      width: 250,
+      height: 300,
+      left: -31 + 141 * curColIndex,
+      top: -180 + 118 * curRowIndex,
+    })
+    Object.assign(animateDig.value.$el.style, newStyle)
+    animateDig.value.$el.classList.remove('hidden')
+    animateDig.value.playAnimation('shovel', false)
   }
 }
 
@@ -548,21 +539,16 @@ function huntTreasure(): void {
         res.remaining_tickets
       curHalloweenTokenCount = res.rewards.halloween_token
       isObtaindTreasure = res.is_obtaind_treasure
-      if (canUseSpine.value) {
-        // 设置金币动画
-        if (animateDig.value) {
-          const newStyle = generateDynamicStyles({
-            width: 250,
-            height: 200,
-            left: 55 + 141 * curColIndex,
-            top: -100 + 118 * curRowIndex,
-          })
-          Object.assign(animateDig.value.$el.style, newStyle)
-          animateDig.value.playAnimation('species', false)
-        }
-      } else {
-        showSuccessToast()
-        isDigging = false
+      // 设置金币动画
+      if (animateDig.value) {
+        const newStyle = generateDynamicStyles({
+          width: 250,
+          height: 200,
+          left: 55 + 141 * curColIndex,
+          top: -100 + 118 * curRowIndex,
+        })
+        Object.assign(animateDig.value.$el.style, newStyle)
+        animateDig.value.playAnimation('species', false)
       }
     })
     .catch((error) => {
