@@ -163,11 +163,11 @@
 
             <!-- 挖宝动画 -->
             <template v-if="canUseSpine">
-              <AnimateDig
+              <SpinePlayer
                 ref="animateDig"
                 class="absolute left-[110px] top-[-180px] hidden h-[300px] w-[250px]"
-                json-path="./spine/halloween-2024/2024Halloween.json"
-                atlas-path="./spine/halloween-2024/2024Halloween.atlas"
+                json-path="./spine/halloween-2024/2024Halloween/2024Halloween.json"
+                atlas-path="./spine/halloween-2024/2024Halloween/2024Halloween.atlas"
                 @complete="onAnimateDigComplete"
               />
             </template>
@@ -232,7 +232,7 @@ import { halloweenTreasureHunt } from '@/apis/halloween'
 import { useActivityStore } from '@/stores/halloweenTreasure2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
-import AnimateDig from './components/AnimateDig.vue'
+import SpinePlayer from '@/components/SpinePlayer'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -272,7 +272,7 @@ interface Adjacent {
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const animateDig = ref<InstanceType<typeof AnimateDig> | null>(null)
+const animateDig = ref<InstanceType<typeof SpinePlayer> | null>(null)
 
 // 活动数据
 const EVENT_NAME = 'activitycenter_Halloweentreasure_2024'
