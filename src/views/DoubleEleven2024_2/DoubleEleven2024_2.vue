@@ -49,10 +49,8 @@
                       v-for="(v, i) in item.content"
                       :key="i"
                       class="relative mr-[4px]"
-                      @click="handleReward($event, v, i + 1)"
                     >
                       <can-reward-bubble-animation
-                        @click.stop="handleReward($event, v, i + 1)"
                         :ref="v.canRewardLottieRef"
                         :id="`${v.value}${index}${i}`"
                         class="reward-can-dynamic-bubble"
@@ -63,6 +61,7 @@
                           'reward animate__animated animate__fadeIn bg-contain',
                           v.status,
                         ]"
+                        @click="handleReward($event, v, i + 1)"
                       ></div>
                     </div>
                   </div>
@@ -784,7 +783,7 @@ $reward-bubble-wait-height: 120px;
   & > :first-child {
     position: absolute;
     top: -12px;
-    transform: scale(1.7) !important;
+    transform: scale(1.3) !important;
   }
 }
 .acc-reward-can-dynamic-bubble {
