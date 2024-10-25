@@ -53,20 +53,22 @@
           </section>
         </Transition>
         <!-- 动画 -->
-        <SpinePlayer
-          ref="spinePlayer"
-          class="absolute inset-0"
-          json-path="./spine/halloween-2024/mofaguo/mofaguo.json"
-          atlas-path="./spine/halloween-2024/mofaguo/mofaguo.atlas"
-          :layout="{
-            x: 0,
-            y: 0,
-            width: 2042,
-            height: 1142,
-          }"
-          @success="onAnimationSuccess"
-          @complete="onAnimationComplete"
-        />
+        <div class="absolute h-full w-full overflow-hidden">
+          <SpinePlayer
+            ref="spinePlayer"
+            class="player absolute"
+            json-path="./spine/halloween-2024/mofaguo/mofaguo.json"
+            atlas-path="./spine/halloween-2024/mofaguo/mofaguo.atlas"
+            :layout="{
+              x: 0,
+              y: 0,
+              width: 2042,
+              height: 1142,
+            }"
+            @success="onAnimationSuccess"
+            @complete="onAnimationComplete"
+          />
+        </div>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
@@ -544,5 +546,11 @@ function onAnimationComplete(entry: any): void {
 .reward-name {
   font-size: 30px;
   color: #666;
+}
+.player {
+  left: -8px;
+  right: -16px;
+  top: -9px;
+  bottom: -7px;
 }
 </style>
