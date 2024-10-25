@@ -42,10 +42,9 @@
             <button
               type="button"
               :class="[
-                'btn bg-transparent bg-cover',
-                { 'opacity-50': isDrawing },
+                'btn bg-transparent bg-cover transition-all',
+                { 'opacity-50': isDrawing || drawId >= 10 },
               ]"
-              :disabled="isDrawing"
               @click="handleDraw"
             >
               <span class="sr-only">抽取礼物</span>
@@ -192,8 +191,10 @@ const activityData = computed(() => activityStore.activityData)
 const tokenCount = computed(() =>
   Number(activityData.value.token_info.halloween_token),
 )
+// 抽奖次数
+const drawId = computed(() => activityData.value.draw_id)
 // 是否首次抽奖
-const isFirstLottery = computed(() => activityData.value.draw_id <= 0)
+const isFirstLottery = computed(() => drawId.value <= 0)
 // 是否正在抽奖
 const isDrawing = ref(false)
 // 动画是否完成加载
@@ -351,6 +352,10 @@ function handleDraw(): void {
   }
   if (!isFirstLottery.value && tokenCount.value < 100) {
     showToast('捣蛋币不足！请去【出奇寻宝】获取！')
+    return
+  }
+  if (drawId.value >= 10) {
+    showToast('奖励已全部抽完')
     return
   }
   isDrawing.value = true
