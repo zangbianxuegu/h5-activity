@@ -204,7 +204,7 @@ interface Reward {
 const taskRuleInfo = [
   { description: '赠送11次心火', rewardCount: 1 },
   { description: '点赞11次纸船留言', rewardCount: 1 },
-  { description: '使用11次魔法商店的魔法', rewardCount: 2 },
+  { description: '使用11次魔法工坊的魔法', rewardCount: 2 },
   { description: '收集11根季节蜡烛', rewardCount: 2 },
   { description: '给11位好友赠送爱心', rewardCount: 3 },
 ]
@@ -291,7 +291,7 @@ const taskItem = (
 const TASK_LIST = [
   taskItem(1, 'send_heart_wax_friend', '赠送11次心火'),
   taskItem(2, 'like_message_boat', '点赞11次纸船留言'),
-  taskItem(3, 'use_consumables', '使用11次魔法商店的魔法'),
+  taskItem(3, 'use_consumables', '使用11次魔法工坊的魔法'),
   taskItem(4, 'collecting_season_candles', '收集11根季节蜡烛'),
   taskItem(5, 'send_heart_friends', '给11位好友赠送爱心'),
 ]
@@ -300,10 +300,10 @@ const TASK_LIST = [
 const TASK_LIST1 = [taskItem(1, 'send_heart_wax_friend', '赠送11次心火')]
 // 任务二 点赞11次纸船留言
 const TASK_LIST2 = [taskItem(1, 'like_message_boat', '点赞11次纸船留言')]
-// 任务三 使用11次魔法商店的魔法
+// 任务三 使用11次魔法工坊的魔法
 const TASK_LIST3 = [
-  taskItem(1, 'use_consumables', '使用11次魔法商店的魔法'),
-  taskItem(2, 'use_consumables', '使用11次魔法商店的魔法'),
+  taskItem(1, 'use_consumables', '使用11次魔法工坊的魔法'),
+  taskItem(2, 'use_consumables', '使用11次魔法工坊的魔法'),
 ]
 // 任务四 收集11根季节蜡烛
 const TASK_LIST4 = [
@@ -362,7 +362,7 @@ const createTaskList = (
 // 创建各个任务列表，根据活动数据动态更新任务状态
 const taskList1 = createTaskList(TASK_LIST1, 0) // 赠送11次心火任务
 const taskList2 = createTaskList(TASK_LIST2, 1) // 点赞11次纸船留言任务
-const taskList3 = createTaskList(TASK_LIST3, 2) // 使用11次魔法商店的魔法任务
+const taskList3 = createTaskList(TASK_LIST3, 2) // 使用11次魔法工坊的魔法任务
 const taskList4 = createTaskList(TASK_LIST4, 3) // 收集11根季节蜡烛任务
 const taskList5 = createTaskList(TASK_LIST5, 4) // 给11位好友赠送爱心任务
 
@@ -371,7 +371,7 @@ const allTaskList = computed(() => {
   return [
     { title: '赠送11次心火', content: taskList1.value },
     { title: '点赞11次纸船留言', content: taskList2.value },
-    { title: '使用11次魔法商店的魔法', content: taskList3.value },
+    { title: '使用11次魔法工坊的魔法', content: taskList3.value },
     { title: '收集11根季节蜡烛', content: taskList4.value },
     { title: '给11位好友赠送爱心', content: taskList5.value },
   ].map((item) => {
