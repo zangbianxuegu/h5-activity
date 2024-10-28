@@ -88,6 +88,7 @@ defineEmits<
   top: 300px;
   padding: 20px;
   background-color: rgba($color: #000000, $alpha: 0.6);
+  backdrop-filter: blur(8px);
 }
 .hide-task-list {
   position: absolute;

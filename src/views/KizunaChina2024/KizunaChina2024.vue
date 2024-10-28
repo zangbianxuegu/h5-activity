@@ -29,21 +29,23 @@
               @reward="handleReward"
             />
             <!-- 隐藏任务列表 -->
-            <h2 id="hideTaskListHeading" class="sr-only">隐藏任务列表</h2>
-            <TaskList
-              :taskList="hideTaskList"
-              name="hideTaskList"
-              @reward="handleReward"
-            />
-            <p
-              class="absolute right-[150px] top-[350px] text-[32px] text-white"
-            >
-              旅人们记得使用拾光相机拍摄哦
-            </p>
+            <div v-if="accTaskValue > 100">
+              <h2 id="hideTaskListHeading" class="sr-only">隐藏任务列表</h2>
+              <TaskList
+                :taskList="hideTaskList"
+                name="hideTaskList"
+                @reward="handleReward"
+              />
+              <p
+                class="absolute right-[150px] top-[350px] text-[32px] text-white"
+              >
+                旅人们记得使用拾光相机拍摄哦
+              </p>
+            </div>
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
             <div
-              class="absolute bottom-[50px] right-[50px] flex flex-col rounded-2xl p-4"
+              class="absolute bottom-[50px] right-[50px] flex flex-col rounded-2xl p-4 backdrop-blur"
               style="background-color: rgba(0, 0, 0, 0.25)"
             >
               <div class="h-[60px] text-[36px] leading-[60px] text-[#ffffff]">
@@ -103,7 +105,7 @@
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年11月11日~2024年11月22日
+                2024年11月23日~2024年12月8日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
@@ -268,36 +270,40 @@ const TASK_LIST = [
   taskItem(5, 'activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
 ]
 
+// 创建任务列表的函数
+const createTaskLists = (key: string, name: string, length = 2): Reward[] =>
+  Array.from({ length }, (_, i) => taskItem(i + 1, key, name))
+
 // 任务一 装扮成1次中国绊爱
-const TASK_LIST1 = [
-  taskItem(1, 'activity_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
-  taskItem(2, 'activity_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
-]
+const TASK_LIST1 = createTaskLists(
+  'activity_kizuna_china_2024_m1',
+  '装扮成1次中国绊爱',
+)
 // 任务二 搭建1个晃悠悠共享空间
-const TASK_LIST2 = [
-  taskItem(1, 'activity_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'),
-  taskItem(2, 'activity_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'),
-]
+const TASK_LIST2 = createTaskLists(
+  'activity_kizuna_china_2024_m2',
+  '搭建1个晃悠悠共享空间',
+)
 // 任务三 与大铁头进行1次互动
-const TASK_LIST3 = [
-  taskItem(1, 'activity_kizuna_china_2024_m3', '与大铁头进行1次互动'),
-  taskItem(2, 'activity_kizuna_china_2024_m3', '与大铁头进行1次互动'),
-]
+const TASK_LIST3 = createTaskLists(
+  'activity_kizuna_china_2024_m3',
+  '与大铁头进行1次互动',
+)
 // 任务四 寻找头戴晃悠悠的光之子
-const TASK_LIST4 = [
-  taskItem(1, 'activity_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'),
-  taskItem(2, 'activity_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'),
-]
+const TASK_LIST4 = createTaskLists(
+  'activity_kizuna_china_2024_m4',
+  '寻找头戴晃悠悠的光之子',
+)
 // 任务五 连续3天与中国绊爱打招呼
-const TASK_LIST5 = [
-  taskItem(1, 'activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
-  taskItem(2, 'activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
-]
+const TASK_LIST5 = createTaskLists(
+  'activity_kizuna_china_2024_m5',
+  '连续3天与中国绊爱打招呼',
+)
 // 任务六 与我们一起合影吧
-const TASK_LIST6 = [
-  taskItem(1, 'activity_kizuna_china_2024_m6', '与我们一起合影吧！'),
-  taskItem(2, 'activity_kizuna_china_2024_m6', '与我们一起合影吧！'),
-]
+const TASK_LIST6 = createTaskLists(
+  'activity_kizuna_china_2024_m6',
+  '与我们一起合影吧！',
+)
 
 // 累计任务
 const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
