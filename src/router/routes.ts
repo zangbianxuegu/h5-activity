@@ -436,4 +436,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_double_eleven_2024_2',
     },
   },
+  {
+    path: '/kizunachina-2024',
+    name: 'KizunaChina2024',
+    component: () => import('@/views/KizunaChina2024'),
+    meta: {
+      title: '中国绊爱 与光重逢',
+      module: 'activitycenter_kizuna_china_2024',
+    },
+  },
 ]
