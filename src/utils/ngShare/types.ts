@@ -8,6 +8,7 @@
  * @param FACEBOOK Facebook
  * @param DA_SHEN 网易大神
  */
+
 export enum ANDROID_INSTALLED_PACKAGE {
   WEI_BO = 'com.sina.weibo',
   WECHAT = 'com.tencent.mm',
@@ -108,6 +109,40 @@ export enum NGSHARE_CONTENT_TYPE {
   AUDIO = 'TYPE_AUDIO',
   GIF = 'TYPE_GIF',
   ATTENTION = 'TYPE_ATTENTION',
+}
+
+/**
+ * @description ngshare分享链接的参数
+ * @param title 标题
+ * @param text 内容
+ * @param link 链接
+ * @param desc 描述
+ * @param u3dshareThumb 分享缩略图地址(安卓必传)
+ * @param shareThumb 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
+ * @param [keyof: string]: any 其他参数
+ */
+export interface NgshareShareLinkConfig {
+  title: string
+  text: string
+  link: string
+  desc: string
+  u3dshareThumb: string
+  shareThumb: string
+  [keyof: string]: any
+}
+
+/**
+ * @description ngshare分享链接的参数
+ * @param title 标题
+ * @param text 内容
+ * @param image 图片地址
+ * @param [keyof: string]: any 其他参数
+ */
+export interface NgshareShareImageConfig {
+  title: string
+  text: string
+  image: string
+  [keyof: string]: any
 }
 
 export const installedPackageList = [

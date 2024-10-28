@@ -382,4 +382,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dice_store',
     },
   },
+  {
+    path: '/hmj-contribute',
+    name: 'HMJContribute',
+    component: () => import('@/views/HMJContribute'),
+    meta: {
+      title: '绘梦节投稿',
+      module: 'activitycenter_hmj_contribute',
+    },
+  },
 ]

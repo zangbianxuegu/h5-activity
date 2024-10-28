@@ -17,6 +17,9 @@ importers:
       axios:
         specifier: ^1.5.1
         version: 1.7.2(debug@4.3.4)
+      clipboard:
+        specifier: ^2.0.11
+        version: 2.0.11
       cropperjs:
         specifier: ^1.6.2
         version: 1.6.2
@@ -38,6 +41,9 @@ importers:
       pinia-plugin-persistedstate:
         specifier: ^3.2.1
         version: 3.2.1(pinia@2.1.7(typescript@5.4.5)(vue@3.4.27(typescript@5.4.5)))
+      qs:
+        specifier: ^6.13.0
+        version: 6.13.0
       vant:
         specifier: ^4.6.8
         version: 4.9.0(vue@3.4.27(typescript@5.4.5))
@@ -1886,6 +1892,9 @@ packages:
     resolution: {integrity: sha512-wfOBkjXteqSnI59oPcJkcPl/ZmwvMMOj340qUIY1SKZCv0B9Cf4D4fAucRkIKQmsIuYK3x1rrgU7MeGRruiuiA==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
+  clipboard@2.0.11:
+    resolution: {integrity: sha512-C+0bbOqkezLIsmWSvlsXS0Q0bmkugu7jcfMIACB+RDEntIzQIkdr148we28AfSloQLRdZlYL/QYyrq05j/3Faw==}
+
   cliui@8.0.1:
     resolution: {integrity: sha512-BSeNnyus75C4//NQ9gQt1/csTXyo/8Sb+afLAkzAptFuMsod9HFokGNudZpi/oQV73hnVK+sR+5PVRMd+Dr7YQ==}
     engines: {node: '>=12'}
@@ -2146,6 +2155,9 @@ packages:
   delayed-stream@1.0.0:
     resolution: {integrity: sha512-ZySD7Nf91aLB0RxL4KGrKHBXl7Eds1DAmEdcoVawXnLD7SDhpNgtuII2aAkg7a7QS41jxPSZ17p4VdGnMHk3MQ==}
     engines: {node: '>=0.4.0'}
+
+  delegate@3.2.0:
+    resolution: {integrity: sha512-IofjkYBZaZivn0V8nnsMJGBr4jVLxHDheKSW88PyxS5QC4Vo9ZbZVvhzlSxY87fVq3STR6r+4cGepyHkcWOQSw==}
 
   deprecation@2.3.1:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
@@ -2900,6 +2912,9 @@ packages:
   globby@14.0.1:
     resolution: {integrity: sha512-jOMLD2Z7MAhyG8aJpNOpmziMOP4rPLcc95oQPKXBazW82z+CEgPFBQvEpRUa1KeIMUJo4Wsm+q6uzO/Q/4BksQ==}
     engines: {node: '>=18'}
+
+  good-listener@1.2.2:
+    resolution: {integrity: sha512-goW1b+d9q/HIwbVYZzZ6SsTr4IgE+WA44A0GmPIQstuOrgsFcT7VEJ48nmr9GaRtNu0XTKacFLGnBPAM6Afouw==}
 
   gopd@1.0.1:
     resolution: {integrity: sha512-d65bNlIadxvpb/A2abVdlqKqV563juRnZ1Wtk6s1sIR8uNsXR70xqIzVqxVf1eTqDunwT2MkczEeaezCKTZhwA==}
@@ -4128,6 +4143,10 @@ packages:
     resolution: {integrity: sha512-vYt7UD1U9Wg6138shLtLOvdAu+8DsC/ilFtEVHcH+wydcSpNE20AfSOduf6MkRFahL5FY7X1oU7nKVZFtfq8Fg==}
     engines: {node: '>=6'}
 
+  qs@6.13.0:
+    resolution: {integrity: sha512-+38qI9SOr8tfZ4QmJNplMUxqjbe7LKvvZgWdExBOmd+egZTtjLB67Gu0HRX3u/XOq7UU2Nx6nsjvS16Z9uwfpg==}
+    engines: {node: '>=0.6'}
+
   query-string@5.1.1:
     resolution: {integrity: sha512-gjWOsm2SoGlgLEdAGt7a6slVOk9mGiXmPFMqrEhLQ68rhQuBnpfs3+EmlvqKyxnCo9/PPlF+9MtY02S1aFg+Jw==}
     engines: {node: '>=0.10.0'}
@@ -4319,6 +4338,9 @@ packages:
   seek-bzip@1.0.6:
     resolution: {integrity: sha512-e1QtP3YL5tWww8uKaOCQ18UxIT2laNBXHjV/S2WYCiK4udiv8lkG89KRIoCjUagnAmCBurjF4zEVX2ByBbnCjQ==}
     hasBin: true
+
+  select@1.1.2:
+    resolution: {integrity: sha512-OwpTSOfy6xSs1+pwcNrv0RBMOzI39Lp3qQKUTPVVPRjCdNa5JH/oPRiqsesIskK8TVgmRiHwO4KXlV2Li9dANA==}
 
   semver-regex@2.0.0:
     resolution: {integrity: sha512-mUdIBBvdn0PLOeP3TEkMH7HHeUP3GjsXCwKarjv/kGmUFOYg1VqEemKhoQpWMu6X2I8kHeuVdGibLGkVK+/5Qw==}
@@ -4666,6 +4688,9 @@ packages:
   timed-out@4.0.1:
     resolution: {integrity: sha512-G7r3AhovYtr5YKOWQkta8RKAPb+J9IsO4uVmzjl8AZwfhs8UcUwTiD6gcJYSgOtzyjvQKrKYn41syHbUWMkafA==}
     engines: {node: '>=0.10.0'}
+
+  tiny-emitter@2.1.0:
+    resolution: {integrity: sha512-NB6Dk1A9xgQPMoGqC5CVXn123gWyte215ONT5Pp5a0yt4nlEoO1ZWeCwpncaekPHXO60i47ihFnZPiRPjRMq4Q==}
 
   to-buffer@1.1.1:
     resolution: {integrity: sha512-lx9B5iv7msuFYE3dytT+KE5tap+rNYw+K4jVkb9R/asAb+pbBSM17jtunHplhBe6RRJdZx3Pn2Jph24O32mOVg==}
@@ -7033,6 +7058,12 @@ snapshots:
       slice-ansi: 5.0.0
       string-width: 5.1.2
 
+  clipboard@2.0.11:
+    dependencies:
+      good-listener: 1.2.2
+      select: 1.1.2
+      tiny-emitter: 2.1.0
+
   cliui@8.0.1:
     dependencies:
       string-width: 4.2.3
@@ -7296,6 +7327,8 @@ snapshots:
       object-keys: 1.1.1
 
   delayed-stream@1.0.0: {}
+
+  delegate@3.2.0: {}
 
   deprecation@2.3.1: {}
 
@@ -8201,6 +8234,10 @@ snapshots:
       path-type: 5.0.0
       slash: 5.1.0
       unicorn-magic: 0.1.0
+
+  good-listener@1.2.2:
+    dependencies:
+      delegate: 3.2.0
 
   gopd@1.0.1:
     dependencies:
@@ -9313,6 +9350,10 @@ snapshots:
 
   punycode@2.3.1: {}
 
+  qs@6.13.0:
+    dependencies:
+      side-channel: 1.0.6
+
   query-string@5.1.1:
     dependencies:
       decode-uri-component: 0.2.2
@@ -9539,6 +9580,8 @@ snapshots:
   seek-bzip@1.0.6:
     dependencies:
       commander: 2.20.3
+
+  select@1.1.2: {}
 
   semver-regex@2.0.0: {}
 
@@ -9900,6 +9943,8 @@ snapshots:
       convert-hrtime: 5.0.0
 
   timed-out@4.0.1: {}
+
+  tiny-emitter@2.1.0: {}
 
   to-buffer@1.1.1: {}
 

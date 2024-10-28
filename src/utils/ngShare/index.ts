@@ -4,6 +4,8 @@ import type {
   IOS_INSTALLED_PACKAGE,
   NGSHARE_SHARE_CHANNEL,
   NgshareCheckChannelIsExistToNativeConfig,
+  NgshareShareImageConfig,
+  NgshareShareLinkConfig,
 } from './types'
 import {
   installedPackageList,
@@ -77,7 +79,7 @@ export const ngshareByH5 = async (
   configForType: Record<string, any>,
   callback?: (respJSONString: string) => void,
 ): Promise<void> => {
-  let contentTypeConfig = {}
+  let contentTypeConfig: NgshareShareLinkConfig | NgshareShareImageConfig
   if (contentType === NGSHARE_CONTENT_TYPE.LINK) {
     const { text, title, u3dshareThumb, link, desc } = configForType
     contentTypeConfig = {
@@ -95,6 +97,9 @@ export const ngshareByH5 = async (
       title,
       image,
     }
+  } else {
+    showToast('暂不支持分享该类型')
+    return
   }
   const ngshareChannel = ngshareShareChannelMap.get(shareChannel)
   const { isExist } = await ngshareCheckChannelIsExist(
@@ -103,7 +108,7 @@ export const ngshareByH5 = async (
       : ngshareChannel?.iosInstalledPackage,
   )
   if (isExist) {
-    window.UniSDKJSBridge.postMsgToNative({
+    const config = {
       methodId: 'execute_extend_func',
       reqData: {
         methodId: 'ngshareExtend', // 简易分享的methodId为ntShare
@@ -120,6 +125,9 @@ export const ngshareByH5 = async (
           callback && callback(respJSONString)
         },
       },
-    })
+    }
+    console.log('postMsgToNative config', config)
+
+    window.UniSDKJSBridge.postMsgToNative(config)
   }
 }

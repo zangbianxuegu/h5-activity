@@ -52,10 +52,6 @@
     <div class="ps_ignore-user-wrok-upload-container">
       <div class="left">
         <p>
-          <span>作品ID: </span>
-          <span>{{ workInfo.id }}</span>
-        </p>
-        <p>
           <span>作品名: </span>
           <span>{{ workInfo.workName }}</span>
         </p>

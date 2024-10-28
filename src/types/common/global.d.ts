@@ -2,6 +2,9 @@ export declare global {
   interface Window {
     UniSDKJSBridge: any
   }
+  interface wx {
+    ready: (cb: () => void) => void
+  }
 }
 export interface UseEnvironmentReturn {
   isLocal: Ref<boolean>

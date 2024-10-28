@@ -1,11 +1,11 @@
 <template>
   <div class="page-container">
-    <van-button type="success" @click="onClickShareBtn">分享</van-button>
     <van-share-sheet
-      v-model:show="showShare"
+      v-model:show="isShow"
       title="立即分享给好友"
-      :options="options"
+      :options="shareChannel"
       @select="onSelectChannel"
+      @closed="onClosed"
     />
   </div>
 </template>
@@ -15,8 +15,30 @@ import {
   NGSHARE_SHARE_CHANNEL,
   NGSHARE_CONTENT_TYPE,
 } from '@/utils/ngShare/types'
+import type {
+  NgshareShareLinkConfig,
+  NgshareShareImageConfig,
+} from '@/utils/ngShare/types'
 import { ngshareByH5 } from '@/utils/ngShare/index'
-import { useBaseStore } from '@/stores/base'
+
+/**
+ * @prop shareChannel 分享渠道，传[]默认分享所有渠道
+ */
+const props = defineProps<{
+  show?: boolean
+  shareChannel: NGSHARE_SHARE_CHANNEL[] | []
+  shareLinkConfig: NgshareShareLinkConfig
+  shareImageConfig: NgshareShareImageConfig
+  closed: () => void
+}>()
+
+const isShow = ref(false)
+onMounted(() => {
+  isShow.value = true
+})
+const onClosed = (): void => {
+  props.closed()
+}
 
 interface ShareOption {
   name: string
@@ -61,41 +83,22 @@ const options: ShareOption[] = [
     icon: 'weibo',
     shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
   },
-  // {
-  //   name: '网易大神好友',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
-  // },
-  // {
-  //   name: 'QQ',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ,
-  // },
-  // {
-  //   name: 'QQ空间',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ_ZONE,
-  // },
-  // {
-  //   name: '快手',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
-  // },
-  // {
-  //   name: 'facebook',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.FACEBOOK,
-  // },
 ]
-
-const baseStore = useBaseStore()
+const shareChannel = computed(() => {
+  if (props.shareChannel.length === 0) {
+    return options
+  } else {
+    return options.filter((item) =>
+      (props.shareChannel as string[]).includes(item.shareChannel as string),
+    )
+  }
+})
 
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
   const shareLinkList = [
     NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
     NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
     NGSHARE_SHARE_CHANNEL.WEI_BO,
-    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
   ]
   const shareImgList = [
     NGSHARE_SHARE_CHANNEL.BILIBILI,
@@ -105,34 +108,13 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
   const contentType = shareLinkList.includes(option.shareChannel)
     ? NGSHARE_CONTENT_TYPE.LINK
     : NGSHARE_CONTENT_TYPE.IMAGE
-  let shareConfig = {}
-  if (shareLinkList.includes(option.shareChannel)) {
-    shareConfig = {
-      text: '分享文本',
-      title: '分享标题',
-      link: 'http://10.227.199.103:5173/pages/debug/index.html',
-      desc: '分享说明',
-      u3dshareThumb: ['netease', 'app_store'].includes(
-        baseStore.baseInfo.channel,
-      )
-        ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
-        : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png', // 分享缩略图地址(安卓必传)
-    }
-  } else if (shareImgList.includes(option.shareChannel)) {
-    shareConfig = {
-      text: '分享文本',
-      title: '分享标题',
-      image: 'http://10.227.199.103:7897/images/f104f32f22ed2ea586fdcc801.png',
-      desc: '分享说明',
-      // 'https://img2.baidu.com/it/u=1337068678,3064275007&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=750',
-    }
+  let shareConfig: NgshareShareLinkConfig | NgshareShareImageConfig =
+    props.shareLinkConfig
+  if (shareImgList.includes(option.shareChannel)) {
+    shareConfig = props.shareImageConfig
   }
   await ngshareByH5(contentType, option.shareChannel, shareConfig)
   showShare.value = false
-}
-
-const onClickShareBtn = async (): Promise<void> => {
-  showShare.value = true
 }
 </script>
 <style>
