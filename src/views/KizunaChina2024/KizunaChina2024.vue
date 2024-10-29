@@ -29,7 +29,7 @@
               @reward="handleReward"
             />
             <!-- 隐藏任务列表 -->
-            <div v-if="accTaskValue > 100">
+            <div v-if="accTaskValue >= 100">
               <h2 id="hideTaskListHeading" class="sr-only">隐藏任务列表</h2>
               <TaskList
                 :taskList="hideTaskList"
@@ -144,10 +144,13 @@ import gsap from 'gsap'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import TaskList from './components/TaskList.vue'
 
+// 定义奖励接口
 interface Rewards {
-  name: string
-  count: number
+  name: string // 奖励名称
+  count: number // 奖励数量
 }
+
+// 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
   heart: '爱心'
   candles: '蜡烛'
@@ -162,14 +165,35 @@ interface RewardsName {
   fireworks: '浪漫烟花'
 }
 
+// 定义单个奖励项接口
 interface Reward {
-  id: number
-  value: string
-  title: string
-  status: 'wait' | 'redeemed' | 'can' | string
+  id: number // 奖励ID
+  value: string // 奖励字段名
+  title: string // 奖励标题
+  status: 'wait' | 'redeemed' | 'can' | string // 奖励状态
+  val: number // 奖励值
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>> // 可领取动画引用
+  hadRenderLottie?: Ref<boolean> // 是否已渲染动画
+}
+
+// 定义任务项接口
+interface TaskItem {
   val: number
-  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
-  hadRenderLottie?: Ref<boolean>
+  status: string
+}
+
+// 定义任务列表接口
+interface TaskLists {
+  title: string
+  content: Ref<TaskItem[]>
+}
+
+// 定义处理后的任务类型
+interface ProcessedTask {
+  title: string // 任务标题
+  content: Ref<TaskItem[]> // 任务内容，使用Vue的Ref包装TaskItem数组
+  val: number // 任务完成值
+  status: string // 任务状态
 }
 
 // 定义任务规则数组
@@ -274,36 +298,19 @@ const TASK_LIST = [
 const createTaskLists = (key: string, name: string, length = 2): Reward[] =>
   Array.from({ length }, (_, i) => taskItem(i + 1, key, name))
 
-// 任务一 装扮成1次中国绊爱
-const TASK_LIST1 = createTaskLists(
-  'activity_kizuna_china_2024_m1',
-  '装扮成1次中国绊爱',
-)
-// 任务二 搭建1个晃悠悠共享空间
-const TASK_LIST2 = createTaskLists(
-  'activity_kizuna_china_2024_m2',
-  '搭建1个晃悠悠共享空间',
-)
-// 任务三 与大铁头进行1次互动
-const TASK_LIST3 = createTaskLists(
-  'activity_kizuna_china_2024_m3',
-  '与大铁头进行1次互动',
-)
-// 任务四 寻找头戴晃悠悠的光之子
-const TASK_LIST4 = createTaskLists(
-  'activity_kizuna_china_2024_m4',
-  '寻找头戴晃悠悠的光之子',
-)
-// 任务五 连续3天与中国绊爱打招呼
-const TASK_LIST5 = createTaskLists(
-  'activity_kizuna_china_2024_m5',
-  '连续3天与中国绊爱打招呼',
-)
-// 任务六 与我们一起合影吧
-const TASK_LIST6 = createTaskLists(
-  'activity_kizuna_china_2024_m6',
-  '与我们一起合影吧！',
-)
+// 定义任务配置
+const TASK_MAP = [
+  ['activity_kizuna_china_2024_m1', '装扮成1次中国绊爱'],
+  ['activity_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'],
+  ['activity_kizuna_china_2024_m3', '与大铁头进行1次互动'],
+  ['activity_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'],
+  ['activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'],
+  ['activity_kizuna_china_2024_m6', '与我们一起合影吧！'],
+]
+
+// 创建所有任务列表
+const [TASK_LIST1, TASK_LIST2, TASK_LIST3, TASK_LIST4, TASK_LIST5, TASK_LIST6] =
+  TASK_MAP.map(([key, name]) => createTaskLists(key, name))
 
 // 累计任务
 const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
@@ -340,8 +347,7 @@ const createTaskList = (
 ): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
-      const activity = eventData.value[activityIndex]
-      const { award, value, stages } = activity
+      const { award, value, stages } = eventData.value[activityIndex]
       return {
         ...item,
         val: value,
@@ -359,49 +365,45 @@ const taskList4 = createTaskList(TASK_LIST4, 3) // 寻找头戴晃悠悠的光�
 const taskList5 = createTaskList(TASK_LIST5, 4) // 连续3天与中国绊爱打招呼任务
 const taskList6 = createTaskList(TASK_LIST6, 5) // 与我们一起合影吧任务
 
-// 所有任务列表
-const allTaskList = computed(() => {
-  return [
-    { title: '装扮成1次中国绊爱', content: taskList1.value },
-    { title: '搭建1个晃悠悠共享空间', content: taskList2.value },
-    { title: '与大铁头进行1次互动', content: taskList3.value },
-    { title: '寻找头戴晃悠悠的光之子', content: taskList4.value },
-    { title: '连续3天与中国绊爱打招呼', content: taskList5.value },
-  ].map((item) => {
-    return {
-      ...item,
-      // 获取任务完成值
-      val: item.content[0].val,
-      // 判断任务是否全部完成
-      status: item.content.every((reward) => reward.status === 'redeemed')
-        ? 'redeemed'
-        : '',
-    }
-  })
-})
-
-// 隐藏任务列表
-const hideTaskList = computed(() => {
-  return [{ title: '与我们一起合影吧！', content: taskList6.value }].map(
-    (item) => {
+// 处理任务列表的函数
+const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
+  return computed(() =>
+    tasks.map((task) => {
+      const content = task.content.value
       return {
-        ...item,
-        // 获取任务完成值
-        val: item.content[0].val,
-        // 判断任务是否全部完成
-        status: item.content.every((reward) => reward.status === 'redeemed')
+        ...task,
+        // 获取任务的值，如果不存在则默认为0
+        val: content[0]?.val ?? 0,
+        // 检查任务是否全部完成，如果是则状态为'redeemed'，否则为空字符串
+        status: content.every((reward) => reward.status === 'redeemed')
           ? 'redeemed'
           : '',
       }
-    },
+    }),
   )
-})
+}
+
+// 定义任务数组，包括主要任务和隐藏任务
+const TASKS = [
+  { title: '装扮成1次中国绊爱', content: taskList1 },
+  { title: '搭建1个晃悠悠共享空间', content: taskList2 },
+  { title: '与大铁头进行1次互动', content: taskList3 },
+  { title: '寻找头戴晃悠悠的光之子', content: taskList4 },
+  { title: '连续3天与中国绊爱打招呼', content: taskList5 },
+  { title: '与我们一起合影吧！', content: taskList6 },
+]
+
+// 所有任务列表
+const allTaskList = processTaskList(TASKS.slice(0, 5))
+
+// 隐藏任务列表
+const hideTaskList = processTaskList([TASKS[5]])
 
 // 累积任务列表
 const accTaskList = createTaskList(ACC_TASK_LIST, 5)
 
 // 累计任务完成值
-const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value)
+const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value / 10)
 
 const sessionIsVisitedKey = 'isVisitedKizunaChina-2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -470,8 +472,6 @@ function getActivityData(): void {
       accTaskValue.value =
         newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value
       // 更新缓存活动数据
-      console.log(newActivityData, 'newActivityData')
-
       activityStore.updateActivityData(newActivityData)
       setRedDot()
     })
@@ -560,6 +560,7 @@ const allTasks = computed(() => [
   ...taskList3.value,
   ...taskList4.value,
   ...taskList5.value,
+  ...taskList6.value,
   ...accTaskList.value,
 ])
 

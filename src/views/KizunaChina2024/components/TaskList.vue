@@ -18,7 +18,7 @@
         >
           <div class="flex">
             <div
-              v-for="(v, i) in item.content"
+              v-for="(v, i) in item.content.value"
               :key="i"
               class="relative mr-[4px]"
             >
