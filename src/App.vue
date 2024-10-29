@@ -237,6 +237,14 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
+  // 测试绘梦节活动会场
+  res.push({
+    activity: 'activitycenter_dayofdesign01_post_exhibit',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
   // 调整2024万圣节活动排序
   res = adjustActivitySort(res, halloween2024StartTime)
   // 最后调整回流、小光快报的位置

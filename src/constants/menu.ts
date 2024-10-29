@@ -360,6 +360,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '活动会场',
+    value: 'activitycenter_dayofdesign01_post_exhibit',
+    routeName: 'DayOfDesign01PostExhibit',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

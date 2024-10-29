@@ -86,4 +86,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_season24_start',
   ...DICE_MAP_LIST,
   ...HALLOWEEN_2024_LIST,
+  'activitycenter_dayofdesign01_post_exhibit',
 ]

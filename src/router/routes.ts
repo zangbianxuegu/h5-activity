@@ -418,4 +418,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_Halloweenpass_2024',
     },
   },
+  {
+    path: '/dayofdesign01-post-exhibit',
+    name: 'DayOfDesign01PostExhibit',
+    component: () => import('@/views/DayOfDesign01PostExhibit'),
+    meta: {
+      title: '活动会场',
+      module: 'activitycenter_dayofdesign01_post_exhibit',
+    },
+  },
 ]
