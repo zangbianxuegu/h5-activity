@@ -287,11 +287,11 @@ const taskItem = (
 
 // 任务列表
 const TASK_LIST = [
-  taskItem(1, 'activity_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
-  taskItem(2, 'activity_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'),
-  taskItem(3, 'activity_kizuna_china_2024_m3', '与大铁头进行1次互动'),
-  taskItem(4, 'activity_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'),
-  taskItem(5, 'activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
+  taskItem(1, 'activitycenter_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
+  taskItem(2, 'activitycenter_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'),
+  taskItem(3, 'activitycenter_kizuna_china_2024_m3', '与大铁头进行1次互动'),
+  taskItem(4, 'activitycenter_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'),
+  taskItem(5, 'activitycenter_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
 ]
 
 // 创建任务列表的函数
@@ -300,23 +300,23 @@ const createTaskLists = (key: string, name: string, length = 2): Reward[] =>
 
 // 定义任务配置
 const TASK_MAP = [
-  ['activity_kizuna_china_2024_m1', '装扮成1次中国绊爱'],
-  ['activity_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'],
-  ['activity_kizuna_china_2024_m3', '与大铁头进行1次互动'],
-  ['activity_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'],
-  ['activity_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'],
-  ['activity_kizuna_china_2024_m6', '与我们一起合影吧！'],
+  ['activitycenter_kizuna_china_2024_m1', '装扮成1次中国绊爱'],
+  ['activitycenter_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'],
+  ['activitycenter_kizuna_china_2024_m3', '与大铁头进行1次互动'],
+  ['activitycenter_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'],
+  ['activitycenter_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'],
+  ['activitycenter_kizuna_china_2024_m7', '与我们一起合影吧！'],
 ]
 
 // 创建所有任务列表
-const [TASK_LIST1, TASK_LIST2, TASK_LIST3, TASK_LIST4, TASK_LIST5, TASK_LIST6] =
+const [TASK_LIST1, TASK_LIST2, TASK_LIST3, TASK_LIST4, TASK_LIST5, TASK_LIST7] =
   TASK_MAP.map(([key, name]) => createTaskLists(key, name))
 
 // 累计任务
 const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
   taskItem(
     i + 1,
-    'activity_kizuna_china_2024_m6',
+    'activitycenter_kizuna_china_2024_m6',
     `品尝${(i + 1) * 200}W个中国绊爱饺子`,
   ),
 )
@@ -326,7 +326,10 @@ const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 // 任务排序
 const taskOrderMap = new Map(
-  [...TASK_LIST, ...ACC_TASK_LIST].map((task, index) => [task.value, index]),
+  [...TASK_LIST, ACC_TASK_LIST[0], TASK_LIST7[0]].map((task, index) => [
+    task.value,
+    index,
+  ]),
 )
 
 // 获取任务状态
@@ -363,7 +366,7 @@ const taskList2 = createTaskList(TASK_LIST2, 1) // 搭建1个晃悠悠共享空�
 const taskList3 = createTaskList(TASK_LIST3, 2) // 与大铁头进行1次互动任务
 const taskList4 = createTaskList(TASK_LIST4, 3) // 寻找头戴晃悠悠的光之子任务
 const taskList5 = createTaskList(TASK_LIST5, 4) // 连续3天与中国绊爱打招呼任务
-const taskList6 = createTaskList(TASK_LIST6, 5) // 与我们一起合影吧任务
+const taskList7 = createTaskList(TASK_LIST7, 6) // 与我们一起合影吧任务
 
 // 处理任务列表的函数
 const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
@@ -390,7 +393,7 @@ const TASKS = [
   { title: '与大铁头进行1次互动', content: taskList3 },
   { title: '寻找头戴晃悠悠的光之子', content: taskList4 },
   { title: '连续3天与中国绊爱打招呼', content: taskList5 },
-  { title: '与我们一起合影吧！', content: taskList6 },
+  { title: '与我们一起合影吧！', content: taskList7 },
 ]
 
 // 所有任务列表
@@ -560,7 +563,7 @@ const allTasks = computed(() => [
   ...taskList3.value,
   ...taskList4.value,
   ...taskList5.value,
-  ...taskList6.value,
+  ...taskList7.value,
   ...accTaskList.value,
 ])
 
