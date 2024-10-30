@@ -162,7 +162,7 @@
 </template>
 
 <script setup lang="ts">
-import { showToast } from 'vant'
+import { showToast, closeToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { DesignConfig, Event } from '@/types'
 import { Session } from '@/utils/storage'
@@ -502,9 +502,12 @@ function handleReward(event: MouseEvent, item: Reward, rewardId: number): void {
       })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
-      showToast(
-        `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
-      )
+      closeToast(true)
+      setTimeout(() => {
+        showToast(
+          `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
+        )
+      }, 100)
       // 更新红点
       setRedDot()
     })
