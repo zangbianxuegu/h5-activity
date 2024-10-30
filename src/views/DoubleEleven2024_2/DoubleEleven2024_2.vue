@@ -41,7 +41,7 @@
                     >
                     <span
                       :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-[#fef282]'}`"
-                      >（{{ item.val }}/11）</span
+                      >（{{ item.val > 11 ? 11 : item.val }}/11）</span
                     >
                   </p>
                   <div class="flex">
