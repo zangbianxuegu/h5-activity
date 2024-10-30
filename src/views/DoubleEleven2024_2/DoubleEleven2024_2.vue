@@ -227,6 +227,8 @@ const curRewards: Ref<Rewards> = ref({
   count: 1,
 })
 
+let toastTimeout: ReturnType<typeof setTimeout> | null = null
+
 // 设计稿宽
 const DESIGN_WIDTH = 2560
 // 设计稿高
@@ -412,6 +414,12 @@ onMounted(() => {
   Session.set(sessionIsVisitedKey, true)
 })
 
+onBeforeUnmount(() => {
+  if (toastTimeout !== null) {
+    clearTimeout(toastTimeout)
+  }
+})
+
 /**
  * @function 检查是否有未领奖
  * @param {Event[]} tasks 任务列表
@@ -503,7 +511,7 @@ function handleReward(event: MouseEvent, item: Reward, rewardId: number): void {
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
       closeToast(true)
-      setTimeout(() => {
+      toastTimeout = setTimeout(() => {
         showToast(
           `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
         )
