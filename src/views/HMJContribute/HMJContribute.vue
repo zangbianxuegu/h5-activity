@@ -8,20 +8,8 @@
               <van-button type="primary" @click="onClickViewMyWorks"
                 >我的作品</van-button
               >
-              <van-button type="primary" @click="onClickGetFilePickerToken"
-                >获取filepicker token</van-button
-              >
-              <van-button type="primary" @click="onClickReviewText"
-                >检测文字信息</van-button
-              >
-              <van-button type="primary" @click="onClickUploadImgToFilePicker"
-                >filepiker上传图片</van-button
-              >
-              <van-button type="primary" @click="onClickUploadWorksDataToServer"
-                >上传数据到服务端</van-button
-              >
-              <van-button type="primary" @click="onClickTestContribute"
-                >测试投稿整个流程</van-button
+              <van-button type="primary" @click="onClickTestContributeFinal"
+                >uploadFormAndFilePickerResultToServerCommon</van-button
               >
             </div>
             <div class="header">
@@ -78,9 +66,10 @@
                           srcset=""
                         />
                         <p v-if="isContributed" class="worksId">
+                          <span>【{{ worksGroupName }}组】</span>
                           <span
                             >ID
-                            <span id="works-id">{{ worksData.id }}</span>
+                            <span id="works-id">{{ currentWorksPureId }}</span>
                           </span>
                           <van-icon
                             id="copy-works-id"
@@ -183,9 +172,6 @@
                   >
                     <div :class="contributeBtnClass">
                       {{ contributeBtnText }}
-                    </div>
-                    <div @click.stop="onClickDownloadTemplate">
-                      <van-icon name="share-o" />
                     </div>
                   </div>
                 </div>
@@ -330,7 +316,12 @@
 </template>
 
 <script setup lang="ts">
-import { showConfirmDialog, showToast } from 'vant'
+import {
+  closeToast,
+  showConfirmDialog,
+  showLoadingToast,
+  showToast,
+} from 'vant'
 import html2canvas from 'html2canvas'
 import WorksDetailModal from './components/WorksDetailModal.vue'
 import axios from 'axios'
@@ -338,17 +329,16 @@ import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import ClipboardJS from 'clipboard'
-import {
-  getFilePickerToken,
-  reviewText,
-  uploadImgToFilePicker,
-  uploadWorksDataToServer,
-} from '@/utils/filePicker'
+import { uploadFormAndFilePickerResultToServerCommon } from '@/utils/filePicker'
 
-import type {
-  ReviewTextRejectResult,
-  UploadImgToFilePickerResponse,
-} from '@/utils/filePicker'
+import {
+  ERROR_TYPE,
+  type ReviewTextRejectResult,
+} from '@/utils/filePicker/type'
+import { getSkyFilePicker } from '@/utils/filePicker/constant'
+import { useEnvironment } from '@/composables/useEnvironment'
+
+const { isIos } = useEnvironment()
 
 interface WorksData {
   author: string
@@ -462,11 +452,13 @@ const onChangeAuthorWordCount = (
 }
 
 const onClickDownloadTemplate = async (): Promise<void> => {
-  const imageUrl = 'http://10.227.199.103:7897/images/hmj-works-template.png'
-  const res = await saveImgToDeviceAlbum(imageUrl)
-  if (res) {
-    showToast('下载成功')
-  } else {
+  try {
+    const imageUrl = 'http://10.227.199.103:7897/images/hmj-works-template.png'
+    const res = await saveImgToDeviceAlbum(imageUrl)
+    if (res) {
+      showToast('下载成功')
+    }
+  } catch (error: any) {
     showToast('下载失败')
   }
 }
@@ -486,15 +478,18 @@ const cropperData = ref({
   isShowBorderCorn: false,
 })
 
-watchEffect(() => {
-  if (cropperData.value.isShow) {
-    setTimeout(() => {
-      cropperData.value.isShowBorderCorn = true
-    }, 500)
-  } else {
-    cropperData.value.isShowBorderCorn = false
-  }
-})
+watch(
+  () => cropperData.value.isShow,
+  (newValue) => {
+    if (newValue) {
+      setTimeout(() => {
+        cropperData.value.isShowBorderCorn = true
+      }, 1000)
+    } else {
+      cropperData.value.isShowBorderCorn = false
+    }
+  },
+)
 
 // 添加上传作品的监听
 const listenUploadImgChange = (): void => {
@@ -523,21 +518,34 @@ const listenUploadImgChange = (): void => {
         } else if (file.size < minSize) {
           showToast('您选择的图片过小，可能会影响展示效果')
         }
+
+        showLoadingToast({
+          message: '准备裁剪中...',
+          forbidClick: true,
+          duration: 0,
+        })
         const reader = new FileReader()
-
-        reader.onload = function (e) {
-          const img = new Image()
-
-          cropperData.value.isShow = true
-          cropperData.value.preCropperImgUrl = e.target?.result as string
-          void nextTick(() => {
-            showCropperModal()
-          })
-
-          img.src = e.target?.result as string // 使用 FileReader 读取的图片数据
-        }
-
+        const img = new Image()
         reader.readAsDataURL(file) // 读取文件为 Data URL
+        reader.onload = function (e) {
+          const readFileResult = e.target?.result as string
+          img.src = readFileResult
+          img.onload = function () {
+            const width = img.width // 获取图像的宽度
+            const height = img.height // 获取图像的高度
+            if (isIos && (width * height) / 1000000 > 15) {
+              showToast(
+                '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
+              )
+            } else {
+              cropperData.value.isShow = true
+              cropperData.value.preCropperImgUrl = readFileResult
+              void nextTick(() => {
+                showCropperModal()
+              })
+            }
+          }
+        }
       }
     },
   )
@@ -548,7 +556,6 @@ const showCropperModal = (): void => {
   const image = document.querySelector(
     '#upload_img_cut_test_container img',
   ) as HTMLImageElement
-  console.log('image', image)
   CROPPER?.destroy()
   CROPPER = new Cropper(image, {
     aspectRatio: 4 / 3,
@@ -561,40 +568,35 @@ const showCropperModal = (): void => {
     cropBoxResizable: false,
     cropBoxMovable: false,
     responsive: true, // 响应式
-    ready() {
-      CROPPER?.setDragMode('move')
-    },
-    zoom: (event) => {
-      console.log('zoom event', event)
-      if (event.detail.ratio > event.detail.oldRatio) {
-        // console.log('放大')
-      } else {
-        // console.log('缩小')
-      }
-    },
-    crop(event) {
-      // console.log('crop event', event)
+    dragMode: 'move',
+    ready: () => {
+      closeToast()
     },
   })
 }
 
 // 完成裁剪
 const onClickFinishCropper = (): void => {
-  // getCroppedCanvas方法可以将裁剪区域的数据转换成canvas数据
-  CROPPER?.getCroppedCanvas({
-    width: 1200,
-    height: 900,
-    fillColor: '#fff',
-    imageSmoothingEnabled: true,
-    imageSmoothingQuality: 'high',
-  }).toBlob((blob) => {
-    const imgUrl = URL.createObjectURL(blob as Blob)
-    worksData.value.worksImgSrc = imgUrl
-    worksData.value.worksImg = new File([blob as Blob], 'hello.png', {
-      type: blob?.type,
+  try {
+    // getCroppedCanvas方法可以将裁剪区域的数据转换成canvas数据
+    const cropperCanvas = CROPPER?.getCroppedCanvas({
+      width: 1200,
+      height: 900,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high',
+    }) as HTMLCanvasElement
+
+    cropperCanvas?.toBlob((blob) => {
+      const reader = new FileReader()
+      reader.readAsDataURL(blob as Blob)
+      reader.onload = function (event) {
+        worksData.value.worksImgSrc = event.target?.result as string
+      }
+      hideCropperModal()
     })
-    hideCropperModal()
-  })
+  } catch (error) {
+    console.log('error', error)
+  }
 }
 
 // 隐藏裁剪
@@ -690,7 +692,7 @@ const onClickContributeWorks = async (): Promise<void> => {
       return
     }
     // 检查作者名和作品名仅限字母和汉字
-    const verifyReg = /^[A-Za-z\u4e00-\u9fa5]{1,8}$/
+    const verifyReg = /^[0-9A-Za-z\u4e00-\u9fa5]{1,8}$/
     const verifyError = keyList.find((key): boolean => {
       if (key === 'author' || key === 'worksName') {
         return !verifyReg.test(
@@ -872,92 +874,87 @@ const updateWorksDataFromWorksDetailModal = (res: WorksData): void => {
 const filePickerConfig = ref({
   token: '',
   policyName: 'image_normal',
-  filePickerUrl: 'http://devfp.ps.netease.com/test/file/new/',
+  filePickerUrl: getSkyFilePicker(),
   currentUoloadFileUrl: '',
 })
-const onClickGetFilePickerToken = async (): Promise<string> => {
-  const token = await getFilePickerToken(
-    filePickerConfig.value.filePickerUrl,
-    filePickerConfig.value.policyName,
-  )
-  filePickerConfig.value.token = token
-  console.log('token', token)
-  return token
+
+interface ReviewTextServerRequestFormat {
+  author_name: string
+  design_name: string
+  description: string
 }
-const onClickReviewText = async (): Promise<boolean> => {
-  try {
-    const res = await reviewText('', {
-      author: worksData.value.author,
-      worksName: worksData.value.worksName,
-      worksIntroduce: worksData.value.worksIntroduce,
-    })
-    if (res) {
-      return true
-    }
-  } catch (e: any) {
-    const errorObject = JSON.parse(e) as ReviewTextRejectResult
-    if (
-      errorObject.errorType === 'invalidEvent' ||
-      errorObject.errorType === 'badRequest'
-    ) {
-      showToast(errorObject.errorDefaultText)
-    } else if (errorObject.errorType === 'valueError') {
-      showToast(errorObject.invalidReasonDefaultText)
-    }
-  }
-  return false
-}
-const onClickUploadImgToFilePicker =
-  async (): Promise<UploadImgToFilePickerResponse> => {
-    const worksImgFile = worksData.value.worksImg as File
-    const res = await uploadImgToFilePicker(
-      filePickerConfig.value.token,
-      new Blob([worksImgFile], {
-        type: worksImgFile.type,
-      }),
-    )
-    filePickerConfig.value.currentUoloadFileUrl = res.url
-    return res
-  }
-const onClickUploadWorksDataToServer = async (): Promise<any> => {
-  try {
-    const { design_id: designId } = await uploadWorksDataToServer(
-      200,
-      filePickerConfig.value.policyName,
-      {
-        author: worksData.value.author,
-        worksName: worksData.value.worksName,
-        worksIntroduce: worksData.value.worksIntroduce,
-      },
-      filePickerConfig.value.currentUoloadFileUrl,
-    )
-    worksData.value.id = designId
-  } catch (e) {
-    console.log(e)
+
+// 获取检查文本服务端要求的字段格式
+const getReviewTextServerRequestFormat = (
+  author: string,
+  worksName: string,
+  worksIntroduce: string,
+): ReviewTextServerRequestFormat => {
+  return {
+    author_name: author,
+    design_name: worksName,
+    description: worksIntroduce,
   }
 }
 
-const onClickTestContribute = async (): Promise<void> => {
-  // 获取filepicker token
-  const token = await onClickGetFilePickerToken()
-  if (token) {
-    // 检测作品文本信息
-    const reviewResult = await onClickReviewText()
-    if (reviewResult) {
-      // 上传稿件至filepicker
-      const { url } = await onClickUploadImgToFilePicker()
-      if (url) {
-        // 存储稿件最终数据至服务端,完成投稿
-        await onClickUploadWorksDataToServer()
-      }
+const groupNameAndCodeMap = new Map([
+  ['X', '星'],
+  ['G', '光'],
+  ['Y', '遇'],
+  ['M', '梦'],
+])
+// 分组名字
+const worksGroupName = computed(() => {
+  return groupNameAndCodeMap.get(worksData.value.id.split('')[0])
+})
+const currentWorksPureId = computed(() => {
+  return worksData.value.id.slice(1)
+})
+
+const onClickTestContributeFinal = async (): Promise<void> => {
+  try {
+    const response = await fetch(
+      'http://10.227.199.103:7897/images/0bc9a170bd2ca6debd1017600.jpg',
+    )
+    const worksImgBlob = await response.blob()
+
+    // const worksImgFile = worksData.value.worksImg as File
+    // const worksImgBlob = new Blob([worksImgFile], {
+    //   type: worksImgFile.type,
+    // })
+    const res = await uploadFormAndFilePickerResultToServerCommon(
+      filePickerConfig.value.filePickerUrl,
+      filePickerConfig.value.policyName,
+      getReviewTextServerRequestFormat(
+        worksData.value.author,
+        worksData.value.worksName,
+        worksData.value.worksIntroduce,
+      ),
+      worksImgBlob,
+    )
+    worksData.value.id = res?.design_id
+    worksData.value.checkStatus = 0
+  } catch (error: any) {
+    const { message } = error
+    const errorObject: ReviewTextRejectResult = JSON.parse(message)
+    const {
+      errorType,
+      errorDefaultText,
+      invalidKey,
+      invalidReasonDefaultText,
+    } = errorObject
+    if (errorType === ERROR_TYPE.REVIEW_TEXT_ERROR) {
+      showToast(invalidReasonDefaultText)
+      console.log(`${invalidKey}字段检测不通过`)
+    } else {
+      showToast(errorDefaultText)
     }
   }
 }
 
 onMounted(async () => {
-  // addEventListenerToImageUploads()
   listenUploadImgChange()
-  await initPageData()
+  // await initPageData()
 })
 </script>
 
@@ -1136,7 +1133,7 @@ onMounted(async () => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 268px;
+    width: 468px;
     height: 70px;
     color: #fff;
     font-size: 38px;

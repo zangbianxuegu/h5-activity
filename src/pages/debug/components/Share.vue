@@ -16,7 +16,7 @@ import {
   NGSHARE_CONTENT_TYPE,
 } from '@/utils/ngShare/types'
 import { ngshareByH5 } from '@/utils/ngShare/index'
-import { useBaseStore } from '@/stores/base'
+// import { useBaseStore } from '@/stores/base'
 
 interface ShareOption {
   name: string
@@ -61,11 +61,11 @@ const options: ShareOption[] = [
     icon: 'weibo',
     shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
   },
-  // {
-  //   name: '网易大神好友',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
-  // },
+  {
+    name: '网易大神好友',
+    icon: 'weibo',
+    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+  },
   // {
   //   name: 'QQ',
   //   icon: 'weibo',
@@ -88,7 +88,7 @@ const options: ShareOption[] = [
   // },
 ]
 
-const baseStore = useBaseStore()
+// const baseStore = useBaseStore()
 
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
   const shareLinkList = [
@@ -96,6 +96,7 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
     NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
     NGSHARE_SHARE_CHANNEL.WEI_BO,
     NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
   ]
   const shareImgList = [
     NGSHARE_SHARE_CHANNEL.BILIBILI,
@@ -110,13 +111,13 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
     shareConfig = {
       text: '分享文本',
       title: '分享标题',
-      link: 'http://10.227.199.103:5173/pages/debug/index.html',
+      link: 'http://10.227.199.103:5174/pages/debug/index.html',
       desc: '分享说明',
-      u3dshareThumb: ['netease', 'app_store'].includes(
-        baseStore.baseInfo.channel,
-      )
-        ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
-        : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png', // 分享缩略图地址(安卓必传)
+      // u3dshareThumb: ['netease', 'app_store'].includes(
+      //   baseStore.baseInfo.channel,
+      // )
+      //   ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
+      //   : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png', // 分享缩略图地址(安卓必传)
     }
   } else if (shareImgList.includes(option.shareChannel)) {
     shareConfig = {

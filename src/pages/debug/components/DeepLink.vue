@@ -20,7 +20,7 @@
 <script setup lang="ts">
 const openGame = (): void => {
   location.href =
-    'ntes://game.mobile/sky?type=w&url=http://10.227.199.103:5174/#/dice-mission?name=11&age=2'
+    'ntes://game.mobile/sky?type=w&url=http://10.227.199.103:5173/#/dice-mission?name=11&age=2'
 }
 
 // onMounted(() => {

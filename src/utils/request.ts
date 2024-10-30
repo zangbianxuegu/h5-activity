@@ -4,6 +4,7 @@ import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
 import dayjs from 'dayjs'
+import { closeToast, showLoadingToast } from 'vant'
 
 export function postMsgToNative(msg: {
   methodId: string
@@ -408,6 +409,11 @@ export function getErrorMessage(
  */
 export const saveImgToDeviceAlbum = (url: string): Promise<boolean> => {
   return new Promise((resolve, reject) => {
+    showLoadingToast({
+      message: '下载中...',
+      forbidClick: true,
+      duration: 0,
+    })
     postMsgToNative({
       methodId: 'saveWebImage',
       reqData: {
@@ -416,7 +422,13 @@ export const saveImgToDeviceAlbum = (url: string): Promise<boolean> => {
       callback: {
         nativeCallback: function (respJSONString: string) {
           const callbackRes = JSON.parse(respJSONString)
-          resolve(callbackRes.result)
+          const result = callbackRes.result
+          closeToast()
+          if (result === 'success') {
+            resolve(true)
+          } else if (result === 'failed') {
+            reject(new Error('下载图片失败'))
+          }
         },
       },
     })
