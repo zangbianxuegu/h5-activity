@@ -35,7 +35,7 @@
                   `${v.status}${i + 1}`,
                   `${v.status}${i + 1}-${index + 1}`,
                 ]"
-                @click="$emit('reward', $event, v, i + 1)"
+                @click="reward($event.target as HTMLElement, v, 1)"
               ></div>
             </div>
           </div>
@@ -76,9 +76,23 @@ defineProps<{
   name: string
 }>()
 
-defineEmits<
-  (e: 'reward', event: MouseEvent, item: Reward, index: number) => void
->()
+const emits =
+  defineEmits<
+    (e: 'reward', event: HTMLElement, item: Reward, index: number) => void
+  >()
+const reward = (event: HTMLElement, v: Reward, i: number): void => {
+  const grandparentElement = (event.parentElement as HTMLElement).parentElement
+  // 检查祖父级元素是否存在
+  if (grandparentElement) {
+    // 使用 children 属性获取所有直接子元素
+    const allChildren = grandparentElement.children
+    // 将 HTMLCollection 转换为数组以便使用数组方法
+    const childrenArray = Array.from(allChildren) as HTMLElement[]
+    childrenArray.forEach((child) => {
+      emits('reward', child, v, i)
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -163,7 +177,7 @@ $reward-bubble-wait-height: 120px;
   & > :first-child {
     position: absolute;
     top: -12px;
-    transform: scale(1.3) !important;
+    transform: scale(1.8) !important;
   }
 }
 </style>

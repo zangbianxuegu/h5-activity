@@ -63,10 +63,18 @@
                   <div
                     class="relative"
                     :aria-label="`累计任务 ${index + 1}: ${item.title}`"
-                    @click="handleReward($event, item, index + 1)"
+                    @click="
+                      handleReward(
+                        $event.target as HTMLElement,
+                        item,
+                        index + 1,
+                      )
+                    "
                   >
                     <can-reward-bubble-animation
-                      @click.stop="handleReward($event, item, 1 + 1)"
+                      @click.stop="
+                        handleReward($event.target as HTMLElement, item, 1 + 1)
+                      "
                       :ref="item.canRewardLottieRef"
                       :id="item.value"
                       class="acc-reward-can-dynamic-bubble"
@@ -163,6 +171,8 @@ interface RewardsName {
   trail_rainbow: '彩虹尾迹'
   tiny: '小不点'
   fireworks: '浪漫烟花'
+  kizuna_ai_dumpling: '中国绊爱饺子魔法'
+  outfit_wing_kizuna: '中国绊爱斗篷魔法'
 }
 
 // 定义单个奖励项接口
@@ -218,6 +228,8 @@ const rewardsText: RewardsName = {
   trail_rainbow: '彩虹尾迹',
   tiny: '小不点',
   fireworks: '浪漫烟花',
+  kizuna_ai_dumpling: '中国绊爱饺子魔法',
+  outfit_wing_kizuna: '中国绊爱斗篷魔法',
 }
 
 // 当前奖励
@@ -347,14 +359,16 @@ const ACC_TASK_ACTIVITY_INDEX = 5
 const createTaskList = (
   taskList: Reward[],
   activityIndex: number,
+  isAccTask: boolean = false,
 ): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
       const { award, value, stages } = eventData.value[activityIndex]
+      const awardIndex = isAccTask ? index : 0
       return {
         ...item,
         val: value,
-        status: getTaskStatus(award[index], value, stages[index]),
+        status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
       }
     })
   })
@@ -403,10 +417,12 @@ const allTaskList = processTaskList(TASKS.slice(0, 5))
 const hideTaskList = processTaskList([TASKS[5]])
 
 // 累积任务列表
-const accTaskList = createTaskList(ACC_TASK_LIST, 5)
+const accTaskList = createTaskList(ACC_TASK_LIST, 5, true)
 
 // 累计任务完成值
-const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value / 10)
+const accTaskValue = ref(
+  eventData.value[ACC_TASK_ACTIVITY_INDEX].value / 100000,
+)
 
 const sessionIsVisitedKey = 'isVisitedKizunaChina-2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -473,7 +489,8 @@ function getActivityData(): void {
         },
       }
       accTaskValue.value =
-        newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value
+        newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value /
+        100000
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -490,14 +507,14 @@ function getActivityData(): void {
  * @param rewardId 第几个奖励节点 不传默认1
  * @returns {void}
  */
-function handleReward(event: MouseEvent, item: Reward, rewardId: number): void {
+function handleReward(dom: HTMLElement, item: Reward, rewardId: number): void {
   const { value, status } = item
   if (status === 'redeemed') {
     return
   }
   if (status === 'wait') {
     showToast('还未完成任务')
-    clickBubbleReward(event)
+    clickBubbleReward(dom)
     return
   }
   claimMissionReward({
@@ -511,7 +528,7 @@ function handleReward(event: MouseEvent, item: Reward, rewardId: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      await bubbleBurst(event, item)
+      await bubbleBurst(dom, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
         return item.task_id === value
@@ -597,8 +614,7 @@ watchEffect(() => {
  * @param {MouseEvent} event - 鼠标事件
  * @returns {void}
  */
-const clickBubbleReward = (event: MouseEvent): void => {
-  const dom = event.target
+const clickBubbleReward = (dom: HTMLElement): void => {
   gsap
     .timeline()
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
@@ -614,33 +630,29 @@ const clickBubbleReward = (event: MouseEvent): void => {
  * @param {Reward} reward - 奖励对象
  * @returns {Promise<void>}
  */
-const bubbleBurst = async (
-  event: MouseEvent,
-  reward: Reward,
-): Promise<void> => {
+const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   // 果冻效果
-  clickBubbleReward(event)
-  const target = event.target
+  clickBubbleReward(dom)
   // 溅射效果
   await gsap
     .timeline()
-    .to(target, {
+    .to(dom, {
       scaleY: 0.8,
       duration: 0.2,
       ease: 'power1.in',
       opacity: 0.9,
     }) // 垂直压挤
-    .to(target, {
+    .to(dom, {
       scaleY: 1.1,
       duration: 0.2,
       ease: 'power1.out',
       opacity: 0.5,
     }) // 垂直拉伸
-    .to(target, {
+    .to(dom, {
       scaleY: 1,
       duration: 0.2,
       ease: 'power1.out',
