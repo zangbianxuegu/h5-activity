@@ -427,4 +427,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dayofdesign01_post_exhibit',
     },
   },
+  {
+    path: '/hmj-contribute',
+    name: 'HMJContribute',
+    component: () => import('@/views/HMJContribute'),
+    meta: {
+      title: '绘梦节投稿',
+      module: 'activitycenter_hmj_contribute',
+    },
+  },
 ]

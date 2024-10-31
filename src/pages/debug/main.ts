@@ -11,4 +11,6 @@ import 'vant/es/image-preview/style'
 vhCheck()
 
 const app = createApp(App)
+app.config.compilerOptions.isCustomElement = (tag) =>
+  ['wx-open-launch-app'].includes(tag)
 app.mount('#app')

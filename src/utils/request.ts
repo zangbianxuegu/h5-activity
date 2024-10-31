@@ -3,8 +3,10 @@ import { ERROR_MESSAGES } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
+import dayjs from 'dayjs'
+import { closeToast, showLoadingToast } from 'vant'
 
-function postMsgToNative(msg: {
+export function postMsgToNative(msg: {
   methodId: string
   reqData: any
   [key: string]: any
@@ -71,8 +73,17 @@ export function handlePostMessageToNative({
         content,
         '\n服务返回信息:',
         response,
+        '\n响应时间:',
+        dayjs().format('YYYY-MM-DD HH:mm:ss'),
       )
     }
+
+    console.log(
+      `请求类型: ${type}\n请求地址: ${resource}\n请求参数:`,
+      content,
+      '\n请求时间:',
+      dayjs().format('YYYY-MM-DD HH:mm:ss'),
+    )
 
     // 轮询等待 UniSDKJSBridge 挂载成功
     waitForUniSDKJSBridge(() => {
@@ -388,4 +399,38 @@ export function getErrorMessage(
   msg: string,
 ): string {
   return ERROR_MESSAGES[api][code][msg] || '服务器异常，请稍后重试'
+}
+
+/**
+ * 保存前端图片至系统相册 [iOS & Android]
+ * @function saveImgToDeviceAlbum
+ * @param {string} url 在线图片的url
+ * @returns {boolean} 上传是否成功的结果
+ */
+export const saveImgToDeviceAlbum = (url: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    showLoadingToast({
+      message: '下载中...',
+      forbidClick: true,
+      duration: 0,
+    })
+    postMsgToNative({
+      methodId: 'saveWebImage',
+      reqData: {
+        imageURL: url,
+      },
+      callback: {
+        nativeCallback: function (respJSONString: string) {
+          const callbackRes = JSON.parse(respJSONString)
+          const result = callbackRes.result
+          closeToast()
+          if (result === 'success') {
+            resolve(true)
+          } else if (result === 'failed') {
+            reject(new Error('下载图片失败'))
+          }
+        },
+      },
+    })
+  })
 }

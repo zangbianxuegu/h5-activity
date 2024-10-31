@@ -15,6 +15,7 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <div>
+            <RouterLink to="./file-test">file-test</RouterLink>
             <div class="task-list-container">
               <ul
                 class="task-list flex flex-row flex-wrap items-center justify-evenly bg-contain bg-center"
