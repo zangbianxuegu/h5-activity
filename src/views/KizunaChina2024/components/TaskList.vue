@@ -1,22 +1,35 @@
 <template>
   <div>
     <div
-      :class="[
-        'flex rounded-2xl',
-        name === 'allTaskList' ? 'task-list' : 'hide-task-list',
-      ]"
+      :class="['flex', name === 'allTaskList' ? 'task-list' : 'hide-task-list']"
     >
       <ul aria-labelledby="taskListHeading">
         <li
           v-for="(item, index) in taskList"
           :key="item.title"
           :class="[
-            'task-item mb-[10px] flex items-center justify-between',
+            'task-item mb-[14px] flex items-center justify-between',
             `task-item-${item.status}`,
           ]"
           :aria-label="`任务: ${item.title}`"
         >
-          <div class="flex">
+          <p
+            :class="[
+              'w-[300px] text-[32px]',
+              name === 'allTaskList' ? 'ml-[76px]' : 'ml-[36px]',
+            ]"
+          >
+            <span
+              :class="`${name === 'allTaskList' ? (item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-white') : 'text-white'}`"
+              >{{ item.title }}</span
+            >
+            <span
+              v-if="index === 4"
+              :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-[#fef282]'}`"
+              >（{{ item.val > 3 ? 3 : item.val }}/3）</span
+            >
+          </p>
+          <div class="mr-[10px] flex">
             <div
               v-for="(v, i) in item.content.value"
               :key="i"
@@ -39,17 +52,6 @@
               ></div>
             </div>
           </div>
-          <p class="ml-[16px] w-[600px] text-[32px]">
-            <span
-              :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-white'}`"
-              >{{ item.title }}</span
-            >
-            <span
-              v-if="index === 4"
-              :class="`${item.status === 'redeemed' ? 'text-[#b3b7c7]' : 'text-[#fef282]'}`"
-              >（{{ item.val }}/3）</span
-            >
-          </p>
         </li>
       </ul>
     </div>
@@ -78,44 +80,48 @@ defineProps<{
 
 const emits =
   defineEmits<
-    (e: 'reward', event: HTMLElement, item: Reward, index: number) => void
+    (e: 'reward', dom: HTMLElement[], item: Reward, index: number) => void
   >()
-const reward = (event: HTMLElement, v: Reward, i: number): void => {
-  const grandparentElement = (event.parentElement as HTMLElement).parentElement
+const reward = (dom: HTMLElement, item: Reward, index: number): void => {
+  const grandparentElement = (dom.parentElement as HTMLElement).parentElement
   // 检查祖父级元素是否存在
   if (grandparentElement) {
     // 使用 children 属性获取所有直接子元素
     const allChildren = grandparentElement.children
     // 将 HTMLCollection 转换为数组以便使用数组方法
     const childrenArray = Array.from(allChildren) as HTMLElement[]
-    childrenArray.forEach((child) => {
-      emits('reward', child, v, i)
-    })
+    emits('reward', childrenArray, item, index)
   }
 }
 </script>
 
 <style lang="scss" scoped>
 .task-list {
-  position: absolute;
-  left: 60px;
-  top: 300px;
-  padding: 20px;
-  background-color: rgba($color: #000000, $alpha: 0.6);
-  backdrop-filter: blur(8px);
+  .task-item {
+    width: 687px;
+    height: 163px;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-image: url('@/assets/images/kizuna-china-2024/row-bg.png');
+  }
+  .task-item-redeemed {
+    background-image: url('@/assets/images/kizuna-china-2024/row-bg-redeemed.png');
+  }
 }
 .hide-task-list {
-  position: absolute;
-  right: 50px;
-  top: 160px;
-  padding: 15px 30px;
-  background-color: rgba($color: #fff, $alpha: 0.2);
+  height: 230px;
+  width: 644px;
+  padding-top: 80px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-image: url('@/assets/images/kizuna-china-2024/hide-task-bg.png');
 }
 .reward {
   width: 140px;
-  height: 129px;
+  height: 130px;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
+  background-position: center;
   &.wait1 {
     background-image: url('@/assets/images/kizuna-china-2024/dumpling-wait.png');
   }
@@ -156,15 +162,6 @@ const reward = (event: HTMLElement, v: Reward, i: number): void => {
       background-image: url('@/assets/images/kizuna-china-2024/acc-task7-redeemed.png');
     }
   }
-}
-.task-item {
-  width: 600px;
-  height: 139px;
-  background-repeat: no-repeat;
-  background-size: 100% 100%;
-}
-.task-item-redeemed {
-  background-image: url('@/assets/images/kizuna-china-2024/row-bg-redeemed.png');
 }
 $reward-bubble-wait-width: 120px;
 $reward-bubble-wait-height: 120px;

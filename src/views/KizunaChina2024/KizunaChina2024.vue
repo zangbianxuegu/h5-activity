@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="double-eleven flex h-screen">
-      <div class="double-eleven-main">
+    <div class="kizuna-2024 flex h-screen">
+      <div class="kizuna-2024-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1
             class="title relative h-full overflow-hidden bg-contain bg-no-repeat"
@@ -26,46 +26,52 @@
             <TaskList
               :taskList="allTaskList"
               name="allTaskList"
+              class="absolute left-[5px] top-[190px] p-[20px]"
               @reward="handleReward"
             />
             <!-- 隐藏任务列表 -->
-            <div v-if="accTaskValue >= 100">
+            <div
+              v-if="accTaskValue >= 100"
+              class="animate__animated animate__fadeIn animate__slow absolute right-[22px] top-[120px]"
+            >
               <h2 id="hideTaskListHeading" class="sr-only">隐藏任务列表</h2>
               <TaskList
                 :taskList="hideTaskList"
                 name="hideTaskList"
                 @reward="handleReward"
               />
-              <p
-                class="absolute right-[150px] top-[350px] text-[32px] text-white"
-              >
-                旅人们记得使用拾光相机拍摄哦
-              </p>
+              <div class="mt-[4px] flex items-center justify-center">
+                <div class="tip-icon mr-[6px]"></div>
+                <p class="text-[32px] text-white">
+                  旅人们记得使用拾光相机拍摄哦
+                </p>
+              </div>
+              <div class="role ml-[26px] mt-[14px]"></div>
             </div>
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
             <div
-              class="absolute bottom-[50px] right-[50px] flex flex-col rounded-2xl p-4 backdrop-blur"
-              style="background-color: rgba(0, 0, 0, 0.25)"
+              class="absolute bottom-[10px] right-[10px] flex flex-col rounded-2xl p-4"
             >
-              <div class="h-[60px] text-[36px] leading-[60px] text-[#ffffff]">
-                全服任务！品尝中国绊爱饺子
-              </div>
+              <div
+                class="acc-task-title h-[60px] text-[36px] leading-[60px] text-[#ffffff]"
+              ></div>
+              <p class="sr-only">全服任务！品尝中国绊爱饺子</p>
               <ul
-                class="flex justify-between"
+                class="mt-[30px] flex justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="flex h-[250px] flex-col items-center justify-between"
+                  class="flex h-[220px] flex-col items-center justify-between"
                 >
                   <div
                     class="relative"
                     :aria-label="`累计任务 ${index + 1}: ${item.title}`"
                     @click="
                       handleReward(
-                        $event.target as HTMLElement,
+                        [$event.target] as HTMLElement[],
                         item,
                         index + 1,
                       )
@@ -73,7 +79,11 @@
                   >
                     <can-reward-bubble-animation
                       @click.stop="
-                        handleReward($event.target as HTMLElement, item, 1 + 1)
+                        handleReward(
+                          [$event.target] as HTMLElement[],
+                          item,
+                          1 + 1,
+                        )
                       "
                       :ref="item.canRewardLottieRef"
                       :id="item.value"
@@ -113,23 +123,72 @@
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年11月23日~2024年12月8日
+                2024年11月23日~2024年12月5日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
               </h3>
               <ul class="modal-text list-inside list-decimal">
-                <li v-for="item in taskRuleInfo" :key="item.description">
-                  {{ item.description }}，即可领取<span class="text-[#ffcb4d]"
-                    >惊喜礼包*{{ item.rewardCount }}</span
+                <li>
+                  活动期间，玩家装扮成1次中国绊爱，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >中国绊爱饺子魔法*1和中国绊爱大铁头礼包试用魔法*1</span
                   >
                 </li>
-                (打开惊喜礼包后可在<span class="text-[#ffcb4d]"
-                  >爱心、蜡烛、姆明季蜡烛、体型重塑、彩虹尾迹、留影蜡烛、共享空间、畅谈长桌、秋千</span
-                >中随机抽取一个)<br />
-                另外，活动期间<span class="text-[#ffcb4d]"
-                  >每累计使用20根蜡烛，可领取1个爱心，最多领取5次</span
-                >
+                <li>
+                  活动期间，搭建1个晃悠悠共享空间，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >中国绊爱饺子魔法*1和中国绊爱发饰试用魔法*1</span
+                  >
+                </li>
+                <li>
+                  活动期间，与大铁头进行1次互动，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >中国绊爱饺子魔法*1和中国绊爱斗篷魔法*1</span
+                  >
+                </li>
+                <li>
+                  活动期间，寻找头戴晃悠悠的光之子，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >中国绊爱饺子魔法*1和中国绊爱发型魔法*1</span
+                  >
+                </li>
+                <li>
+                  活动期间，连续3天与中国绊爱打招呼，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >中国绊爱饺子魔法*1和升华蜡烛*1</span
+                  >
+                </li>
+                <li>
+                  活动期间，统计全服玩家品尝中国绊爱饺子的进度，达到指定数量后可解锁全服奖励：<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;a.全服品尝200W个中国绊爱饺子，即可领取<span
+                    class="text-[#ffcb4d]"
+                    >浪漫烟花魔法*2</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;b.全服品尝400W个中国绊爱饺子，即可领取<span
+                    class="text-[#ffcb4d]"
+                    >小不点*2</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;c.全服品尝600W个中国绊爱饺子，即可领取<span
+                    class="text-[#ffcb4d]"
+                    >体型重塑*2</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;d.全服品尝800W个中国绊爱饺子，即可领取<span
+                    class="text-[#ffcb4d]"
+                    >蜡烛*2</span
+                  ><br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;e.全服品尝1000W个中国绊爱饺子，即可领取<span
+                    class="text-[#ffcb4d]"
+                    >爱心*2</span
+                  ><br />
+                </li>
+                <li>
+                  活动期间，达成品尝1000w中国绊爱饺子进度后，玩家可以通过完成隐藏任务获取额外奖励：<br />
+                  &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱与中国绊爱合影，即可领取
+                  <span class="text-[#ffcb4d]"
+                    >绊爱发型礼包试用魔法*1和璀璨之星魔法*1</span
+                  ><br />
+                </li>
               </ul>
             </section>
           </template>
@@ -160,19 +219,19 @@ interface Rewards {
 
 // 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
-  heart: '爱心'
-  candles: '蜡烛'
-  season_candle: '季节蜡烛'
-  recording_candle: '留影蜡烛'
-  sharedspace_candle: '共享空间'
-  table: '畅谈长桌'
-  swing: '秋千'
-  resize_potion: '体型重塑'
-  trail_rainbow: '彩虹尾迹'
-  tiny: '小不点'
+  kizuna_ai_dumpling: '中国绊爱饺子'
+  outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法'
+  outfit_horn_kizuna: '中国绊爱发饰试用魔法'
+  outfit_wing_kizuna: '中国绊爱斗篷'
+  outfit_hair_kizuna: '中国绊爱发型'
+  prestige: '升华蜡烛'
   fireworks: '浪漫烟花'
-  kizuna_ai_dumpling: '中国绊爱饺子魔法'
-  outfit_wing_kizuna: '中国绊爱斗篷魔法'
+  tiny: '小不点'
+  resize_potion: '体型重塑'
+  candles: '蜡烛'
+  heart: '爱心'
+  outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法'
+  glow: '璀璨之星'
 }
 
 // 定义单个奖励项接口
@@ -206,35 +265,26 @@ interface ProcessedTask {
   status: string // 任务状态
 }
 
-// 定义任务规则数组
-const taskRuleInfo = [
-  { description: '装扮成1次中国绊爱', rewardCount: 1 },
-  { description: '搭建1个晃悠悠共享空间', rewardCount: 1 },
-  { description: '与大铁头进行1次互动', rewardCount: 2 },
-  { description: '寻找头戴晃悠悠的光之子', rewardCount: 2 },
-  { description: '连续3天与中国绊爱打招呼', rewardCount: 3 },
-]
-
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
-  heart: '爱心',
-  candles: '蜡烛',
-  season_candle: '季节蜡烛',
-  recording_candle: '留影蜡烛',
-  sharedspace_candle: '共享空间',
-  table: '畅谈长桌',
-  swing: '秋千',
-  resize_potion: '体型重塑',
-  trail_rainbow: '彩虹尾迹',
-  tiny: '小不点',
+  kizuna_ai_dumpling: '中国绊爱饺子',
+  outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法',
+  outfit_horn_kizuna: '中国绊爱发饰试用魔法',
+  outfit_wing_kizuna: '中国绊爱斗篷',
+  outfit_hair_kizuna: '中国绊爱发型',
+  prestige: '升华蜡烛',
   fireworks: '浪漫烟花',
-  kizuna_ai_dumpling: '中国绊爱饺子魔法',
-  outfit_wing_kizuna: '中国绊爱斗篷魔法',
+  tiny: '小不点',
+  resize_potion: '体型重塑',
+  candles: '蜡烛',
+  heart: '爱心',
+  outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
+  glow: '璀璨之星',
 }
 
 // 当前奖励
 const curRewards: Ref<Rewards> = ref({
-  name: 'heart',
+  name: 'kizuna_ai_dumpling',
   count: 1,
 })
 
@@ -507,14 +557,20 @@ function getActivityData(): void {
  * @param rewardId 第几个奖励节点 不传默认1
  * @returns {void}
  */
-function handleReward(dom: HTMLElement, item: Reward, rewardId: number): void {
+function handleReward(
+  domList: HTMLElement[],
+  item: Reward,
+  rewardId: number,
+): void {
   const { value, status } = item
   if (status === 'redeemed') {
     return
   }
   if (status === 'wait') {
     showToast('还未完成任务')
-    clickBubbleReward(dom)
+    domList.forEach((dom) => {
+      clickBubbleReward(dom)
+    })
     return
   }
   claimMissionReward({
@@ -528,7 +584,12 @@ function handleReward(dom: HTMLElement, item: Reward, rewardId: number): void {
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      await bubbleBurst(dom, item)
+      // if (domList.length > 1) {
+      //   bubbleBurst(domList[0], item)
+      //   await bubbleBurst(domList[1], item)
+      // } else {
+      await bubbleBurst(domList[0], item)
+      // }
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
         return item.task_id === value
@@ -680,7 +741,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.double-eleven {
+.kizuna-2024 {
   position: relative;
   width: 2100px;
 
@@ -700,7 +761,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 .title {
   position: absolute;
   left: 50px;
-  top: 50px;
+  top: 0px;
   width: 946px;
   height: 471px;
   background-repeat: no-repeat;
@@ -708,24 +769,38 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 }
 .help {
   position: absolute;
-  width: 69px;
-  height: 69px;
-  left: 0;
-  top: 144px;
+  width: 89px;
+  height: 97px;
+  left: 844px;
+  top: 3px;
   background-repeat: no-repeat;
   background-image: url('@/assets/images/kizuna-china-2024/help.png');
+}
+.tip-icon {
+  width: 29px;
+  height: 46px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/kizuna-china-2024/tip-icon.png');
+}
+.role {
+  width: 467px;
+  height: 536px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/kizuna-china-2024/role.png');
 }
 .progress-container {
   position: absolute;
   bottom: 100px;
-  right: 100px;
-  width: 1010px;
+  right: 80px;
+  width: 1180px;
   height: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   .progress-bar {
     height: 16px;
-    background-color: #ffd972;
+    background-color: #ffd066;
     border-radius: 8px;
     transition: width 0.4s ease;
     position: relative;
@@ -735,20 +810,28 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
     position: absolute;
     right: -30px;
     top: -22px;
-    height: 65px;
-    width: 60px;
-    background-image: url('@/assets/images/kizuna-china-2024/star.png');
+    height: 63px;
+    width: 78px;
+    background-image: url('@/assets/images/kizuna-china-2024/dumpling.png');
     background-repeat: no-repeat;
     background-size: contain;
     transition: right 0.4s ease;
   }
 }
+.acc-task-title {
+  width: 1193px;
+  height: 47px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-image: url('@/assets/images/kizuna-china-2024/acc-task-title.png');
+}
 .acc-task-item {
-  width: 180px;
-  height: 180px;
-  margin: 0 20px;
+  width: 230px;
+  height: 160px;
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
   @for $i from 1 through 5 {
     &.wait#{$i} {
       background-image: url('@/assets/images/kizuna-china-2024/acc-task#{$i}-wait.png');
@@ -765,12 +848,12 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   width: 180px;
   height: 130px;
   position: absolute;
-  top: 40px;
-  left: 30px;
+  top: 20px;
+  left: 27px;
   & > :first-child {
     position: absolute;
     top: -12px;
-    transform: scale(1.9) !important;
+    transform: scale(1.8) !important;
   }
 }
 </style>
