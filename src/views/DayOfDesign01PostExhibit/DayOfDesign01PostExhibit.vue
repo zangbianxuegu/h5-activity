@@ -87,6 +87,7 @@
                     v-for="item in workData!.list"
                     :key="item.id"
                     class="relative cursor-pointer rounded bg-white shadow-md"
+                    @click="handleItemClick"
                   >
                     <img
                       :src="item.image_url"
@@ -195,6 +196,10 @@
             </section>
           </template>
         </activity-modal>
+        <works-detail-modal
+          v-model:show="isShowMyWorksModal"
+          :worksData="myWorksData"
+        ></works-detail-modal>
       </div>
     </div>
   </Transition>
@@ -207,6 +212,7 @@ import { getWorkList } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
 import Loading from '@/components/Loading'
+import WorksDetailModal from '../HMJContribute/components/WorksDetailModal.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -275,6 +281,28 @@ const isNextVisible = computed(
 // 为我推荐倒计时
 const countdown = ref(0)
 let timer: NodeJS.Timeout | undefined
+const isShowMyWorksModal = ref(false)
+interface WorksData {
+  author: string
+  worksName: string
+  worksIntroduce: string
+  id: string
+  checkStatus: number | undefined
+  worksImg?: File | undefined
+  worksImgSrc: string
+  worksDecorateImg?: File | undefined
+  worksDecorateImgSrc?: string
+}
+
+const myWorksData = ref<WorksData>({
+  id: '',
+  author: '',
+  worksName: '',
+  worksIntroduce: '',
+  worksImgSrc: '',
+  checkStatus: undefined,
+  worksDecorateImgSrc: '',
+})
 
 onMounted(() => {
   Session.set(sessionIsVisitedKey, true)
@@ -352,6 +380,10 @@ function getCollectedData(dir?: string): void {
  */
 function searchItems(): void {
   getWorkData()
+}
+
+function handleItemClick(): void {
+  isShowMyWorksModal.value = true
 }
 
 /**
