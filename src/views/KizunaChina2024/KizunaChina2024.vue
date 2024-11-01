@@ -584,12 +584,7 @@ function handleReward(
         name: Object.keys(rewards)[0],
         count: Number(Object.values(rewards)[0]),
       }
-      // if (domList.length > 1) {
-      //   bubbleBurst(domList[0], item)
-      //   await bubbleBurst(domList[1], item)
-      // } else {
-      await bubbleBurst(domList[0], item)
-      // }
+      await handleBubbleBurst(domList, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
         return item.task_id === value
@@ -605,6 +600,21 @@ function handleReward(
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+/**
+ * @function 处理气泡爆炸动画
+ * @param {HTMLElement[]} domList - 需要处理动画的DOM元素列表
+ * @param {Reward} item - 奖励对象
+ * @returns {Promise<void>}
+ * @description 并行处理所有元素的气泡爆炸动画
+ */
+async function handleBubbleBurst(
+  domList: HTMLElement[],
+  item: Reward,
+): Promise<void> {
+  // 使用 Promise.all 并行处理所有元素的动画
+  await Promise.all(domList.map((dom) => bubbleBurst(dom, item)))
 }
 
 /**
