@@ -253,7 +253,7 @@ const isEnd = ref(false)
 // 当前奖励
 const curRewards = ref<Rewards>([{ count: 10, name: 'heytea_coupon' }])
 // 喜茶优惠券
-const heyteaRewards = ref<HeyteaRewards>([{ type: '', code: '' }])
+const heyteaRewards = ref<HeyteaRewards | null>(null)
 // 已完成圈数
 const turns = useStorage('dice-map-turns', 0)
 
