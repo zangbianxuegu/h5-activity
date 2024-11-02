@@ -171,4 +171,86 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'not recently online': '非法请求，请在游戏内打开',
     },
   },
+
+  get_file_picker_token: {
+    400: {
+      invalid_method: '参数method错误',
+      invalid_extra_info: '参数extrainfo错误',
+      invalid_policy_name: '参数policy_name错误',
+      inactive_policy: '参数policy_name错误或配置出错',
+      'bad request': '非法请求',
+    },
+  },
+
+  review_text: {
+    400: {
+      'bad request': '非法请求',
+    },
+  },
+
+  upload_filepicker_result: {
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+    409: {
+      'already exists': '作品信息已经存在',
+    },
+    400: {
+      'bad request': '非法请求',
+      'repeat request': '请求频繁，请稍后重试',
+    },
+    401: {
+      'invalid user': '非法用户',
+    },
+  },
+
+  get_design_details: {
+    400: {
+      'bad request': '非法请求',
+    },
+  },
+
+  delete_player_design: {
+    400: {
+      'bad request': '非法请求',
+      'repeat request': '请求频繁，请稍后重试',
+    },
+    401: {
+      'invalid user': '非法用户',
+    },
+  },
+
+  update_design_file_url: {
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+    401: {
+      'invalid user': '非法用户',
+    },
+    404: {
+      'not found': '作品不存在',
+    },
+  },
+
+  update_favorites: {
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+    400: {
+      'bad request': '非法请求',
+      'repeat request': '请求频繁，请稍后重试',
+    },
+    401: {
+      'invalid user': '非法用户',
+    },
+    403: {
+      'count limit': '收藏数量超出限制',
+    },
+    404: {
+      'not found': '找不到对应作品',
+    },
+    409: {
+      'already exists': '作品已收藏过',
+    },
+  },
 }
