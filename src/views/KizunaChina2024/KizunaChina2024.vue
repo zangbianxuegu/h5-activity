@@ -532,7 +532,7 @@ function getActivityData(): void {
 }
 
 /**
- * 适配异性滚动条 计算累积任务值
+ * 适配异形滚动条 计算累积任务值
  * @param accTaskVal 累积任务原始值
  * @returns 计算后的累积任务值占比
  */
