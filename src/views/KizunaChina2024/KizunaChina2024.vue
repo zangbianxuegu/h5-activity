@@ -40,13 +40,7 @@
                 name="hideTaskList"
                 @reward="handleReward"
               />
-              <div class="mt-[4px] flex items-center justify-center">
-                <div class="tip-icon mr-[6px]"></div>
-                <p class="text-[32px] text-white">
-                  旅人们记得使用拾光相机拍摄哦
-                </p>
-              </div>
-              <div class="role ml-[26px] mt-[14px]"></div>
+              <div class="role ml-[26px] mt-[62px]"></div>
             </div>
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
@@ -794,13 +788,6 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   top: 3px;
   background-repeat: no-repeat;
   background-image: url('@/assets/images/kizuna-china-2024/help.png');
-}
-.tip-icon {
-  width: 29px;
-  height: 46px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/kizuna-china-2024/tip-icon.png');
 }
 .role {
   width: 467px;
