@@ -211,12 +211,6 @@ import gsap from 'gsap'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import TaskList from './components/TaskList.vue'
 
-// 定义奖励接口
-interface Rewards {
-  name: string // 奖励名称
-  count: number // 奖励数量
-}
-
 // 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
   kizuna_ai_dumpling: '中国绊爱饺子'
@@ -281,12 +275,6 @@ const rewardsText: RewardsName = {
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
   glow: '璀璨之星',
 }
-
-// 当前奖励
-const curRewards: Ref<Rewards> = ref({
-  name: 'kizuna_ai_dumpling',
-  count: 1,
-})
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -470,9 +458,7 @@ const hideTaskList = processTaskList([TASKS[5]])
 const accTaskList = createTaskList(ACC_TASK_LIST, 5, true)
 
 // 累计任务完成值
-const accTaskValue = ref(
-  eventData.value[ACC_TASK_ACTIVITY_INDEX].value / 100000,
-)
+const accTaskValue = ref(0)
 
 const sessionIsVisitedKey = 'isVisitedKizunaChina-2024'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -538,9 +524,10 @@ function getActivityData(): void {
           ),
         },
       }
-      accTaskValue.value =
+      const accTaskVal =
         newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value /
         100000
+      accTaskValue.value = calculateAccTaskValue(accTaskVal)
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -548,6 +535,30 @@ function getActivityData(): void {
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+/**
+ * 适配异性滚动条 计算累积任务值
+ * @param accTaskVal 累积任务原始值
+ * @returns 计算后的累积任务值占比
+ */
+function calculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 100) return 100
+  switch (true) {
+    case accTaskVal <= 4:
+      return accTaskVal
+    case accTaskVal <= 10:
+      return accTaskVal - 4
+    case accTaskVal <= 40:
+      return accTaskVal - 8
+    case accTaskVal <= 80:
+      return accTaskVal - 7
+    case accTaskVal < 100:
+      return accTaskVal - 6
+    default:
+      return 0 // 其他情况（理论上不会发生），返回0
+  }
 }
 
 /**
@@ -580,10 +591,6 @@ function handleReward(
   })
     .then(async (res) => {
       const rewards = res.data.rewards
-      curRewards.value = {
-        name: Object.keys(rewards)[0],
-        count: Number(Object.values(rewards)[0]),
-      }
       await handleBubbleBurst(domList, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
@@ -591,9 +598,11 @@ function handleReward(
       })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
-      showToast(
-        `领取成功，您获得了 ${rewardsText[curRewards.value.name as keyof RewardsName]}*${curRewards.value.count}`,
-      )
+      let text = '领取成功，您获得了'
+      for (const [item, quantity] of Object.entries(rewards)) {
+        text += ` ${rewardsText[item as keyof RewardsName]}*${quantity as number}`
+      }
+      showToast(text)
       // 更新红点
       setRedDot()
     })

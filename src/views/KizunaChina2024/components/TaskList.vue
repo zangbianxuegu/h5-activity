@@ -32,7 +32,7 @@
           <div class="mr-[10px] flex">
             <div
               v-for="(v, i) in item.content.value"
-              :key="i"
+              :key="item.title + v.id"
               class="relative mr-[4px]"
             >
               <can-reward-bubble-animation
@@ -90,7 +90,11 @@ const reward = (dom: HTMLElement, item: Reward, index: number): void => {
     const allChildren = grandparentElement.children
     // 将 HTMLCollection 转换为数组以便使用数组方法
     const childrenArray = Array.from(allChildren) as HTMLElement[]
-    emits('reward', childrenArray, item, index)
+    const bubbleBurstDomList = [
+      childrenArray[0].lastElementChild,
+      childrenArray[1].lastElementChild,
+    ] as HTMLElement[]
+    emits('reward', bubbleBurstDomList, item, index)
   }
 }
 </script>
