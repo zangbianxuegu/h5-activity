@@ -872,7 +872,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   & > :first-child {
     position: absolute;
     top: -12px;
-    transform: scale(1.8) !important;
+    transform: scale(1.75) !important;
   }
 }
 </style>
