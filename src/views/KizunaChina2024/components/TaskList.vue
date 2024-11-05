@@ -37,7 +37,7 @@
             >
               <can-reward-bubble-animation
                 :ref="v.canRewardLottieRef"
-                :id="`${v.value}${index}${i}`"
+                :id="`${v.taskId}${index}${i}`"
                 class="reward-can-dynamic-bubble"
               ></can-reward-bubble-animation>
               <div
@@ -65,7 +65,7 @@ import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
  */
 interface Reward {
   id: number
-  value: string
+  taskId: string
   title: string
   status: 'wait' | 'redeemed' | 'can' | string
   val: number

@@ -40,7 +40,13 @@
                 name="hideTaskList"
                 @reward="handleReward"
               />
-              <div class="role ml-[26px] mt-[62px]"></div>
+              <div class="mt-[4px] flex items-center justify-center">
+                <div class="tip-icon mr-[6px]"></div>
+                <p class="text-[32px] text-white">
+                  旅人们记得使用拾光相机拍摄哦
+                </p>
+              </div>
+              <div class="role ml-[26px] mt-[14px]"></div>
             </div>
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
@@ -48,17 +54,17 @@
               class="absolute bottom-[10px] right-[10px] flex flex-col rounded-2xl p-4"
             >
               <div
-                class="acc-task-title h-[60px] text-[36px] leading-[60px] text-[#ffffff]"
+                class="acc-task-title absolute bottom-[314px] right-[80px] h-[60px] text-[36px] leading-[60px] text-[#ffffff]"
               ></div>
               <p class="sr-only">全服任务！品尝中国绊爱饺子</p>
               <ul
-                class="mt-[30px] flex justify-between"
+                class="absolute bottom-[60px] right-[40px] flex justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="flex h-[220px] flex-col items-center justify-between"
+                  class="flex h-[230px] flex-col items-center justify-between"
                 >
                   <div
                     class="relative"
@@ -80,7 +86,7 @@
                         )
                       "
                       :ref="item.canRewardLottieRef"
-                      :id="item.value"
+                      :id="item.taskId"
                       class="acc-reward-can-dynamic-bubble"
                     ></can-reward-bubble-animation>
                     <div
@@ -225,7 +231,7 @@ interface RewardsName {
 // 定义单个奖励项接口
 interface Reward {
   id: number // 奖励ID
-  value: string // 奖励字段名
+  taskId: string // 任务字段名
   title: string // 奖励标题
   status: 'wait' | 'redeemed' | 'can' | string // 奖励状态
   val: number // 奖励值
@@ -309,9 +315,9 @@ const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
 
 // 创建任务的函数
-const taskItem = (
+const createTaskItem = (
   id: number,
-  value: string,
+  taskId: string,
   title: string,
   status = 'wait',
   val = 0,
@@ -321,7 +327,7 @@ const taskItem = (
   hadRenderLottie = ref(false),
 ): Reward => ({
   id,
-  value,
+  taskId,
   title,
   status,
   val,
@@ -331,16 +337,32 @@ const taskItem = (
 
 // 任务列表
 const TASK_LIST = [
-  taskItem(1, 'activitycenter_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
-  taskItem(2, 'activitycenter_kizuna_china_2024_m2', '搭建1个晃悠悠共享空间'),
-  taskItem(3, 'activitycenter_kizuna_china_2024_m3', '与大铁头进行1次互动'),
-  taskItem(4, 'activitycenter_kizuna_china_2024_m4', '寻找头戴晃悠悠的光之子'),
-  taskItem(5, 'activitycenter_kizuna_china_2024_m5', '连续3天与中国绊爱打招呼'),
+  createTaskItem(1, 'activitycenter_kizuna_china_2024_m1', '装扮成1次中国绊爱'),
+  createTaskItem(
+    2,
+    'activitycenter_kizuna_china_2024_m2',
+    '搭建1个晃悠悠共享空间',
+  ),
+  createTaskItem(
+    3,
+    'activitycenter_kizuna_china_2024_m3',
+    '与大铁头进行1次互动',
+  ),
+  createTaskItem(
+    4,
+    'activitycenter_kizuna_china_2024_m4',
+    '寻找头戴晃悠悠的光之子',
+  ),
+  createTaskItem(
+    5,
+    'activitycenter_kizuna_china_2024_m5',
+    '连续3天与中国绊爱打招呼',
+  ),
 ]
 
 // 创建任务列表的函数
 const createTaskLists = (key: string, name: string, length = 2): Reward[] =>
-  Array.from({ length }, (_, i) => taskItem(i + 1, key, name))
+  Array.from({ length }, (_, i) => createTaskItem(i + 1, key, name))
 
 // 定义任务配置
 const TASK_MAP = [
@@ -358,7 +380,7 @@ const [TASK_LIST1, TASK_LIST2, TASK_LIST3, TASK_LIST4, TASK_LIST5, TASK_LIST7] =
 
 // 累计任务
 const ACC_TASK_LIST: Reward[] = Array.from({ length: 5 }, (_, i) =>
-  taskItem(
+  createTaskItem(
     i + 1,
     'activitycenter_kizuna_china_2024_m6',
     `品尝${(i + 1) * 200}W个中国绊爱饺子`,
@@ -371,7 +393,7 @@ const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 // 任务排序
 const taskOrderMap = new Map(
   [...TASK_LIST, ACC_TASK_LIST[0], TASK_LIST7[0]].map((task, index) => [
-    task.value,
+    task.taskId,
     index,
   ]),
 )
@@ -557,8 +579,8 @@ function calculateAccTaskValue(accTaskVal: number): number {
 
 /**
  * @function 领奖
- * @param event 鼠标事件
- * @param item 任务项
+ * @param domList DOM元素列表
+ * @param item 奖励项
  * @param rewardId 第几个奖励节点 不传默认1
  * @returns {void}
  */
@@ -567,7 +589,7 @@ function handleReward(
   item: Reward,
   rewardId: number,
 ): void {
-  const { value, status } = item
+  const { taskId, status } = item
   if (status === 'redeemed') {
     return
   }
@@ -580,7 +602,7 @@ function handleReward(
   }
   claimMissionReward({
     event: EVENT_NAME,
-    task: value,
+    task: taskId,
     rewardId,
   })
     .then(async (res) => {
@@ -588,7 +610,7 @@ function handleReward(
       await handleBubbleBurst(domList, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
-        return item.task_id === value
+        return item.task_id === taskId
       })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
@@ -685,7 +707,7 @@ watchEffect(() => {
 
 /**
  * @function 点击气泡弹弹弹的果冻效果
- * @param {MouseEvent} event - 鼠标事件
+ * @param {HTMLElement} dom - dom元素
  * @returns {void}
  */
 const clickBubbleReward = (dom: HTMLElement): void => {
@@ -700,7 +722,7 @@ const clickBubbleReward = (dom: HTMLElement): void => {
 
 /**
  * @function 气泡爆炸动画
- * @param {MouseEvent} event - 鼠标事件
+ * @param {HTMLElement} dom - dom元素
  * @param {Reward} reward - 奖励对象
  * @returns {Promise<void>}
  */
@@ -789,6 +811,13 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   background-repeat: no-repeat;
   background-image: url('@/assets/images/kizuna-china-2024/help.png');
 }
+.tip-icon {
+  width: 29px;
+  height: 46px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/kizuna-china-2024/tip-icon.png');
+}
 .role {
   width: 467px;
   height: 536px;
@@ -798,9 +827,9 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 }
 .progress-container {
   position: absolute;
-  bottom: 100px;
-  right: 80px;
-  width: 1180px;
+  bottom: 114px;
+  right: 90px;
+  width: 1100px;
   height: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
