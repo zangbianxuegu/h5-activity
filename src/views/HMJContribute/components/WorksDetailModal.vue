@@ -49,7 +49,7 @@
                       <van-icon name="down" />
                     </div>
                     <div v-if="isOther" @click.stop="onClickHandleBarLike">
-                      <van-icon name="like-o" />
+                      <van-icon :name="favorite ? 'like' : 'like-o'" />
                     </div>
                   </div>
                 </div>
@@ -71,8 +71,10 @@ import { showShare } from '@/utils/ngShare/share'
 import ClipboardJS from 'clipboard'
 import { useBaseStore } from '@/stores/base'
 import { saveImgToDeviceAlbum } from '@/utils/request'
-import { deleteDesignDetails, updateFavorites } from '@/apis/dayofdesign01'
 import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
+import { deleteDesignDetails, updateFavorites } from '@/apis/dayOfDesign01'
+import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
+import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -89,7 +91,6 @@ const props = defineProps<{
     worksIntroduce: string
     worksImgSrc: string
     worksDecorateImgSrc: string
-    isFavorite: boolean
   }
   filePickerConfig: {
     policyName: string
@@ -201,17 +202,19 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const onClickHandleBarLike = async (): Promise<void> => {
   try {
+    const favoriteResult = !props.favorite
     if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
       await updateFavorites(
         props.worksData.id,
-        !props.worksData.isFavorite,
+        favoriteResult,
         props.event,
+        FILE_PICKER_POLICY_NAME,
       )
-      showToast(!props.worksData.isFavorite ? '取消收藏成功' : '收藏成功')
-      emits('update:favorite', !props.worksData.isFavorite)
+      showToast(favoriteResult ? '收藏成功' : '取消收藏成功')
+      emits('update:favorite', !props.favorite)
     }
-  } catch (error) {
-    showToast(error as string)
+  } catch (error: any) {
+    showToast(error?.message as string)
   }
 }
 

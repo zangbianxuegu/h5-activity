@@ -9,7 +9,6 @@ import {
 import type { Response } from '@/types'
 import type { UploadImgToFilePickerResponse } from './types'
 import { getSkyFilePicker } from './constant'
-import { getBlobWithMd5 } from '../file'
 
 /**
  * 获取file [iOS & Android]
@@ -169,7 +168,7 @@ export const uploadFormAndFilePickerResultToServer = (
     }
     void handlePostMessageToNative({
       type: 'protocol',
-      resource: '/account/web/upload_filepicker_result',
+      resource: '',
       content: {
         result_code: FilePickerUploadResultCode,
         policy_name: policyName,
@@ -224,48 +223,6 @@ export const uploadFormAndFilePickerResultToServer = (
               new Error(getErrorMessage('upload_filepicker_result', code, msg)),
             )
           }
-        }
-      },
-    })
-  })
-}
-
-/**
- * 上传filePicker的存储结果至服务器(不包括form数据)
- * @function uploadWorksDataToServer
- * @param {string} FilePickerUploadResultCode 一般转发至filepicker的响应码,但如果不是200即成功,前端不应该调用此接口
- * @param {string} policyName 策略名,与获取filepicker token所传参数一致
- * @param {string} reviewObj 需要检测的文本数据
- * @param {string} fileUrl 上传成功至filepicker所获取的文件存储地址
- * @returns {Record<string, any>} 上传成功的响应,eg:"data":{"design_id":xxx}}
- */
-export const uploadFilePickerResultToServer = (
-  fileUrl: string,
-): Promise<Record<string, any>> => {
-  return new Promise((resolve, reject) => {
-    void handlePostMessageToNative({
-      type: 'protocol',
-      resource: '/account/web/update_design_file_url',
-      content: {
-        file_url: fileUrl,
-      },
-      handleRes: (res) => {
-        console.log('res', res)
-        const {
-          code,
-          msg,
-        }: {
-          code: 200 | 400 | 500
-          msg: string
-        } = res
-        if (code === 200) {
-          resolve({
-            file_url: fileUrl,
-          })
-        } else {
-          reject(
-            new Error(getErrorMessage('update_design_file_url', code, msg)),
-          )
         }
       },
     })
@@ -332,59 +289,5 @@ export const uploadFormAndFilePickerResultToServerCommon = async (
   } catch (e: any) {
     console.log('uploadFormAndFilePickerResultToServerCommon error', e)
     throw e.message
-  }
-}
-
-/**
- * @description 上传稿件至filepicker并完成投稿（无需检查文本）
- * @function uploadFilePickerResultToServerCommon
- * @param filePickerUrl filePicker的上传地址
- * @param policyName 策略名
- * @param imgBlob 上传的图片
- * @returns 返回后端的响应
- */
-export const uploadFilePickerResultToServerCommon = async (
-  filePickerUrl: string,
-  policyName: string,
-  imgBlob: Blob,
-): Promise<Record<string, any> | undefined> => {
-  try {
-    const md5Result: string = await getBlobWithMd5(imgBlob)
-
-    // 获取filepicker token
-    const token = await getFilePickerToken(filePickerUrl, policyName, md5Result)
-    if (token) {
-      // 上传稿件至filepicker
-      const uploadResult = await uploadImgToFilePicker(token, imgBlob)
-      if (uploadResult?.url) {
-        const currentUoloadFileUrl = uploadResult.url
-        // 存储稿件最终数据至服务端,完成投稿
-        const uploadDataToServerResult =
-          await uploadFilePickerResultToServer(currentUoloadFileUrl)
-        if (uploadDataToServerResult) {
-          return {
-            ...uploadDataToServerResult,
-          }
-        }
-      }
-    }
-  } catch (e: any) {
-    console.log('uploadFilePickerResultToServerCommon error', e)
-    throw e.message
-  }
-}
-
-export const uploadToFilePicker = async (
-  filePickerUrl: string,
-  policyName: string,
-  imgBlob: Blob,
-): Promise<void> => {
-  const md5Result: string = await getBlobWithMd5(imgBlob)
-  // 获取filepicker token
-  const token = await getFilePickerToken(filePickerUrl, policyName, md5Result)
-  if (token) {
-    // 上传稿件至filepicker
-    const uploadResult = await uploadImgToFilePicker(token, imgBlob)
-    console.log('uploadResult', uploadResult)
   }
 }

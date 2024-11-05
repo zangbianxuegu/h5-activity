@@ -4,13 +4,7 @@
       <div class="hmj-contribute-main">
         <Transition appear mode="out-in">
           <div class="main-container">
-            <div class="test-btn-group absolute">
-              <van-button
-                type="primary"
-                @click="onClickUploadSameImgToFilePicker"
-                >测试传同一张照片到filePicker</van-button
-              >
-            </div>
+            <div class="test-btn-group absolute"></div>
             <div class="header">
               <h1>投递稿件</h1>
               <p>投递期：2025年1月1日~2025年1月31日</p>
@@ -346,29 +340,29 @@ import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import ClipboardJS from 'clipboard'
-import {
-  uploadFilePickerResultToServerCommon,
-  uploadFormAndFilePickerResultToServerCommon,
-  uploadToFilePicker,
-} from '@/utils/filePicker'
 
-import {
-  DEFAULT_FILE_PICKER_POLICY_NAME,
-  getSkyFilePicker,
-} from '@/utils/filePicker/constant'
+import { getSkyFilePicker } from '@/utils/filePicker/constant'
 import { useEnvironment } from '@/composables/useEnvironment'
-import { deleteDesignDetails, getDesignDetails } from '@/apis/dayofdesign01'
 import {
   DESIGN_REVIEW_STATUS,
   type SelfDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import { blobToUrl } from '@/utils/file'
-import { groupNameAndCodeMap } from '@/constants/dayofdesign01'
+import {
+  FILE_PICKER_POLICY_NAME,
+  FILE_PICKER_SHARE_IMG_POLICY_NAME,
+  groupNameAndCodeMap,
+} from '@/constants/dayofdesign01'
 import { type ReviewTextRejectResult } from '@/utils/filePicker/types'
 import {
   DESIGN_DETAILS_TYPE,
   EVENT_DAY_OF_DESIGN_01,
 } from '@/types/activity/dayofdesign01'
+import {
+  deleteDesignDetails,
+  getDesignDetails,
+  uploadWorksToServer,
+} from '@/apis/dayOfDesign01'
 
 const isFavorite = ref(false)
 
@@ -668,17 +662,6 @@ const removeUploadImg = (): void => {
   worksData.value.worksImgSrc = ''
 }
 
-// 请求后端检查作品信息是否合规
-const checkWorkInfoValid = (): Promise<boolean> => {
-  showToast('作品信息检查中...')
-  // const { author, workName, workIntroduce } = workInfo.value
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true)
-    }, 1000)
-  })
-}
-
 // 删除作品确认弹窗
 const showConfirmDialogForReupload = (): void => {
   void showConfirmDialog({
@@ -757,10 +740,6 @@ const onClickContributeWorks = async (): Promise<void> => {
       )
       return
     }
-    // 检查信息是否合规
-    const checkResult = await checkWorkInfoValid()
-    // eslint-disable-next-line no-useless-return
-    if (!checkResult) return
 
     // 预览
     previewData.value.isShow = true
@@ -798,12 +777,13 @@ const changeDomToImage = (): Promise<void> => {
 
 const filePickerConfig = ref({
   token: '',
-  policyName: DEFAULT_FILE_PICKER_POLICY_NAME,
+  policyName: FILE_PICKER_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_SHARE_IMG_POLICY_NAME,
   filePickerUrl: getSkyFilePicker(),
   currentUoloadFileUrl: '',
 })
 
-const isShowMyWorksModal = ref(true)
+const isShowMyWorksModal = ref(false)
 const myWorksData = ref<MyWorksData>({
   id: '',
   author: '',
@@ -826,56 +806,8 @@ const onClickViewMyWorks = async (): Promise<void> => {
   isShowMyWorksModal.value = true
 }
 
-const onClickUploadSameImgToFilePicker = async (): Promise<void> => {
-  try {
-    const response = await fetch(
-      'http://10.227.199.103:7897/images/0bc9a170bd2ca6debd1017600.jpg',
-    )
-    const blob = await response.blob()
-
-    await uploadToFilePicker(
-      filePickerConfig.value.filePickerUrl,
-      'anniversary_return_resources',
-      blob,
-    )
-  } catch (error) {
-    console.log('onClickUploadSameImgToFilePicker error', error)
-  }
-}
-
-// 上传拼装图
-const uploadWroksDecorate = async (): Promise<void> => {
-  try {
-    await changeDomToImage()
-    const { file_url: fileUrl } = (await uploadFilePickerResultToServerCommon(
-      filePickerConfig.value.filePickerUrl,
-      'anniversary_return_resources',
-      worksData.value.worksDecorateImg as Blob,
-    )) as {
-      file_url: string
-    }
-    if (fileUrl) {
-      worksData.value.worksDecorateImgSrc = fileUrl
-    }
-  } catch (error) {
-    console.log('uploadWroksDecorate error', error)
-    worksData.value.worksDecorateImgSrc = ''
-  }
-}
-
 const initPageData = async (): Promise<void> => {
   await updateDesignDetails()
-  if (
-    worksData.value.checkStatus === DESIGN_REVIEW_STATUS.PASSED &&
-    !worksData.value.worksDecorateImgSrc
-  ) {
-    // 原图通过审核，并且没有上传拼装图，再次上传拼装图
-    try {
-      void uploadWroksDecorate()
-    } catch (error) {
-      console.log('uploadWroksDecorate error', error)
-    }
-  }
 }
 
 interface ReviewTextServerRequestFormat {
@@ -905,26 +837,41 @@ const currentWorksPureId = computed(() => {
 })
 
 const confirmSubmitWork = async (): Promise<void> => {
+  showLoadingToast({
+    message: '正在投稿...',
+    forbidClick: true,
+    duration: 0,
+  })
+  await changeDomToImage()
   try {
-    if (worksData.value.worksImg) {
-      const res = await uploadFormAndFilePickerResultToServerCommon(
+    if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
+      const res = await uploadWorksToServer(
         filePickerConfig.value.filePickerUrl,
         filePickerConfig.value.policyName,
+        filePickerConfig.value.shareImgPolicyName,
         getReviewTextServerRequestFormat(
           worksData.value.author,
           worksData.value.worksName,
           worksData.value.worksIntroduce,
         ),
         worksData.value.worksImg,
+        worksData.value.worksDecorateImg,
       )
       worksData.value.id = res?.design_id
       worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
+      closeToast()
       showToast('投稿成功')
+    } else {
+      closeToast()
+      showToast('投稿出错，请稍后重试')
     }
   } catch (error: any) {
+    closeToast()
+    console.log('confirmSubmitWork error', error)
+    console.log('confirmSubmitWork error message', error.message)
     const { message } = error
     console.log('confirmSubmitWork error', message)
-    if (message.includes('errorType')) {
+    if (message?.includes('errorType')) {
       // 字段检测异常的错误处理
       const errorObject: ReviewTextRejectResult = JSON.parse(message)
       const { invalidKey, invalidReasonDefaultText } = errorObject
@@ -951,7 +898,15 @@ const updateDesignDetails = async (): Promise<void> => {
       worksData.value.worksDecorateImgSrc = designDetails.share_url
       worksData.value.checkStatus = designDetails.review_status
     } else {
-      showToast('请先上传作品')
+      worksData.value.id = ''
+      worksData.value.author = ''
+      worksData.value.worksName = ''
+      worksData.value.worksIntroduce = ''
+      worksData.value.worksImgSrc = ''
+      worksData.value.worksImg = null
+      worksData.value.worksDecorateImgSrc = ''
+      worksData.value.worksDecorateImg = null
+      worksData.value.checkStatus = undefined
     }
   } catch (error) {}
 }
