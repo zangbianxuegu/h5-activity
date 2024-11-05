@@ -374,6 +374,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '中国绊爱 与光重逢',
+    value: 'activitycenter_kizuna_china_2024',
+    routeName: 'KizunaChina2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
