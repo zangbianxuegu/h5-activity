@@ -731,8 +731,6 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
-  // 果冻效果
-  clickBubbleReward(dom)
   // 溅射效果
   await gsap
     .timeline()
