@@ -360,6 +360,27 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '魔法畅享',
+    value: 'activitycenter_double_eleven_2024_1',
+    routeName: 'DoubleEleven2024_1',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '遇见惊喜',
+    value: 'activitycenter_double_eleven_2024_2',
+    routeName: 'DoubleEleven2024_2',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '中国绊爱 与光重逢',
+    value: 'activitycenter_kizuna_china_2024',
+    routeName: 'KizunaChina2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '活动会场',
     value: 'activitycenter_dayofdesign01_post_exhibit',
     routeName: 'DayOfDesign01PostExhibit',
