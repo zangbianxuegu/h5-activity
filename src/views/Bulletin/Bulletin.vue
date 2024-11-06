@@ -12,6 +12,7 @@
           <van-swipe-item v-for="banner in banners" :key="banner.id">
             <a
               class="bulletin-item"
+              draggable="false"
               :href="banner.link_url || 'javascript:void(0)'"
               @click="handleItemClick(banner, $event)"
             >
@@ -32,6 +33,7 @@
           <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
             <a
               class="bulletin-item"
+              draggable="false"
               :href="fixed.link_url || 'javascript:void(0)'"
               @click="handleItemClick(fixed, $event)"
             >
@@ -70,6 +72,7 @@
           <a
             class="bulletin-item"
             href="javascript:void(0)"
+            draggable="false"
             @click="handleItemClick(sidebar, $event)"
           >
             <img

@@ -417,7 +417,7 @@ if (!isVisited) {
 }
 
 onMounted(() => {
-  // modalReward.value?.openModal()
+  modalReward.value?.openModal()
   try {
     getActivityData()
   } catch (error) {
