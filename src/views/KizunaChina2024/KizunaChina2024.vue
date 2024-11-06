@@ -51,20 +51,20 @@
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
             <div
-              class="absolute bottom-[10px] right-[10px] flex flex-col rounded-2xl p-4"
+              class="absolute bottom-[10px] right-0 flex flex-col rounded-2xl p-4"
             >
               <div
                 class="acc-task-title absolute bottom-[314px] right-[80px] h-[60px] text-[36px] leading-[60px] text-[#ffffff]"
               ></div>
               <p class="sr-only">全服任务！品尝中国绊爱饺子</p>
               <ul
-                class="absolute bottom-[60px] right-[40px] flex justify-between"
+                class="absolute bottom-[40px] right-[40px] flex justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="flex h-[230px] flex-col items-center justify-between"
+                  class="mr-[14px] flex h-[250px] flex-col items-center justify-between"
                 >
                   <div
                     class="relative"
@@ -567,7 +567,7 @@ function calculateAccTaskValue(accTaskVal: number): number {
     case accTaskVal <= 10:
       return accTaskVal - 4
     case accTaskVal <= 40:
-      return accTaskVal - 8
+      return accTaskVal - 9
     case accTaskVal <= 80:
       return accTaskVal - 7
     case accTaskVal < 100:
@@ -825,9 +825,9 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 }
 .progress-container {
   position: absolute;
-  bottom: 114px;
+  bottom: 100px;
   right: 90px;
-  width: 1100px;
+  width: 1160px;
   height: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
