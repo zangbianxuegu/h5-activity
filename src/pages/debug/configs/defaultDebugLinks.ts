@@ -25,6 +25,11 @@ const defaultDebugLinks = [
     isJumpDirectly: true,
   },
   {
+    linkName: 'game dev2',
+    link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html',
+    isJumpDirectly: true,
+  },
+  {
     linkName: 'game',
     link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html',
     isJumpDirectly: true,

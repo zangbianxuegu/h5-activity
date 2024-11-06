@@ -7,6 +7,8 @@ export function useEnvironment(): UseEnvironmentReturn {
     'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
   const gameDevUrl =
     'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html'
+  const gameDev2Url =
+    'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html'
   const prodUrl = 'https://sky.h5.163.com/game/'
   const isLocal = ref(
     window.location.href.includes(localUrl) ||
@@ -14,12 +16,14 @@ export function useEnvironment(): UseEnvironmentReturn {
   )
   const isGame = ref(window.location.href.includes(gameUrl))
   const isGameDev = ref(window.location.href.includes(gameDevUrl))
+  const isGameDev2 = ref(window.location.href.includes(gameDev2Url))
   const isProd = ref(window.location.href.includes(prodUrl))
 
   return {
     isLocal,
     isGame,
     isGameDev,
+    isGameDev2,
     isProd,
   }
 }
