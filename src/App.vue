@@ -47,6 +47,12 @@
       game_dev
     </div>
     <div
+      v-if="isGameDev2"
+      class="fixed right-0 top-0 z-10 bg-yellow-600 px-1 text-sm text-white"
+    >
+      game_dev2
+    </div>
+    <div
       v-if="isGame"
       class="fixed right-0 top-0 z-10 bg-green-600 px-1 text-sm text-white"
     >
@@ -76,7 +82,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGame, isProd } = useEnvironment()
+const { isLocal, isGameDev, isGameDev2, isGame, isProd } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
