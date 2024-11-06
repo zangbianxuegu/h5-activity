@@ -11,7 +11,7 @@
       </div>
       <div>
         <a
-          v-if="isGameDev || isGame"
+          v-if="isGameDev || isGame || isGameDev2"
           class="nav-debug mb-4 flex w-full justify-center py-2"
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
@@ -82,7 +82,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGameDev2, isGame, isProd } = useEnvironment()
+const { isLocal, isGameDev, isGame, isProd, isGameDev2 } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
