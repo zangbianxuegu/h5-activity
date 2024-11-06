@@ -201,10 +201,10 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { DesignConfig, Event } from '@/types'
+import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
-import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/kizunaChina2024'
 import gsap from 'gsap'
@@ -259,6 +259,9 @@ interface ProcessedTask {
   status: string // 任务状态
 }
 
+// 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
+getResponsiveStylesFactor()
+
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
   kizuna_ai_dumpling: '中国绊爱饺子',
@@ -275,35 +278,6 @@ const rewardsText: RewardsName = {
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
   glow: '璀璨之星',
 }
-
-// 设计稿宽
-const DESIGN_WIDTH = 2560
-// 设计稿高
-const DESIGN_HEIGHT = 1200
-// 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
-// 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_MAYDAY_WIDTH = 2100 - 60
-// 设计稿主体高，同宽。
-const DESIGN_MAYDAY_HEIGHT = 1200 - 60
-// 设计稿主体内容宽
-const DESIGN_MAYDAY_CONTENT_WIDTH = DESIGN_MAYDAY_WIDTH
-// 设计稿主体内容高
-const DESIGN_MAYDAY_CONTENT_HEIGHT = DESIGN_MAYDAY_HEIGHT
-// 设计稿主体内容宽高比
-const DESIGN_MAYDAY_CONTENT_RATIO =
-  DESIGN_MAYDAY_CONTENT_WIDTH / DESIGN_MAYDAY_CONTENT_HEIGHT
-// 配置参数
-const designConfig: DesignConfig = {
-  designWidth: DESIGN_WIDTH,
-  designHeight: DESIGN_HEIGHT,
-  designMainWidth: DESIGN_MAYDAY_WIDTH,
-  designMainHeight: DESIGN_MAYDAY_HEIGHT,
-  designMainContentWidth: DESIGN_MAYDAY_CONTENT_WIDTH,
-  designMainContentHeight: DESIGN_MAYDAY_CONTENT_HEIGHT,
-  designMainContentRatio: DESIGN_MAYDAY_CONTENT_RATIO,
-}
-// 缩放系数
-useResponsiveStyles(designConfig)
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
