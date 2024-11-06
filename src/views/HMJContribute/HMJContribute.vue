@@ -4,14 +4,7 @@
       <div class="hmj-contribute-main">
         <Transition appear mode="out-in">
           <div class="main-container">
-            <div class="test-btn-group absolute">
-              <van-button type="primary" @click="onClickViewMyWorks"
-                >我的作品</van-button
-              >
-              <van-button type="primary" @click="onClickTestContributeFinal"
-                >uploadFormAndFilePickerResultToServerCommon</van-button
-              >
-            </div>
+            <div class="test-btn-group absolute"></div>
             <div class="header">
               <h1>投递稿件</h1>
               <p>投递期：2025年1月1日~2025年1月31日</p>
@@ -42,7 +35,7 @@
                             type="file"
                             id="image_uploads_cut_test"
                             name="image_uploads"
-                            accept="*"
+                            accept="image/png, image/jpg, image/jpeg"
                             v-show="false"
                           />
                         </div>
@@ -51,6 +44,7 @@
                         v-show="worksData.worksImgSrc"
                         class="works-image-container"
                       >
+                        <!-- 删除作品按钮 -->
                         <div
                           v-if="!isContributed"
                           class="remove-upload-img"
@@ -58,6 +52,15 @@
                         >
                           <van-icon name="cross" />
                         </div>
+                        <!-- 查看作品详情 -->
+                        <div
+                          v-if="isCheckedSuccess"
+                          class="btn-view-works-details"
+                          @click="onClickViewMyWorks"
+                        >
+                          <van-icon name="aim" />
+                        </div>
+                        <!-- 作品图 -->
                         <img
                           ref="formWorksRef"
                           id="works-img"
@@ -65,6 +68,7 @@
                           alt=""
                           srcset=""
                         />
+                        <!-- 作品id -->
                         <p v-if="isContributed" class="worksId">
                           <span>【{{ worksGroupName }}组】</span>
                           <span
@@ -77,6 +81,7 @@
                             @click="onClickCopyWorksId"
                           />
                         </p>
+                        <!-- 作品审查提示 -->
                         <div
                           v-if="isContributed && !isCheckedSuccess"
                           class="check-status-info-modal"
@@ -111,6 +116,7 @@
                             (event: Event) =>
                               onChangeAuthorWordCount(event, 'author')
                           "
+                          @blur="onBlurInput"
                         />
                         <span class="word-count">{{ authorWordCount }}/8</span>
                       </div>
@@ -128,6 +134,7 @@
                             (event: Event) =>
                               onChangeAuthorWordCount(event, 'worksName')
                           "
+                          @blur="onBlurInput"
                         />
                         <span class="word-count"
                           >{{ worksNameWordCount }}/8</span
@@ -143,6 +150,7 @@
                           maxlength="50"
                           placeholder="请输入作品介绍"
                           :disabled="isContributed"
+                          @blur="onBlurInput"
                         ></textarea>
                         <span class="word-count"
                           >{{ worksIntroduceWordCount }}/50</span
@@ -307,8 +315,12 @@
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
-          :worksData="myWorksData"
-          @update-works-data="updateWorksDataFromWorksDetailModal"
+          v-model:favorite="isFavorite"
+          :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
+          :type="DESIGN_DETAILS_TYPE.SELF"
+          :works-data="myWorksData"
+          :file-picker-config="filePickerConfig"
+          @after-delete="initPageData"
         ></works-detail-modal>
       </div>
     </div>
@@ -324,19 +336,35 @@ import {
 } from 'vant'
 import html2canvas from 'html2canvas'
 import WorksDetailModal from './components/WorksDetailModal.vue'
-import axios from 'axios'
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import ClipboardJS from 'clipboard'
-import { uploadFormAndFilePickerResultToServerCommon } from '@/utils/filePicker'
 
-import {
-  ERROR_TYPE,
-  type ReviewTextRejectResult,
-} from '@/utils/filePicker/type'
 import { getSkyFilePicker } from '@/utils/filePicker/constant'
 import { useEnvironment } from '@/composables/useEnvironment'
+import {
+  DESIGN_REVIEW_STATUS,
+  type SelfDesignDetails,
+} from '@/types/activity/dayofdesign01'
+import { blobToUrl } from '@/utils/file'
+import {
+  FILE_PICKER_POLICY_NAME,
+  FILE_PICKER_SHARE_IMG_POLICY_NAME,
+  groupNameAndCodeMap,
+} from '@/constants/dayofdesign01'
+import { type ReviewTextRejectResult } from '@/utils/filePicker/types'
+import {
+  DESIGN_DETAILS_TYPE,
+  EVENT_DAY_OF_DESIGN_01,
+} from '@/types/activity/dayofdesign01'
+import {
+  deleteDesignDetails,
+  getDesignDetails,
+  uploadWorksToServer,
+} from '@/apis/dayOfDesign01'
+
+const isFavorite = ref(false)
 
 const { isIos } = useEnvironment()
 
@@ -345,11 +373,20 @@ interface WorksData {
   worksName: string
   worksIntroduce: string
   id: string
-  checkStatus: number | undefined
-  worksImg?: File | undefined
+  checkStatus: DESIGN_REVIEW_STATUS | undefined
+  worksImg?: Blob | null
   worksImgSrc: string
-  worksDecorateImg?: File | undefined
-  worksDecorateImgSrc?: string
+  worksDecorateImg: Blob | null
+  worksDecorateImgSrc: string
+}
+
+interface MyWorksData {
+  author: string
+  worksName: string
+  worksIntroduce: string
+  id: string
+  worksImgSrc: string
+  worksDecorateImgSrc: string
 }
 
 const worksData = ref<WorksData>({
@@ -357,9 +394,10 @@ const worksData = ref<WorksData>({
   author: '',
   worksName: '',
   worksIntroduce: '',
-  worksImg: undefined,
+  worksImg: null,
   worksImgSrc: '',
   checkStatus: undefined,
+  worksDecorateImg: null,
   worksDecorateImgSrc: '',
 })
 
@@ -373,15 +411,15 @@ const isContributed = computed((): boolean => {
 })
 // 是否已审核通过
 const isCheckedSuccess = computed((): boolean => {
-  return worksData.value.checkStatus === 2
+  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.PASSED
 })
-// 是否已审核通过
+// 是否审核失败
 const isCheckedFail = computed((): boolean => {
-  return worksData.value.checkStatus === 1
+  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.REFUSED
 })
 // 是否审核中
 const isChecking = computed((): boolean => {
-  return worksData.value.checkStatus === 0
+  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.VERIFYING
 })
 
 // 作者名的字数统计
@@ -408,7 +446,7 @@ const isShowCheckStatusTip = computed((): boolean => {
 // 作品审核信息
 const checkStatusTip = computed((): string => {
   // 0 表示审核中，1 表示审核未通过，2表示审核通过
-  if (worksData.value.checkStatus === 0) {
+  if (isChecking.value) {
     return `作品编号 ${worksData.value.id} 预计将于48小时内审核完毕`
   }
   return `很抱歉，您的作品编号 ${worksData.value.id}，未通过审核，请联系客服了解详情`
@@ -449,6 +487,15 @@ const onChangeAuthorWordCount = (
 ): void => {
   const inputValue = (event.target as HTMLInputElement)?.value
   worksData.value[key] = inputValue.trim()
+}
+
+const onBlurInput = (): void => {
+  console.log('blur')
+  document.querySelector('body')?.focus()
+
+  // document.querySelector('body')?.click()
+  // document.querySelector('body')?.click()
+  // document.querySelector('body')?.click()
 }
 
 const onClickDownloadTemplate = async (): Promise<void> => {
@@ -586,12 +633,11 @@ const onClickFinishCropper = (): void => {
       imageSmoothingQuality: 'high',
     }) as HTMLCanvasElement
 
-    cropperCanvas?.toBlob((blob) => {
-      const reader = new FileReader()
-      reader.readAsDataURL(blob as Blob)
-      reader.onload = function (event) {
-        worksData.value.worksImgSrc = event.target?.result as string
-      }
+    cropperCanvas?.toBlob((blob): void => {
+      void (async function (blob) {
+        worksData.value.worksImg = blob
+        worksData.value.worksImgSrc = await blobToUrl(blob as Blob)
+      })(blob)
       hideCropperModal()
     })
   } catch (error) {
@@ -616,46 +662,30 @@ const removeUploadImg = (): void => {
   worksData.value.worksImgSrc = ''
 }
 
-// 请求后端检查作品信息是否合规
-const checkWorkInfoValid = (): Promise<boolean> => {
-  showToast('作品信息检查中...')
-  // const { author, workName, workIntroduce } = workInfo.value
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true)
-    }, 1000)
-  })
-}
-
 // 删除作品确认弹窗
 const showConfirmDialogForReupload = (): void => {
-  showConfirmDialog({
+  void showConfirmDialog({
     title: '',
     message: '确认删除投稿作品？',
-  })
-    .then(async () => {
-      // on confirm
-      try {
-        const { data } = await axios.get(
-          'http://10.227.199.103:7897/ma75WXJ/deleteWorks',
-          {
-            params: {
-              userId,
-            },
-          },
-        )
-
-        showToast(data.message)
-        setTimeout(() => {
-          void initPageData()
-        }, 500)
-      } catch (error) {
-        console.error(error)
+  }).then(async () => {
+    // on confirm
+    try {
+      const res = await deleteDesignDetails(
+        filePickerConfig.value.policyName,
+        worksData.value.id,
+        worksData.value.worksImgSrc,
+      )
+      if (res) {
+        showToast('删除成功')
       }
-    })
-    .catch(() => {
-      // on cancel
-    })
+      setTimeout(() => {
+        void initPageData()
+      }, 500)
+    } catch (error) {
+      showToast('网络波动，删除失败，请稍后再试')
+      console.error(error)
+    }
+  })
 }
 
 // 点击我要投稿按钮
@@ -710,10 +740,6 @@ const onClickContributeWorks = async (): Promise<void> => {
       )
       return
     }
-    // 检查信息是否合规
-    const checkResult = await checkWorkInfoValid()
-    // eslint-disable-next-line no-useless-return
-    if (!checkResult) return
 
     // 预览
     previewData.value.isShow = true
@@ -740,143 +766,49 @@ const changeDomToImage = (): Promise<void> => {
       canvas.toBlob((blob): void => {
         if (blob) {
           const url = URL.createObjectURL(blob)
-          worksData.value.worksDecorateImg = new File([blob], 'hello.png', {
-            type: blob?.type,
-          })
+          worksData.value.worksDecorateImg = blob
           worksData.value.worksDecorateImgSrc = url
           resolve()
-          // const link = document.createElement('a')
-          // link.href = url
-          // link.download = '111'
-          // link.click()
         }
       })
     })
   })
 }
 
-let userId = ''
-
-const getUserId = async (): Promise<void> => {
-  const response = await fetch('https://api.ipify.org?format=json')
-  const data = await response.json()
-  userId = data.ip.split('.').join('')
-}
-
-const confirmSubmitWork = async (): Promise<void> => {
-  // 生成作品拼装图
-  await changeDomToImage()
-  const formData = new FormData()
-  formData.append('userId', userId)
-  formData.append('author', worksData.value.author)
-  formData.append('worksName', worksData.value.worksName)
-  formData.append('introduce', worksData.value.worksIntroduce)
-  formData.append('file', worksData.value.worksImg as File)
-  formData.append('file', worksData.value.worksDecorateImg as File)
-  console.log(
-    'worksData.value.worksDecorateImg',
-    worksData.value.worksDecorateImg,
-  )
-
-  try {
-    await axios.post(
-      'http://10.227.199.103:7897/ma75WXJ/contribute',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    )
-    showToast('投稿成功')
-    await initPageData()
-  } catch (error) {
-    console.error('上传失败:', error)
-  }
-}
-
-const getContributedWorksData = async (): Promise<WorksData | undefined> => {
-  try {
-    const { data } = await axios.get(
-      'http://10.227.199.103:7897/ma75WXJ/getWorks',
-      {
-        params: {
-          userId,
-        },
-      },
-    )
-    if (data.success) {
-      return {
-        id: data.data.id,
-        author: data.data.author,
-        worksName: data.data.worksName,
-        worksIntroduce: data.data.introduce,
-        worksImgSrc: data.data.path,
-        checkStatus: data.data.checkStatus,
-      }
-    }
-    showToast(data.message)
-    return {
-      id: '',
-      author: '',
-      worksName: '',
-      worksIntroduce: '',
-      worksImgSrc: '',
-      checkStatus: undefined,
-    }
-  } catch (error) {
-    console.error('上传失败:', error)
-  }
-}
+const filePickerConfig = ref({
+  token: '',
+  policyName: FILE_PICKER_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_SHARE_IMG_POLICY_NAME,
+  filePickerUrl: getSkyFilePicker(),
+  currentUoloadFileUrl: '',
+})
 
 const isShowMyWorksModal = ref(false)
-const myWorksData = ref<WorksData>({
+const myWorksData = ref<MyWorksData>({
   id: '',
   author: '',
   worksName: '',
   worksIntroduce: '',
   worksImgSrc: '',
-  checkStatus: undefined,
   worksDecorateImgSrc: '',
 })
 
 // 查看我的作品
 const onClickViewMyWorks = async (): Promise<void> => {
-  if (!isCheckedSuccess.value) {
-    showToast('暂没有已通过审核的作品')
-    return
+  myWorksData.value = {
+    id: worksData.value.id,
+    author: worksData.value.author,
+    worksName: worksData.value.worksName,
+    worksIntroduce: worksData.value.worksIntroduce,
+    worksImgSrc: worksData.value.worksImgSrc,
+    worksDecorateImgSrc: worksData.value.worksDecorateImgSrc,
   }
-  const res = await getContributedWorksData()
-  if (res) {
-    myWorksData.value = res
-    isShowMyWorksModal.value = true
-  }
+  isShowMyWorksModal.value = true
 }
 
 const initPageData = async (): Promise<void> => {
-  await getUserId()
-  const { id, author, worksName, worksIntroduce, worksImgSrc, checkStatus } =
-    (await getContributedWorksData()) as WorksData
-  worksData.value = {
-    id,
-    author,
-    worksName,
-    worksIntroduce,
-    worksImgSrc,
-    checkStatus,
-  }
+  await updateDesignDetails()
 }
-
-const updateWorksDataFromWorksDetailModal = (res: WorksData): void => {
-  worksData.value = res
-}
-
-const filePickerConfig = ref({
-  token: '',
-  policyName: 'image_normal',
-  filePickerUrl: getSkyFilePicker(),
-  currentUoloadFileUrl: '',
-})
 
 interface ReviewTextServerRequestFormat {
   author_name: string
@@ -896,13 +828,6 @@ const getReviewTextServerRequestFormat = (
     description: worksIntroduce,
   }
 }
-
-const groupNameAndCodeMap = new Map([
-  ['X', '星'],
-  ['G', '光'],
-  ['Y', '遇'],
-  ['M', '梦'],
-])
 // 分组名字
 const worksGroupName = computed(() => {
   return groupNameAndCodeMap.get(worksData.value.id.split('')[0])
@@ -911,50 +836,84 @@ const currentWorksPureId = computed(() => {
   return worksData.value.id.slice(1)
 })
 
-const onClickTestContributeFinal = async (): Promise<void> => {
+const confirmSubmitWork = async (): Promise<void> => {
+  showLoadingToast({
+    message: '正在投稿...',
+    forbidClick: true,
+    duration: 0,
+  })
+  await changeDomToImage()
   try {
-    const response = await fetch(
-      'http://10.227.199.103:7897/images/0bc9a170bd2ca6debd1017600.jpg',
-    )
-    const worksImgBlob = await response.blob()
-
-    // const worksImgFile = worksData.value.worksImg as File
-    // const worksImgBlob = new Blob([worksImgFile], {
-    //   type: worksImgFile.type,
-    // })
-    const res = await uploadFormAndFilePickerResultToServerCommon(
-      filePickerConfig.value.filePickerUrl,
-      filePickerConfig.value.policyName,
-      getReviewTextServerRequestFormat(
-        worksData.value.author,
-        worksData.value.worksName,
-        worksData.value.worksIntroduce,
-      ),
-      worksImgBlob,
-    )
-    worksData.value.id = res?.design_id
-    worksData.value.checkStatus = 0
+    if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
+      const res = await uploadWorksToServer(
+        filePickerConfig.value.filePickerUrl,
+        filePickerConfig.value.policyName,
+        filePickerConfig.value.shareImgPolicyName,
+        getReviewTextServerRequestFormat(
+          worksData.value.author,
+          worksData.value.worksName,
+          worksData.value.worksIntroduce,
+        ),
+        worksData.value.worksImg,
+        worksData.value.worksDecorateImg,
+      )
+      worksData.value.id = res?.design_id
+      worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
+      closeToast()
+      showToast('投稿成功')
+    } else {
+      closeToast()
+      showToast('投稿出错，请稍后重试')
+    }
   } catch (error: any) {
+    closeToast()
+    console.log('confirmSubmitWork error', error)
+    console.log('confirmSubmitWork error message', error.message)
     const { message } = error
-    const errorObject: ReviewTextRejectResult = JSON.parse(message)
-    const {
-      errorType,
-      errorDefaultText,
-      invalidKey,
-      invalidReasonDefaultText,
-    } = errorObject
-    if (errorType === ERROR_TYPE.REVIEW_TEXT_ERROR) {
+    console.log('confirmSubmitWork error', message)
+    if (message?.includes('errorType')) {
+      // 字段检测异常的错误处理
+      const errorObject: ReviewTextRejectResult = JSON.parse(message)
+      const { invalidKey, invalidReasonDefaultText } = errorObject
       showToast(invalidReasonDefaultText)
       console.log(`${invalidKey}字段检测不通过`)
     } else {
-      showToast(errorDefaultText)
+      showToast(message)
     }
   }
 }
 
+const updateDesignDetails = async (): Promise<void> => {
+  try {
+    const designDetails = (await getDesignDetails(
+      filePickerConfig.value.policyName,
+    )) as SelfDesignDetails
+    const isCountribute = JSON.stringify(designDetails) !== '{}'
+    if (isCountribute) {
+      worksData.value.id = designDetails.design_id
+      worksData.value.author = designDetails.author_name
+      worksData.value.worksName = designDetails.design_name
+      worksData.value.worksIntroduce = designDetails.description
+      worksData.value.worksImgSrc = designDetails.raw_url
+      worksData.value.worksDecorateImgSrc = designDetails.share_url
+      worksData.value.checkStatus = designDetails.review_status
+    } else {
+      worksData.value.id = ''
+      worksData.value.author = ''
+      worksData.value.worksName = ''
+      worksData.value.worksIntroduce = ''
+      worksData.value.worksImgSrc = ''
+      worksData.value.worksImg = null
+      worksData.value.worksDecorateImgSrc = ''
+      worksData.value.worksDecorateImg = null
+      worksData.value.checkStatus = undefined
+    }
+  } catch (error) {}
+}
+
 onMounted(async () => {
   listenUploadImgChange()
-  // await initPageData()
+  await initPageData()
 })
 </script>
 
@@ -1120,6 +1079,13 @@ onMounted(async () => {
     top: -10px;
     right: 0;
     font-size: 50px;
+    color: #fff;
+  }
+  .btn-view-works-details {
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+    font-size: 60px;
     color: #fff;
   }
   img {

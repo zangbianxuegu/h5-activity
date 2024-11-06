@@ -45,6 +45,12 @@
                     <div @click.stop="onClickHandleBarDelete">
                       <van-icon name="delete-o" />
                     </div>
+                    <div v-if="isSelf" @click.stop="onClickHandleBarDownload">
+                      <van-icon name="down" />
+                    </div>
+                    <div v-if="isOther" @click.stop="onClickHandleBarLike">
+                      <van-icon :name="favorite ? 'like' : 'like-o'" />
+                    </div>
                   </div>
                 </div>
                 <div class="btn-close" @click="onClickCloseModal">
@@ -62,18 +68,33 @@
 <script setup lang="ts">
 import { showConfirmDialog, showToast } from 'vant'
 import { showShare } from '@/utils/ngShare/share'
-import axios from 'axios'
 import ClipboardJS from 'clipboard'
 import { useBaseStore } from '@/stores/base'
+import { saveImgToDeviceAlbum } from '@/utils/request'
+import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
+import { deleteDesignDetails, updateFavorites } from '@/apis/dayOfDesign01'
+import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
+import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 
+/**
+ * @param type self:自己作品详情，other:他人作品详情
+ */
 const props = defineProps<{
+  type: DESIGN_DETAILS_TYPE
+  event: string
   show: boolean
+  favorite?: boolean
   worksData: {
     id: string
     author: string
     worksName: string
     worksIntroduce: string
     worksImgSrc: string
+    worksDecorateImgSrc: string
+  }
+  filePickerConfig: {
+    policyName: string
+    filePickerUrl: string
   }
 }>()
 
@@ -85,7 +106,15 @@ watch(
     }
   },
 )
-const emits = defineEmits(['update:show', 'updateWorksData'])
+const emits = defineEmits(['update:show', 'update:favorite', 'afterDelete'])
+
+const isSelf = computed(() => {
+  return props.type === DESIGN_DETAILS_TYPE.SELF
+})
+
+const isOther = computed(() => {
+  return props.type === DESIGN_DETAILS_TYPE.OTHER
+})
 
 const worksHandleModal = ref({
   isShow: false,
@@ -103,67 +132,90 @@ const getLogoUrl = (): string => {
 }
 
 const onClickHandleBarShare = (): void => {
-  showToast('分享')
   shareData.value.show = true
   showShare(
-    [],
+    props.worksData.worksDecorateImgSrc
+      ? []
+      : [
+          NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
+          NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
+          NGSHARE_SHARE_CHANNEL.WEI_BO,
+          NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+        ],
     {
-      text: '分享文本',
-      title: '分享标题',
-      link: 'http://10.227.199.103:5173/pages/debug/index.html',
-      desc: '分享说明',
+      title: '绘梦节分享标题',
+      text: '绘梦节分享文本',
+      link: 'http://10.227.199.103:3000/dayofdesign01.html',
+      desc: '绘梦节分享说明',
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
     },
     {
-      text: '分享文本',
-      title: '分享标题',
-      // image: props.worksData.worksImgSrc,
-      image:
-        'https://img2.baidu.com/it/u=1337068678,3064275007&fm=253&fmt=auto&app=120&f=JPEG?w=500&h=750',
+      title: '绘梦节分享标题',
+      text: '绘梦节分享文本',
+      image: props.worksData.worksDecorateImgSrc || '',
     },
   )
 }
 
-let userId = ''
-const getUserId = async (): Promise<void> => {
-  const response = await fetch('https://api.ipify.org?format=json')
-  const data = await response.json()
-  userId = data.ip.split('.').join('')
-}
+// 点击删除作品按钮
 const onClickHandleBarDelete = async (): Promise<void> => {
-  showConfirmDialog({
+  void showConfirmDialog({
     title: '',
     message: '确认删除投稿作品？',
-  })
-    .then(async () => {
-      const { data } = await axios.get(
-        'http://10.227.199.103:7897/ma75WXJ/deleteWorks',
-        {
-          params: {
-            userId,
-          },
-        },
+  }).then(async () => {
+    // on confirm
+    try {
+      const res = await deleteDesignDetails(
+        props.filePickerConfig.policyName,
+        props.worksData.id,
+        props.worksData.worksImgSrc,
       )
-
-      showToast(data.message)
+      if (res) {
+        showToast('删除成功')
+      }
       setTimeout(() => {
-        emits('updateWorksData', {
-          id: '',
-          author: '',
-          worksName: '',
-          worksIntroduce: '',
-          worksImgSrc: '',
-          checkStatus: undefined,
-        })
-        onClickCloseModal()
-
-        // location.reload()
+        emits('afterDelete')
       }, 500)
-    })
-    .catch(() => {
-      // on cancel
-    })
+    } catch (error) {
+      showToast('删除失败')
+      console.error(error)
+    }
+  })
+}
+
+// 点击下载按钮，下载作品拼装图
+const onClickHandleBarDownload = async (): Promise<void> => {
+  try {
+    const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
+    if (worksDecorateImgSrc) {
+      const res = await saveImgToDeviceAlbum(worksDecorateImgSrc)
+      if (res) {
+        showToast('下载成功')
+      }
+    }
+  } catch (error: any) {
+    showToast('下载失败')
+  }
+}
+
+// 点击收藏按钮
+const onClickHandleBarLike = async (): Promise<void> => {
+  try {
+    const favoriteResult = !props.favorite
+    if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
+      await updateFavorites(
+        props.worksData.id,
+        favoriteResult,
+        props.event,
+        FILE_PICKER_POLICY_NAME,
+      )
+      showToast(favoriteResult ? '收藏成功' : '取消收藏成功')
+      emits('update:favorite', !props.favorite)
+    }
+  } catch (error: any) {
+    showToast(error?.message as string)
+  }
 }
 
 const onClickCopyWorksId = (): void => {
@@ -180,9 +232,7 @@ const onClickCloseModal = (): void => {
   emits('update:show', false)
 }
 
-onMounted(async () => {
-  await getUserId()
-})
+onMounted(async () => {})
 </script>
 
 <style lang="scss" scoped>

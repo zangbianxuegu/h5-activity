@@ -17,12 +17,12 @@
           >前往调试</a
         >
         <a
-          href="http://10.227.199.103:5174/pages/debug/index.html"
+          href="http://10.227.199.103:5173/pages/debug/index.html"
           class="nav-debug mb-4 flex w-full justify-center py-2"
           >debug</a
         >
         <a
-          href="http://10.227.199.103:5174/#/hmj-contribute"
+          href="http://10.227.199.103:5173/#/hmj-contribute"
           class="nav-debug mb-4 flex w-full justify-center py-2"
           >我要投稿</a
         >
