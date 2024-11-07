@@ -27,7 +27,7 @@
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section class="main">
             <!-- 操作区 -->
-            <div class="justify-space m-auto flex w-[1600px] items-center py-4">
+            <div class="justify-space m-auto flex w-[1600px] items-center py-2">
               <input
                 v-model="keywords"
                 type="text"
@@ -42,7 +42,7 @@
               </button>
               <button
                 class="ml-4 rounded bg-green-500 px-4 py-2 text-white"
-                @click="getCollectedData()"
+                @click="handleFavorite()"
               >
                 我的收藏
               </button>
@@ -59,8 +59,21 @@
                 <span v-show="countdown > 0">({{ countdown }})</span>推荐
               </button>
             </div>
+            <!-- <p class="text-[56px] text-white">测试字体大小：56px 适配</p>
+            <p class="text-[48px] text-white">测试字体大小：48px 适配</p>
+            <p class="text-[40px] text-white">测试字体大小：40px 适配</p>
+            <p class="text-[36px] text-white">测试字体大小：36px 适配</p>
+            <p class="text-[32px] text-white">测试字体大小：32px 适配</p>
+            <p class="text-[30px] text-white">测试字体大小：30px 适配</p>
+            <p class="text-[28px] text-white">测试字体大小：28px 适配</p>
+            <p class="text-[24px] text-white">测试字体大小：24px 适配</p>
+            <p class="text-[12px] text-white">测试字体大小：12px 适配</p>
+            <p class="text-[10px] text-white">测试字体大小：10px 适配</p>
+            <p class="text-test-12 text-white">测试字体大小：固定12px</p>
+            <p class="text-test-14 text-white">测试字体大小：固定14px</p>
+            <p class="text-test-16 text-white">测试字体大小：固定16px</p> -->
             <!-- 主体内容 -->
-            <div class="mt-2">
+            <div class="">
               <div class="relative mx-auto h-[700px] w-[1700px]">
                 <!-- 左箭头 -->
                 <Transition name="fade">
@@ -70,35 +83,33 @@
                   >
                     <button
                       class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
-                      @click="getCollectedData('prev')"
+                      @click="handleFavorite('prev')"
                     >
                       &#9664;
                     </button>
                   </div>
                 </Transition>
                 <!-- 作品列表 -->
-                <TransitionGroup
-                  name="list"
-                  tag="ul"
-                  v-if="workData && workData.list"
+                <ul
+                  v-if="favoriteList"
                   class="absolute left-1/2 grid w-[1400px] -translate-x-1/2 grid-cols-3 gap-4"
                 >
                   <li
-                    v-for="item in workData!.list"
-                    :key="item.id"
+                    v-for="item in favoriteList"
+                    :key="item.design_id"
                     class="relative cursor-pointer rounded bg-white shadow-md"
                     @click="handleItemClick"
                   >
                     <img
-                      :src="item.image_url"
-                      :alt="item.title"
+                      :src="item.raw_url"
+                      :alt="item.design_name"
                       class="w-full rounded"
                     />
                     <!-- ID -->
                     <div
                       class="absolute left-0 top-0 h-[40px] bg-blue-500 px-1 leading-[40px] text-white"
                     >
-                      {{ item.id }}
+                      {{ item.design_id }}
                     </div>
                     <!-- 底部 -->
                     <div
@@ -106,19 +117,21 @@
                     >
                       <!-- 作者标题 -->
                       <div>
-                        <h3 class="text-sm text-white">{{ item.author }}</h3>
-                        <p class="text-white">{{ item.title }}</p>
+                        <h3 class="text-sm text-white">
+                          {{ item.author_name }}
+                        </h3>
+                        <p class="text-white">{{ item.design_name }}</p>
                       </div>
                       <!-- 收藏图标 -->
                       <img
-                        v-if="item.collected"
+                        v-if="item.is_favorite"
                         class="h-[40px] w-[40px]"
                         src="http://iph.href.lu/20x20"
                         alt="已收藏"
                       />
                     </div>
                   </li>
-                </TransitionGroup>
+                </ul>
                 <div
                   v-else
                   class="flex h-[800px] w-[1400px] items-center justify-center"
@@ -130,7 +143,7 @@
                   <div
                     v-show="isNextVisible"
                     class="absolute right-0 top-1/2 flex -translate-y-1/2 items-center justify-center"
-                    @click="getCollectedData('next')"
+                    @click="handleFavorite('next')"
                   >
                     <button
                       class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
@@ -147,7 +160,7 @@
                   class="mt-2 flex items-center justify-center"
                 >
                   <p class="text-white">
-                    {{ workData?.page }}/{{ workData?.total_pages }}
+                    {{ currentPage }}/{{ favoriteTotalPage }}
                   </p>
                 </div>
               </Transition>
@@ -196,23 +209,26 @@
             </section>
           </template>
         </activity-modal>
-        <works-detail-modal
-          v-model:show="isShowMyWorksModal"
-          :worksData="myWorksData"
-        ></works-detail-modal>
       </div>
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-import type { DesignConfig, WorkData, SearchType } from '@/types'
+import type {
+  DesignConfig,
+  SearchType,
+  ListFavoriteParams,
+  ListFavoriteRes,
+  DesignItem,
+} from '@/types'
 import { Session } from '@/utils/storage'
-import { getWorkList } from '@/apis/dayOfDesign01'
+import { getFavorites } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
-import Loading from '@/components/Loading'
-import WorksDetailModal from '../HMJContribute/components/WorksDetailModal.vue'
+import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
+import { showToast } from 'vant'
+import { useActivityStore } from '@/stores/dayOfDesign01PostExhibit'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -242,6 +258,20 @@ const designConfig: DesignConfig = {
 }
 // 缩放系数
 useResponsiveStyles(designConfig)
+
+const EVENT = 'activitycenter_dayofdesign01_post_exhibit'
+const activityStore = useActivityStore()
+// 缓存的收藏数据
+const designData = computed(() => activityStore.designData)
+// 缓存的收藏数据总页数
+const favoriteTotalPage = computed(() => designData.value.totalPage)
+// 页面显示的收藏列表
+const favoriteList = ref<DesignItem[]>([])
+const currentPage = ref(1)
+// 收藏时间：获取收藏数据传参，第一次不传
+// 根据已获取的收藏数据的最小收藏时间进行下一次的请求
+let minFavoriteTime: null | number = null
+
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 
@@ -265,48 +295,27 @@ const searchTypeConst: Record<SearchType, SearchType> = {
 const type = ref<SearchType>('recommend')
 const keywords = ref('')
 // 作品列表信息
-const workData = ref<WorkData>({
-  list: [],
-  total_pages: 0,
-  page: 0,
-})
-let page = 1
+// const workData = ref<WorkData>({
+//   list: [],
+//   total_pages: 0,
+//   page: 0,
+// })
 const isPrevVisible = computed(
-  () => type.value === searchTypeConst.collect && page > 1,
+  () => type.value === searchTypeConst.collect && currentPage.value > 1,
 )
 const isNextVisible = computed(
   () =>
-    type.value === searchTypeConst.collect && page < workData.value.total_pages,
+    type.value === searchTypeConst.collect &&
+    currentPage.value < favoriteTotalPage.value,
 )
 // 为我推荐倒计时
 const countdown = ref(0)
 let timer: NodeJS.Timeout | undefined
 const isShowMyWorksModal = ref(false)
-interface WorksData {
-  author: string
-  worksName: string
-  worksIntroduce: string
-  id: string
-  checkStatus: number | undefined
-  worksImg?: File | undefined
-  worksImgSrc: string
-  worksDecorateImg?: File | undefined
-  worksDecorateImgSrc?: string
-}
 
-const myWorksData = ref<WorksData>({
-  id: '',
-  author: '',
-  worksName: '',
-  worksIntroduce: '',
-  worksImgSrc: '',
-  checkStatus: undefined,
-  worksDecorateImgSrc: '',
-})
-
-onMounted(() => {
+onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
-  getWorkData()
+  await handleFavorite()
 })
 
 onBeforeUnmount(() => {
@@ -314,31 +323,6 @@ onBeforeUnmount(() => {
     clearInterval(timer)
   }
 })
-
-/**
- * @function getWorkData
- * @description 获取作品列表
- * @returns {void}
- */
-function getWorkData(): void {
-  Loading.show()
-  getWorkList({
-    type: type.value,
-    keywords: keywords.value,
-    page,
-    per_page: 6,
-  })
-    .then((res) => {
-      Loading.hide()
-      if (res.code === 200) {
-        workData.value = res.data
-        page = res.data.page
-      }
-    })
-    .catch((error) => {
-      console.log('error: ', error)
-    })
-}
 
 /**
  * @function getRecommendData
@@ -354,7 +338,82 @@ function getRecommendData(): void {
     }
   }, 1000)
   type.value = searchTypeConst.recommend
-  getWorkData()
+}
+
+/**
+ * @function updateLocalFavorites
+ * @description 更新缓存的收藏数据
+ * @returns {Promise<void>}
+ */
+async function updateLocalFavorites(): Promise<void> {
+  // 参数，第一次请求不需要 favorite_time
+  let params: ListFavoriteParams = {
+    event: EVENT,
+    policy_name: FILE_PICKER_POLICY_NAME,
+  }
+  if (minFavoriteTime) {
+    params = {
+      ...params,
+      favorite_time: minFavoriteTime,
+    }
+  }
+  try {
+    const res: ListFavoriteRes = await getFavorites(params)
+    console.log('接口返回收藏数据: ', res)
+    if (res.code === 200) {
+      const data = res.data
+      // 处理收藏数据，加入字段 is_favorite，是否收藏，用于取消收藏展示
+      const designs = data.designs.map((design, index) => ({
+        ...design,
+        is_favorite: true,
+        // 测试代码
+        raw_url: `http://iph.href.lu/800x600?text=${index}`,
+      }))
+      // 更新收藏数据
+      const newDesignData = {
+        designList: [...designData.value.designList, ...designs],
+        totalPage:
+          favoriteTotalPage.value === 0
+            ? Math.ceil(data.count / 6)
+            : favoriteTotalPage.value,
+        isEnd: data.is_end,
+      }
+      // 修正总页数。如果没有数据了，判断计算的总页数是否和第一次请求页数相符
+      // 针对：在第一次请求之后，后面页数的数据已经被删除了
+      // 如果是前面页数的数据被删除了，则前端数据正常显示，不做处理
+      if (data.is_end) {
+        const pageCount = Math.ceil(data.designs.length / 6)
+        if (currentPage.value - 1 + pageCount < favoriteTotalPage.value) {
+          newDesignData.totalPage = currentPage.value - 1 + pageCount
+        }
+      }
+      activityStore.updateActivityData(newDesignData)
+      // 更新最小收藏时间
+      const lastIdex = data.designs.length - 1
+      minFavoriteTime = data.designs[lastIdex].favorite_time
+    }
+  } catch (error) {
+    const err = error as Error
+    showToast(err.message || '获取收藏数据错误')
+  }
+}
+
+/**
+ * @function getFavoritesByPage
+ * @description 根据页数获取收藏数据
+ * @param {number} page 页数
+ * @returns {DesignItem}
+ */
+async function getFavoritesByPage(page: number): Promise<DesignItem[]> {
+  const startIndex = (page - 1) * 6
+  const endIndex = startIndex + 6
+  if (startIndex >= designData.value.designList.length) {
+    // 请求接口获取新数据
+    await updateLocalFavorites()
+  }
+  const res = designData.value.designList.slice(startIndex, endIndex)
+  console.log('res111: ', res)
+  return res
 }
 
 /**
@@ -363,14 +422,14 @@ function getRecommendData(): void {
  * @param {string} dir 方向
  * @returns {void}
  */
-function getCollectedData(dir?: string): void {
+async function handleFavorite(dir?: string): Promise<void> {
   type.value = searchTypeConst.collect
   if (dir === 'prev') {
-    page -= 1
+    currentPage.value -= 1
   } else if (dir === 'next') {
-    page += 1
+    currentPage.value += 1
   }
-  getWorkData()
+  favoriteList.value = await getFavoritesByPage(currentPage.value)
 }
 
 /**
@@ -379,7 +438,7 @@ function getCollectedData(dir?: string): void {
  * @returns {void}
  */
 function searchItems(): void {
-  getWorkData()
+  // getWorkData()
 }
 
 function handleItemClick(): void {
@@ -463,4 +522,13 @@ function handleHelp(): void {
   height: 200px;
   background-image: url('http://iph.href.lu/1200x200');
 }
+// .text-test-12 {
+//   font-size: 12px; /* px-to-viewport-ignore */
+// }
+// .text-test-14 {
+//   font-size: 14px; /* px-to-viewport-ignore */
+// }
+// .text-test-16 {
+//   font-size: 16px; /* px-to-viewport-ignore */
+// }
 </style>

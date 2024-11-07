@@ -172,6 +172,17 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  // 绘梦节我的收藏
+  get_favorites: {
+    400: {
+      'repeat request': '请求频繁，请稍后重试',
+      'bad request': '非法请求，请在游戏内打开',
+    },
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+  },
+
   get_file_picker_token: {
     400: {
       invalid_method: '参数method错误',

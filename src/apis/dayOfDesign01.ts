@@ -1,4 +1,10 @@
-import type { WorkListParams, WorkListRes, Response } from '@/types'
+import type {
+  WorkListParams,
+  WorkListRes,
+  Response,
+  ListFavoriteParams,
+  ListFavoriteRes,
+} from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
 
@@ -16,6 +22,44 @@ import {
   ERROR_TYPE,
   reviewTextResponseMap,
 } from '@/utils/filePicker/types'
+import Loading from '@/components/Loading'
+
+/**
+ * 作品列表 - 我的收藏
+ * @param {ListFavoriteParams} params 参数
+ * @property {string} event 事件名
+ * @property {string} policy_name 策略名
+ * @property {number} favorite_time 最小收藏时间
+ * @property {string} group 分组
+ * @returns {Promise<ListFavoriteRes>}
+ */
+export function getFavorites(
+  params: ListFavoriteParams,
+): Promise<ListFavoriteRes> {
+  return new Promise((resolve, reject) => {
+    Loading.show()
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/get_favorites',
+      content: params,
+      handleRes: (res: Response) => {
+        Loading.hide()
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = getErrorMessage(
+            'get_favorites',
+            res.code,
+            res.msg,
+          )
+          reject(new Error(errorMessage))
+        }
+      },
+    }).catch((err) => {
+      reject(err)
+    })
+  })
+}
 
 /**
  * 作品列表
