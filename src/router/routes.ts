@@ -419,6 +419,33 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/doubleeleven-2024-1',
+    name: 'DoubleEleven2024_1',
+    component: () => import('@/views/DoubleEleven2024_1'),
+    meta: {
+      title: '魔法畅享',
+      module: 'activitycenter_double_eleven_2024_1',
+    },
+  },
+  {
+    path: '/doubleeleven-2024-2',
+    name: 'DoubleEleven2024_2',
+    component: () => import('@/views/DoubleEleven2024_2'),
+    meta: {
+      title: '遇见惊喜',
+      module: 'activitycenter_double_eleven_2024_2',
+    },
+  },
+  {
+    path: '/kizunachina-2024',
+    name: 'KizunaChina2024',
+    component: () => import('@/views/KizunaChina2024'),
+    meta: {
+      title: '中国绊爱 与光重逢',
+      module: 'activitycenter_kizuna_china_2024',
+    },
+  },
+  {
     path: '/dayofdesign01-post-exhibit',
     name: 'DayOfDesign01PostExhibit',
     component: () => import('@/views/DayOfDesign01PostExhibit'),

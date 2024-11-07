@@ -71,7 +71,7 @@ export function getFavorites(
  */
 export function getWorkList(params: WorkListParams): Promise<WorkListRes> {
   console.log('params: ', params)
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     setTimeout(() => {
       resolve({
         code: 200,

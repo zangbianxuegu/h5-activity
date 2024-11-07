@@ -10,6 +10,7 @@ export interface UseEnvironmentReturn {
   isLocal: Ref<boolean>
   isGame: Ref<boolean>
   isGameDev: Ref<boolean>
+  isGameDev2: Ref<boolean>
   isProd: Ref<boolean>
   isIos: boolean
   isAndroid: boolean

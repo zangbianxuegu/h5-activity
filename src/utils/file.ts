@@ -4,9 +4,7 @@ import CryptoJS from 'crypto-js'
  * @returns Blob
  */
 export const fileToBlob = (file: File): Promise<Blob> => {
-  return new Promise((resolve, reject) => {
-    console.log('file', file)
-
+  return new Promise((resolve) => {
     const blob = new Blob([file], {
       type: file.type,
     })
