@@ -381,6 +381,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '狼人杀活动名称',
+    value: 'activitycenter_netease_werewolf',
+    routeName: 'NeteaseWerewolf',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

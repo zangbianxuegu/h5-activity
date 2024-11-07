@@ -445,4 +445,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_kizuna_china_2024',
     },
   },
+  {
+    path: '/netease-werewolf',
+    name: 'NeteaseWerewolf',
+    component: () => import('@/views/NeteaseWerewolf'),
+    meta: {
+      title: '中国绊爱 与光重逢',
+      module: 'activitycenter_netease_werewolf',
+    },
+  },
 ]
