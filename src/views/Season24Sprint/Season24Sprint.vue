@@ -686,7 +686,7 @@ const bubbleBurst = async (
     87px 120px;
   background-position:
     center,
-    center 44px;
+    54px 44px;
 }
 .task-item2.wait {
   background-size:
