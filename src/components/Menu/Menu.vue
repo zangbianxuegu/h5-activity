@@ -128,6 +128,7 @@ function handleMenuIcon(curItem: MenuItem): string {
     activitycenter_anniversary_visit_2024: activitycenterAnniversaryVisit2024,
     activitycenter_friendship_2024: activitycenterFriendship2024,
     activitycenter_season24_reserve: activitycenterSeason24Reserve,
+    activitycenter_season24_sprint: activitycenterSeason24Reserve,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {

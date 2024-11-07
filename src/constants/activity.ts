@@ -84,6 +84,7 @@ export const ACTIVITY_LIST = [
   'activitycenter_summerday_2024',
   'activitycenter_season24_reserve',
   'activitycenter_season24_start',
+  'activitycenter_season24_sprint',
   'activitycenter_double_eleven_2024_1',
   'activitycenter_double_eleven_2024_2',
   'activitycenter_kizuna_china_2024',

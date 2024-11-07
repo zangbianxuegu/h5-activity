@@ -445,4 +445,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_kizuna_china_2024',
     },
   },
+  {
+    path: '/season24-sprint',
+    name: 'Season24Sprint',
+    component: () => import('@/views/Season24Sprint'),
+    meta: {
+      title: '与爱同行 温暖相拥',
+      module: 'activitycenter_season24_sprint',
+    },
+  },
 ]
