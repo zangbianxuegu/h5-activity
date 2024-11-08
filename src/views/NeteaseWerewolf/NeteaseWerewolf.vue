@@ -21,8 +21,8 @@
             <!-- 任务列表 -->
             <ul class="task-list flex">
               <li
-                v-for="(item, index) in taskList"
-                :key="item.id"
+                v-for="(item, index) in allTaskList"
+                :key="item.title"
                 :class="[
                   'task-bg animate-flip flex flex-col-reverse bg-cover',
                   `bg-task${index + 1}`,
@@ -30,36 +30,34 @@
               >
                 <div v-if="item.status === 'redeemed'" class="task-mask"></div>
                 <div
+                  v-for="(v, i) in item.content.value"
+                  :key="v.val"
                   :class="[
                     'task-item animate__animated animate__fadeIn animate__slow bg-contain indent-[-9999px]',
                     `task-item${index + 1}`,
                     `${item.status}`,
                   ]"
-                  @click="handleReward(item.value, item.status, 1, index)"
+                  @click="handleReward(v, i, index)"
                 >
-                  <p class="task-text">{{ item.title }}</p>
+                  <p class="sr-only">{{ item.title }}</p>
                 </div>
               </li>
             </ul>
-            <!-- 累计任务列表 -->
+            <!-- 额外奖励列表 -->
             <ul class="acc-task-list">
               <li
-                v-for="(item, index) in accTaskList"
-                :key="item.id"
+                v-for="(item, index) in extraRewardList"
+                :key="item.title"
                 :class="[
                   'acc-task-item animate__animated animate__fadeIn bg-contain indent-[-9999px]',
                   `acc-task-item${index + 1}`,
                   `${item.status}`,
                 ]"
-                @click="handleReward(item.value, item.status, item.id, 6)"
+                @click="handleReward(item, 1, 6)"
               >
                 <p>{{ item.title }}</p>
               </li>
             </ul>
-            <!-- 累计收集代币进度 -->
-            <div class="acc-progress bg-contain text-center">
-              <p class="acc-progress-count">({{ collectedCount }}/10)</p>
-            </div>
           </section>
         </Transition>
       </div>
@@ -129,7 +127,7 @@
         <template #content>
           <div class="mt-[180px] flex items-center">
             <input
-              class="h-[100px] grow rounded-[16px] pl-[40px]"
+              class="h-[100px] w-[630px] rounded-[16px] pl-[40px]"
               style="border: 1px solid #6fa2dd"
               type="text"
               v-model="UID"
@@ -142,7 +140,7 @@
             </button>
           </div>
           <div class="mt-[20px] flex justify-between text-[34px]">
-            <div>请输入角色昵称：</div>
+            <div>请确认角色昵称：</div>
             <a
               class="text-[#3f83d2]"
               style="border-bottom: 1px solid #3f83d2"
@@ -231,8 +229,9 @@ import { Session } from '@/utils/storage'
 import ActivityModal from './Modal.vue'
 import BindModal from './BindModal.vue'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/tournamentOfTriumph1'
+import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
+import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -241,6 +240,42 @@ interface Rewards {
   name: string
   count: number
 }
+
+// 定义单个奖励项接口
+interface Reward {
+  id: number // 奖励ID
+  taskId: string // 任务字段名
+  title: string // 奖励标题
+  status: 'wait' | 'redeemed' | 'can' | string // 奖励状态
+  val: number // 奖励值
+  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>> // 可领取动画引用
+  hadRenderLottie?: Ref<boolean> // 是否已渲染动画
+}
+
+// 定义任务项接口
+interface TaskItem {
+  val: number
+  status: string
+}
+
+// 定义任务列表接口
+interface TaskLists {
+  title: string
+  content: Ref<TaskItem[]>
+}
+
+// 定义处理后的任务类型
+interface ProcessedTask {
+  title: string // 任务标题
+  content: Ref<TaskItem[]> // 任务内容，使用Vue的Ref包装TaskItem数组
+  val: number // 任务完成值
+  status: string // 任务状态
+}
+
+type ConfigItem = [string, string, number]
+
+type Config = ConfigItem[]
+
 // interface RewardsName {
 //   gravity: string
 //   trail_rainbow: string
@@ -261,76 +296,125 @@ interface Rewards {
 //   resize_potion: '体型重塑',
 //   heart: '爱心',
 // }
+
+// 创建任务的函数
+const createTaskItem = (
+  id: number,
+  taskId: string,
+  title: string,
+  status = 'wait',
+  val = 0,
+  canRewardLottieRef = ref() as Ref<
+    Array<InstanceType<typeof CanRewardBubbleAnimation>>
+  >,
+  hadRenderLottie = ref(false),
+): Reward => ({
+  id,
+  taskId,
+  title,
+  status,
+  val,
+  canRewardLottieRef,
+  hadRenderLottie,
+})
+
 const curRewards: Ref<Rewards> = ref({
   name: 'gravity',
   count: 2,
 })
 
 const TASK_LIST = [
-  {
-    id: 1,
-    title: '参与1次收集云朵',
-    value: 'activitycenter_tournament_of_triumph_1_dawn',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    title: '参与1次云野飞行竞速',
-    value: 'activitycenter_tournament_of_triumph_1_prairie',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    title: '参与1次雨林越野赛跑',
-    value: 'activitycenter_tournament_of_triumph_1_rain',
-    status: 'wait',
-  },
-  {
-    id: 4,
-    title: '参与1次霞谷雪地滑行',
-    value: 'activitycenter_tournament_of_triumph_1_sunset',
-    status: 'wait',
-  },
-  {
-    id: 5,
-    title: '参与1次墓土螃蟹赛跑',
-    value: 'activitycenter_tournament_of_triumph_1_dusk',
-    status: 'wait',
-  },
-  {
-    id: 6,
-    title: '参与1次禁阁星光收集',
-    value: 'activitycenter_tournament_of_triumph_1_night',
-    status: 'wait',
-  },
+  // {
+  //   id: 1,
+  //   title: '通过1次晨岛神殿',
+  //   value: 'activitycenter_netease_werewolf_m1',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 2,
+  //   title: '通过1次云野神殿',
+  //   value: 'activitycenter_netease_werewolf_m2',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 3,
+  //   title: '通过1次雨林神殿',
+  //   value: 'activitycenter_netease_werewolf_m3',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 4,
+  //   title: '通过1次霞谷神殿',
+  //   value: 'activitycenter_netease_werewolf_m4',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 5,
+  //   title: '通过1次暮土神殿',
+  //   value: 'activitycenter_netease_werewolf_m5',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 6,
+  //   title: '通过1次禁阁神殿',
+  //   value: 'activitycenter_netease_werewolf_m6',
+  //   status: 'wait',
+  // },
+  // {
+  //   id: 7,
+  //   title: '通过1次暴风眼',
+  //   value: 'activitycenter_netease_werewolf_m7',
+  //   status: 'wait',
+  // },
+  createTaskItem(1, 'activitycenter_netease_werewolf_m1', '通过1次晨岛神殿'),
+  createTaskItem(2, 'activitycenter_netease_werewolf_m2', '通过1次云野神殿'),
+  createTaskItem(3, 'activitycenter_netease_werewolf_m3', '通过1次雨林神殿'),
+  createTaskItem(4, 'activitycenter_netease_werewolf_m4', '通过1次霞谷神殿'),
+  createTaskItem(5, 'activitycenter_netease_werewolf_m5', '通过1次暮土神殿'),
+  createTaskItem(6, 'activitycenter_netease_werewolf_m6', '通过1次禁阁神殿'),
+  createTaskItem(7, 'activitycenter_netease_werewolf_m7', '通过1次暴风眼'),
 ]
-const ACC_TASK_LIST = [
-  {
-    id: 1,
-    title: '收集3个奖牌代币',
-    value: 'collecting_event_candles',
-    status: 'wait',
-  },
-  {
-    id: 2,
-    title: '收集6个奖牌代币',
-    value: 'collecting_event_candles',
-    status: 'wait',
-  },
-  {
-    id: 3,
-    title: '收集10个奖牌代币',
-    value: 'collecting_event_candles',
-    status: 'wait',
-  },
+const EXTRA_REWARD_LIST = [
+  createTaskItem(1, 'activitycenter_netease_werewolf_extra', '通过1次暴风眼'),
+  createTaskItem(2, 'activitycenter_netease_werewolf_extra', '通过1次暴风眼'),
 ]
 
 // 任务排序
 const taskOrderMap = new Map(
-  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.value, index]),
+  [...TASK_LIST, EXTRA_REWARD_LIST[0]].map((task, index) => [
+    task.taskId,
+    index,
+  ]),
 )
 
-const EVENT = 'activitycenter_tournament_of_triumph_1'
+// 创建任务列表的函数
+const createTaskLists = (key: string, name: string, length: number): Reward[] =>
+  Array.from({ length }, (_, i) => createTaskItem(i + 1, key, name))
+
+// 定义任务配置
+const TASK_MAP: Config = [
+  ['activitycenter_netease_werewolf_m1', '通过1次晨岛神殿', 2],
+  ['activitycenter_netease_werewolf_m2', '通过1次云野神殿', 1],
+  ['activitycenter_netease_werewolf_m3', '通过1次雨林神殿', 1],
+  ['activitycenter_netease_werewolf_m4', '通过1次霞谷神殿', 2],
+  ['activitycenter_netease_werewolf_m5', '通过1次暮土神殿', 1],
+  ['activitycenter_netease_werewolf_m6', '通过1次禁阁神殿', 2],
+  ['activitycenter_netease_werewolf_m7', '通过1次暴风眼', 1],
+  ['activitycenter_netease_werewolf_extra', '通过1次暴风眼', 2],
+]
+
+// 创建所有任务列表
+const [
+  TASK_LIST1,
+  TASK_LIST2,
+  TASK_LIST3,
+  TASK_LIST4,
+  TASK_LIST5,
+  TASK_LIST7,
+  TASK_LIST8,
+] = TASK_MAP.map(([key, name, length]) => createTaskLists(key, name, length))
+
+const EVENT = 'activitycenter_netease_werewolf'
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalRewardList = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
@@ -345,42 +429,115 @@ const guide = new URL(
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-const collectedCount = computed(
-  () => activityData.value.event_data[EVENT][6].value,
-)
 const isRewardImageLoaded = ref(false)
 const rewardImageSrc = ref(handleSrc(String(curRewards.value.name)))
-// 任务列表
-const taskList = computed(() => {
-  return TASK_LIST.map((item, index) => {
-    const activity = activityData.value.event_data[EVENT][index]
-    return {
-      ...item,
-      status:
-        activity.award[0] === 1
-          ? 'redeemed'
-          : activity.award[0] === 0 && activity.value >= activity.stages[0]
-            ? 'can'
-            : 'wait',
-    }
+
+// activityData中存储各个事件数据的对象
+const eventData = computed(() => activityData.value.event_data[EVENT])
+
+// 获取任务状态
+const getTaskStatus = (award: number, value: number, stage: number): string => {
+  if (award === 1) return 'redeemed'
+  if (award === 0 && value >= stage) return 'can'
+  return 'wait'
+}
+
+// 创建任务列表
+const createTaskList = (
+  taskList: Reward[],
+  activityIndex: number,
+  isAccTask: boolean = false,
+): ComputedRef<Reward[]> => {
+  return computed(() => {
+    return taskList.map((item, index) => {
+      const { award, value, stages } = eventData.value[activityIndex]
+      const awardIndex = isAccTask ? index : 0
+      return {
+        ...item,
+        val: value,
+        status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
+      }
+    })
   })
-})
-// 累计任务列表
-const accTaskList = computed(() => {
-  const activity = activityData.value.event_data[EVENT][6]
-  return ACC_TASK_LIST.map((item, index) => {
-    return {
-      ...item,
-      status:
-        activity.award[index] === 1
+}
+
+// 创建各个任务列表，根据活动数据动态更新任务状态
+const taskList1 = createTaskList(TASK_LIST1, 0)
+const taskList2 = createTaskList(TASK_LIST2, 1)
+const taskList3 = createTaskList(TASK_LIST3, 2)
+const taskList4 = createTaskList(TASK_LIST4, 3)
+const taskList5 = createTaskList(TASK_LIST5, 4)
+const taskList6 = createTaskList(TASK_LIST7, 5)
+const taskList7 = createTaskList(TASK_LIST7, 6)
+const taskList8 = createTaskList(TASK_LIST8, 7)
+
+// 定义任务数组，包括主要任务和隐藏任务
+const TASKS = [
+  { title: '通过1次晨岛神殿', content: taskList1 },
+  { title: '通过1次云野神殿', content: taskList2 },
+  { title: '通过1次雨林神殿', content: taskList3 },
+  { title: '通过1次霞谷神殿', content: taskList4 },
+  { title: '通过1次暮土神殿', content: taskList5 },
+  { title: '通过1次禁阁神殿', content: taskList6 },
+  { title: '通过1次暴风眼', content: taskList7 },
+  { title: '通过1次暴风眼', content: taskList8 },
+]
+
+// 处理任务列表的函数
+const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
+  return computed(() =>
+    tasks.map((task) => {
+      const content = task.content.value
+      return {
+        ...task,
+        // 获取任务的值，如果不存在则默认为0
+        val: content[0]?.val ?? 0,
+        // 检查任务是否全部完成，如果是则状态为'redeemed'，否则为空字符串
+        status: content.every((reward) => reward.status === 'redeemed')
           ? 'redeemed'
-          : activity.award[index] === 0 &&
-              activity.value >= activity.stages[index]
-            ? 'can'
-            : 'wait',
-    }
-  })
-})
+          : '',
+      }
+    }),
+  )
+}
+
+// 所有任务列表
+const allTaskList = processTaskList(TASKS.slice(0, 7))
+
+// 额外任务列表
+const extraRewardList = processTaskList([TASKS[7]])
+
+// // 任务列表
+// const taskList = computed(() => {
+//   return TASK_LIST.map((item, index) => {
+//     const activity = activityData.value.event_data[EVENT][index]
+//     return {
+//       ...item,
+//       status:
+//         activity.award[0] === 1
+//           ? 'redeemed'
+//           : activity.award[0] === 0 && activity.value >= activity.stages[0]
+//             ? 'can'
+//             : 'wait',
+//     }
+//   })
+// })
+// // 额外奖励列表
+// const extraRewardList = computed(() => {
+//   const activity = activityData.value.event_data[EVENT][6]
+//   return EXTRA_REWARD_LIST.map((item, index) => {
+//     return {
+//       ...item,
+//       status:
+//         activity.award[index] === 1
+//           ? 'redeemed'
+//           : activity.award[index] === 0 &&
+//               activity.value >= activity.stages[index]
+//             ? 'can'
+//             : 'wait',
+//     }
+//   })
+// })
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const bodyTransitionName = ref('')
@@ -440,6 +597,7 @@ function handleShowGuide(): void {
 }
 
 function handleShowconfirmBindModal(): void {
+  if (!UID.value) return
   modalBind.value?.closeModal()
   modalconfirmBind.value?.openModal()
 }
@@ -472,7 +630,7 @@ function checkHasUnclaimedReward(tasks: Event[]): boolean {
   const tasksValid = tasks
     .slice(0, 6)
     .some((task) => task.value >= 1 && task.award[0] === 0)
-  // 检查第7项，累计任务
+  // 检查第7项，额外奖励
   const task6 = tasks[6]
   const accTasksValid = task6.stages.some(
     (stage, index) => task6.value >= stage && task6.award[index] === 0,
@@ -497,7 +655,7 @@ function getActivityData(): void {
   getPlayerMissionData({ event: EVENT })
     .then((res) => {
       const data = res.data
-      const newActivityData = {
+      let newActivityData = {
         ...data,
         event_data: {
           [EVENT]: data.event_data[EVENT].sort((a: Event, b: Event) => {
@@ -506,6 +664,87 @@ function getActivityData(): void {
             return orderA - orderB
           }),
         },
+      }
+      console.log(newActivityData, 'newActivityData')
+      newActivityData = {
+        own_unlocks: [],
+        event_data: {
+          activitycenter_netease_werewolf: [
+            {
+              value: 1,
+              task_id: 'activitycenter_netease_werewolf_m1',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: false,
+              awarded_types: [],
+              award: [1],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m2',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: true,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m3',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: true,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m4',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: false,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m5',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: true,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m6',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: false,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_m7',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: true,
+              awarded_types: [],
+              award: [0],
+            },
+            {
+              value: 0,
+              task_id: 'activitycenter_netease_werewolf_extra',
+              stages: [1],
+              score: '',
+              is_werewolf_reward: false,
+              awarded_types: [],
+              award: [0],
+            },
+          ],
+        },
+        current_time: 1731060739,
       }
       activityStore.updateActivityData(newActivityData)
       // 更新红点
@@ -524,13 +763,11 @@ function getActivityData(): void {
  * @param index 任务索引
  */
 async function handleReward(
-  task: string,
-  status: string,
+  task: TaskItem,
   rewardId: number,
   index: number,
 ): Promise<void> {
   console.log(task)
-  console.log(status)
   // 让图片先加载再展示
   isRewardImageLoaded.value = false
   rewardImageSrc.value = handleSrc(String(curRewards.value.name))
@@ -623,7 +860,8 @@ async function handleReward(
   margin-left: -8px;
   margin-bottom: 58px;
   width: 267px;
-  height: 340px;
+  height: 227px;
+  background-size: cover;
 }
 .reward-text {
   width: 407px;
@@ -631,6 +869,9 @@ async function handleReward(
   background-image: url('@/assets/images/netease-werewolf/text.png');
   background-repeat: no-repeat;
   background-size: contain;
+}
+input::placeholder {
+  font-size: 40px;
 }
 .btn {
   @apply h-[104px] w-[250px] cursor-pointer rounded-[42px] bg-white py-[20px];
@@ -666,16 +907,12 @@ async function handleReward(
   height: 175px;
 }
 .acc-task-item1 {
-  right: 29px;
+  right: 259px;
   top: 623px;
 }
 .acc-task-item2 {
-  right: 123px;
-  top: 423px;
-}
-.acc-task-item3 {
-  right: 295px;
-  top: 300px;
+  right: 43px;
+  top: 563px;
 }
 @for $i from 1 through 3 {
   .acc-task-item#{$i} {
@@ -688,22 +925,6 @@ async function handleReward(
     &.redeemed {
       background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-redeemed.png');
     }
-  }
-}
-.acc-progress {
-  position: absolute;
-  right: 0;
-  bottom: 150px;
-  padding-top: 55px;
-  width: 497px;
-  height: 105px;
-  background-image: url('@/assets/images/tournament-of-triumph-1/acc-token-bg.png');
-
-  &-count {
-    height: 50px;
-    line-height: 50px;
-    font-size: 34px;
-    color: #fff281;
   }
 }
 .animate-flip {

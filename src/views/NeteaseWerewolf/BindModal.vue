@@ -87,6 +87,7 @@ defineExpose({
   .modal-title {
     color: #696969;
     font-weight: 700;
+    font-size: 44px;
     letter-spacing: 0.5px;
   }
 }
