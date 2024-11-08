@@ -122,13 +122,17 @@ function handleMenuIcon(curItem: MenuItem): string {
     '../../assets/images/common/nav-icon-moomin.png',
     import.meta.url,
   ).href
+  const activitycenterSeason24Sprint = new URL(
+    '../../assets/images/common/nav-icon-moomin.png',
+    import.meta.url,
+  ).href
   const menuIconMap: Record<string, string> = {
     activity_sanrio_2024: activitySanrio2024,
     activitycenter_poster_anniversary_2024: activitycenterPosterAnniversary2024,
     activitycenter_anniversary_visit_2024: activitycenterAnniversaryVisit2024,
     activitycenter_friendship_2024: activitycenterFriendship2024,
     activitycenter_season24_reserve: activitycenterSeason24Reserve,
-    activitycenter_season24_sprint: activitycenterSeason24Reserve,
+    activitycenter_season24_sprint: activitycenterSeason24Sprint,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {

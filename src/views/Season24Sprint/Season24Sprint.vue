@@ -52,7 +52,7 @@
                 </div>
                 <p
                   :class="[
-                    'text-wrap  w-[349px] whitespace-pre-line text-center text-[30px] leading-tight',
+                    'text-wrap  w-[349px] whitespace-pre-line text-center text-[32px] leading-tight',
                     `${
                       item.status === 'can'
                         ? 'mt-[47px] text-[#ffeea9]'
@@ -63,6 +63,11 @@
                   ]"
                 >
                   {{ item.title }}
+                  <span
+                    v-if="item.value === 'activitycenter_season24_sprint_m4'"
+                    class="text-[26px] text-[#e5fbdf]"
+                    >“新季节通过邮件发送”</span
+                  >
                 </p>
               </li>
             </ul>
@@ -71,7 +76,11 @@
             <div class="acc-task-list flex items-center">
               <div class="acc-task-title">
                 累计登录
-                <p class="text-[#f9ff92]">（3/5）</p>
+                <p class="text-[#f9ff92]">
+                  （{{ rewardTokenLogin.currentCount }}/{{
+                    rewardTokenLogin.targetCount
+                  }}）
+                </p>
               </div>
               <ul
                 class="flex items-center"
@@ -142,26 +151,6 @@
             </section>
           </template>
         </activity-modal>
-        <!-- 领奖弹框 -->
-        <activity-modal ref="modalReward">
-          <template #content>
-            <div class="h-[640px] overflow-auto px-4">
-              <section
-                class="flex h-full flex-col"
-                aria-labelledby="modalRewardTitle"
-              >
-                <h2 id="modalRewardTitle" class="sr-only">领奖弹框</h2>
-                <p class="modal-text mt-4">领取奖励说明：</p>
-                <p class="modal-text mt-1">
-                  <span class="text-[#ffcb4d]">新版本更新后</span
-                  >，可在游戏内通过<span class="text-[#ffcb4d]">邮件</span
-                  >领取<span class="text-[#ffcb4d]">新季节蜡烛*6</span
-                  >，感谢您的参与！
-                </p>
-              </section>
-            </div>
-          </template>
-        </activity-modal>
       </div>
     </div>
   </Transition>
@@ -201,7 +190,6 @@ interface Reward {
   canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
   hadRenderLottie?: Ref<boolean>
 }
-
 const rewardsText: RewardsName = {
   resize_potion: '体型重塑',
   heart: '爱心',
@@ -213,7 +201,10 @@ const curRewards: Ref<Rewards> = ref({
   name: 'resize_potion',
   count: 2,
 })
-
+const rewardTokenLogin = reactive({
+  currentCount: 0,
+  targetCount: 5,
+})
 // 主任务列表
 const TASK_LIST = [
   {
@@ -239,7 +230,7 @@ const TASK_LIST = [
   {
     id: 3,
     value: 'activitycenter_season24_sprint_m4',
-    title: '姆明季毕业',
+    title: '姆明季毕业\n',
     status: 'wait',
     canRewardLottieRef: ref() as Ref<
       Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -275,7 +266,6 @@ const ACC_TASK_LIST = [
 getResponsiveStylesFactor()
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // 活动数据
 const EVENT_NAME = 'activitycenter_season24_sprint'
@@ -307,6 +297,10 @@ const taskList = computed(() => {
 // 累计任务列表
 const accTaskList = computed(() => {
   const activity = activityData.value.event_data[EVENT_NAME][3]
+  rewardTokenLogin.currentCount = Math.min(
+    activity.value,
+    rewardTokenLogin.targetCount,
+  )
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
@@ -401,7 +395,6 @@ function getActivityData(): void {
       }
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
-      console.log('activityStore: ', newActivityData)
       setRedDot()
     })
     .catch((error) => {
@@ -426,7 +419,6 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
     clickBubbleRewardWait(event)
     return
   }
-
   claimMissionReward({
     event: EVENT_NAME,
     task: value,
@@ -434,7 +426,17 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
   })
     .then(async (res) => {
       const rewards = res.data.rewards
-
+      if (value === 'activitycenter_season24_sprint_m4') {
+        curRewards.value = {
+          name: 'season_candles',
+          count: 6,
+        }
+      } else {
+        curRewards.value = {
+          name: rewards[0].name,
+          count: rewards[0].count,
+        }
+      }
       await bubbleBurst(event, item)
       // 更新页面数据
       const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
@@ -445,19 +447,11 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
       activityData.value.event_data[EVENT_NAME][taskIndex].award[
         rewardId - 1
       ] = 1
-      if (value === 'activitycenter_season24_sprint_m4') {
-        modalReward.value?.openModal()
-      } else {
-        curRewards.value = {
-          name: rewards[0].name,
-          count: rewards[0].count,
-        }
-        showToast(
-          `领取成功，您获得了 ${
-            rewardsText[curRewards.value.name as keyof RewardsName]
-          }*${curRewards.value.count}`,
-        )
-      }
+      showToast(
+        `领取成功，您获得了 ${
+          rewardsText[curRewards.value.name as keyof RewardsName]
+        }*${curRewards.value.count}`,
+      )
       // 更新红点
       setRedDot()
     })
@@ -509,8 +503,6 @@ const bubbleBurst = async (
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
-  // 果冻效果
-  clickBubbleRewardWait(event)
   const target = event.target
   // 溅射效果
   await gsap
@@ -564,7 +556,6 @@ const bubbleBurst = async (
 .season24-sprint {
   position: relative;
   width: 2100px;
-
   &-main {
     position: absolute;
     left: 50%;
@@ -576,33 +567,30 @@ const bubbleBurst = async (
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/season24-sprint/bg.jpg');
-
-    .moomin-logo {
-      position: absolute;
-      left: 30px;
-      top: 27px;
-      width: 348px;
-      height: 55px;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      background-image: url('@/assets/images/season24-sprint/moomin-logo.png');
-    }
-
-    .copyright {
-      position: absolute;
-      right: 10px;
-      bottom: 10px;
-      width: 541px;
-      height: 165px;
-      background-repeat: no-repeat;
-      background-position: center;
-      background-size: cover;
-      background-image: url('@/assets/images/season24-sprint/copyright.png');
-    }
   }
 }
-
+.moomin-logo {
+  position: absolute;
+  left: 30px;
+  top: 27px;
+  width: 348px;
+  height: 55px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-image: url('@/assets/images/season24-sprint/moomin-logo.png');
+}
+.copyright {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 541px;
+  height: 165px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  background-image: url('@/assets/images/season24-sprint/copyright.png');
+}
 .title {
   position: absolute;
   right: 120px;
@@ -611,7 +599,6 @@ const bubbleBurst = async (
   height: 364px;
   background-image: url('@/assets/images/season24-sprint/title.png');
 }
-
 .help {
   position: absolute;
   width: 45px;
@@ -636,7 +623,6 @@ const bubbleBurst = async (
   background-repeat: no-repeat;
   background-size: contain;
 }
-
 .task-item {
   width: 195px;
   height: 190px;
@@ -707,14 +693,6 @@ const bubbleBurst = async (
 .task-item1.can {
   background-size: 87px 120px;
   background-position: center 44px;
-  // background-image: url('@/assets/images/season24-sprint/task-wait-circle.png'),
-  //   url('@/assets/images/season24-sprint/task1-can.png');
-  // background-size:
-  //   contain,
-  //   87px 120px;
-  // background-position:
-  //   center,
-  //   center 44px;
 }
 .task-item2.can {
   background-size: 76px 111px;
@@ -765,8 +743,6 @@ const bubbleBurst = async (
 .acc-task-item1.can {
   background-size: 90px 82px;
   background-position: center 82px;
-
-  //background-image: url('@/assets/images/season24-sprint/acc-task1-wait.png');
 }
 .acc-task-item2.can {
   background-size: 80px 97px;
