@@ -295,12 +295,12 @@ const taskList = computed(() => {
 })
 
 // 累计任务列表
-const activity = activityData.value.event_data[EVENT_NAME][3]
-rewardTokenLogin.currentCount = Math.min(
-  activity.value,
-  rewardTokenLogin.targetCount,
-)
 const accTaskList = computed(() => {
+  const activity = activityData.value.event_data[EVENT_NAME][3]
+  rewardTokenLogin.currentCount = Math.min(
+    activity.value,
+    rewardTokenLogin.targetCount,
+  )
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
