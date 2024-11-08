@@ -148,13 +148,13 @@ const reward = (dom: HTMLElement, item: Reward, index: number): void => {
   }
   &.hideTaskList {
     &.wait1 {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task6-wait.png');
+      background-image: url('@/assets/images/kizuna-china-2024/task2-wait.png');
     }
     &.can1 {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task6-can.png');
+      background-image: url('@/assets/images/kizuna-china-2024/task2-can.png');
     }
     &.redeemed1 {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task6-redeemed.png');
+      background-image: url('@/assets/images/kizuna-china-2024/task2-redeemed.png');
     }
     &.wait2-1 {
       background-image: url('@/assets/images/kizuna-china-2024/acc-task7-wait.png');
