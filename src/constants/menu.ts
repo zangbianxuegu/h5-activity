@@ -387,4 +387,11 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '与爱同行 温暖相拥',
+    value: 'activitycenter_season24_sprint',
+    routeName: 'Season24Sprint',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]
