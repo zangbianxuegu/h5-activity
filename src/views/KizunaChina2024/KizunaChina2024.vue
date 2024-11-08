@@ -213,19 +213,19 @@ import TaskList from './components/TaskList.vue'
 
 // 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
-  kizuna_ai_dumpling: '中国绊爱饺子'
+  kizuna_ai_dumpling: '中国绊爱饺子魔法'
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法'
   outfit_horn_kizuna: '中国绊爱发饰试用魔法'
-  outfit_wing_kizuna: '中国绊爱斗篷'
-  outfit_hair_kizuna: '中国绊爱发型'
+  outfit_wing_kizuna: '中国绊爱斗篷魔法'
+  outfit_hair_kizuna: '中国绊爱发型魔法'
   prestige: '升华蜡烛'
-  fireworks: '浪漫烟花'
+  fireworks: '浪漫烟花魔法'
   tiny: '小不点'
   resize_potion: '体型重塑'
   candles: '蜡烛'
   heart: '爱心'
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法'
-  glow: '璀璨之星'
+  glow: '璀璨之星魔法'
 }
 
 // 定义单个奖励项接口
@@ -264,19 +264,19 @@ getResponsiveStylesFactor()
 
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
-  kizuna_ai_dumpling: '中国绊爱饺子',
+  kizuna_ai_dumpling: '中国绊爱饺子魔法',
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法',
   outfit_horn_kizuna: '中国绊爱发饰试用魔法',
-  outfit_wing_kizuna: '中国绊爱斗篷',
-  outfit_hair_kizuna: '中国绊爱发型',
+  outfit_wing_kizuna: '中国绊爱斗篷魔法',
+  outfit_hair_kizuna: '中国绊爱发型魔法',
   prestige: '升华蜡烛',
-  fireworks: '浪漫烟花',
+  fireworks: '浪漫烟花魔法',
   tiny: '小不点',
   resize_potion: '体型重塑',
   candles: '蜡烛',
   heart: '爱心',
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
-  glow: '璀璨之星',
+  glow: '璀璨之星魔法',
 }
 
 // 弹框
