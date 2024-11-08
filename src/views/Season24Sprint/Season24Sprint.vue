@@ -52,13 +52,13 @@
                 </div>
                 <p
                   :class="[
-                    'text-wrap  w-[349px] whitespace-pre-line text-center text-[32px] leading-tight',
+                    'w-[349px] whitespace-pre-line text-wrap text-center text-[32px] leading-tight',
                     `${
                       item.status === 'can'
                         ? 'mt-[47px] text-[#ffeea9]'
                         : item.status === 'redeemed'
-                        ? 'mt-[4px] text-[#bebebe]'
-                        : 'mt-[47px] text-white'
+                          ? 'mt-[4px] text-[#bebebe]'
+                          : 'mt-[47px] text-white'
                     }`,
                   ]"
                 >
@@ -288,19 +288,19 @@ const taskList = computed(() => {
         activity.award[0] === 1
           ? 'redeemed'
           : activity.award[0] === 0 && activity.value >= activity.stages[0]
-          ? 'can'
-          : 'wait',
+            ? 'can'
+            : 'wait',
     }
   })
 })
 
 // 累计任务列表
+const activity = activityData.value.event_data[EVENT_NAME][3]
+rewardTokenLogin.currentCount = Math.min(
+  activity.value,
+  rewardTokenLogin.targetCount,
+)
 const accTaskList = computed(() => {
-  const activity = activityData.value.event_data[EVENT_NAME][3]
-  rewardTokenLogin.currentCount = Math.min(
-    activity.value,
-    rewardTokenLogin.targetCount,
-  )
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
@@ -308,9 +308,9 @@ const accTaskList = computed(() => {
         activity.award[index] === 1
           ? 'redeemed'
           : activity.award[index] === 0 &&
-            activity.value >= activity.stages[index]
-          ? 'can'
-          : 'wait',
+              activity.value >= activity.stages[index]
+            ? 'can'
+            : 'wait',
     }
   })
 })
@@ -369,7 +369,6 @@ function setRedDot(): void {
   const hasUnclaimedReward = checkHasUnclaimedReward(
     activityData.value.event_data[EVENT_NAME],
   )
-  console.log('hasUnclaimedReward: ', hasUnclaimedReward)
   menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 
@@ -444,9 +443,8 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
           return item.task_id === value
         },
       )
-      activityData.value.event_data[EVENT_NAME][taskIndex].award[
-        rewardId - 1
-      ] = 1
+      activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
+        1
       showToast(
         `领取成功，您获得了 ${
           rewardsText[curRewards.value.name as keyof RewardsName]
