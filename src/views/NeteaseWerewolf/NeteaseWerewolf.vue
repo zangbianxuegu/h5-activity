@@ -118,20 +118,22 @@
         </template>
       </activity-modal>
       <!-- 奖励弹框 -->
-      <activity-modal ref="modalReward">
+      <activity-modal ref="modalRewardList">
         <template #content>
           <div class="reward-text absolute left-[100px] top-[200px]"></div>
-          <div class="reward mr-[10px]" @click="switchModal"></div>
+          <div class="reward mr-[10px]" @click="handleShowModalBind"></div>
           <div class="reward"></div>
         </template>
       </activity-modal>
-      <Bind-modal ref="modalBind">
+      <bind-modal ref="modalBind" title="请绑定狼人杀UID领取奖励">
         <template #content>
-          <div class="mt-[150px] flex items-center">
+          <div class="mt-[180px] flex items-center">
             <input
-              class="h-[100px] grow rounded-[10px]"
+              class="h-[100px] grow rounded-[16px] pl-[40px]"
               style="border: 1px solid #6fa2dd"
               type="text"
+              v-model="UID"
+              placeholder="请输入《狼人杀》角色UID"
             />
             <button
               class="ml-[-10px] h-[100px] w-[210px] rounded-[10px] bg-[#3f83d2] text-[38px] text-white"
@@ -139,20 +141,84 @@
               查询
             </button>
           </div>
-          <div class="flex justify-between">
-            <div>请输入角色昵称:</div>
-            <a>如何查看UID?</a>
+          <div class="mt-[20px] flex justify-between text-[34px]">
+            <div>请输入角色昵称：</div>
+            <a
+              class="text-[#3f83d2]"
+              style="border-bottom: 1px solid #3f83d2"
+              @click="handleShowGuide"
+              >如何查看UID ?</a
+            >
           </div>
-          <div class="text-center">狼人杀角色名</div>
-          <div class="text-[30px] text-[#e85340]">
+          <div class="mt-[32px] text-center text-[42px] font-semibold">
+            狼人杀角色名
+          </div>
+          <div class="mt-[48px] text-[30px] text-[#e85340]">
             注意:奖品将直接发送至绑定的《狼人杀》UID内
           </div>
-          <div class="flex justify-between">
-            <button>重新输入</button>
-            <button>确认</button>
+          <div class="mt-[44px] flex justify-between px-[10px] text-[40px]">
+            <button
+              class="btn text-[#696969] shadow-[0_0_40px_0_rgba(154,214,247,1)]"
+              @click="resetUID"
+            >
+              重新输入
+            </button>
+            <button
+              class="btn text-[#ff8000] shadow-[0_0_40px_0_rgba(255,128,0,0.5)]"
+              @click="handleShowconfirmBindModal"
+            >
+              确认
+            </button>
           </div>
         </template>
-      </Bind-modal>
+      </bind-modal>
+      <bind-modal ref="modalconfirmBind" title="提示">
+        <template #content>
+          <div class="mt-[80px] text-[35px] text-[#696969]">
+            注意：确认绑定此账号后，点击领取《狼人杀》奖品，奖品将直接发放至该账号，确认绑定后将无法撤销另行绑定其他账号
+          </div>
+          <div class="mt-[350px] flex justify-between px-[10px] text-[40px]">
+            <button
+              class="btn text-[#696969] shadow-[0_0_40px_0_rgba(154,214,247,1)]"
+              @click="handleBack"
+            >
+              返回
+            </button>
+            <button
+              class="btn text-[#ff8000] shadow-[0_0_40px_0_rgba(255,128,0,0.5)]"
+              @click="handleBind"
+            >
+              确认绑定
+            </button>
+          </div>
+        </template>
+      </bind-modal>
+      <bind-modal ref="modalReward" title="提示">
+        <template #content>
+          <div class="text-[#696969]">
+            <div class="mt-[120px] text-[35px] tracking-[1px]">
+              恭喜您获得<span class="font-bold text-[#7ba9de]">奖励名称</span>：
+            </div>
+            <div class="mt-[30px] flex justify-center">
+              <div
+                class="h-[134px] w-[168px] bg-[url('@/assets/images/common/reward/reward-birthdaycake_medium.png')] bg-contain bg-no-repeat"
+              ></div>
+            </div>
+            <div class="mt-[70px] text-center text-[35px]">奖励名称*1</div>
+            <div
+              class="border-b-color-[#b5b5b5] mt-[100px] border-b-[2px] border-solid pb-[34px] text-center text-[32px]"
+            >
+              你已绑定 UID：XXXXXXXXX 角色昵称：XXXX
+            </div>
+            <div class="mt-[26px] text-center text-[32px]">
+              已通过邮箱发送至绑定账号
+            </div>
+          </div>
+        </template>
+      </bind-modal>
+      <bind-modal ref="modalGuide" title="提示" :backgroundImage="guide">
+        <template #content> </template>
+      </bind-modal>
     </div>
   </Transition>
 </template>
@@ -266,8 +332,16 @@ const taskOrderMap = new Map(
 
 const EVENT = 'activitycenter_tournament_of_triumph_1'
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalRewardList = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
+const modalconfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
+const modalReward = ref<InstanceType<typeof BindModal> | null>(null)
+const modalGuide = ref<InstanceType<typeof BindModal> | null>(null)
+const UID = ref<string>('')
+const guide = new URL(
+  '@/assets/images/netease-werewolf/guide.png',
+  import.meta.url,
+).href
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
@@ -346,9 +420,33 @@ function handleSrc(name: string): string {
   return imgSrc
 }
 
-function switchModal(): void {
-  modalReward.value?.closeModal()
+function handleShowModalBind(): void {
+  modalRewardList.value?.closeModal()
   modalBind.value?.openModal()
+}
+
+function resetUID(): void {
+  UID.value = ''
+}
+
+function handleBack(): void {
+  modalconfirmBind.value?.closeModal()
+  modalBind.value?.openModal()
+}
+
+function handleShowGuide(): void {
+  modalBind.value?.closeModal()
+  modalGuide.value?.openModal()
+}
+
+function handleShowconfirmBindModal(): void {
+  modalBind.value?.closeModal()
+  modalconfirmBind.value?.openModal()
+}
+
+function handleBind(): void {
+  modalconfirmBind.value?.closeModal()
+  modalReward.value?.openModal()
 }
 
 /**
@@ -438,7 +536,7 @@ async function handleReward(
   rewardImageSrc.value = handleSrc(String(curRewards.value.name))
   await preLoadImage(rewardImageSrc.value)
   isRewardImageLoaded.value = true
-  modalReward.value?.openModal()
+  modalRewardList.value?.openModal()
 
   // 更新页面数据
   activityData.value.event_data[EVENT][index].award[rewardId - 1] = 1
@@ -533,6 +631,9 @@ async function handleReward(
   background-image: url('@/assets/images/netease-werewolf/text.png');
   background-repeat: no-repeat;
   background-size: contain;
+}
+.btn {
+  @apply h-[104px] w-[250px] cursor-pointer rounded-[42px] bg-white py-[20px];
 }
 .reward {
   width: 267px;

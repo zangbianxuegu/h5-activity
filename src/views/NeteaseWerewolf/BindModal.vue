@@ -20,7 +20,7 @@
       <div class="my-2 flex items-center justify-center">
         <slot name="title">
           <h2 class="modal-title bg-contain bg-center bg-no-repeat">
-            请绑定狼人杀UID领取奖励
+            {{ title }}
           </h2>
         </slot>
       </div>
@@ -57,6 +57,10 @@ defineProps({
     type: Boolean,
     default: true,
   },
+  title: {
+    type: String,
+    default: '',
+  },
 })
 
 defineExpose({
@@ -79,6 +83,11 @@ defineExpose({
     width: 81px;
     height: 81px;
     background-image: url('@/assets/images/common/modal-close.png');
+  }
+  .modal-title {
+    color: #696969;
+    font-weight: 700;
+    letter-spacing: 0.5px;
   }
 }
 </style>
