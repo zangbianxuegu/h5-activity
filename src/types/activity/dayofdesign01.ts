@@ -53,5 +53,6 @@ export enum DESIGN_DETAILS_TYPE {
  * @description 绘梦节事件名
  */
 export enum EVENT_DAY_OF_DESIGN_01 {
+  ALL = 'activitycenter_dayofdesign01',
   EXHIBIT = 'activitycenter_dayofdesign01_post_exhibit',
 }

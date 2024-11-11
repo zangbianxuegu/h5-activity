@@ -316,7 +316,7 @@
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
           v-model:favorite="isFavorite"
-          :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
+          :event="EVENT_DAY_OF_DESIGN_01.ALL"
           :type="DESIGN_DETAILS_TYPE.SELF"
           :works-data="myWorksData"
           :file-picker-config="filePickerConfig"
@@ -341,7 +341,6 @@ import Cropper from 'cropperjs'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import ClipboardJS from 'clipboard'
 
-import { getSkyFilePicker } from '@/utils/filePicker/constant'
 import { useEnvironment } from '@/composables/useEnvironment'
 import {
   DESIGN_REVIEW_STATUS,
@@ -779,7 +778,7 @@ const filePickerConfig = ref({
   token: '',
   policyName: FILE_PICKER_POLICY_NAME,
   shareImgPolicyName: FILE_PICKER_SHARE_IMG_POLICY_NAME,
-  filePickerUrl: getSkyFilePicker(),
+  filePickerUrl: '',
   currentUoloadFileUrl: '',
 })
 
@@ -837,16 +836,26 @@ const currentWorksPureId = computed(() => {
 })
 
 const confirmSubmitWork = async (): Promise<void> => {
+  let apiTimeout = true
   showLoadingToast({
     message: '正在投稿...',
     forbidClick: true,
     duration: 0,
+    onOpened: () => {
+      // 协议超时未返回结果，自动关闭
+      setTimeout(() => {
+        if (apiTimeout) {
+          apiTimeout = false
+          closeToast()
+          showToast('投稿出错，请稍后重试')
+        }
+      }, 10 * 1000)
+    },
   })
   await changeDomToImage()
   try {
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
-        filePickerConfig.value.filePickerUrl,
         filePickerConfig.value.policyName,
         filePickerConfig.value.shareImgPolicyName,
         getReviewTextServerRequestFormat(
@@ -860,13 +869,16 @@ const confirmSubmitWork = async (): Promise<void> => {
       worksData.value.id = res?.design_id
       worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
       closeToast()
+      apiTimeout = false
       showToast('投稿成功')
     } else {
       closeToast()
+      apiTimeout = false
       showToast('投稿出错，请稍后重试')
     }
   } catch (error: any) {
     closeToast()
+    apiTimeout = false
     console.log('confirmSubmitWork error', error)
     console.log('confirmSubmitWork error message', error.message)
     const { message } = error

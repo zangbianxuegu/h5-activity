@@ -398,7 +398,7 @@ export function getErrorMessage(
   code: number,
   msg: string,
 ): string {
-  return ERROR_MESSAGES[api][code][msg] || '服务器异常，请稍后重试'
+  return ERROR_MESSAGES?.[api]?.[code]?.[msg] || '服务器异常，请稍后重试'
 }
 
 /**

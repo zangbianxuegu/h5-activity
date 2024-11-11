@@ -16,16 +16,6 @@
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
         >
-        <a
-          href="http://10.227.199.103:5173/pages/debug/index.html"
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          >debug</a
-        >
-        <a
-          href="http://10.227.199.103:5173/#/hmj-contribute"
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          >我要投稿</a
-        >
         <div class="nav-sprite flex">
           <!-- <a
             class="nav-sprite-text"

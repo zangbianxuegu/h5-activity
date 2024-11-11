@@ -1,19 +1,17 @@
 import axios from 'axios'
 import CryptoJS from 'crypto-js'
 import { getErrorMessage, handlePostMessageToNative } from '../request'
-import {
-  ERROR_TYPE,
-  REVIEW_TEXT_ERROR_TYPE,
-  reviewTextResponseMap,
-} from './types'
 import type { Response } from '@/types'
-import type { UploadImgToFilePickerResponse } from './types'
-import { getSkyFilePicker } from './constant'
+import {
+  REVIEW_TEXT_ERROR_TYPE,
+  ERROR_TYPE,
+  reviewTextResponseMap,
+  type UploadImgToFilePickerResponse,
+} from './types'
 
 /**
  * 获取file [iOS & Android]
  * @function saveImgToDeviceAlbum
- * @param {string} uploadUrl filePicker的上传地址
  * @param {string} policyName filePicker策略名
  * @param {string} md5 对待上传图片所计算的md5值
  * @param {string} ping filePicker的ping
@@ -21,19 +19,20 @@ import { getSkyFilePicker } from './constant'
  * @returns {string} 获取到的token
  */
 export const getFilePickerToken = (
-  uploadUrl: string,
   policyName: string,
   md5: string = '',
   ping: string = '',
   extraInfo: Record<string, any> = {},
-): Promise<string> => {
+): Promise<{
+  token: string
+  url: string
+}> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_file_picker_token',
       content: {
         method: 'POST',
-        url: uploadUrl,
         policy_name: policyName,
         md5,
         ping,
@@ -42,8 +41,11 @@ export const getFilePickerToken = (
       handleRes: (res: Response) => {
         const { code, data, msg } = res
         if (code === 200) {
-          const { token } = data
-          resolve(token)
+          const { token, url } = data
+          resolve({
+            token,
+            url,
+          })
         } else {
           reject(new Error(getErrorMessage('get_file_picker_token', code, msg)))
         }
@@ -124,10 +126,11 @@ export const reviewText = (
 export const uploadImgToFilePicker = async (
   filePickerToken: string,
   imgData: Blob,
+  url: string,
 ): Promise<UploadImgToFilePickerResponse | undefined> => {
   try {
-    const reqUrl = getSkyFilePicker()
-    const response = await axios.post(reqUrl, imgData, {
+    if (!url) throw new Error('未获取到filePicker的上传地址')
+    const response = await axios.post(url, imgData, {
       headers: {
         Authorization: filePickerToken || '',
       },
@@ -239,7 +242,6 @@ export const uploadFormAndFilePickerResultToServer = (
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadFormAndFilePickerResultToServerCommon = async (
-  filePickerUrl: string,
   policyName: string,
   reviewTextObj: Record<string, any>,
   imgBlob: Blob,
@@ -259,14 +261,17 @@ export const uploadFormAndFilePickerResultToServerCommon = async (
     const reviewTextResult = await reviewText(reviewTextObj)
     if (reviewTextResult) {
       // 获取filepicker token
-      const token = await getFilePickerToken(
-        filePickerUrl,
+      const { token, url: filePickerUrl } = await getFilePickerToken(
         policyName,
         md5Result,
       )
       if (token) {
         // 上传稿件至filepicker
-        const uploadResult = await uploadImgToFilePicker(token, imgBlob)
+        const uploadResult = await uploadImgToFilePicker(
+          token,
+          imgBlob,
+          filePickerUrl,
+        )
         if (uploadResult?.url) {
           const currentUoloadFileUrl = uploadResult.url
           // 存储稿件最终数据至服务端,完成投稿
