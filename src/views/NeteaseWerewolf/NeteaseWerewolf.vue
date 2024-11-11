@@ -24,97 +24,125 @@
                 v-for="(item, index) in allTaskList"
                 :key="item.title"
                 :class="[
-                  'task-bg animate-flip flex flex-col-reverse bg-cover',
+                  'task-bg animate-flip mr-[4px] flex flex-col-reverse bg-cover pb-[280px]',
                   `bg-task${index + 1}`,
                 ]"
               >
                 <div v-if="item.status === 'redeemed'" class="task-mask"></div>
+                <p class="sr-only">{{ item.title }}</p>
                 <div
                   v-for="(v, i) in item.content.value"
                   :key="v.val"
                   :class="[
-                    'task-item animate__animated animate__fadeIn animate__slow bg-contain indent-[-9999px]',
-                    `task-item${index + 1}`,
+                    'task-item animate__animated animate__fadeIn animate__slow bg-contain',
+                    `task-item${index + 1}-${i + 1}`,
                     `${item.status}`,
                   ]"
-                  @click="handleReward(v, i, index)"
-                >
-                  <p class="sr-only">{{ item.title }}</p>
-                </div>
+                  @click="
+                    handleReward([$event.target] as HTMLElement[], v, index)
+                  "
+                ></div>
               </li>
             </ul>
             <!-- 额外奖励列表 -->
             <ul class="acc-task-list">
-              <li
-                v-for="(item, index) in extraRewardList"
-                :key="item.title"
-                :class="[
-                  'acc-task-item animate__animated animate__fadeIn bg-contain indent-[-9999px]',
-                  `acc-task-item${index + 1}`,
-                  `${item.status}`,
-                ]"
-                @click="handleReward(item, 1, 6)"
-              >
-                <p>{{ item.title }}</p>
+              <li v-for="item in extraRewardList" :key="item.title">
+                <div
+                  v-for="v in item.content.value"
+                  :key="v.status"
+                  :class="[
+                    'extra-reward-item animate__animated animate__fadeIn bg-contain indent-[-9999px]',
+                    `${item.status}`,
+                  ]"
+                  @click="handleReward([$event.target] as HTMLElement[], v, 7)"
+                >
+                  <p>{{ item.title }}</p>
+                </div>
               </li>
             </ul>
           </section>
         </Transition>
       </div>
       <!-- 活动规则说明 -->
-      <activity-modal ref="modalHelp">
+      <help-modal ref="modalHelp">
         <template #content>
-          <p class="modal-text">
-            <span class="font-semibold">活动时间：</span
-            >2024年7月26日~2024年8月10日
-          </p>
-          <p class="modal-text">
-            <span class="font-semibold">活动内容：</span>
-          </p>
-          <p class="modal-text">
-            活动期间参与运动会锦标赛项目即可获得对应奖励：
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">收集云朵</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >漂浮魔法*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">飞行竞速</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >彩虹尾迹*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">越野赛跑</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >元气满满魔法*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">雪地滑行</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >炫彩步尘*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">螃蟹赛跑</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >螃蟹恶作剧*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            参与1次<span class="text-[#ffcb4d]">星光收集</span>项目即可获得<span
-              class="text-[#ffcb4d]"
-              >璀璨之星魔法*2</span
-            >；
-          </p>
-          <p class="modal-text">
-            锦标赛项目会每日轮换，各位光之子记得前来参加哦~
-          </p>
+          <section
+            aria-labelledby="activity-rules-title"
+            class="h-[680px] overflow-y-scroll p-4"
+          >
+            <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
+            <h3 class="modal-text">
+              <span class="font-semibold">活动时间：</span>
+              2024年12月9日~2024年1月8日
+            </h3>
+            <h3 class="modal-text">
+              <span class="font-semibold">活动内容：</span>
+            </h3>
+            <ul class="modal-text list-inside list-decimal">
+              <li>
+                活动期间，玩家装扮成1次中国绊爱，即可领取
+                <span class="text-[#ffcb4d]"
+                  >中国绊爱饺子魔法*1和中国绊爱大铁头礼包试用魔法*1</span
+                >
+              </li>
+              <li>
+                活动期间，搭建1个晃悠悠共享空间，即可领取
+                <span class="text-[#ffcb4d]"
+                  >中国绊爱饺子魔法*1和中国绊爱发饰试用魔法*1</span
+                >
+              </li>
+              <li>
+                活动期间，与大铁头进行1次互动，即可领取
+                <span class="text-[#ffcb4d]"
+                  >中国绊爱饺子魔法*1和中国绊爱斗篷魔法*1</span
+                >
+              </li>
+              <li>
+                活动期间，寻找头戴晃悠悠的光之子，即可领取
+                <span class="text-[#ffcb4d]"
+                  >中国绊爱饺子魔法*1和中国绊爱发型魔法*1</span
+                >
+              </li>
+              <li>
+                活动期间，连续3天与中国绊爱打招呼，即可领取
+                <span class="text-[#ffcb4d]"
+                  >中国绊爱饺子魔法*1和升华蜡烛*1</span
+                >
+              </li>
+              <li>
+                活动期间，统计全服玩家品尝中国绊爱饺子的进度，达到指定数量后可解锁全服奖励：<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;a.全服品尝200W个中国绊爱饺子，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >浪漫烟花魔法*2</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;b.全服品尝400W个中国绊爱饺子，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >小不点*2</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;c.全服品尝600W个中国绊爱饺子，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >体型重塑*2</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;d.全服品尝800W个中国绊爱饺子，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >蜡烛*2</span
+                ><br />
+                &nbsp;&nbsp;&nbsp;&nbsp;e.全服品尝1000W个中国绊爱饺子，即可领取<span
+                  class="text-[#ffcb4d]"
+                  >爱心*2</span
+                ><br />
+              </li>
+              <li>
+                活动期间，达成品尝1000w中国绊爱饺子进度后，玩家可以通过完成隐藏任务获取额外奖励：<br />
+                &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱与中国绊爱合影，即可领取
+                <span class="text-[#ffcb4d]"
+                  >绊爱发型礼包试用魔法*1和璀璨之星魔法*1</span
+                ><br />
+              </li>
+            </ul>
+          </section>
         </template>
-      </activity-modal>
+      </help-modal>
       <!-- 奖励弹框 -->
       <activity-modal ref="modalRewardList">
         <template #content>
@@ -135,6 +163,7 @@
             />
             <button
               class="ml-[-10px] h-[100px] w-[210px] rounded-[10px] bg-[#3f83d2] text-[38px] text-white"
+              @click="getWerewolfName"
             >
               查询
             </button>
@@ -149,7 +178,7 @@
             >
           </div>
           <div class="mt-[32px] text-center text-[42px] font-semibold">
-            狼人杀角色名
+            {{ werewolfNickname ? werewolfNickname : '狼人杀角色名' }}
           </div>
           <div class="mt-[48px] text-[30px] text-[#e85340]">
             注意:奖品将直接发送至绑定的《狼人杀》UID内
@@ -223,15 +252,21 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import { getPlayerMissionData } from '@/utils/request'
+import {
+  getPlayerMissionData,
+  claimMissionReward,
+  getWerewolfInfo,
+} from '@/utils/request'
 import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
+import HelpModal from '@/components/Modal'
 import ActivityModal from './components/ActivityModal.vue'
 import BindModal from './components/BindModal.vue'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import { useBaseStore } from '@/stores/base'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -250,24 +285,26 @@ interface Reward {
   val: number // 奖励值
   canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>> // 可领取动画引用
   hadRenderLottie?: Ref<boolean> // 是否已渲染动画
+  isWerewolfReward: boolean // 是否是狼人杀侧奖励
 }
 
 // 定义任务项接口
-interface TaskItem {
-  val: number
-  status: string
-}
+// interface TaskItem {
+//   val: number
+//   status: string
+//   is_werewolf_reward: Boolean
+// }
 
 // 定义任务列表接口
 interface TaskLists {
   title: string
-  content: Ref<TaskItem[]>
+  content: Ref<Reward[]>
 }
 
 // 定义处理后的任务类型
 interface ProcessedTask {
   title: string // 任务标题
-  content: Ref<TaskItem[]> // 任务内容，使用Vue的Ref包装TaskItem数组
+  content: Ref<Reward[]> // 任务内容，使用Vue的Ref包装TaskItem数组
   val: number // 任务完成值
   status: string // 任务状态
 }
@@ -276,26 +313,70 @@ type ConfigItem = [string, string, number]
 
 type Config = ConfigItem[]
 
-// interface RewardsName {
-//   gravity: string
-//   trail_rainbow: string
-//   energy: string
-//   flair_flower: string
-//   crab_rock_trick: string
-//   glow: string
-//   resize_potion: string
-//   heart: string
-// }
-// const rewardsText: RewardsName = {
-//   gravity: '漂浮魔法',
-//   trail_rainbow: '彩虹尾迹',
-//   energy: '元气满满',
-//   flair_flower: '炫彩步尘',
-//   crab_rock_trick: '螃蟹恶作剧',
-//   glow: '璀璨之星魔法',
-//   resize_potion: '体型重塑',
-//   heart: '爱心',
-// }
+// 定义奖励名称接口，将奖励类型映射到中文描述
+interface RewardsName {
+  energy: '能量'
+  resize_potion: '体型重塑'
+  // kizuna_ai_dumpling: '中国绊爱饺子'
+  // outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法'
+  // outfit_horn_kizuna: '中国绊爱发饰试用魔法'
+  // outfit_wing_kizuna: '中国绊爱斗篷'
+  // outfit_hair_kizuna: '中国绊爱发型'
+  // prestige: '升华蜡烛'
+  // fireworks: '浪漫烟花'
+  // tiny: '小不点'
+  // resize_potion: '体型重塑'
+  // candles: '蜡烛'
+  // heart: '爱心'
+  // outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法'
+  // glow: '璀璨之星'
+}
+// 定义奖励文本对象，用于将奖励类型映射到中文描述
+const rewardsText: RewardsName = {
+  energy: '能量',
+  resize_potion: '体型重塑',
+  // kizuna_ai_dumpling: '中国绊爱饺子',
+  // outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法',
+  // outfit_horn_kizuna: '中国绊爱发饰试用魔法',
+  // outfit_wing_kizuna: '中国绊爱斗篷',
+  // outfit_hair_kizuna: '中国绊爱发型',
+  // prestige: '升华蜡烛',
+  // fireworks: '浪漫烟花',
+  // tiny: '小不点',
+
+  // candles: '蜡烛',
+  // heart: '爱心',
+  // outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
+  // glow: '璀璨之星',
+}
+
+const EVENT_NAME = 'activitycenter_netease_werewolf'
+const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalRewardList = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
+const modalconfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
+const modalReward = ref<InstanceType<typeof BindModal> | null>(null)
+const modalGuide = ref<InstanceType<typeof BindModal> | null>(null)
+const UID = ref<string>('')
+const werewolfNickname = ref<string>('')
+const isBinded = ref<boolean>(false)
+const curRewards: Ref<Rewards[]> = ref([
+  {
+    name: 'gravity',
+    count: 2,
+  },
+])
+
+const guide = new URL(
+  '@/assets/images/netease-werewolf/guide.png',
+  import.meta.url,
+).href
+const menuStore = useMenuStore()
+const activityStore = useActivityStore()
+const activityData = computed(() => activityStore.activityData)
+
+// activityData中存储各个事件数据的对象
+const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 // 创建任务的函数
 const createTaskItem = (
@@ -308,6 +389,7 @@ const createTaskItem = (
     Array<InstanceType<typeof CanRewardBubbleAnimation>>
   >,
   hadRenderLottie = ref(false),
+  isWerewolfReward = false,
 ): Reward => ({
   id,
   taskId,
@@ -316,11 +398,7 @@ const createTaskItem = (
   val,
   canRewardLottieRef,
   hadRenderLottie,
-})
-
-const curRewards: Ref<Rewards> = ref({
-  name: 'gravity',
-  count: 2,
+  isWerewolfReward,
 })
 
 const TASK_LIST = [
@@ -376,7 +454,6 @@ const TASK_LIST = [
 ]
 const EXTRA_REWARD_LIST = [
   createTaskItem(1, 'activitycenter_netease_werewolf_extra', '通过1次暴风眼'),
-  createTaskItem(2, 'activitycenter_netease_werewolf_extra', '通过1次暴风眼'),
 ]
 
 // 任务排序
@@ -410,30 +487,10 @@ const [
   TASK_LIST3,
   TASK_LIST4,
   TASK_LIST5,
+  TASK_LIST6,
   TASK_LIST7,
   TASK_LIST8,
 ] = TASK_MAP.map(([key, name, length]) => createTaskLists(key, name, length))
-
-const EVENT = 'activitycenter_netease_werewolf'
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalRewardList = ref<InstanceType<typeof ActivityModal> | null>(null)
-const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
-const modalconfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
-const modalReward = ref<InstanceType<typeof BindModal> | null>(null)
-const modalGuide = ref<InstanceType<typeof BindModal> | null>(null)
-const UID = ref<string>('')
-const guide = new URL(
-  '@/assets/images/netease-werewolf/guide.png',
-  import.meta.url,
-).href
-const menuStore = useMenuStore()
-const activityStore = useActivityStore()
-const activityData = computed(() => activityStore.activityData)
-const isRewardImageLoaded = ref(false)
-const rewardImageSrc = ref(handleSrc(String(curRewards.value.name)))
-
-// activityData中存储各个事件数据的对象
-const eventData = computed(() => activityData.value.event_data[EVENT])
 
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
@@ -451,10 +508,12 @@ const createTaskList = (
   return computed(() => {
     return taskList.map((item, index) => {
       const { award, value, stages } = eventData.value[activityIndex]
+      const iswerewolfreward = eventData.value[activityIndex].is_werewolf_reward
       const awardIndex = isAccTask ? index : 0
       return {
         ...item,
         val: value,
+        isWerewolfReward: iswerewolfreward as boolean,
         status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
       }
     })
@@ -467,7 +526,7 @@ const taskList2 = createTaskList(TASK_LIST2, 1)
 const taskList3 = createTaskList(TASK_LIST3, 2)
 const taskList4 = createTaskList(TASK_LIST4, 3)
 const taskList5 = createTaskList(TASK_LIST5, 4)
-const taskList6 = createTaskList(TASK_LIST7, 5)
+const taskList6 = createTaskList(TASK_LIST6, 5)
 const taskList7 = createTaskList(TASK_LIST7, 6)
 const taskList8 = createTaskList(TASK_LIST8, 7)
 
@@ -492,10 +551,7 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
         ...task,
         // 获取任务的值，如果不存在则默认为0
         val: content[0]?.val ?? 0,
-        // 检查任务是否全部完成，如果是则状态为'redeemed'，否则为空字符串
-        status: content.every((reward) => reward.status === 'redeemed')
-          ? 'redeemed'
-          : '',
+        status: content[0]?.status ?? 'wait',
       }
     }),
   )
@@ -508,9 +564,9 @@ const allTaskList = processTaskList(TASKS.slice(0, 7))
 const extraRewardList = processTaskList([TASKS[7]])
 
 // // 任务列表
-// const taskList = computed(() => {
+// const allTaskList = computed(() => {
 //   return TASK_LIST.map((item, index) => {
-//     const activity = activityData.value.event_data[EVENT][index]
+//     const activity = activityData.value.event_data[EVENT_NAME][index]
 //     return {
 //       ...item,
 //       status:
@@ -524,7 +580,7 @@ const extraRewardList = processTaskList([TASKS[7]])
 // })
 // // 额外奖励列表
 // const extraRewardList = computed(() => {
-//   const activity = activityData.value.event_data[EVENT][6]
+//   const activity = activityData.value.event_data[EVENT_NAME][7]
 //   return EXTRA_REWARD_LIST.map((item, index) => {
 //     return {
 //       ...item,
@@ -565,18 +621,6 @@ function handleHelp(): void {
   modalHelp.value?.openModal()
 }
 
-/**
- * @function 处理 img src
- * @param name 奖励名
- */
-function handleSrc(name: string): string {
-  const imgSrc = new URL(
-    `../../assets/images/common/reward/reward-${name}.png`,
-    import.meta.url,
-  ).href
-  return imgSrc
-}
-
 function handleShowModalBind(): void {
   modalRewardList.value?.closeModal()
   modalBind.value?.openModal()
@@ -608,143 +652,45 @@ function handleBind(): void {
 }
 
 /**
- * @function 预加载图片
- * @param src 图片路径
- */
-function preLoadImage(src: string): Promise<void> {
-  return new Promise<void>((resolve) => {
-    const img = new Image()
-    img.src = src
-    img.onload = () => {
-      resolve()
-    }
-  })
-}
-
-/**
  * @function 是否已领奖
  * @param tasks 任务列表
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 检查1-6项，任务列表
-  const tasksValid = tasks
-    .slice(0, 6)
-    .some((task) => task.value >= 1 && task.award[0] === 0)
-  // 检查第7项，额外奖励
-  const task6 = tasks[6]
-  const accTasksValid = task6.stages.some(
-    (stage, index) => task6.value >= stage && task6.award[index] === 0,
-  )
-  return tasksValid || accTasksValid
+  // 使用some方法遍历任务列表，对每个任务的阶段进行检查
+  return tasks.some((task) => {
+    // 判断任务值是否达到或超过当前阶段要求，且奖励未领取
+    return task.stages.some(
+      (item, index) => task.value >= item && task.award[index] === 0,
+    )
+  })
 }
 
 /**
  * @function 设置红点
  */
 function setRedDot(): void {
-  const hasUnclaimedReward = checkHasUnclaimedReward(
-    activityData.value.event_data[EVENT],
-  )
-  menuStore.updateMenuDataByHasUnclaimedReward(EVENT, hasUnclaimedReward)
+  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 
 /**
  * @function 获取任务进度
  */
 function getActivityData(): void {
-  getPlayerMissionData({ event: EVENT })
+  getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
       const data = res.data
-      let newActivityData = {
+      const newActivityData = {
         ...data,
         event_data: {
-          [EVENT]: data.event_data[EVENT].sort((a: Event, b: Event) => {
-            const orderA = taskOrderMap.get(a.task_id) ?? 7
-            const orderB = taskOrderMap.get(b.task_id) ?? 7
-            return orderA - orderB
-          }),
+          [EVENT_NAME]: data.event_data[EVENT_NAME].sort(
+            (a: Event, b: Event) => {
+              const orderA = taskOrderMap.get(a.task_id) ?? 7
+              const orderB = taskOrderMap.get(b.task_id) ?? 7
+              return orderA - orderB
+            },
+          ),
         },
-      }
-      console.log(newActivityData, 'newActivityData')
-      newActivityData = {
-        own_unlocks: [],
-        event_data: {
-          activitycenter_netease_werewolf: [
-            {
-              value: 1,
-              task_id: 'activitycenter_netease_werewolf_m1',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: false,
-              awarded_types: [],
-              award: [1],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m2',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: true,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m3',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: true,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m4',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: false,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m5',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: true,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m6',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: false,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_m7',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: true,
-              awarded_types: [],
-              award: [0],
-            },
-            {
-              value: 0,
-              task_id: 'activitycenter_netease_werewolf_extra',
-              stages: [1],
-              score: '',
-              is_werewolf_reward: false,
-              awarded_types: [],
-              award: [0],
-            },
-          ],
-        },
-        current_time: 1731060739,
       }
       activityStore.updateActivityData(newActivityData)
       // 更新红点
@@ -755,30 +701,138 @@ function getActivityData(): void {
     })
 }
 
+const getWerewolfName = (): void => {
+  const baseStore = useBaseStore()
+  const gameUid = baseStore.baseInfo.gameUid
+  getWerewolfInfo({
+    user: gameUid,
+    werewolfNid: UID.value.trim(),
+  })
+    .then((res) => {
+      werewolfNickname.value = res.werewolf_nickname as string
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
 /**
  * @function 领奖
  * @param task 任务id
- * @param status 状态
  * @param rewardId 第几个奖励节点
  * @param index 任务索引
  */
 async function handleReward(
-  task: TaskItem,
-  rewardId: number,
+  domList: HTMLElement[],
+  task: Reward,
   index: number,
 ): Promise<void> {
-  console.log(task)
-  // 让图片先加载再展示
-  isRewardImageLoaded.value = false
-  rewardImageSrc.value = handleSrc(String(curRewards.value.name))
-  await preLoadImage(rewardImageSrc.value)
-  isRewardImageLoaded.value = true
-  modalRewardList.value?.openModal()
+  const { status, taskId } = task
+  if (status === 'redeemed') {
+    return
+  }
+  if (status === 'wait') {
+    showToast('还未完成任务')
+    domList.forEach((dom) => {
+      clickBubbleReward(dom)
+    })
+    return
+  }
+  if (index === 7) {
+    modalRewardList.value?.openModal()
+  } else {
+    // 狼人杀侧奖励：绑定狼人杀uid，获得任务完成信息后，告知狼人杀，狼人杀那边进行发放
+    // 光遇侧奖励：直接点击领取；
+    if (task.isWerewolfReward && !isBinded.value) {
+      modalBind.value?.openModal()
+      return
+    }
+    claimMissionReward({
+      event: EVENT_NAME,
+      task: taskId,
+      rewardId: 1,
+    })
+      .then(async (res) => {
+        curRewards.value = res.data.rewards
+        await handleBubbleBurst(domList, task)
+        // 更新页面数据
+        activityData.value.event_data[EVENT_NAME][index].award[0] = 1
+        let text = '领取成功，您获得了'
+        curRewards.value.forEach((item) => {
+          text += ` ${rewardsText[item.name as keyof RewardsName]}*${item.count}`
+        })
+        showToast(text)
+        // 更新红点
+        setRedDot()
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
+  }
+}
 
-  // 更新页面数据
-  activityData.value.event_data[EVENT][index].award[rewardId - 1] = 1
-  // 更新红点
-  setRedDot()
+/**
+ * @function 处理气泡爆炸动画
+ * @param {HTMLElement[]} domList - 需要处理动画的DOM元素列表
+ * @param {Reward} item - 奖励对象
+ * @returns {Promise<void>}
+ * @description 并行处理所有元素的气泡爆炸动画
+ */
+async function handleBubbleBurst(
+  domList: HTMLElement[],
+  item: Reward,
+): Promise<void> {
+  // 使用 Promise.all 并行处理所有元素的动画
+  await Promise.all(domList.map((dom) => bubbleBurst(dom, item)))
+}
+
+/**
+ * @function 点击气泡弹弹弹的果冻效果
+ * @param {HTMLElement} dom - dom元素
+ * @returns {void}
+ */
+const clickBubbleReward = (dom: HTMLElement): void => {
+  gsap
+    .timeline()
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
+    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直拉伸
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
+}
+
+/**
+ * @function 气泡爆炸动画
+ * @param {HTMLElement} dom - dom元素
+ * @param {Reward} reward - 奖励对象
+ * @returns {Promise<void>}
+ */
+const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
+  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
+  if (reward.canRewardLottieRef) {
+    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
+  }
+  // 溅射效果
+  await gsap
+    .timeline()
+    .to(dom, {
+      scaleY: 0.8,
+      duration: 0.2,
+      ease: 'power1.in',
+      opacity: 0.9,
+    }) // 垂直压挤
+    .to(dom, {
+      scaleY: 1.1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0.5,
+    }) // 垂直拉伸
+    .to(dom, {
+      scaleY: 1,
+      duration: 0.2,
+      ease: 'power1.out',
+      opacity: 0,
+    }) // 再次垂直压挤并淡出
 }
 </script>
 
@@ -824,28 +878,23 @@ async function handleReward(
   top: 69px;
   width: 1319px;
 }
-.title {
-  width: 1319px;
-  height: 214px;
-  background-image: url('@/assets/images/netease-werewolf/title.png');
-}
 .help {
   position: absolute;
-  right: 50px;
-  top: 23px;
-  width: 87px;
-  height: 87px;
+  left: 1040px;
+  top: -4px;
+  width: 74px;
+  height: 74px;
   background-image: url('@/assets/images/tournament-of-triumph-1/help.png');
 }
 .task-list {
   position: absolute;
-  left: 38px;
-  top: 320px;
+  left: 68px;
+  top: 260px;
   width: 1500px;
 }
 .task-bg {
   position: relative;
-  width: 250px;
+  width: 220px;
   height: 1022px;
 }
 .task-mask {
@@ -857,11 +906,10 @@ async function handleReward(
   background-color: rgba(0, 0, 0, 0.3);
 }
 .task-item {
-  margin-left: -8px;
-  margin-bottom: 58px;
-  width: 267px;
-  height: 227px;
+  width: 190px;
+  height: 120px;
   background-size: cover;
+  background-position: center;
 }
 .reward-text {
   width: 407px;
@@ -883,48 +931,54 @@ input::placeholder {
   background-repeat: no-repeat;
   background-size: contain;
 }
-@for $i from 1 through 6 {
+@for $i from 1 through 7 {
   .bg-task#{$i} {
-    width: 250px;
-    height: 722px;
+    width: 190px;
+    height: 750px;
     background-image: url('@/assets/images/netease-werewolf/bg-task#{$i}.png');
   }
-  .task-item#{$i} {
+  @for $j from 1 through 2 {
+    .task-item#{$i}-#{$j} {
+      &.wait {
+        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-wait.png');
+      }
+      &.can {
+        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-can.png');
+      }
+      &.redeemed {
+        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-redeemed.png');
+      }
+    }
+  }
+  .task-item2-1,
+  .task-item3-1,
+  .task-item5-1,
+  .task-item7-1 {
     &.wait {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-wait.png');
+      background-image: url('@/assets/images/netease-werewolf/task-wolf-wait.png');
     }
     &.can {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-can.png');
+      background-image: url('@/assets/images/netease-werewolf/task-wolf-can.png');
     }
     &.redeemed {
-      background-image: url('@/assets/images/tournament-of-triumph-1/task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/netease-werewolf/task-wolf-redeemed.png');
     }
   }
 }
-.acc-task-item {
+.extra-reward-item {
   position: absolute;
-  width: 146px;
-  height: 175px;
-}
-.acc-task-item1 {
-  right: 259px;
-  top: 623px;
-}
-.acc-task-item2 {
-  right: 43px;
-  top: 563px;
-}
-@for $i from 1 through 3 {
-  .acc-task-item#{$i} {
-    &.wait {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/tournament-of-triumph-1/acc-task#{$i}-redeemed.png');
-    }
+  width: 256px;
+  height: 230px;
+  right: 190px;
+  top: 380px;
+  &.wait {
+    background-image: url('@/assets/images/netease-werewolf/extra-reward-wait.png');
+  }
+  &.can {
+    background-image: url('@/assets/images/netease-werewolf/extra-reward-can.png');
+  }
+  &.redeemed {
+    background-image: url('@/assets/images/netease-werewolf/extra-reward-redeemed.png');
   }
 }
 .animate-flip {

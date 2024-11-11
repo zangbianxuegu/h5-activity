@@ -171,4 +171,14 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'not recently online': '非法请求，请在游戏内打开',
     },
   },
+
+  // 狼人杀联动
+  get_werewolf_info: {
+    402: {
+      user_not_exist: '用户不存在',
+    },
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+  },
 }

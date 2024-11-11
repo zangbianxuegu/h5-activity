@@ -12,6 +12,7 @@ export interface Response {
   code: number
   msg: string
   data: any
+  werewolf_nickname?: string
 }
 
 export type ServeResponse = Response | null

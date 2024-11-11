@@ -10,7 +10,7 @@ export const useActivityStore = defineStore(
         activitycenter_netease_werewolf: [
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_extra',
+            task_id: 'activitycenter_netease_werewolf_m1',
             stages: [1],
             score: '',
             is_werewolf_reward: false,
@@ -19,7 +19,7 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_m7',
+            task_id: 'activitycenter_netease_werewolf_m2',
             stages: [1],
             score: '',
             is_werewolf_reward: true,
@@ -28,16 +28,7 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_m6',
-            stages: [1],
-            score: '',
-            is_werewolf_reward: false,
-            awarded_types: [],
-            award: [0],
-          },
-          {
-            value: 0,
-            task_id: 'activitycenter_netease_werewolf_m5',
+            task_id: 'activitycenter_netease_werewolf_m3',
             stages: [1],
             score: '',
             is_werewolf_reward: true,
@@ -55,7 +46,7 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_m3',
+            task_id: 'activitycenter_netease_werewolf_m5',
             stages: [1],
             score: '',
             is_werewolf_reward: true,
@@ -64,7 +55,16 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_m2',
+            task_id: 'activitycenter_netease_werewolf_m6',
+            stages: [1],
+            score: '',
+            is_werewolf_reward: false,
+            awarded_types: [],
+            award: [0],
+          },
+          {
+            value: 0,
+            task_id: 'activitycenter_netease_werewolf_m7',
             stages: [1],
             score: '',
             is_werewolf_reward: true,
@@ -73,7 +73,7 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_netease_werewolf_m1',
+            task_id: 'activitycenter_netease_werewolf_extra',
             stages: [1],
             score: '',
             is_werewolf_reward: false,

@@ -347,6 +347,50 @@ export function claimMissionReward({
 }
 
 /**
+ * 获取用户狼人杀信息
+ * @function getWerewolfInfo
+ * @typedef {Object} GetWerewolfInfoParams
+ * @property {string} user 用户标识
+ * @property {string} werewolf_nid 狼人UID
+ * @returns {Promise<Response>}
+ */
+export function getWerewolfInfo({
+  user,
+  werewolfNid,
+}: {
+  user: string
+  werewolfNid: string
+}): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/internal/jingling/get_werewolf_info',
+      content: {
+        source_token: '',
+        source_id: '',
+        user,
+        werewolf_nid: werewolfNid,
+      },
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = getErrorMessage(
+            'get_werewolf_info',
+            res.code,
+            res.msg,
+          )
+          reject(new Error(errorMessage))
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}
+
+/**
  * 设置新活动状态
  * @function setWebRedDot
  * @param param {string} 活动名称
