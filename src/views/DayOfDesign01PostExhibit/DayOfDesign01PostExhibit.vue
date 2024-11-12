@@ -8,8 +8,8 @@
               <div class="sr-only">
                 绘梦节活动会场
                 <p>
-                  <time datetime="2024-10-26">10.26</time>-
-                  <time datetime="2024-11-15">11.15</time>
+                  <time datetime="2025-01-01">1.1</time>-
+                  <time datetime="2025-01-31">1.31</time>
                 </p>
               </div>
               <div
@@ -29,14 +29,15 @@
             <!-- 操作区 -->
             <div class="justify-space m-auto flex w-[1600px] items-center py-2">
               <input
-                v-model="keywords"
+                v-model="searchTerm"
                 type="text"
                 placeholder="搜索作者名称或作品编号"
                 class="grow p-2 shadow-md"
+                @keyup.enter="handleSearch()"
               />
               <button
                 class="bg-blue-500 px-4 py-2 text-white"
-                @click="searchItems"
+                @click="handleSearch()"
               >
                 搜索
               </button>
@@ -50,28 +51,15 @@
                 :class="[
                   'ml-4 rounded bg-gray-500 px-4 py-2 text-white',
                   {
-                    'cursor-not-allowed opacity-50': countdown > 0,
+                    'cursor-not-allowed opacity-50': isCoolDownActive,
                   },
                 ]"
-                :disabled="countdown > 0"
-                @click="getRecommendData"
+                :disabled="isCoolDownActive"
+                @click="handleRecommend"
               >
-                <span v-show="countdown > 0">({{ countdown }})</span>推荐
+                <span v-show="isCoolDownActive">({{ countdown }})</span>推荐
               </button>
             </div>
-            <!-- <p class="text-[56px] text-white">测试字体大小：56px 适配</p>
-            <p class="text-[48px] text-white">测试字体大小：48px 适配</p>
-            <p class="text-[40px] text-white">测试字体大小：40px 适配</p>
-            <p class="text-[36px] text-white">测试字体大小：36px 适配</p>
-            <p class="text-[32px] text-white">测试字体大小：32px 适配</p>
-            <p class="text-[30px] text-white">测试字体大小：30px 适配</p>
-            <p class="text-[28px] text-white">测试字体大小：28px 适配</p>
-            <p class="text-[24px] text-white">测试字体大小：24px 适配</p>
-            <p class="text-[12px] text-white">测试字体大小：12px 适配</p>
-            <p class="text-[10px] text-white">测试字体大小：10px 适配</p>
-            <p class="text-test-12 text-white">测试字体大小：固定12px</p>
-            <p class="text-test-14 text-white">测试字体大小：固定14px</p>
-            <p class="text-test-16 text-white">测试字体大小：固定16px</p> -->
             <!-- 主体内容 -->
             <div class="">
               <div class="relative mx-auto h-[700px] w-[1700px]">
@@ -83,7 +71,7 @@
                   >
                     <button
                       class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
-                      @click="handleFavorite('prev')"
+                      @click="handlePrev"
                     >
                       &#9664;
                     </button>
@@ -91,11 +79,11 @@
                 </Transition>
                 <!-- 作品列表 -->
                 <ul
-                  v-if="favoriteList"
+                  v-if="list"
                   class="absolute left-1/2 grid w-[1400px] -translate-x-1/2 grid-cols-3 gap-4"
                 >
                   <li
-                    v-for="item in favoriteList"
+                    v-for="item in list"
                     :key="item.design_id"
                     class="relative cursor-pointer rounded bg-white shadow-md"
                     @click="handleItemClick"
@@ -124,7 +112,7 @@
                       </div>
                       <!-- 收藏图标 -->
                       <img
-                        v-if="item.is_favorite"
+                        v-if="item.favorite"
                         class="h-[40px] w-[40px]"
                         src="http://iph.href.lu/20x20"
                         alt="已收藏"
@@ -143,7 +131,7 @@
                   <div
                     v-show="isNextVisible"
                     class="absolute right-0 top-1/2 flex -translate-y-1/2 items-center justify-center"
-                    @click="handleFavorite('next')"
+                    @click="handleNext"
                   >
                     <button
                       class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
@@ -156,12 +144,10 @@
               <!-- 分页 -->
               <Transition name="fade">
                 <div
-                  v-if="type === searchTypeConst.collect"
+                  v-if="isPagesVisible"
                   class="mt-2 flex items-center justify-center"
                 >
-                  <p class="text-white">
-                    {{ currentPage }}/{{ favoriteTotalPage }}
-                  </p>
+                  <p class="text-white">{{ currentPage }}/{{ totalPage }}</p>
                 </div>
               </Transition>
             </div>
@@ -215,20 +201,28 @@
 </template>
 
 <script setup lang="ts">
+import { showToast } from 'vant'
 import type {
   DesignConfig,
-  SearchType,
+  ListRecommendParams,
+  ListRecommendRes,
   ListFavoriteParams,
   ListFavoriteRes,
+  ListSearchParams,
+  ListSearchRes,
   DesignItem,
 } from '@/types'
 import { Session } from '@/utils/storage'
-import { getFavorites } from '@/apis/dayOfDesign01'
-import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import ActivityModal from '@/components/Modal'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
-import { showToast } from 'vant'
-import { useActivityStore } from '@/stores/dayOfDesign01PostExhibit'
+import {
+  getFavorites,
+  getRecommendations,
+  searchDesigns,
+} from '@/apis/dayOfDesign01'
+import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import Loading from '@/components/Loading'
+import ActivityModal from '@/components/Modal'
+import { useStore, initCachedData } from './store'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -259,21 +253,57 @@ const designConfig: DesignConfig = {
 // 缩放系数
 useResponsiveStyles(designConfig)
 
+// 常量
 const EVENT = 'activitycenter_dayofdesign01_post_exhibit'
-const activityStore = useActivityStore()
-// 缓存的收藏数据
-const designData = computed(() => activityStore.designData)
-// 缓存的收藏数据总页数
-const favoriteTotalPage = computed(() => designData.value.totalPage)
-// 页面显示的收藏列表
-const favoriteList = ref<DesignItem[]>([])
-const currentPage = ref(1)
-// 收藏时间：获取收藏数据传参，第一次不传
-// 根据已获取的收藏数据的最小收藏时间进行下一次的请求
-let minFavoriteTime: null | number = null
-
+const ITEMS_PER_PAGE = 6
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+
+// 缓存数据
+const {
+  cachedRecommend,
+  cachedFavorite,
+  cachedSearch,
+  updateCachedRecommend,
+  updateCachedFavorite,
+  updateCachedSearch,
+} = useStore()
+// 页面数据类型
+const type = ref<'recommend' | 'favorite' | 'search'>('favorite') // recommend、favorite、search
+// 页面显示的作品列表数据
+const list = ref<DesignItem[]>([])
+// 总页数
+const totalPage = ref(0)
+// 当前页数
+const currentPage = ref(1)
+// 推荐页数
+let recommendPage = 0
+// 搜索文本
+const searchTerm = ref('')
+// 当前页最小收藏时间：获取收藏数据传参，第一次不传
+// 根据已获取的收藏数据的最小收藏时间进行下一次的请求
+let minFavoriteTime: null | number = null
+// 当前页最小ID：获取收藏数据传参，第一次不传
+// 根据已获取的搜索数据的最小作品ID进行下一次的请求
+let minIdOffset: null | string = null
+// 为我推荐倒计时
+const countdown = ref(0)
+let timer: NodeJS.Timeout | undefined
+const isCoolDownActive = computed(() => countdown.value > 0)
+// 详情显示
+const isDetailVisible = ref(false)
+// 左右箭头和页数的显示
+const isPrevVisible = computed(
+  () => type.value !== 'recommend' && currentPage.value > 1,
+)
+const isNextVisible = computed(
+  () => type.value !== 'recommend' && currentPage.value < totalPage.value,
+)
+const isPagesVisible = computed(
+  () =>
+    (type.value === 'favorite' && cachedFavorite.value.totalPage > 1) ||
+    (type.value === 'search' && cachedSearch.value.totalPage > 1),
+)
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostExhibit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -286,36 +316,9 @@ if (!isVisited) {
   mainTransitionName.value = 'fade-in-main'
 }
 
-const searchTypeConst: Record<SearchType, SearchType> = {
-  recommend: 'recommend',
-  collect: 'collect',
-}
-
-// 类型
-const type = ref<SearchType>('recommend')
-const keywords = ref('')
-// 作品列表信息
-// const workData = ref<WorkData>({
-//   list: [],
-//   total_pages: 0,
-//   page: 0,
-// })
-const isPrevVisible = computed(
-  () => type.value === searchTypeConst.collect && currentPage.value > 1,
-)
-const isNextVisible = computed(
-  () =>
-    type.value === searchTypeConst.collect &&
-    currentPage.value < favoriteTotalPage.value,
-)
-// 为我推荐倒计时
-const countdown = ref(0)
-let timer: NodeJS.Timeout | undefined
-const isShowMyWorksModal = ref(false)
-
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
-  await handleFavorite()
+  await handleRecommend()
 })
 
 onBeforeUnmount(() => {
@@ -325,27 +328,41 @@ onBeforeUnmount(() => {
 })
 
 /**
- * @function getRecommendData
- * @description 获取推荐作品
- * @returns {void}
+ * @function handleCachedRecommend
+ * @description 更新缓存的推荐数据
+ * @returns {Promise<void>}
  */
-function getRecommendData(): void {
-  countdown.value = 3
-  timer = setInterval(() => {
-    countdown.value -= 1
-    if (countdown.value <= 0) {
-      clearInterval(timer)
+async function handleCachedRecommend(): Promise<void> {
+  const params: ListRecommendParams = {
+    event: EVENT,
+    policy_name: FILE_PICKER_POLICY_NAME,
+  }
+  try {
+    const res: ListRecommendRes = await getRecommendations(params)
+    console.log('接口返回推荐数据: ', res)
+    if (res.code === 200) {
+      const data = res.data
+      // 测试代码
+      const designs = data.map((design, index) => ({
+        ...design,
+        raw_url: `http://iph.href.lu/800x600?text=${index}`,
+      }))
+      console.log('designs: ', designs)
+      updateCachedRecommend(designs)
+      console.log('cachedRecommend: ', cachedRecommend.value)
     }
-  }, 1000)
-  type.value = searchTypeConst.recommend
+  } catch (error) {
+    const err = error as Error
+    showToast(err.message || '获取收藏作品失败')
+  }
 }
 
 /**
- * @function updateLocalFavorites
+ * @function handleCachedFavorite
  * @description 更新缓存的收藏数据
  * @returns {Promise<void>}
  */
-async function updateLocalFavorites(): Promise<void> {
+async function handleCachedFavorite(): Promise<void> {
   // 参数，第一次请求不需要 favorite_time
   let params: ListFavoriteParams = {
     event: EVENT,
@@ -362,40 +379,117 @@ async function updateLocalFavorites(): Promise<void> {
     console.log('接口返回收藏数据: ', res)
     if (res.code === 200) {
       const data = res.data
-      // 处理收藏数据，加入字段 is_favorite，是否收藏，用于取消收藏展示
+      // 处理收藏数据，加入字段 favorite，是否收藏，用于取消收藏展示
       const designs = data.designs.map((design, index) => ({
         ...design,
-        is_favorite: true,
+        favorite: true,
         // 测试代码
         raw_url: `http://iph.href.lu/800x600?text=${index}`,
       }))
-      // 更新收藏数据
+      // 更新缓存的收藏数据
       const newDesignData = {
-        designList: [...designData.value.designList, ...designs],
+        designList: [...cachedFavorite.value.designList, ...designs],
         totalPage:
-          favoriteTotalPage.value === 0
-            ? Math.ceil(data.count / 6)
-            : favoriteTotalPage.value,
-        isEnd: data.is_end,
+          cachedFavorite.value?.totalPage === 0
+            ? Math.ceil(data.count / ITEMS_PER_PAGE)
+            : cachedFavorite.value?.totalPage,
       }
       // 修正总页数。如果没有数据了，判断计算的总页数是否和第一次请求页数相符
       // 针对：在第一次请求之后，后面页数的数据已经被删除了
       // 如果是前面页数的数据被删除了，则前端数据正常显示，不做处理
       if (data.is_end) {
-        const pageCount = Math.ceil(data.designs.length / 6)
-        if (currentPage.value - 1 + pageCount < favoriteTotalPage.value) {
+        const pageCount = Math.ceil(data.designs.length / ITEMS_PER_PAGE)
+        if (
+          currentPage.value - 1 + pageCount <
+          cachedFavorite.value?.totalPage
+        ) {
           newDesignData.totalPage = currentPage.value - 1 + pageCount
         }
       }
-      activityStore.updateActivityData(newDesignData)
+      updateCachedFavorite(newDesignData)
       // 更新最小收藏时间
       const lastIdex = data.designs.length - 1
       minFavoriteTime = data.designs[lastIdex].favorite_time
     }
   } catch (error) {
     const err = error as Error
-    showToast(err.message || '获取收藏数据错误')
+    showToast(err.message || '获取收藏作品失败')
   }
+}
+
+/**
+ * @function handleCachedSearch
+ * @description 更新缓存的搜索数据
+ * @returns {Promise<void>}
+ */
+async function handleCachedSearch(): Promise<void> {
+  // 参数，第一次请求不需要 id_offset
+  let params: ListSearchParams = {
+    event: EVENT,
+    policy_name: FILE_PICKER_POLICY_NAME,
+    search_term: searchTerm.value,
+  }
+  if (minIdOffset) {
+    params = {
+      ...params,
+      id_offset: minIdOffset,
+    }
+  }
+  try {
+    const res: ListSearchRes = await searchDesigns(params)
+    console.log('接口返回搜索数据: ', res)
+    if (res.code === 200) {
+      const data = res.data
+      if (data.designs.length === 0) {
+        showToast('暂无搜索数据~')
+        return
+      }
+      // 测试代码
+      const designs = data.designs.map((design, index) => ({
+        ...design,
+        raw_url: `http://iph.href.lu/800x600?text=${index}`,
+      }))
+      // 更新缓存的搜索数据
+      const newDesignData = {
+        designList: [...cachedSearch.value.designList, ...designs],
+        totalPage:
+          cachedSearch.value.totalPage === 0
+            ? Math.ceil(data.count / ITEMS_PER_PAGE)
+            : cachedSearch.value.totalPage,
+      }
+      updateCachedSearch(newDesignData)
+      // 更新最小作品ID
+      const lastIdex = data.designs.length - 1
+      minIdOffset = data.designs[lastIdex].design_id
+    }
+  } catch (error) {
+    const err = error as Error
+    showToast(err.message || '搜索作品失败')
+  }
+}
+
+/**
+ * @function getRecommendByPage
+ * @description 根据页数获取推荐数据
+ * @param {number} page 页数
+ * @returns {DesignItem}
+ */
+async function getRecommendByPage(page: number): Promise<DesignItem[]> {
+  const startIndex = (page - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
+  if (startIndex >= cachedRecommend.value.length) {
+    // 请求接口获取新数据
+    await handleCachedRecommend()
+  } else {
+    Loading.show()
+    // 随机延迟 100 到 300 毫秒
+    const delay = Math.floor(Math.random() * 200) + 100
+    await new Promise((resolve) => setTimeout(resolve, delay))
+    Loading.hide()
+  }
+  const res = cachedRecommend.value.slice(startIndex, endIndex)
+  console.log(`推荐数据第${page}页：`, res)
+  return res
 }
 
 /**
@@ -407,42 +501,134 @@ async function updateLocalFavorites(): Promise<void> {
 async function getFavoritesByPage(page: number): Promise<DesignItem[]> {
   const startIndex = (page - 1) * 6
   const endIndex = startIndex + 6
-  if (startIndex >= designData.value.designList.length) {
+  if (startIndex >= cachedFavorite.value.designList.length) {
     // 请求接口获取新数据
-    await updateLocalFavorites()
+    await handleCachedFavorite()
   }
-  const res = designData.value.designList.slice(startIndex, endIndex)
-  console.log('res111: ', res)
+  const res = cachedFavorite.value.designList.slice(startIndex, endIndex)
+  console.log(`收藏数据第${page}页：`, res)
   return res
+}
+
+/**
+ * @function getSearchByPage
+ * @description 根据页数获取搜索数据
+ * @param {number} page 页数
+ * @returns {DesignItem}
+ */
+async function getSearchByPage(page: number): Promise<DesignItem[]> {
+  const startIndex = (page - 1) * 6
+  const endIndex = startIndex + 6
+  if (startIndex >= cachedSearch.value.designList.length) {
+    // 请求接口获取新数据
+    await handleCachedSearch()
+  }
+  const res = cachedSearch.value.designList.slice(startIndex, endIndex)
+  console.log(`搜索数据第${page}页：`, res)
+  return res
+}
+
+/**
+ * @function handleRecommend
+ * @description 获取推荐作品
+ * @returns {Promise<void>}
+ */
+async function handleRecommend(): Promise<void> {
+  type.value = 'recommend'
+  recommendPage++
+  if (cachedRecommend.value.length < 6 || recommendPage > 3) {
+    recommendPage = 1
+    updateCachedRecommend([])
+  }
+  countdown.value = 3
+  timer = setInterval(() => {
+    countdown.value -= 1
+    if (countdown.value <= 0) {
+      clearInterval(timer)
+    }
+  }, 1000)
+  list.value = await getRecommendByPage(recommendPage)
 }
 
 /**
  * @function getCollectionData
  * @description 获取收藏作品
  * @param {string} dir 方向
- * @returns {void}
+ * @returns {Promise<void>}
  */
 async function handleFavorite(dir?: string): Promise<void> {
-  type.value = searchTypeConst.collect
+  type.value = 'favorite'
   if (dir === 'prev') {
     currentPage.value -= 1
   } else if (dir === 'next') {
     currentPage.value += 1
+  } else {
+    minFavoriteTime = null
+    currentPage.value = 1
+    updateCachedFavorite(initCachedData)
   }
-  favoriteList.value = await getFavoritesByPage(currentPage.value)
+  list.value = await getFavoritesByPage(currentPage.value)
+  totalPage.value = cachedFavorite.value.totalPage
 }
 
 /**
- * @function searchItems
+ * @function handleSearch
  * @description 搜索功能
- * @returns {void}
+ * @param {string} dir 方向
+ * @returns {Promise<void>}
  */
-function searchItems(): void {
-  // getWorkData()
+async function handleSearch(dir?: string): Promise<void> {
+  if (!searchTerm.value.trim()) {
+    showToast('请输入作者名称或作品编号~')
+    return
+  }
+  type.value = 'search'
+  if (dir === 'prev') {
+    currentPage.value -= 1
+  } else if (dir === 'next') {
+    currentPage.value += 1
+  } else {
+    minIdOffset = null
+    currentPage.value = 1
+    updateCachedSearch(initCachedData)
+  }
+  list.value = await getSearchByPage(currentPage.value)
+  totalPage.value = cachedSearch.value.totalPage
 }
 
+/**
+ * @function handlePrev
+ * @description 获取上一页数据
+ * @returns {Promise<void>}
+ */
+async function handlePrev(): Promise<void> {
+  if (type.value === 'favorite') {
+    await handleFavorite('prev')
+  } else {
+    await handleSearch('prev')
+  }
+}
+
+/**
+ * @function handleNext
+ * @description 获取下一页数据
+ * @returns {Promise<void>}
+ */
+async function handleNext(): Promise<void> {
+  if (type.value === 'favorite') {
+    await handleFavorite('next')
+  } else {
+    await handleSearch('next')
+  }
+}
+
+/**
+ * @function handleItemClick
+ * @description 查看作品详情
+ * @returns {void}
+ */
 function handleItemClick(): void {
-  isShowMyWorksModal.value = true
+  isDetailVisible.value = true
 }
 
 /**
@@ -522,13 +708,4 @@ function handleHelp(): void {
   height: 200px;
   background-image: url('http://iph.href.lu/1200x200');
 }
-// .text-test-12 {
-//   font-size: 12px; /* px-to-viewport-ignore */
-// }
-// .text-test-14 {
-//   font-size: 14px; /* px-to-viewport-ignore */
-// }
-// .text-test-16 {
-//   font-size: 16px; /* px-to-viewport-ignore */
-// }
 </style>

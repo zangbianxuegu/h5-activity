@@ -172,8 +172,8 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
-  // 绘梦节我的收藏
-  get_favorites: {
+  // 新版统一错误信息
+  new_common_error: {
     400: {
       'repeat request': '请求频繁，请稍后重试',
       'bad request': '非法请求，请在游戏内打开',

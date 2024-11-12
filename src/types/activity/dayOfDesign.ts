@@ -1,57 +1,48 @@
 export type SearchType = 'collect' | 'recommend'
 
-export interface ListFavoriteParams {
+export interface ListParams {
   event: string
   policy_name: string
-  favorite_time?: number
   group?: string
 }
 
-export interface ListFavoriteRes {
+export interface ListResponse<T> {
   code: number
   msg: string
-  data: FavoriteData
+  data: T
 }
 
-export interface FavoriteData {
-  is_end: boolean
-  count: number
+export interface DesignsData {
   designs: DesignItem[]
 }
 
+export interface FavoriteData extends DesignsData {
+  is_end: boolean
+  count: number
+}
+
 export interface DesignItem {
-  design_id: number
+  design_id: string
   author_name: string
   design_name: string
   raw_url: string
   favorite_time: number
-  is_favorite: boolean
+  favorite: boolean
 }
 
-export interface WorkListParams {
-  page: number
-  per_page: number
-  keywords?: string
-  type: SearchType
+export interface ListRecommendParams extends ListParams {}
+
+export type ListRecommendRes = ListResponse<DesignItem[]>
+
+export interface ListFavoriteParams extends ListParams {
+  favorite_time?: number
 }
 
-export interface WorkItem {
-  id: string
-  image_url: string
-  author: string
-  title: string
-  description: string
-  collected: boolean
+export type ListFavoriteRes = ListResponse<FavoriteData>
+
+export interface ListSearchParams extends ListParams {
+  search_term: string
+  id_offset?: string
 }
 
-export interface WorkData {
-  list: WorkItem[]
-  page: number
-  total_pages: number
-}
-
-export interface WorkListRes {
-  code: number
-  msg: string
-  data: WorkData
-}
+export type ListSearchRes = ListResponse<FavoriteData>

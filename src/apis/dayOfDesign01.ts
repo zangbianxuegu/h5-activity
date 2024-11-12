@@ -1,9 +1,11 @@
 import type {
-  WorkListParams,
-  WorkListRes,
   Response,
+  ListRecommendParams,
+  ListRecommendRes,
   ListFavoriteParams,
   ListFavoriteRes,
+  ListSearchParams,
+  ListSearchRes,
 } from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
@@ -25,6 +27,42 @@ import {
 import Loading from '@/components/Loading'
 
 /**
+ * 作品列表 - 推荐
+ * @param {ListRecommendParams} params 参数
+ * @property {string} event 事件名
+ * @property {string} policy_name 策略名
+ * @property {string} group 分组
+ * @returns {Promise<ListRecommendRes>}
+ */
+export function getRecommendations(
+  params: ListRecommendParams,
+): Promise<ListRecommendRes> {
+  return new Promise((resolve, reject) => {
+    Loading.show()
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/get_recommendations',
+      content: params,
+      handleRes: (res: ListRecommendRes) => {
+        Loading.hide()
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = getErrorMessage(
+            'new_common_error',
+            res.code,
+            res.msg,
+          )
+          reject(new Error(errorMessage))
+        }
+      },
+    }).catch((err) => {
+      reject(err)
+    })
+  })
+}
+
+/**
  * 作品列表 - 我的收藏
  * @param {ListFavoriteParams} params 参数
  * @property {string} event 事件名
@@ -42,13 +80,13 @@ export function getFavorites(
       type: 'protocol',
       resource: '/account/web/get_favorites',
       content: params,
-      handleRes: (res: Response) => {
+      handleRes: (res: ListFavoriteRes) => {
         Loading.hide()
         if (res.code === 200) {
           resolve(res)
         } else {
           const errorMessage = getErrorMessage(
-            'get_favorites',
+            'new_common_error',
             res.code,
             res.msg,
           )
@@ -62,76 +100,40 @@ export function getFavorites(
 }
 
 /**
- * 作品列表
- * @param {WorkListParams} params 参数
- * @property {SearchType} type 类型
- * @property {number} page 页数
- * @property {number} per_page 每页数量
- * @returns {Promise<WorkListRes>}
+ * 作品列表 - 搜索
+ * @param {ListSearchParams} params 参数
+ * @property {string} event 事件名
+ * @property {string} policy_name 策略名
+ * @property {string} search_term 搜索文本
+ * @property {string} id_offset 当前页最小的作品ID
+ * @property {string} group 分组
+ * @returns {Promise<ListSearchRes>}
  */
-export function getWorkList(params: WorkListParams): Promise<WorkListRes> {
-  console.log('params: ', params)
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        code: 200,
-        msg: 'ok',
-        data: {
-          list: [
-            {
-              id: 'ID123456781',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: false,
-            },
-            {
-              id: 'ID123456782',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: false,
-            },
-            {
-              id: 'ID123456783',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: true,
-            },
-            {
-              id: 'ID123456784',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: false,
-            },
-            {
-              id: 'ID123456783',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: true,
-            },
-            {
-              id: 'ID123456784',
-              image_url: 'http://iph.href.lu/800x600',
-              author: 'John',
-              title: '作品标题作品标题',
-              description: '作品描述',
-              collected: false,
-            },
-          ],
-          total_pages: 50,
-          page: 2,
-        },
-      })
-    }, 200)
+export function searchDesigns(
+  params: ListSearchParams,
+): Promise<ListSearchRes> {
+  return new Promise((resolve, reject) => {
+    Loading.show()
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/search_designs',
+      content: params,
+      handleRes: (res: ListSearchRes) => {
+        Loading.hide()
+        if (res.code === 200) {
+          resolve(res)
+        } else {
+          const errorMessage = getErrorMessage(
+            'new_common_error',
+            res.code,
+            res.msg,
+          )
+          reject(new Error(errorMessage))
+        }
+      },
+    }).catch((err) => {
+      reject(err)
+    })
   })
 }
 
