@@ -145,7 +145,8 @@ const onClickHandleBarShare = (): void => {
     {
       title: '绘梦节分享标题',
       text: '绘梦节分享文本',
-      link: 'http://10.227.199.103:3000/dayofdesign01.html',
+      link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html',
+      // link: 'http://10.227.199.103:3000/dayofdesign01.html',
       desc: '绘梦节分享说明',
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),

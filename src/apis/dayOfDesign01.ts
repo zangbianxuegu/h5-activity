@@ -15,15 +15,15 @@ import type {
   SelfDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import {
-  getFilePickerToken,
-  reviewText,
-  uploadImgToFilePicker,
-} from '@/utils/filePicker'
-import {
-  REVIEW_TEXT_ERROR_TYPE,
   ERROR_TYPE,
+  REVIEW_TEXT_ERROR_TYPE,
   reviewTextResponseMap,
 } from '@/utils/filePicker/types'
+import {
+  reviewText,
+  getFilePickerToken,
+  uploadImgToFilePicker,
+} from '@/utils/filePicker'
 import Loading from '@/components/Loading'
 
 /**
@@ -335,7 +335,6 @@ export const uploadFormAndFilePickerResultToServerApi = (
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadWorksToServer = async (
-  filePickerUrl: string,
   policyName: string,
   shareImgPolicyName: string,
   reviewTextObj: Record<string, any>,
@@ -367,23 +366,22 @@ export const uploadWorksToServer = async (
     const reviewTextResult = await reviewText(reviewTextObj)
     if (reviewTextResult) {
       // 获取filepicker token
-      const tokenImg = await getFilePickerToken(
-        filePickerUrl,
-        policyName,
-        md5Result,
-      )
+      const { token: tokenImg, url: filePickerUrlImg } =
+        await getFilePickerToken(policyName, md5Result)
       // 获取filepicker token
-      const tokenShareImg = await getFilePickerToken(
-        filePickerUrl,
-        shareImgPolicyName,
-        md5ResultShareImg,
-      )
+      const { token: tokenShareImg, url: filePickerUrlShareImg } =
+        await getFilePickerToken(shareImgPolicyName, md5ResultShareImg)
       if (tokenImg && tokenShareImg) {
         // 上传稿件至filepicker
-        const uploadImgResult = await uploadImgToFilePicker(tokenImg, imgBlob)
+        const uploadImgResult = await uploadImgToFilePicker(
+          tokenImg,
+          imgBlob,
+          filePickerUrlImg,
+        )
         const uploadshareImgResult = await uploadImgToFilePicker(
           tokenShareImg,
           shareImgBlob,
+          filePickerUrlShareImg,
         )
         if (uploadImgResult?.url && uploadshareImgResult?.url) {
           // 存储稿件最终数据至服务端,完成投稿

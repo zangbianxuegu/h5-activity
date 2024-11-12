@@ -455,12 +455,12 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/hmj-contribute',
-    name: 'HMJContribute',
-    component: () => import('@/views/HMJContribute'),
+    path: '/dayofdesign01-post-submit',
+    name: 'DayOfDesign01PostSubmit',
+    component: () => import('@/views/DayOfDesign01PostSubmit'),
     meta: {
-      title: '绘梦节投稿',
-      module: 'activitycenter_hmj_contribute',
+      title: '我要投稿',
+      module: 'activitycenter_dayofdesign01_post_submit',
     },
   },
 ]
