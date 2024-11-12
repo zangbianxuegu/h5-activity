@@ -172,8 +172,21 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
-  // 狼人杀联动
+  // 狼人杀联动查询账号
   get_werewolf_info: {
+    401: {
+      already_bind: '账号已绑定',
+    },
+    402: {
+      bind_error: '绑定失败 数据异常',
+      user_not_exist: '狼人杀的账号不存在',
+    },
+  },
+  // 绑定狼人杀账号
+  bind_werewolf_info: {
+    401: {
+      already_bind: '账号已绑定',
+    },
     402: {
       user_not_exist: '用户不存在',
     },

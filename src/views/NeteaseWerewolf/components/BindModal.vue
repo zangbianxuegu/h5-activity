@@ -5,7 +5,7 @@
     @click="openModal"
   >
     <div
-      class="modal relative transform bg-contain bg-center bg-no-repeat px-12 transition duration-300"
+      class="modal relative transform bg-contain bg-center bg-no-repeat px-[94px] transition duration-300"
       :class="{ 'translate-y-6': !isOpen }"
       :style="{ backgroundImage: `url(${backgroundImage})` }"
       @click.stop
@@ -85,10 +85,10 @@ defineExpose({
     background-image: url('@/assets/images/common/modal-close.png');
   }
   .modal-title {
-    color: #696969;
-    font-weight: 700;
-    font-size: 44px;
+    color: #5284b0;
+    font-size: 52px;
     letter-spacing: 0.5px;
+    margin-top: 2px;
   }
 }
 </style>

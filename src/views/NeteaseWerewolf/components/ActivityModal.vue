@@ -5,7 +5,7 @@
     @click="openModal"
   >
     <div
-      class="modal relative transform bg-contain bg-center bg-no-repeat px-4 transition duration-300"
+      class="modal relative transform bg-contain bg-center bg-no-repeat px-0 transition duration-300"
       :class="{ 'translate-y-6': !isOpen }"
       :style="{ backgroundImage: `url(${backgroundImage})` }"
       @click.stop
@@ -71,20 +71,20 @@ defineExpose({
 
 <style lang="scss" scoped>
 .modal {
-  width: 1680px;
-  height: 866px;
+  width: 1672px;
+  height: 909px;
   background-image: url('@/assets/images/netease-werewolf/modal-bg.png');
 
   &-title {
     width: 613px;
     height: 96px;
-    background-image: url('@/assets/images/netease-werewolf/modal-title.png');
   }
 
   &-close {
-    width: 81px;
-    height: 81px;
-    background-image: url('@/assets/images/common/modal-close.png');
+    width: 72px;
+    height: 71px;
+    margin-top: 20px;
+    background-image: url('@/assets/images/netease-werewolf/modal-close.png');
   }
 }
 </style>
