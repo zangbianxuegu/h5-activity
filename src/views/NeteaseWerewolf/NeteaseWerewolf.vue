@@ -434,22 +434,6 @@ const taskOrderMap = new Map(
   ]),
 )
 
-// 创建任务列表的函数
-const createTaskLists = (key: string, name: string, length: number): Reward[] =>
-  Array.from({ length }, (_, i) => createTaskItem(i + 1, key, name))
-
-// 定义任务配置
-const TASK_MAP: Config = [
-  ['activitycenter_netease_werewolf_m1', '通过1次晨岛神殿', 2],
-  ['activitycenter_netease_werewolf_m2', '通过1次云野神殿', 1],
-  ['activitycenter_netease_werewolf_m3', '通过1次雨林神殿', 1],
-  ['activitycenter_netease_werewolf_m4', '通过1次霞谷神殿', 2],
-  ['activitycenter_netease_werewolf_m5', '通过1次暮土神殿', 1],
-  ['activitycenter_netease_werewolf_m6', '通过1次禁阁神殿', 2],
-  ['activitycenter_netease_werewolf_m7', '通过1次暴风眼', 1],
-  ['activitycenter_netease_werewolf_extra', '通过1次暴风眼', 1],
-]
-
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
   if (award === 1) return 'redeemed'
@@ -470,6 +454,22 @@ const isPassedTAllask = computed(() => {
     return getTaskStatus(award[0], value, stages[0]) !== 'wait'
   })
 })
+
+// 定义任务配置
+const TASK_MAP: Config = [
+  ['activitycenter_netease_werewolf_m1', '通过1次晨岛神殿', 2],
+  ['activitycenter_netease_werewolf_m2', '通过1次云野神殿', 1],
+  ['activitycenter_netease_werewolf_m3', '通过1次雨林神殿', 1],
+  ['activitycenter_netease_werewolf_m4', '通过1次霞谷神殿', 2],
+  ['activitycenter_netease_werewolf_m5', '通过1次暮土神殿', 1],
+  ['activitycenter_netease_werewolf_m6', '通过1次禁阁神殿', 2],
+  ['activitycenter_netease_werewolf_m7', '通过1次暴风眼', 1],
+  ['activitycenter_netease_werewolf_extra', '通过1次暴风眼', 1],
+]
+
+// 创建任务列表的函数
+const createTaskLists = (key: string, name: string, length: number): Reward[] =>
+  Array.from({ length }, (_, i) => createTaskItem(i + 1, key, name))
 
 // 创建任务列表
 const updateTaskList = (
@@ -700,16 +700,6 @@ function getActivityData(): void {
           ),
         },
       }
-      // newActivityData = {"own_unlocks":["CharSkyKid_Hat_EggPartyGuideHat"],"event_data":{"activitycenter_netease_werewolf":[
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m2","stages":[1],"score":"","is_werewolf_reward":true,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m3","stages":[1],"score":"","is_werewolf_reward":true,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m4","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m5","stages":[1],"score":"","is_werewolf_reward":true,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m6","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_m7","stages":[1],"score":"","is_werewolf_reward":true,"awarded_types":[],"award":[0]},
-      //   {"value":1,"task_id":"activitycenter_netease_werewolf_extra","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]}
-      // ]},"current_time":1731403431}
       activityStore.updateActivityData(newActivityData)
       // 更新红点
       setRedDot()
