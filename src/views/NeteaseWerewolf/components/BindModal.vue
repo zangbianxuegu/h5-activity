@@ -86,9 +86,8 @@ defineExpose({
   }
   .modal-title {
     color: #5284b0;
-    font-size: 52px;
+    font-size: 54px;
     letter-spacing: 0.5px;
-    margin-top: 2px;
   }
 }
 </style>
