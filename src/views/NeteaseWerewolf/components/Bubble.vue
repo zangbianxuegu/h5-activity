@@ -150,11 +150,9 @@ defineExpose({
 <style lang="scss" scoped>
 .reward-can-dynamic-bubble {
   position: absolute;
-  top: 14px;
   & > :first-child {
     position: absolute;
-    top: -12px;
-    transform: scale(1.8) !important;
+    transform: scale(1.6) !important;
   }
 }
 </style>

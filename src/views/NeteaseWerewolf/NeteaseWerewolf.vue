@@ -361,7 +361,7 @@ interface RewardsName {
   rainbow: '绚丽彩虹'
   heart: '爱心'
   activitycenter_netease_werewolf_m7: '联动光崽麦克风'
-  CharSkyKid_Hat_EggPartyGuideHat: '头狼面具'
+  CharSkyKid_Mask_Werewolf: '头狼面具'
 }
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
@@ -375,7 +375,7 @@ const rewardsText: RewardsName = {
   rainbow: '绚丽彩虹',
   heart: '爱心',
   activitycenter_netease_werewolf_m7: '联动光崽麦克风',
-  CharSkyKid_Hat_EggPartyGuideHat: '头狼面具',
+  CharSkyKid_Mask_Werewolf: '头狼面具',
 }
 
 // 定义规则信息数组，包含各个关卡的奖励信息
@@ -930,13 +930,6 @@ const toClaimMissionReward = (
   top: 260px;
   width: 1500px;
 }
-.extra-reward-list {
-  position: absolute;
-  right: 190px;
-  top: 370px;
-  width: 256px;
-  height: 230px;
-}
 .character {
   position: absolute;
   right: 40px;
@@ -961,7 +954,7 @@ const toClaimMissionReward = (
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
-  transform: scale(1.1);
+  transform: scale(1);
 }
 input::placeholder {
   font-size: 40px;
@@ -1004,6 +997,7 @@ input::placeholder {
         background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-can.png');
       }
       &.redeemed {
+        transition: background-image 0.6s ease;
         background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-redeemed.png');
       }
     }
@@ -1023,10 +1017,19 @@ input::placeholder {
     }
   }
 }
+.extra-reward-list {
+  position: absolute;
+  right: 230px;
+  top: 420px;
+  width: 200px;
+  height: 140px;
+}
 .extra-reward-item {
-  width: 256px;
-  height: 230px;
-  transform: scale(1.4) !important;
+  width: 200px;
+  height: 140px;
+  margin-left: 30px;
+  transform: scale(1.6);
+  background-repeat: no-repeat;
   &.wait {
     background-image: url('@/assets/images/netease-werewolf/extra-reward-wait.png');
   }
