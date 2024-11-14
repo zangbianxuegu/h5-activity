@@ -256,8 +256,8 @@
             <div
               class="border-b-color-[#b5b5b5] mt-[80px] border-b-[2px] border-solid pb-[34px] text-center text-[32px]"
             >
-              你已绑定 角色编号：{{ bindUID }} &nbsp;&nbsp;&nbsp;角色昵称：{{
-                bindNickname
+              你已绑定 角色编号：{{ bindedUID }} &nbsp;&nbsp;&nbsp;角色昵称：{{
+                bindedNickname
               }}
             </div>
             <div class="mt-[26px] text-center text-[32px]">
@@ -299,7 +299,7 @@ import {
   bindWerewolfInfo,
 } from '@/utils/request'
 import type { Event } from '@/types'
-import { Session, Local } from '@/utils/storage'
+import { Session } from '@/utils/storage'
 import HelpModal from '@/components/Modal'
 import ActivityModal from './components/ActivityModal.vue'
 import BindModal from './components/BindModal.vue'
@@ -579,9 +579,9 @@ const extraRewardList = processTaskList([TASKS[7]])
 const extraRewardModal = processTaskList([TASKS[8]])
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
-let isBinded = Local.get('isBindWerewolf')
-let bindUID = Local.get('bindWerewolfUID')
-let bindNickname = Local.get('bindWerewolfNickname')
+const isBinded = ref(false)
+const bindedUID = ref('')
+const bindedNickname = ref('')
 
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
@@ -686,13 +686,18 @@ function handleBind(): void {
   })
     .then((res) => {
       // 更新本地存储
-      Local.set('isBindWerewolf', true)
-      Local.set('bindWerewolfUID', res.werewolf_nid)
-      Local.set('bindWerewolfNickname', res.werewolf_nickname)
-      // 更新状态
-      isBinded = Local.get('isBindWerewolf')
-      bindUID = Local.get('bindWerewolfUID')
-      bindNickname = Local.get('bindWerewolfNickname')
+      const werewolfNid = res.werewolf_nid
+      const werewolfNickname = res.werewolf_nickname
+      if (werewolfNid && werewolfNickname) {
+        // 更新状态
+        bindedUID.value = werewolfNid
+        bindedNickname.value = werewolfNickname
+        isBinded.value = true
+      } else {
+        bindedUID.value = ''
+        bindedNickname.value = ''
+        isBinded.value = false
+      }
       // 领取任务奖励
       toClaimMissionReward([], clickTask as Reward, clickIndex)
     })
@@ -730,6 +735,17 @@ function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
       const data = res.data
+      const werewolfNickname = res.werewolf_nickname
+      const werewolfNid = res.werewolf_nid
+      if (werewolfNid && werewolfNickname) {
+        bindedUID.value = werewolfNid
+        bindedNickname.value = werewolfNickname
+        isBinded.value = true
+      } else {
+        bindedUID.value = ''
+        bindedNickname.value = ''
+        isBinded.value = false
+      }
       const newActivityData = {
         ...data,
         event_data: {
@@ -790,7 +806,7 @@ async function handleReward(
   } else {
     // 狼人杀侧奖励：绑定狼人杀uid，获得任务完成信息后，告知狼人杀，狼人杀那边进行发放
     // 光遇侧奖励：直接点击领取；
-    if (task.isWerewolfReward && !isBinded) {
+    if (task.isWerewolfReward && !isBinded.value) {
       resetUID()
       modalBind.value?.openModal()
       return
