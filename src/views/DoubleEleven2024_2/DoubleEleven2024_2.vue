@@ -92,7 +92,7 @@
                     @click="handleReward($event, item, index + 1)"
                   >
                     <can-reward-bubble-animation
-                      @click.stop="handleReward($event, item, 1 + 1)"
+                      @click.stop="handleReward($event, item, index + 1)"
                       :ref="item.canRewardLottieRef"
                       :id="item.value"
                       class="acc-reward-can-dynamic-bubble"
