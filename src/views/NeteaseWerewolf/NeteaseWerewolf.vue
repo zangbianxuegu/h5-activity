@@ -127,16 +127,30 @@
           <div class="sr-only">
             在暴风眼的考验中传递勇气和温暖的你，已拥有指引其他光之子飞行的能力，请收下这份特别的奖励，去帮助更多的光之子
           </div>
-          <div
-            :class="['reward', extraReward.status]"
-            @click="
-              toClaimMissionReward(
-                [$event.target] as HTMLElement[],
-                extraReward as unknown as Reward,
-                7,
-              )
-            "
-          ></div>
+          <div v-for="item in extraRewardModal" :key="item.title">
+            <div>
+              <div
+                class="relative"
+                v-for="v in item.content.value"
+                :key="v.taskId"
+              >
+                <can-reward-bubble-animation
+                  :ref="v.canRewardLottieRef"
+                  :id="`${v.taskId}`"
+                  class="modal-can-dynamic-bubble"
+                ></can-reward-bubble-animation>
+                <div
+                  :class="[
+                    'reward animate__animated animate__fadeIn animate__slow',
+                    `${item.status}`,
+                  ]"
+                  @click="
+                    toClaimMissionReward([$event.target] as HTMLElement[], v, 7)
+                  "
+                ></div>
+              </div>
+            </div>
+          </div>
         </template>
       </activity-modal>
       <!-- 绑定弹窗 -->
@@ -465,6 +479,7 @@ const TASK_MAP: Config = [
   ['activitycenter_netease_werewolf_m6', '通过1次禁阁神殿', 2],
   ['activitycenter_netease_werewolf_m7', '通过1次暴风眼', 1],
   ['activitycenter_netease_werewolf_extra', '通过1次暴风眼', 1],
+  ['activitycenter_netease_werewolf_extra', '通过1次暴风眼', 1],
 ]
 
 // 创建任务列表的函数
@@ -479,6 +494,7 @@ const updateTaskList = (
 ): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
+      if (activityIndex === 8) activityIndex = 7
       const { award, value, stages } = eventData.value[activityIndex]
       const iswerewolfreward = eventData.value[activityIndex].is_werewolf_reward
       const awardIndex = isAccTask ? index : 0
@@ -502,6 +518,7 @@ const [
   taskList6,
   taskList7,
   taskList8,
+  taskListModal,
 ] = TASK_MAP.map(([key, name, length], index) =>
   updateTaskList(createTaskLists(key, name, length), index),
 )
@@ -515,7 +532,8 @@ const TASKS = [
   { title: '通过1次暮土神殿', content: taskList5 },
   { title: '通过1次禁阁神殿', content: taskList6 },
   { title: '通过1次暴风眼', content: taskList7 },
-  { title: '通过1次暴风眼', content: taskList8 },
+  { title: '通过1次暴风眼额外奖励', content: taskList8 },
+  { title: '通过1次暴风眼弹窗', content: taskListModal },
 ]
 
 // 处理任务列表的函数
@@ -539,6 +557,9 @@ const allTaskList = processTaskList(TASKS.slice(0, 7))
 
 // 额外任务列表
 const extraRewardList = processTaskList([TASKS[7]])
+
+// 弹窗任务列表
+const extraRewardModal = processTaskList([TASKS[8]])
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 let isBinded = Local.get('isBindWerewolf')
@@ -776,7 +797,7 @@ const toClaimMissionReward = (
   })
     .then(async (res) => {
       curRewards.value = res.data.rewards
-      if (!isWerewolfReward && index !== 7) {
+      if (!isWerewolfReward) {
         await handleBubbleBurst(domList, task)
       }
       // 更新页面数据
@@ -818,6 +839,7 @@ const allTasks = computed(() => [
   ...taskList6.value,
   ...taskList7.value,
   ...taskList8.value,
+  ...taskListModal.value,
 ])
 
 /**
@@ -1106,11 +1128,9 @@ input::placeholder {
     transform: rotateY(0deg);
   }
 }
-$reward-bubble-wait-width: 120px;
-$reward-bubble-wait-height: 120px;
 .reward-can-dynamic-bubble {
-  width: $reward-bubble-wait-width + 20px;
-  height: $reward-bubble-wait-height;
+  width: 140px;
+  height: 120px;
   position: absolute;
   top: 14px;
   left: 20px;
@@ -1120,11 +1140,9 @@ $reward-bubble-wait-height: 120px;
     transform: scale(1.8) !important;
   }
 }
-$extra-reward-bubble-wait-width: 140px;
-$extra-reward-bubble-wait-height: 140px;
 .extra-reward-can-dynamic-bubble {
-  width: $extra-reward-bubble-wait-width + 20px;
-  height: $extra-reward-bubble-wait-height;
+  width: 160px;
+  height: 140px;
   position: absolute;
   top: 354px;
   right: 236px;
@@ -1132,6 +1150,18 @@ $extra-reward-bubble-wait-height: 140px;
     position: absolute;
     top: -12px;
     transform: scale(2.2) !important;
+  }
+}
+.modal-can-dynamic-bubble {
+  width: 160px;
+  height: 140px;
+  position: absolute;
+  top: 40px;
+  left: 80px;
+  & > :first-child {
+    position: absolute;
+    top: -12px;
+    transform: scale(2.5) !important;
   }
 }
 </style>
