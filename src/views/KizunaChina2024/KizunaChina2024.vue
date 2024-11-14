@@ -82,7 +82,7 @@
                         handleReward(
                           [$event.target] as HTMLElement[],
                           item,
-                          1 + 1,
+                          index + 1,
                         )
                       "
                       :ref="item.canRewardLottieRef"
