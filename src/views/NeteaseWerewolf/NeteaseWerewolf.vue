@@ -486,7 +486,7 @@ const TASK_MAP: Config = [
 const createTaskLists = (key: string, name: string, length: number): Reward[] =>
   Array.from({ length }, (_, i) => createTaskItem(i + 1, key, name))
 
-// 创建任务列表
+// 更新任务列表状态
 const updateTaskList = (
   taskList: Reward[],
   activityIndex: number,
