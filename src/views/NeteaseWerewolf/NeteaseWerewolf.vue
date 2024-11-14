@@ -39,21 +39,25 @@
                     v-for="(v, i) in item.content.value"
                     :key="v.taskId"
                   >
-                    <can-reward-bubble-animation
-                      :ref="v.canRewardLottieRef"
-                      :id="`${v.taskId}${index}${i}`"
-                      class="reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow"
-                    ></can-reward-bubble-animation>
-                    <div
-                      :class="[
-                        'task-item animate__animated animate__fadeIn animate__slow',
-                        `task-item${index + 1}-${i + 1}`,
-                        `${item.status}`,
-                      ]"
-                      @click="
-                        handleReward($event.target as HTMLElement, v, index)
+                    <bubble
+                      :reward="v"
+                      :ref="
+                        (el) => {
+                          if (el) bubbleRefs[i] = el
+                        }
                       "
-                    ></div>
+                    >
+                      <div
+                        :class="[
+                          'task-item animate__animated animate__fadeIn animate__slow',
+                          `task-item${index + 1}-${i + 1}`,
+                          `${item.status}`,
+                        ]"
+                        @click="
+                          handleReward($event.target as HTMLElement, v, index)
+                        "
+                      ></div>
+                    </bubble>
                   </div>
                 </div>
               </li>
@@ -69,21 +73,27 @@
                 <div>
                   <div
                     class="relative"
-                    v-for="v in item.content.value"
+                    v-for="(v, i) in item.content.value"
                     :key="v.taskId"
                   >
-                    <can-reward-bubble-animation
-                      :ref="v.canRewardLottieRef"
-                      :id="`${v.taskId}`"
-                      class="extra-reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow"
-                    ></can-reward-bubble-animation>
-                    <div
-                      :class="[
-                        'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
-                        `${item.status}`,
-                      ]"
-                      @click="handleReward($event.target as HTMLElement, v, 7)"
-                    ></div>
+                    <bubble
+                      :reward="v"
+                      :ref="
+                        (el) => {
+                          if (el) bubbleRefs[i] = el
+                        }
+                      "
+                    >
+                      <div
+                        :class="[
+                          'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
+                          `${item.status}`,
+                        ]"
+                        @click="
+                          handleReward($event.target as HTMLElement, v, 7)
+                        "
+                      ></div>
+                    </bubble>
                   </div>
                 </div>
               </li>
@@ -131,23 +141,31 @@
             <div>
               <div
                 class="relative"
-                v-for="v in item.content.value"
+                v-for="(v, i) in item.content.value"
                 :key="v.taskId"
               >
-                <can-reward-bubble-animation
-                  :ref="v.canRewardLottieRef"
-                  :id="`${v.taskId}`"
-                  class="modal-can-dynamic-bubble"
-                ></can-reward-bubble-animation>
-                <div
-                  :class="[
-                    'reward animate__animated animate__fadeIn animate__slow',
-                    `${item.status}`,
-                  ]"
-                  @click="
-                    toClaimMissionReward([$event.target] as HTMLElement[], v, 7)
+                <bubble
+                  :reward="v"
+                  :ref="
+                    (el) => {
+                      if (el) bubbleRefs[i] = el
+                    }
                   "
-                ></div>
+                >
+                  <div
+                    :class="[
+                      'reward animate__animated animate__fadeIn animate__slow',
+                      `${item.status}`,
+                    ]"
+                    @click="
+                      toClaimMissionReward(
+                        [$event.target] as HTMLElement[],
+                        v,
+                        7,
+                      )
+                    "
+                  ></div>
+                </bubble>
               </div>
             </div>
           </div>
@@ -206,7 +224,7 @@
           <div class="mt-[80px] text-[35px] text-[#696969]">
             注意：确认绑定此账号后，点击领取《狼人杀》奖品，奖品将直接发放至该账号，确认绑定后将无法撤销另行绑定其他账号
           </div>
-          <div class="mt-[350px] flex justify-between px-[10px] text-[40px]">
+          <div class="mt-[350px] flex justify-between px-[70px] text-[40px]">
             <button class="btn bg-[#74d2ee]" @click="handleBack">返回</button>
             <button class="btn bg-[#ffcb4d]" @click="handleBind">
               确认绑定
@@ -285,11 +303,11 @@ import { Session, Local } from '@/utils/storage'
 import HelpModal from '@/components/Modal'
 import ActivityModal from './components/ActivityModal.vue'
 import BindModal from './components/BindModal.vue'
+import Bubble from './components/Bubble.vue'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
-import gsap from 'gsap'
-import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
@@ -307,7 +325,7 @@ interface Reward {
   title: string // 奖励标题
   status: 'wait' | 'redeemed' | 'can' | string // 奖励状态
   val: number // 奖励值
-  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>> // 可领取动画引用
+  canRewardLottieRef: Ref<InstanceType<typeof CanRewardBubbleAnimation>> // 可领取动画引用
   hadRenderLottie?: Ref<boolean> // 是否已渲染动画
   isWerewolfReward: boolean // 是否是狼人杀侧奖励
 }
@@ -378,6 +396,7 @@ const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
 const modalConfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
 const modalReward = ref<InstanceType<typeof BindModal> | null>(null)
 const modalGuide = ref<InstanceType<typeof BindModal> | null>(null)
+const bubbleRefs = ref<any[]>([])
 const UID = ref<string>('')
 const werewolfNickname = ref<string>('')
 const curRewards: Ref<Rewards[]> = ref([{ name: 'message_boat', count: 3 }])
@@ -411,9 +430,7 @@ const createTaskItem = (
   title: string,
   status = 'wait',
   val = 0,
-  canRewardLottieRef = ref() as Ref<
-    Array<InstanceType<typeof CanRewardBubbleAnimation>>
-  >,
+  canRewardLottieRef = ref(),
   hadRenderLottie = ref(false),
   isWerewolfReward = false,
 ): Reward => ({
@@ -582,6 +599,10 @@ onMounted(() => {
     console.error(error)
   }
   Session.set('isVisitedNeteaseWerewolf', true)
+})
+
+onBeforeUpdate(() => {
+  bubbleRefs.value = []
 })
 
 /**
@@ -760,7 +781,7 @@ async function handleReward(
   if (status === 'wait') {
     showToast('还未完成任务')
     domList.forEach((dom) => {
-      clickBubbleReward(dom)
+      bubbleRefs.value?.[0].clickBubbleReward(dom)
     })
     return
   }
@@ -770,6 +791,7 @@ async function handleReward(
     // 狼人杀侧奖励：绑定狼人杀uid，获得任务完成信息后，告知狼人杀，狼人杀那边进行发放
     // 光遇侧奖励：直接点击领取；
     if (task.isWerewolfReward && !isBinded) {
+      resetUID()
       modalBind.value?.openModal()
       return
     }
@@ -798,7 +820,7 @@ const toClaimMissionReward = (
     .then(async (res) => {
       curRewards.value = res.data.rewards
       if (!isWerewolfReward) {
-        await handleBubbleBurst(domList, task)
+        await bubbleRefs.value?.[0].handleBubbleBurst(domList, task)
       }
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[0] = 1
@@ -823,127 +845,6 @@ const toClaimMissionReward = (
     .catch((error) => {
       showToast(error.message)
     })
-}
-
-/**
- * @constant allTasks
- * @description 计算属性，合并所有任务列表
- * @returns {ComputedRef<Array>} 包含所有任务的数组
- */
-const allTasks = computed(() => [
-  ...taskList1.value,
-  ...taskList2.value,
-  ...taskList3.value,
-  ...taskList4.value,
-  ...taskList5.value,
-  ...taskList6.value,
-  ...taskList7.value,
-  ...taskList8.value,
-  ...taskListModal.value,
-])
-
-/**
- * @function 处理任务
- * @param {Reward} task - 任务对象
- * @returns {void}
- */
-const handleTask = (task: Reward): void => {
-  if (task.status === 'can') {
-    // 使用 nextTick 确保在 DOM 更新后执行
-    void nextTick(() => {
-      // 检查是否需要初始化 Lottie 动画
-      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
-        initCanRewardLottie(task)
-      }
-    })
-  } else {
-    // 如果任务状态不是 'can'，销毁相关的 Lottie 动画
-    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
-  }
-}
-
-// 监视所有任务的变化，并对每个任务执行处理
-watchEffect(() => {
-  allTasks.value.forEach(handleTask)
-})
-
-/**
- * @function 初始化可领取奖励的Lottie动画
- * @param {Reward} reward - 奖励对象
- * @returns {void}
- */
-const initCanRewardLottie = (reward: Reward): void => {
-  // 初始化Lottie动画
-  reward.canRewardLottieRef?.value[0].initLottie()
-  // 避免多次更新computed和watch所引起的多次渲染lottie
-  if (reward.hadRenderLottie) {
-    // 标记Lottie动画已经渲染
-    reward.hadRenderLottie.value = true
-  }
-}
-
-/**
- * @function 处理气泡爆炸动画
- * @param {HTMLElement[]} domList - 需要处理动画的DOM元素列表
- * @param {Reward} item - 奖励对象
- * @returns {Promise<void>}
- * @description 并行处理所有元素的气泡爆炸动画
- */
-async function handleBubbleBurst(
-  domList: HTMLElement[],
-  item: Reward,
-): Promise<void> {
-  // 使用 Promise.all 并行处理所有元素的动画
-  await Promise.all(domList.map((dom) => bubbleBurst(dom, item)))
-}
-
-/**
- * @function 点击气泡弹弹弹的果冻效果
- * @param {HTMLElement} dom - dom元素
- * @returns {void}
- */
-const clickBubbleReward = (dom: HTMLElement): void => {
-  gsap
-    .timeline()
-    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
-    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
-    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直拉伸
-    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
-}
-
-/**
- * @function 气泡爆炸动画
- * @param {HTMLElement} dom - dom元素
- * @param {Reward} reward - 奖励对象
- * @returns {Promise<void>}
- */
-const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
-  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
-  if (reward.canRewardLottieRef) {
-    reward.canRewardLottieRef.value[0].playAnimationClickBubble()
-  }
-  // 溅射效果
-  await gsap
-    .timeline()
-    .to(dom, {
-      scaleY: 0.8,
-      duration: 0.2,
-      ease: 'power1.in',
-      opacity: 0.9,
-    }) // 垂直压挤
-    .to(dom, {
-      scaleY: 1.1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0.5,
-    }) // 垂直拉伸
-    .to(dom, {
-      scaleY: 1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0,
-    }) // 再次垂直压挤并淡出
 }
 </script>
 
@@ -1013,6 +914,13 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   top: 260px;
   width: 1500px;
 }
+.extra-reward-list {
+  position: absolute;
+  right: 190px;
+  top: 370px;
+  width: 256px;
+  height: 230px;
+}
 .character {
   position: absolute;
   right: 40px;
@@ -1069,6 +977,7 @@ input::placeholder {
     width: 190px;
     height: 750px;
     background-image: url('@/assets/images/netease-werewolf/bg-task#{$i}-gray.png');
+    transition: background-image 1s ease;
   }
   @for $j from 1 through 2 {
     .task-item#{$i}-#{$j} {
@@ -1099,11 +1008,9 @@ input::placeholder {
   }
 }
 .extra-reward-item {
-  position: absolute;
   width: 256px;
   height: 230px;
-  right: 190px;
-  top: 300px;
+  transform: scale(1.4) !important;
   &.wait {
     background-image: url('@/assets/images/netease-werewolf/extra-reward-wait.png');
   }
