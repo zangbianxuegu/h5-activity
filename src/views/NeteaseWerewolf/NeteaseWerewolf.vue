@@ -1035,40 +1035,4 @@ input::placeholder {
     transform: rotateY(0deg);
   }
 }
-.reward-can-dynamic-bubble {
-  width: 140px;
-  height: 120px;
-  position: absolute;
-  top: 14px;
-  left: 20px;
-  & > :first-child {
-    position: absolute;
-    top: -12px;
-    transform: scale(1.8) !important;
-  }
-}
-.extra-reward-can-dynamic-bubble {
-  width: 160px;
-  height: 140px;
-  position: absolute;
-  top: 354px;
-  right: 236px;
-  & > :first-child {
-    position: absolute;
-    top: -12px;
-    transform: scale(2.2) !important;
-  }
-}
-.modal-can-dynamic-bubble {
-  width: 160px;
-  height: 140px;
-  position: absolute;
-  top: 40px;
-  left: 80px;
-  & > :first-child {
-    position: absolute;
-    top: -12px;
-    transform: scale(2.5) !important;
-  }
-}
 </style>
