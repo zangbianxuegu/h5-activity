@@ -51,11 +51,10 @@
                         :class="[
                           'task-item animate__animated animate__fadeIn animate__slow',
                           `task-item${index + 1}-${i + 1}`,
+                          `task-item${index + 1}`,
                           `${item.status}`,
                         ]"
-                        @click="
-                          handleReward($event.target as HTMLElement, v, index)
-                        "
+                        @click="handleReward(v, index)"
                       ></div>
                     </bubble>
                   </div>
@@ -82,9 +81,7 @@
                     'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
                     `${taskList8[0].status}`,
                   ]"
-                  @click="
-                    handleReward($event.target as HTMLElement, taskList8[0], 7)
-                  "
+                  @click="handleReward(taskList8[0], 7)"
                 ></div>
               </bubble>
             </div>
@@ -372,7 +369,7 @@ const ruleInfo = [
 ]
 
 const EVENT_NAME = 'activitycenter_netease_werewolf'
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalHelp = ref<InstanceType<typeof HelpModal> | null>(null)
 const modalRewardList = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
 const modalConfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
@@ -731,25 +728,12 @@ function getActivityData(): void {
 
 /**
  * @function 领奖
- * @param clickdom 点击的dom元素
  * @param task 任务id
  * @param index 任务索引
  */
-async function handleReward(
-  clickdom: HTMLElement,
-  task: Reward,
-  index: number,
-): Promise<void> {
-  const grandparentElement = (clickdom.parentElement as HTMLElement)
-    .parentElement as HTMLElement
-  // 使用 children 属性获取所有直接子元素
-  const allChildren = grandparentElement.children
-  // 将 HTMLCollection 转换为数组以便使用数组方法
-  const childrenArray = Array.from(allChildren) as HTMLElement[]
-  const domList = [] as HTMLElement[]
-  childrenArray.forEach((item) => {
-    domList.push(item.lastElementChild as HTMLElement)
-  })
+async function handleReward(task: Reward, index: number): Promise<void> {
+  const taskItems = document.querySelectorAll(`.task-item${index + 1}`)
+  const domList = Array.from(taskItems) as HTMLElement[]
   clickTask = task
   clickIndex = index
   const { status } = task
@@ -954,7 +938,7 @@ input::placeholder {
         background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-can.png');
       }
       &.redeemed {
-        transition: background-image 0.6s ease;
+        transition: background-image 1s ease;
         background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-redeemed.png');
       }
     }

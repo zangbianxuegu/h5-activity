@@ -94,31 +94,16 @@ async function handleBubbleBurst(
  * @returns {Promise<void>}
  */
 const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
-  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡动画
+  // 如果存在可领取奖励的Lottie动画引用，播放点击气泡爆炸动画
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value.playAnimationClickBubble()
   }
-  // 溅射效果
+  // 果冻效果
   await gsap
     .timeline()
-    .to(dom, {
-      scaleY: 0.8,
-      duration: 0.2,
-      ease: 'power1.in',
-      opacity: 0.9,
-    }) // 垂直压挤
-    .to(dom, {
-      scaleY: 1.1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0.5,
-    }) // 垂直拉伸
-    .to(dom, {
-      scaleY: 1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0,
-    }) // 再次垂直压挤并淡出
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in', opacity: 0.9 }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out', opacity: 0.5 }) // 垂直拉伸
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out', opacity: 0 }) // 再次垂直压挤并淡出
 }
 
 /**
