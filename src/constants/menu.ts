@@ -394,4 +394,11 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '光遇云音 心随律动',
+    value: 'activitycenter_cloud_music_2024',
+    routeName: 'CloudMusic2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]

@@ -297,6 +297,7 @@ const taskList = computed(() => {
 // 累计任务列表
 const accTaskList = computed(() => {
   const activity = activityData.value.event_data[EVENT_NAME][3]
+  // eslint-disable-next-line vue/no-side-effects-in-computed-properties
   rewardTokenLogin.currentCount = Math.min(
     activity.value,
     rewardTokenLogin.targetCount,

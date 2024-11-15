@@ -454,4 +454,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season24_sprint',
     },
   },
+  {
+    path: '/cloud-music-2024',
+    name: 'CloudMusic2024',
+    component: () => import('@/views/CloudMusic2024'),
+    meta: {
+      title: '光遇云音 心随律动',
+      module: 'activitycenter_cloud_music_2024',
+    },
+  },
 ]

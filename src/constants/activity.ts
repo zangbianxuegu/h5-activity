@@ -90,4 +90,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_kizuna_china_2024',
   ...DICE_MAP_LIST,
   ...HALLOWEEN_2024_LIST,
+  'activitycenter_cloud_music_2024',
 ]
