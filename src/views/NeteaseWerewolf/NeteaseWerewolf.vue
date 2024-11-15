@@ -68,36 +68,26 @@
             ></div>
             <p class="sr-only">领取头狼面具 光遇指引团再出发！</p>
             <!-- 额外奖励列表 -->
-            <ul v-if="isPassedStorm" class="extra-reward-list">
-              <li v-for="item in extraRewardList" :key="item.title">
-                <div>
-                  <div
-                    class="relative"
-                    v-for="(v, i) in item.content.value"
-                    :key="v.taskId"
-                  >
-                    <bubble
-                      :reward="v"
-                      :ref="
-                        (el) => {
-                          if (el) bubbleRefs[i] = el
-                        }
-                      "
-                    >
-                      <div
-                        :class="[
-                          'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
-                          `${item.status}`,
-                        ]"
-                        @click="
-                          handleReward($event.target as HTMLElement, v, 7)
-                        "
-                      ></div>
-                    </bubble>
-                  </div>
-                </div>
-              </li>
-            </ul>
+            <div v-if="isPassedStorm" class="extra-reward-list">
+              <bubble
+                :reward="taskList8[0]"
+                :ref="
+                  (el) => {
+                    if (el) bubbleRefs[0] = el
+                  }
+                "
+              >
+                <div
+                  :class="[
+                    'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
+                    `${taskList8[0].status}`,
+                  ]"
+                  @click="
+                    handleReward($event.target as HTMLElement, taskList8[0], 7)
+                  "
+                ></div>
+              </bubble>
+            </div>
           </section>
         </Transition>
       </div>
@@ -137,37 +127,29 @@
           <div class="sr-only">
             在暴风眼的考验中传递勇气和温暖的你，已拥有指引其他光之子飞行的能力，请收下这份特别的奖励，去帮助更多的光之子
           </div>
-          <div v-for="item in extraRewardModal" :key="item.title">
-            <div>
+          <div class="relative mt-[60px]">
+            <bubble
+              :reward="taskListModal[0]"
+              :ref="
+                (el) => {
+                  if (el) bubbleRefs[0] = el
+                }
+              "
+            >
               <div
-                class="relative"
-                v-for="(v, i) in item.content.value"
-                :key="v.taskId"
-              >
-                <bubble
-                  :reward="v"
-                  :ref="
-                    (el) => {
-                      if (el) bubbleRefs[i] = el
-                    }
-                  "
-                >
-                  <div
-                    :class="[
-                      'reward animate__animated animate__fadeIn animate__slow',
-                      `${item.status}`,
-                    ]"
-                    @click="
-                      toClaimMissionReward(
-                        [$event.target] as HTMLElement[],
-                        v,
-                        7,
-                      )
-                    "
-                  ></div>
-                </bubble>
-              </div>
-            </div>
+                :class="[
+                  'reward animate__animated animate__fadeIn animate__slow',
+                  `${taskListModal[0].status}`,
+                ]"
+                @click="
+                  toClaimMissionReward(
+                    [$event.target] as HTMLElement[],
+                    taskListModal[0],
+                    7,
+                  )
+                "
+              ></div>
+            </bubble>
           </div>
         </template>
       </activity-modal>
@@ -549,8 +531,6 @@ const TASKS = [
   { title: '通过1次暮土神殿', content: taskList5 },
   { title: '通过1次禁阁神殿', content: taskList6 },
   { title: '通过1次暴风眼', content: taskList7 },
-  { title: '通过1次暴风眼额外奖励', content: taskList8 },
-  { title: '通过1次暴风眼弹窗', content: taskListModal },
 ]
 
 // 处理任务列表的函数
@@ -571,12 +551,6 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
 
 // 所有任务列表
 const allTaskList = processTaskList(TASKS.slice(0, 7))
-
-// 额外任务列表
-const extraRewardList = processTaskList([TASKS[7]])
-
-// 弹窗任务列表
-const extraRewardModal = processTaskList([TASKS[8]])
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const isBinded = ref(false)
@@ -968,7 +942,6 @@ input::placeholder {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  margin-top: 100px;
   &.can {
     background-image: url('@/assets/images/netease-werewolf/modal-reward-can.png');
   }
