@@ -201,10 +201,6 @@ const curRewards: Ref<Rewards> = ref({
   name: 'resize_potion',
   count: 2,
 })
-const rewardTokenLogin = reactive({
-  currentCount: 0,
-  targetCount: 5,
-})
 // 主任务列表
 const TASK_LIST = [
   {
@@ -293,14 +289,17 @@ const taskList = computed(() => {
     }
   })
 })
-
+const rewardTokenLogin = computed(() => {
+  const activity = activityData.value.event_data[EVENT_NAME][3]
+  const targetCount = 5
+  return {
+    currentCount: Math.min(activity.value, targetCount),
+    targetCount,
+  }
+})
 // 累计任务列表
 const accTaskList = computed(() => {
   const activity = activityData.value.event_data[EVENT_NAME][3]
-  rewardTokenLogin.currentCount = Math.min(
-    activity.value,
-    rewardTokenLogin.targetCount,
-  )
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
