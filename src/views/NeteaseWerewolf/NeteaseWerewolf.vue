@@ -78,10 +78,10 @@
               >
                 <div
                   :class="[
-                    'extra-reward-item animate__animated animate__fadeIn animate__slow bg-contain',
+                    'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow bg-contain',
                     `${taskList8[0].status}`,
                   ]"
-                  @click="handleReward(taskList8[0], 7)"
+                  @click="handleReward(taskList8[0], 7, true)"
                 ></div>
               </bubble>
             </div>
@@ -135,16 +135,10 @@
             >
               <div
                 :class="[
-                  'reward animate__animated animate__fadeIn animate__slow',
+                  'reward task-item8 animate__animated animate__fadeIn animate__slow',
                   `${taskListModal[0].status}`,
                 ]"
-                @click="
-                  toClaimMissionReward(
-                    [$event.target] as HTMLElement[],
-                    taskListModal[0],
-                    7,
-                  )
-                "
+                @click="handleReward(taskListModal[0], 7)"
               ></div>
             </bubble>
           </div>
@@ -731,7 +725,11 @@ function getActivityData(): void {
  * @param task 任务id
  * @param index 任务索引
  */
-async function handleReward(task: Reward, index: number): Promise<void> {
+async function handleReward(
+  task: Reward,
+  index: number,
+  openModal = false,
+): Promise<void> {
   const taskItems = document.querySelectorAll(`.task-item${index + 1}`)
   const domList = Array.from(taskItems) as HTMLElement[]
   clickTask = task
@@ -747,7 +745,7 @@ async function handleReward(task: Reward, index: number): Promise<void> {
     })
     return
   }
-  if (index === 7) {
+  if (index === 7 && openModal) {
     modalRewardList.value?.openModal()
   } else {
     // 狼人杀侧奖励：绑定狼人杀uid，获得任务完成信息后，告知狼人杀，狼人杀那边进行发放
@@ -968,9 +966,9 @@ input::placeholder {
 .extra-reward-item {
   width: 200px;
   height: 140px;
-  margin-left: 30px;
-  transform: scale(1.6);
   background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
   &.wait {
     background-image: url('@/assets/images/netease-werewolf/extra-reward-wait.png');
   }

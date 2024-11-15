@@ -99,7 +99,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
     reward.canRewardLottieRef.value.playAnimationClickBubble()
   }
   // 果冻效果
-  await gsap
+  gsap
     .timeline()
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in', opacity: 0.9 }) // 垂直压挤
     .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out', opacity: 0.5 }) // 垂直拉伸
