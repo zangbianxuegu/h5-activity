@@ -382,18 +382,6 @@ const bubbleRefs = ref<any[]>([])
 const UID = ref<string>('')
 const werewolfNickname = ref<string>('')
 const curRewards: Ref<Rewards[]> = ref([{ name: 'message_boat', count: 3 }])
-const extraReward = reactive({
-  id: 1,
-  taskId: 'activitycenter_netease_werewolf_extra',
-  title: '通过1次暴风眼',
-  status: 'can',
-  val: 1,
-  canRewardLottieRef: ref() as Ref<
-    Array<InstanceType<typeof CanRewardBubbleAnimation>>
-  >,
-  hadRenderLottie: ref(false),
-  isWerewolfReward: false,
-})
 let clickTask = {}
 let clickIndex = 0
 const menuStore = useMenuStore()
@@ -818,10 +806,6 @@ const toClaimMissionReward = (
       curRewards.value.forEach((item) => {
         text += ` ${rewardsText[item.name as keyof RewardsName]}*${item.count}`
       })
-      // 如果是额外奖励（索引为7），更新状态
-      if (index === 7) {
-        extraReward.status = 'redeemed'
-      }
       // 根据奖励类型显示不同的模态框或提示
       if (isWerewolfReward) {
         modalConfirmBind.value?.closeModal()
