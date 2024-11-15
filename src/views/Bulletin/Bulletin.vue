@@ -175,20 +175,32 @@ const isEffective = (item: BulletinItem): boolean => {
 // 判断条目是否适用于当前渠道
 const isChannelApplicable = (item: BulletinItem): boolean => {
   const channelsArr = item.channel.split(',')
+  const appChannelsArr = item.app_channel.split(',')
   const channelsObj: Record<string, number> = {}
+  const appChannelsObj: Record<string, number> = {}
   channelsArr.forEach((channel) => {
     const [name, value] = channel.split(':')
     channelsObj[name.trim()] = parseInt(value, 10)
   })
+  appChannelsArr.forEach((channel) => {
+    const [name, value] = channel.split(':')
+    appChannelsObj[name.trim()] = parseInt(value, 10)
+  })
+  if (!Object.prototype.hasOwnProperty.call(channelsObj, 'netease')) {
+    channelsObj.netease = 1
+  }
   const hasChannel = Object.prototype.hasOwnProperty.call(
     channelsObj,
     currentChannel,
   )
-  const hasOther = Object.prototype.hasOwnProperty.call(channelsObj, 'other')
-  return (
-    (hasChannel && channelsObj[currentChannel] === 1) ||
-    (!hasChannel && hasOther && channelsObj.other === 1)
-  )
+  let channelApplicable = false
+  if (currentChannel === 'netease') {
+    channelApplicable =
+      channelsObj.netease === 1 && appChannelsObj.a50_sdk_cn === 1
+  } else {
+    channelApplicable = hasChannel && channelsObj[currentChannel] === 1
+  }
+  return channelApplicable
 }
 
 // 创建过滤和排序后的计算属性
