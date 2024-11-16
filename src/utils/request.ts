@@ -407,30 +407,45 @@ export function getErrorMessage(
  * @param {string} url 在线图片的url
  * @returns {boolean} 上传是否成功的结果
  */
-export const saveImgToDeviceAlbum = (url: string): Promise<boolean> => {
+export const saveImgToDeviceAlbum = (
+  url: string,
+  timeoutErrorCount: number = 5000,
+): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     showLoadingToast({
       message: '下载中...',
       forbidClick: true,
       duration: 0,
     })
-    postMsgToNative({
-      methodId: 'saveWebImage',
-      reqData: {
-        imageURL: url,
-      },
-      callback: {
-        nativeCallback: function (respJSONString: string) {
-          const callbackRes = JSON.parse(respJSONString)
-          const result = callbackRes.result
-          closeToast()
-          if (result === 'success') {
-            resolve(true)
-          } else if (result === 'failed') {
-            reject(new Error('下载图片失败'))
-          }
+    const img = new Image()
+    img.src = url
+    img.onload = function () {
+      postMsgToNative({
+        methodId: 'saveWebImage',
+        reqData: {
+          imageURL: url,
         },
-      },
-    })
+        callback: {
+          nativeCallback: function (respJSONString: string) {
+            const callbackRes = JSON.parse(respJSONString)
+            const result = callbackRes.result
+            closeToast()
+            if (result === 'success') {
+              resolve(true)
+            } else if (result === 'failed') {
+              reject(new Error('下载图片失败'))
+            }
+          },
+        },
+      })
+    }
+    img.onerror = function () {
+      closeToast()
+      reject(new Error('下载图片失败'))
+    }
+    // 超时处理
+    setTimeout(() => {
+      reject(new Error('下载图片失败'))
+    }, timeoutErrorCount)
   })
 }

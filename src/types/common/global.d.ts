@@ -15,4 +15,7 @@ export interface UseEnvironmentReturn {
   isIos: boolean
   isAndroid: boolean
   isWb: boolean
+  isWindow: boolean
+  isMac: boolean
+  isPC: boolean
 }

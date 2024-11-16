@@ -24,6 +24,9 @@ export function useEnvironment(): UseEnvironmentReturn {
     /ipad|macintosh/i.test(navigator.userAgent.toLowerCase())
   const isAndroid = /android/i.test(navigator.userAgent.toLowerCase())
   const isWb = /weibo/i.test(navigator.userAgent.toLowerCase())
+  const isWindow = /windows/i.test(navigator.userAgent.toLowerCase())
+  const isMac = /macintosh/i.test(navigator.userAgent.toLowerCase())
+  const isPC = isWindow || isMac
 
   return {
     isLocal,
@@ -34,5 +37,8 @@ export function useEnvironment(): UseEnvironmentReturn {
     isIos,
     isAndroid,
     isWb,
+    isWindow,
+    isMac,
+    isPC,
   }
 }

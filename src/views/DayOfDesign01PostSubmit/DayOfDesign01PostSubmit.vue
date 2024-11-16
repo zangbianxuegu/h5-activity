@@ -110,7 +110,7 @@
                           id="author"
                           type="text"
                           maxlength="8"
-                          placeholder="作者名仅限字母、文字"
+                          placeholder="请输入作者名，不含符号"
                           :disabled="isContributed"
                           @change="
                             (event: Event) =>
@@ -128,7 +128,7 @@
                           id="works"
                           type="text"
                           maxlength="8"
-                          placeholder="作品名仅限字母、文字"
+                          placeholder="请输入作品名，不含符号"
                           :disabled="isContributed"
                           @change="
                             (event: Event) =>
@@ -148,7 +148,7 @@
                           id="worksIntroduce"
                           type="text"
                           maxlength="50"
-                          placeholder="请输入作品介绍"
+                          placeholder="请分享你的创作故事"
                           :disabled="isContributed"
                           @blur="onBlurInput"
                         ></textarea>
@@ -315,7 +315,6 @@
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
-          v-model:favorite="isFavorite"
           :event="EVENT_DAY_OF_DESIGN_01.ALL"
           :type="DESIGN_DETAILS_TYPE.SELF"
           :works-data="myWorksData"
@@ -335,12 +334,11 @@ import {
   showToast,
 } from 'vant'
 import html2canvas from 'html2canvas'
-import WorksDetailModal from './components/WorksDetailModal.vue'
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
-import { saveImgToDeviceAlbum } from '@/utils/request'
 import ClipboardJS from 'clipboard'
-
+import WorksDetailModal from './components/WorksDetailModal.vue'
+import { saveImgToDeviceAlbum } from '@/utils/request'
 import { useEnvironment } from '@/composables/useEnvironment'
 import {
   DESIGN_REVIEW_STATUS,
@@ -362,8 +360,6 @@ import {
   getDesignDetails,
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
-
-const isFavorite = ref(false)
 
 const { isIos } = useEnvironment()
 
@@ -400,6 +396,7 @@ const worksData = ref<WorksData>({
   worksDecorateImgSrc: '',
 })
 
+// 投稿前的确认作品
 const previewData = ref({
   isShow: false,
 })
@@ -479,7 +476,7 @@ const onClickCopyWorksId = (): void => {
   showToast('编号已复制到剪贴板！')
 }
 
-// 强制输入纠正
+// 即时处理作品名、作者名
 const onChangeAuthorWordCount = (
   event: Event,
   key: 'author' | 'worksName',
@@ -491,12 +488,9 @@ const onChangeAuthorWordCount = (
 const onBlurInput = (): void => {
   console.log('blur')
   document.querySelector('body')?.focus()
-
-  // document.querySelector('body')?.click()
-  // document.querySelector('body')?.click()
-  // document.querySelector('body')?.click()
 }
 
+// 下载模板
 const onClickDownloadTemplate = async (): Promise<void> => {
   try {
     const imageUrl = 'http://10.227.199.103:7897/images/hmj-works-template.png'
@@ -508,15 +502,19 @@ const onClickDownloadTemplate = async (): Promise<void> => {
     showToast('下载失败')
   }
 }
+// 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  showToast('先别急,绘制指南还没做')
+  window.location.href = 'https://m.163.com/'
 }
+
+// 作品上传相关
 const formWorksRef = ref()
 const imageUploadsInputDomRef = ref()
 const onClickGoToUploadWorks = (): void => {
   imageUploadsInputDomRef.value.click()
 }
 
+// 作品裁剪
 let CROPPER: Cropper | null
 const cropperData = ref({
   isShow: false,
@@ -528,9 +526,14 @@ watch(
   () => cropperData.value.isShow,
   (newValue) => {
     if (newValue) {
-      setTimeout(() => {
-        cropperData.value.isShowBorderCorn = true
-      }, 1000)
+      const img = new Image()
+      img.src = cropperData.value.preCropperImgUrl
+      img.onload = function () {
+        setTimeout(() => {
+          // 添加裁剪边框的边角修饰
+          cropperData.value.isShowBorderCorn = true
+        }, 500)
+      }
     } else {
       cropperData.value.isShowBorderCorn = false
     }
@@ -547,7 +550,7 @@ const listenUploadImgChange = (): void => {
       const file = files[0]
 
       // 设置允许的文件格式和文件大小限制
-      const allowedTypes = ['image/jpeg', 'image/png']
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
       const maxSize = 10 * 1024 * 1024 // 10 MB
       const minSize = 100 * 1024 // 100kb
 
@@ -571,15 +574,16 @@ const listenUploadImgChange = (): void => {
           duration: 0,
         })
         const reader = new FileReader()
-        const img = new Image()
         reader.readAsDataURL(file) // 读取文件为 Data URL
         reader.onload = function (e) {
           const readFileResult = e.target?.result as string
+          const img = new Image()
           img.src = readFileResult
           img.onload = function () {
             const width = img.width // 获取图像的宽度
             const height = img.height // 获取图像的高度
             if (isIos && (width * height) / 1000000 > 15) {
+              // 处理ios MP影响
               showToast(
                 '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
               )
@@ -697,12 +701,12 @@ const onClickContributeWorks = async (): Promise<void> => {
       {
         param: 'author',
         emptyTip: '请填写作者名',
-        verifyErrorTip: '作者名仅限字母、文字',
+        verifyErrorTip: '作者名不含字符',
       },
       {
         param: 'worksName',
         emptyTip: '请填写作品名',
-        verifyErrorTip: '作品名仅限字母、文字',
+        verifyErrorTip: '作品名不含字符',
       },
       { param: 'worksIntroduce', emptyTip: '请填写作品介绍' },
     ]
@@ -837,6 +841,12 @@ const currentWorksPureId = computed(() => {
 
 const confirmSubmitWork = async (): Promise<void> => {
   let apiTimeout = true
+
+  function stopSubmit(): void {
+    apiTimeout = false
+    closeToast()
+  }
+
   showLoadingToast({
     message: '正在投稿...',
     forbidClick: true,
@@ -845,13 +855,13 @@ const confirmSubmitWork = async (): Promise<void> => {
       // 协议超时未返回结果，自动关闭
       setTimeout(() => {
         if (apiTimeout) {
-          apiTimeout = false
-          closeToast()
-          showToast('投稿出错，请稍后重试')
+          stopSubmit()
+          showToast('上传异常，请刷新后重试')
         }
       }, 10 * 1000)
     },
   })
+
   await changeDomToImage()
   try {
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
@@ -868,21 +878,15 @@ const confirmSubmitWork = async (): Promise<void> => {
       )
       worksData.value.id = res?.design_id
       worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
-      closeToast()
-      apiTimeout = false
+      stopSubmit()
       showToast('投稿成功')
     } else {
-      closeToast()
-      apiTimeout = false
-      showToast('投稿出错，请稍后重试')
+      stopSubmit()
+      showToast('上传异常，请刷新后重试')
     }
   } catch (error: any) {
-    closeToast()
-    apiTimeout = false
-    console.log('confirmSubmitWork error', error)
-    console.log('confirmSubmitWork error message', error.message)
+    stopSubmit()
     const { message } = error
-    console.log('confirmSubmitWork error', message)
     if (message?.includes('errorType')) {
       // 字段检测异常的错误处理
       const errorObject: ReviewTextRejectResult = JSON.parse(message)
@@ -890,7 +894,7 @@ const confirmSubmitWork = async (): Promise<void> => {
       showToast(invalidReasonDefaultText)
       console.log(`${invalidKey}字段检测不通过`)
     } else {
-      showToast(message)
+      showToast('上传异常，请刷新后重试')
     }
   }
 }
@@ -1221,6 +1225,7 @@ onMounted(async () => {
     padding-bottom: 40px;
     font-size: 30px;
     color: #fff;
+    resize: none;
     background-color: transparent;
     &::placeholder {
       color: #fff;

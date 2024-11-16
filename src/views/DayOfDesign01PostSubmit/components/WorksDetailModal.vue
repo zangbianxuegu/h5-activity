@@ -39,7 +39,7 @@
                     <p>{{ worksData.worksIntroduce }}</p>
                   </div>
                   <div class="handle-bar">
-                    <div @click.stop="onClickHandleBarShare">
+                    <div v-if="!isPC" @click.stop="onClickHandleBarShare">
                       <van-icon name="share-o" />
                     </div>
                     <div @click.stop="onClickHandleBarDelete">
@@ -48,7 +48,7 @@
                     <div v-if="isSelf" @click.stop="onClickHandleBarDownload">
                       <van-icon name="down" />
                     </div>
-                    <div v-if="isOther" @click.stop="onClickHandleBarLike">
+                    <div v-if="isOther" @click.stop="throttleClickShare">
                       <van-icon :name="favorite ? 'like' : 'like-o'" />
                     </div>
                   </div>
@@ -66,6 +66,7 @@
 </template>
 
 <script setup lang="ts">
+import throttle from 'lodash.throttle'
 import { showConfirmDialog, showToast } from 'vant'
 import { showShare } from '@/utils/ngShare/share'
 import ClipboardJS from 'clipboard'
@@ -74,7 +75,7 @@ import { saveImgToDeviceAlbum } from '@/utils/request'
 import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
 import { deleteDesignDetails, updateFavorites } from '@/apis/dayOfDesign01'
 import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
-import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
+import { useEnvironment } from '@/composables/useEnvironment'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -130,6 +131,9 @@ const getLogoUrl = (): string => {
     ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
     : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
 }
+
+const environment = useEnvironment()
+const isPC = computed(() => environment.isPC)
 
 const onClickHandleBarShare = (): void => {
   shareData.value.show = true
@@ -209,7 +213,7 @@ const onClickHandleBarLike = async (): Promise<void> => {
         props.worksData.id,
         favoriteResult,
         props.event,
-        FILE_PICKER_POLICY_NAME,
+        props.filePickerConfig.policyName,
       )
       showToast(favoriteResult ? '收藏成功' : '取消收藏成功')
       emits('update:favorite', !props.favorite)
@@ -218,6 +222,10 @@ const onClickHandleBarLike = async (): Promise<void> => {
     showToast(error?.message as string)
   }
 }
+// 后端也是1s CD
+const throttleClickShare = throttle(onClickHandleBarLike, 1000, {
+  trailing: false,
+})
 
 const onClickCopyWorksId = (): void => {
   // eslint-disable-next-line no-new
