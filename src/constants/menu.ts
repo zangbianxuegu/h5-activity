@@ -401,4 +401,11 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '彩染季 期待相遇',
+    value: 'activitycenter_season25_reserve',
+    routeName: 'Season25Reserve',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]
