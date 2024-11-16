@@ -102,7 +102,7 @@ import { useBaseStore } from '@/stores/base'
 // 基本信息
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
-const currentChannel = baseStore.baseInfo.channel
+const currentChannel = 'netease'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -186,13 +186,13 @@ const isChannelApplicable = (item: BulletinItem): boolean => {
     const [name, value] = channel.split(':')
     appChannelsObj[name.trim()] = parseInt(value, 10)
   })
-  if (!Object.prototype.hasOwnProperty.call(channelsObj, 'netease')) {
-    channelsObj.netease = 1
-  }
   const hasChannel = Object.prototype.hasOwnProperty.call(
     channelsObj,
     currentChannel,
   )
+  if (!hasChannel) {
+    channelsObj.netease = 1
+  }
   let channelApplicable = false
   if (currentChannel === 'netease') {
     channelApplicable =
