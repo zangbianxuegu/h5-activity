@@ -33,7 +33,7 @@
           <li>
             <span class="text-[#ffcb4d]">古典音乐桌椅试用魔法*1 </span>
           </li>
-          <li><span class="text-[#ffcb4d]">爱心×2 </span></li>
+          <li><span class="text-[#ffcb4d]">爱心*2 </span></li>
         </ul>
       </section>
     </template>

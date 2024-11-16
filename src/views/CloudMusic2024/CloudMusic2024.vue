@@ -90,6 +90,12 @@
                     :id="item.value"
                     class="reward-bubble absolute inset-0 z-0"
                   ></can-reward-bubble-animation>
+                  <div
+                    :class="[
+                      'reward absolute inset-0 hidden bg-contain',
+                      `reward${item.id}`,
+                    ]"
+                  ></div>
                 </div>
                 <!-- 已完成任务删除线 -->
                 <div
@@ -104,14 +110,14 @@
               <div class="relative h-full w-full">
                 <!-- title -->
                 <div
-                  class="absolute bottom-[57px] left-[175px] h-[48px] w-[150px] rounded-3xl text-center text-[36px] leading-[48px] text-white"
+                  class="absolute bottom-[57px] left-[150px] h-[48px] w-[150px] rounded-3xl text-center text-[36px] leading-[48px] text-white"
                   style="background-color: rgba(93, 132, 255, 0.45)"
                 >
                   00:00
                 </div>
                 <!-- 列表 -->
                 <ul
-                  class="acc-task-list absolute left-[450px] m-auto flex w-[1420px] justify-between"
+                  class="acc-task-list absolute left-[475px] m-auto flex w-[1420px] justify-between"
                 >
                   <li
                     v-for="(item, index) in accTaskList"
@@ -141,7 +147,7 @@
                 </ul>
                 <!-- 进度条 -->
                 <div
-                  class="progress-container absolute bottom-[68px] left-[340px]"
+                  class="progress-container absolute bottom-[68px] left-[315px]"
                 >
                   <div
                     class="progress-bar"
@@ -161,6 +167,8 @@
 
 <script setup lang="ts">
 import { showToast, closeToast } from 'vant'
+import gsap from 'gsap'
+import MotionPathPlugin from 'gsap/MotionPathPlugin'
 import type { Event } from '@/types'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { animateBounce, animateBounceEase } from '@/utils/utils'
@@ -170,18 +178,22 @@ import { useActivityStore } from '@/stores/cloudMusic2024'
 import ModalHelp from './components/ModalHelp.vue'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import {
+  type TaskItem,
+  type Reward,
   EVENT_NAME,
   ACC_TASK_VALUE,
   ACC_TASK_INDEX,
   TaskStatus,
-  type TaskItem,
-  type Reward,
   REWARD_TEXT,
-  TASK_LIST,
-  ACC_TASK_LIST,
+  createTaskList,
+  createAccTaskList,
 } from './config'
 import { useTransitions } from './composables/useTransition'
 import { useMusicPlayer } from './composables/useMusicPlayer'
+gsap.registerPlugin(MotionPathPlugin)
+
+const TASK_LIST = createTaskList()
+const ACC_TASK_LIST = createAccTaskList()
 
 // refs
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
@@ -235,7 +247,7 @@ const taskList = computed(() => {
 })
 // 累计任务列表
 const accTaskList = computed(() => {
-  const activity = activityData.value.event_data[EVENT_NAME][5]
+  const activity = activityData.value.event_data[EVENT_NAME][ACC_TASK_INDEX]
   return ACC_TASK_LIST.map((item, index) => {
     return {
       ...item,
@@ -253,6 +265,10 @@ const allTasks = computed(() => [...taskList.value, ...accTaskList.value])
 
 onMounted(() => {
   getActivityData()
+  preloadImage([
+    '@/assets/images/cloud-music-2024/btn-play.png',
+    '@/assets/images/cloud-music-2024/btn-pause.png',
+  ])
 })
 
 onBeforeUnmount(() => {
@@ -295,6 +311,62 @@ function initCanRewardLottie(task: TaskItem): void {
   if (task.hadRenderLottie) {
     task.hadRenderLottie.value = true
   }
+}
+
+/**
+ * @function handleTokenFly
+ * @description 积分飞入进度条动画
+ * @param {TaskItem} item 任务项
+ * @returns {Promise<void>}
+ */
+async function handleTokenFly(item: TaskItem): Promise<void> {
+  // 积分
+  const tokenId = item.id
+  const token = document.querySelector(`.reward${tokenId}`) as HTMLElement
+  token.classList.remove('hidden')
+  const tokenRect = token.getBoundingClientRect()
+
+  // 进度奖励
+  const num = progress.value / 20
+  const targetEle = document.querySelector(
+    `.acc-task-icon${num + 1}`,
+  ) as HTMLElement
+  const targetEleRect = targetEle.getBoundingClientRect()
+
+  // 使用Promise来等待动画完成
+  await new Promise<void>((resolve) => {
+    gsap.to(token, {
+      duration: 0.7,
+      ease: 'power1.out',
+      opacity: 1,
+      startAt: { x: 0, y: 0, opacity: 1, scale: 1 },
+      motionPath: {
+        path: [
+          // x, y 为目标位置距离运动元素的偏移量
+          {
+            x: -(
+              tokenRect.left -
+              targetEleRect.left -
+              targetEleRect.width / 2 +
+              tokenRect.width / 2
+            ),
+            y: -(
+              tokenRect.top -
+              targetEleRect.top -
+              targetEleRect.height / 2 +
+              tokenRect.height / 2
+            ),
+            scale: 0.5,
+          },
+        ],
+        autoRotate: false,
+      },
+      onComplete: () => {
+        gsap.set(token, { opacity: 0 })
+        resolve() // 动画完成后调用resolve
+      },
+    })
+  })
 }
 
 /**
@@ -386,7 +458,12 @@ function handleReward(
   })
     .then(async (res) => {
       curReward.value = res.data.rewards[0]
+      // 领奖动画
       await bubbleBurst(event, item)
+      // 飞入进度条动画
+      if (value !== ACC_TASK_VALUE) {
+        await handleTokenFly(item)
+      }
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
         return item.task_id === value
@@ -438,6 +515,18 @@ const bubbleBurst = async (
  */
 function handleHelp(): void {
   modalHelp.value?.open()
+}
+
+/**
+ * @function preloadImage
+ * @description 预加载图片
+ * @returns {void}
+ */
+function preloadImage(imgArr: string[]): void {
+  imgArr.forEach((src) => {
+    const img = new Image()
+    img.src = src
+  })
 }
 </script>
 
@@ -682,5 +771,11 @@ function handleHelp(): void {
 }
 .animation-pause {
   animation-play-state: paused;
+}
+.reward {
+  margin-top: -1px;
+  width: 169px;
+  height: 122px;
+  background-image: url('@/assets/images/cloud-music-2024/task-icon.png');
 }
 </style>
