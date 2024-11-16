@@ -102,7 +102,7 @@ import { useBaseStore } from '@/stores/base'
 // 基本信息
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
-const currentChannel = 'netease'
+const currentChannel = baseStore.baseInfo.channel
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
