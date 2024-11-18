@@ -101,6 +101,7 @@ import { useBaseStore } from '@/stores/base'
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
 const currentChannel = baseStore.baseInfo.channel
+const currentAppChannel = baseStore.baseInfo.appChannel
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -173,19 +174,26 @@ const isEffective = (item: BulletinItem): boolean => {
 // 判断条目是否适用于当前渠道
 const isChannelApplicable = (item: BulletinItem): boolean => {
   const channelsArr = item.channel.split(',')
+  const appChannelsArr = item.app_channel.split(',')
   const channelsObj: Record<string, number> = {}
+  const appChannelsObj: Record<string, number> = {}
   channelsArr.forEach((channel) => {
     const [name, value] = channel.split(':')
     channelsObj[name.trim()] = parseInt(value, 10)
   })
-  const hasChannel = Object.prototype.hasOwnProperty.call(
-    channelsObj,
-    currentChannel,
+  appChannelsArr.forEach((channel) => {
+    const [name, value] = channel.split(':')
+    appChannelsObj[name.trim()] = parseInt(value, 10)
+  })
+  const excludeChannel = Object.keys(channelsObj).filter(
+    (key) => channelsObj[key] === 0,
   )
-  const hasOther = Object.prototype.hasOwnProperty.call(channelsObj, 'other')
-  return (
-    (hasChannel && channelsObj[currentChannel] === 1) ||
-    (!hasChannel && hasOther && channelsObj.other === 1)
+  const excludeAppChannel = Object.keys(appChannelsObj).filter(
+    (key) => appChannelsObj[key] === 0,
+  )
+  return !(
+    excludeChannel.includes(currentChannel) ||
+    excludeAppChannel.includes(currentAppChannel)
   )
 }
 

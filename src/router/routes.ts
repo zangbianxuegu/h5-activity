@@ -463,4 +463,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_cloud_music_2024',
     },
   },
+  {
+    path: '/netease-werewolf',
+    name: 'NeteaseWerewolf',
+    component: () => import('@/views/NeteaseWerewolf'),
+    meta: {
+      title: '追随钟声 即刻启程',
+      module: 'activitycenter_netease_werewolf',
+    },
+  },
 ]

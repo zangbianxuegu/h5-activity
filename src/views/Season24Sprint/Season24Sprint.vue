@@ -36,12 +36,12 @@
                   <can-reward-bubble-animation
                     :ref="item.canRewardLottieRef"
                     :id="item.value"
-                    class="reward-can-dynamic-bubble"
+                    class="reward-can-dynamic-bubble z-0"
                   ></can-reward-bubble-animation>
                   <!-- 圆 -->
                   <div
                     :class="[
-                      'task-item animate__animated animate__fadeIn',
+                      'task-item animate__animated animate__fadeIn z-10',
                       `task-item${index + 1}`,
                       `${item.status}`,
                     ]"
@@ -101,12 +101,12 @@
                         @click.stop="handleReward($event, index + 1, item)"
                         :ref="item.canRewardLottieRef"
                         :id="`${item.value}${item.id}`"
-                        class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble"
+                        class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble z-0"
                       ></can-reward-bubble-animation>
                       <div
                         v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                         :class="[
-                          'acc-task-item animate__animated animate__fadeIn',
+                          'acc-task-item animate__animated animate__fadeIn z-10',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                         ]"
