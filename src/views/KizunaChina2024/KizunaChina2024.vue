@@ -87,12 +87,12 @@
                       "
                       :ref="item.canRewardLottieRef"
                       :id="item.taskId"
-                      class="acc-reward-can-dynamic-bubble"
+                      class="acc-reward-can-dynamic-bubble z-0"
                     ></can-reward-bubble-animation>
                     <div
                       v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                       :class="[
-                        'acc-task-item animate__animated animate__fadeIn bg-contain',
+                        'acc-task-item animate__animated animate__fadeIn relative z-10 bg-contain',
                         `${item.status}${index + 1}`,
                       ]"
                     ></div>

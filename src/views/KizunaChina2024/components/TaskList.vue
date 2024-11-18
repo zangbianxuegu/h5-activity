@@ -38,12 +38,12 @@
               <can-reward-bubble-animation
                 :ref="v.canRewardLottieRef"
                 :id="`${v.taskId}${index}${i}`"
-                class="reward-can-dynamic-bubble"
+                class="reward-can-dynamic-bubble pointer-events-none z-0"
               ></can-reward-bubble-animation>
               <div
                 v-if="['wait', 'can', 'redeemed'].includes(v.status)"
                 :class="[
-                  'reward animate__animated animate__fadeIn bg-contain',
+                  'reward animate__animated animate__fadeIn relative z-10 bg-contain',
                   name,
                   `${v.status}${i + 1}`,
                   `${v.status}${i + 1}-${index + 1}`,
