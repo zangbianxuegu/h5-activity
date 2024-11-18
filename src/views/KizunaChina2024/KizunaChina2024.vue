@@ -51,20 +51,20 @@
             <!-- 累计任务列表 -->
             <h2 id="accTaskListHeading" class="sr-only">累计任务列表</h2>
             <div
-              class="absolute bottom-[10px] right-[10px] flex flex-col rounded-2xl p-4"
+              class="absolute bottom-[10px] right-0 flex flex-col rounded-2xl p-4"
             >
               <div
                 class="acc-task-title absolute bottom-[314px] right-[80px] h-[60px] text-[36px] leading-[60px] text-[#ffffff]"
               ></div>
               <p class="sr-only">全服任务！品尝中国绊爱饺子</p>
               <ul
-                class="absolute bottom-[60px] right-[40px] flex justify-between"
+                class="absolute bottom-[40px] right-[40px] flex justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="flex h-[230px] flex-col items-center justify-between"
+                  class="mr-[14px] flex h-[250px] flex-col items-center justify-between"
                 >
                   <div
                     class="relative"
@@ -201,10 +201,10 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
-import type { DesignConfig, Event } from '@/types'
+import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
-import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/kizunaChina2024'
 import gsap from 'gsap'
@@ -213,19 +213,19 @@ import TaskList from './components/TaskList.vue'
 
 // 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
-  kizuna_ai_dumpling: '中国绊爱饺子'
+  kizuna_ai_dumpling: '中国绊爱饺子魔法'
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法'
   outfit_horn_kizuna: '中国绊爱发饰试用魔法'
-  outfit_wing_kizuna: '中国绊爱斗篷'
-  outfit_hair_kizuna: '中国绊爱发型'
+  outfit_wing_kizuna: '中国绊爱斗篷魔法'
+  outfit_hair_kizuna: '中国绊爱发型魔法'
   prestige: '升华蜡烛'
-  fireworks: '浪漫烟花'
+  fireworks: '浪漫烟花魔法'
   tiny: '小不点'
   resize_potion: '体型重塑'
   candles: '蜡烛'
   heart: '爱心'
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法'
-  glow: '璀璨之星'
+  glow: '璀璨之星魔法'
 }
 
 // 定义单个奖励项接口
@@ -259,51 +259,25 @@ interface ProcessedTask {
   status: string // 任务状态
 }
 
+// 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
+getResponsiveStylesFactor()
+
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
-  kizuna_ai_dumpling: '中国绊爱饺子',
+  kizuna_ai_dumpling: '中国绊爱饺子魔法',
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法',
   outfit_horn_kizuna: '中国绊爱发饰试用魔法',
-  outfit_wing_kizuna: '中国绊爱斗篷',
-  outfit_hair_kizuna: '中国绊爱发型',
+  outfit_wing_kizuna: '中国绊爱斗篷魔法',
+  outfit_hair_kizuna: '中国绊爱发型魔法',
   prestige: '升华蜡烛',
-  fireworks: '浪漫烟花',
+  fireworks: '浪漫烟花魔法',
   tiny: '小不点',
   resize_potion: '体型重塑',
   candles: '蜡烛',
   heart: '爱心',
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
-  glow: '璀璨之星',
+  glow: '璀璨之星魔法',
 }
-
-// 设计稿宽
-const DESIGN_WIDTH = 2560
-// 设计稿高
-const DESIGN_HEIGHT = 1200
-// 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
-// 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_MAYDAY_WIDTH = 2100 - 60
-// 设计稿主体高，同宽。
-const DESIGN_MAYDAY_HEIGHT = 1200 - 60
-// 设计稿主体内容宽
-const DESIGN_MAYDAY_CONTENT_WIDTH = DESIGN_MAYDAY_WIDTH
-// 设计稿主体内容高
-const DESIGN_MAYDAY_CONTENT_HEIGHT = DESIGN_MAYDAY_HEIGHT
-// 设计稿主体内容宽高比
-const DESIGN_MAYDAY_CONTENT_RATIO =
-  DESIGN_MAYDAY_CONTENT_WIDTH / DESIGN_MAYDAY_CONTENT_HEIGHT
-// 配置参数
-const designConfig: DesignConfig = {
-  designWidth: DESIGN_WIDTH,
-  designHeight: DESIGN_HEIGHT,
-  designMainWidth: DESIGN_MAYDAY_WIDTH,
-  designMainHeight: DESIGN_MAYDAY_HEIGHT,
-  designMainContentWidth: DESIGN_MAYDAY_CONTENT_WIDTH,
-  designMainContentHeight: DESIGN_MAYDAY_CONTENT_HEIGHT,
-  designMainContentRatio: DESIGN_MAYDAY_CONTENT_RATIO,
-}
-// 缩放系数
-useResponsiveStyles(designConfig)
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
@@ -567,7 +541,7 @@ function calculateAccTaskValue(accTaskVal: number): number {
     case accTaskVal <= 10:
       return accTaskVal - 4
     case accTaskVal <= 40:
-      return accTaskVal - 8
+      return accTaskVal - 9
     case accTaskVal <= 80:
       return accTaskVal - 7
     case accTaskVal < 100:
@@ -731,8 +705,6 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   if (reward.canRewardLottieRef) {
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
-  // 果冻效果
-  clickBubbleReward(dom)
   // 溅射效果
   await gsap
     .timeline()
@@ -827,9 +799,9 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 }
 .progress-container {
   position: absolute;
-  bottom: 114px;
+  bottom: 100px;
   right: 90px;
-  width: 1100px;
+  width: 1160px;
   height: 16px;
   background-color: rgba(255, 255, 255, 0.2);
   border-radius: 8px;
