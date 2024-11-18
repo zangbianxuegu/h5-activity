@@ -173,27 +173,25 @@ const isEffective = (item: BulletinItem): boolean => {
 
 // 判断条目是否适用于当前渠道
 const isChannelApplicable = (item: BulletinItem): boolean => {
-  const channelsArr = item.channel.split(',')
-  const appChannelsArr = item.app_channel.split(',')
-  const channelsObj: Record<string, number> = {}
-  const appChannelsObj: Record<string, number> = {}
-  channelsArr.forEach((channel) => {
-    const [name, value] = channel.split(':')
-    channelsObj[name.trim()] = parseInt(value, 10)
-  })
-  appChannelsArr.forEach((channel) => {
-    const [name, value] = channel.split(':')
-    appChannelsObj[name.trim()] = parseInt(value, 10)
-  })
-  const excludeChannel = Object.keys(channelsObj).filter(
-    (key) => channelsObj[key] === 0,
-  )
-  const excludeAppChannel = Object.keys(appChannelsObj).filter(
-    (key) => appChannelsObj[key] === 0,
-  )
-  return !(
-    excludeChannel.includes(currentChannel) ||
-    excludeAppChannel.includes(currentAppChannel)
+  const parseChannels = (channelString: string | undefined): Set<string> => {
+    if (!channelString) {
+      return new Set()
+    }
+    return new Set(
+      channelString
+        .split(',')
+        .map((channel) => {
+          const [name, value] = channel.split(':')
+          return Number(value) === 0 ? name.trim() : null
+        })
+        .filter((name) => name !== null),
+    )
+  }
+  const excludeChannels = parseChannels(item.channel)
+  const excludeAppChannels = parseChannels(item.app_channel)
+  return (
+    !excludeChannels.has(currentChannel) &&
+    !excludeAppChannels.has(currentAppChannel)
   )
 }
 
