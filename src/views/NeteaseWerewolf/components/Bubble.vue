@@ -21,11 +21,6 @@ interface Reward {
   hadRenderLottie?: Ref<boolean> // 是否已渲染动画
   isWerewolfReward: boolean // 是否是狼人杀侧奖励
 }
-const emit = defineEmits(['close'])
-
-const closeModal = (): void => {
-  emit('close')
-}
 
 const props = defineProps({
   reward: {
@@ -73,21 +68,6 @@ const handleTask = (reward: Reward): void => {
 }
 
 /**
- * @function 处理气泡爆炸动画
- * @param {HTMLElement[]} domList - 需要处理动画的DOM元素列表
- * @param {Reward} item - 奖励对象
- * @returns {Promise<void>}
- * @description 并行处理所有元素的气泡爆炸动画
- */
-async function handleBubbleBurst(
-  domList: HTMLElement[],
-  item: Reward,
-): Promise<void> {
-  // 使用 Promise.all 并行处理所有元素的动画
-  await Promise.all(domList.map((dom) => bubbleBurst(dom, item)))
-}
-
-/**
  * @function 气泡爆炸动画
  * @param {HTMLElement} dom - dom元素
  * @param {Reward} reward - 奖励对象
@@ -99,7 +79,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
     reward.canRewardLottieRef.value.playAnimationClickBubble()
   }
   // 果冻效果
-  gsap
+  await gsap
     .timeline()
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in', opacity: 0.9 }) // 垂直压挤
     .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out', opacity: 0.5 }) // 垂直拉伸
@@ -126,9 +106,8 @@ watchEffect(() => {
 })
 
 defineExpose({
-  closeModal,
-  handleBubbleBurst,
   clickBubbleReward,
+  bubbleBurst,
 })
 </script>
 

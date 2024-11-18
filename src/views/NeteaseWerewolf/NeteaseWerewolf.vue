@@ -43,7 +43,7 @@
                       :reward="v"
                       :ref="
                         (el) => {
-                          if (el) bubbleRefs[i] = el
+                          if (el) bubbleRefs[i + index] = el
                         }
                       "
                     >
@@ -314,6 +314,7 @@ interface ProcessedTask {
   val: number // 任务完成值
   status: string // 任务状态
   isWerewolfReward: boolean
+  taskId: string
 }
 
 type ConfigItem = [string, string, number]
@@ -521,6 +522,7 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
         val: content[0]?.val ?? 0,
         isWerewolfReward: content[0]?.isWerewolfReward ?? false,
         status: content[0]?.status ?? 'wait',
+        taskId: content[0]?.taskId ?? '',
       }
     }),
   )
@@ -779,7 +781,24 @@ const toClaimMissionReward = (
     .then(async (res) => {
       curRewards.value = res.data.rewards
       if (!isWerewolfReward) {
-        await bubbleRefs.value?.[0].handleBubbleBurst(domList, task)
+        const bubbleRef = bubbleRefs.value?.[0]
+        if (bubbleRef) {
+          if (index < 7) {
+            const clickCol = allTaskList.value.find(
+              (item) => item.taskId === taskId,
+            )
+            if (clickCol) {
+              // 为每个内容创建气泡爆炸效果任务
+              const tasks = clickCol.content.value.map((content, idx) =>
+                bubbleRef.bubbleBurst(domList[idx], content),
+              )
+              // 等待所有气泡爆炸效果完成
+              await Promise.all(tasks)
+            }
+          } else {
+            domList.map((dom) => bubbleRef.bubbleBurst(dom, task))
+          }
+        }
       }
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[0] = 1
