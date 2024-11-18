@@ -49,7 +49,7 @@
                     >
                       <div
                         :class="[
-                          'task-item animate__animated animate__fadeIn animate__slow',
+                          'task-item animate__animated animate__fadeIn animate__slow relative z-10',
                           `task-item${index + 1}-${i + 1}`,
                           `task-item${index + 1}`,
                           `${item.status}`,
@@ -78,7 +78,7 @@
               >
                 <div
                   :class="[
-                    'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow bg-contain',
+                    'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow relative z-10 bg-contain',
                     `${taskList8[0].status}`,
                   ]"
                   @click="handleReward(taskList8[0], 7, true)"
@@ -135,7 +135,7 @@
             >
               <div
                 :class="[
-                  'reward task-item8 animate__animated animate__fadeIn animate__slow',
+                  'reward task-item8 animate__animated animate__fadeIn animate__slow relative z-10',
                   `${taskListModal[0].status}`,
                 ]"
                 @click="handleReward(taskListModal[0], 7)"

@@ -2,7 +2,7 @@
   <can-reward-bubble-animation
     :ref="reward.canRewardLottieRef"
     :id="`${reward.taskId}`"
-    class="reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow"
+    class="reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow z-0"
   ></can-reward-bubble-animation>
   <slot></slot>
 </template>
