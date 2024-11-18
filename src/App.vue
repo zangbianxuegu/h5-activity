@@ -16,6 +16,11 @@
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
         >
+        <a
+          class="nav-debug mb-4 flex w-full justify-center py-2"
+          href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html#/dayofdesign01-post-submit"
+          >sdk调试</a
+        >
         <div class="nav-sprite flex">
           <!-- <a
             class="nav-sprite-text"
