@@ -93,6 +93,7 @@ export interface DesignConfig {
 
 export interface BulletinItem {
   channel: string
+  app_channel: string
   description: string
   effective_time: string
   expired_time: string

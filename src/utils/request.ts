@@ -79,7 +79,7 @@ export function handlePostMessageToNative({
       const data =
         type === 'userinfo' || type === 'update_red_dot'
           ? { type }
-          : type === 'open_wechat_miniprogram'
+          : type === 'open_wechat_miniprogram' || type === 'set_audio_state'
             ? { type, content }
             : {
                 type,
