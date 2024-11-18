@@ -867,22 +867,25 @@ const toClaimMissionReward = (
   left: 68px;
   top: 260px;
   width: 1500px;
+  z-index: 10;
 }
 .character {
   position: absolute;
-  right: 40px;
-  top: 136px;
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
   &.pass {
-    width: 548px;
-    height: 860px;
+    right: 40px;
+    top: 136px;
+    width: 536px;
+    height: 876px;
     background-image: url('@/assets/images/netease-werewolf/character-pass.png');
   }
   &.unpass {
-    width: 536px;
-    height: 884px;
+    top: 130px;
+    right: 0;
+    width: 998px;
+    height: 1003px;
     background-image: url('@/assets/images/netease-werewolf/character-unpass.png');
   }
 }
