@@ -264,6 +264,7 @@
 </template>
 
 <script setup lang="ts">
+import { ref } from 'vue'
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import { getWerewolfInfo, bindWerewolfInfo } from '@/apis/neteaseWerewolf'
