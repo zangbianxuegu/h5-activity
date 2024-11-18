@@ -29,7 +29,7 @@
   },
   {
     "channel": "netease:1,nearme_vivo:1,oppo:1,xiaomi_app:1,huawei:1,uc_platform:1,bilibili_sdk:1,4399com:1,dtkj:1,app_store:1,other:1",
-    "app_channel": "a50_sdk_cn:1",
+    "app_channel": "netease:1",
     "description": "光遇大耳狗联动多平台UGC活动",
     "effective_time": "2024-4-28 00:00:00",
     "expired_time": "2024-12-31 23:59:59",

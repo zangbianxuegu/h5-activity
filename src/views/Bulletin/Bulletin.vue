@@ -103,6 +103,7 @@ import { useBaseStore } from '@/stores/base'
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
 const currentChannel = baseStore.baseInfo.channel
+const currentAppChannel = baseStore.baseInfo.appChannel
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -186,21 +187,16 @@ const isChannelApplicable = (item: BulletinItem): boolean => {
     const [name, value] = channel.split(':')
     appChannelsObj[name.trim()] = parseInt(value, 10)
   })
-  const hasChannel = Object.prototype.hasOwnProperty.call(
-    channelsObj,
-    currentChannel,
+  const excludeChannel = Object.keys(channelsObj).filter(
+    (key) => channelsObj[key] === 0,
   )
-  if (!hasChannel) {
-    channelsObj.netease = 1
-  }
-  let channelApplicable = false
-  if (currentChannel === 'netease') {
-    channelApplicable =
-      channelsObj.netease === 1 && appChannelsObj.a50_sdk_cn === 1
-  } else {
-    channelApplicable = hasChannel && channelsObj[currentChannel] === 1
-  }
-  return channelApplicable
+  const excludeAppChannel = Object.keys(appChannelsObj).filter(
+    (key) => appChannelsObj[key] === 0,
+  )
+  return !(
+    excludeChannel.includes(currentChannel) ||
+    excludeAppChannel.includes(currentAppChannel)
+  )
 }
 
 // 创建过滤和排序后的计算属性
