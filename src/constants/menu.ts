@@ -381,7 +381,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '狼人杀活动名称',
+    label: '追随钟声 即刻启程',
     value: 'activitycenter_netease_werewolf',
     routeName: 'NeteaseWerewolf',
     isNew: false,

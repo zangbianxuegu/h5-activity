@@ -265,13 +265,10 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
-import {
-  getPlayerMissionData,
-  claimMissionReward,
-  getWerewolfInfo,
-  bindWerewolfInfo,
-} from '@/utils/request'
-import type { Event } from '@/types'
+import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
+import { getWerewolfInfo, bindWerewolfInfo } from '@/apis/neteaseWerewolf'
+import type { WerewolfRes, Event } from '@/types'
+
 import { Session } from '@/utils/storage'
 import HelpModal from '@/components/Modal'
 import ActivityModal from './components/ActivityModal.vue'
@@ -474,12 +471,12 @@ const updateTaskList = (
     return taskList.map((item, index) => {
       if (activityIndex === 8) activityIndex = 7
       const { award, value, stages } = eventData.value[activityIndex]
-      const iswerewolfreward = eventData.value[activityIndex].is_werewolf_reward
+      const isWerewolfReward = eventData.value[activityIndex].is_werewolf_reward
       const awardIndex = isAccTask ? index : 0
       return {
         ...item,
         val: value,
-        isWerewolfReward: iswerewolfreward as boolean,
+        isWerewolfReward: isWerewolfReward as boolean,
         status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
       }
     })
@@ -610,7 +607,7 @@ function getWerewolfName(): void {
     werewolfNid: UID.value.trim(),
   })
     .then((res) => {
-      werewolfNickname.value = res.werewolf_nickname as string
+      werewolfNickname.value = res.werewolf_nickname
     })
     .catch((error) => {
       showToast(error.message)
@@ -688,8 +685,9 @@ function getActivityData(): void {
   getPlayerMissionData({ event: EVENT_NAME })
     .then((res) => {
       const data = res.data
-      const werewolfNickname = res.werewolf_nickname
-      const werewolfNid = res.werewolf_nid
+      const werewolfRes = res as WerewolfRes
+      const werewolfNickname = werewolfRes.werewolf_nickname
+      const werewolfNid = werewolfRes.werewolf_nid
       if (werewolfNid && werewolfNickname) {
         bindedUID.value = werewolfNid
         bindedNickname.value = werewolfNickname
@@ -927,33 +925,35 @@ input::placeholder {
     background-image: url('@/assets/images/netease-werewolf/bg-task#{$i}-gray.png');
     transition: background-image 1s ease;
   }
+}
+@each $k in 1, 4, 6 {
   @for $j from 1 through 2 {
-    .task-item#{$i}-#{$j} {
+    .task-item#{$k}-#{$j} {
       &.wait {
-        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-wait.png');
+        background-image: url('@/assets/images/netease-werewolf/task#{$k}-#{$j}-wait.png');
       }
       &.can {
-        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-can.png');
+        background-image: url('@/assets/images/netease-werewolf/task#{$k}-#{$j}-can.png');
       }
       &.redeemed {
         transition: background-image 1s ease;
-        background-image: url('@/assets/images/netease-werewolf/task#{$i}-#{$j}-redeemed.png');
+        background-image: url('@/assets/images/netease-werewolf/task#{$k}-#{$j}-redeemed.png');
       }
     }
   }
-  .task-item2-1,
-  .task-item3-1,
-  .task-item5-1,
-  .task-item7-1 {
-    &.wait {
-      background-image: url('@/assets/images/netease-werewolf/task-wolf-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/netease-werewolf/task-wolf-can.png');
-    }
-    &.redeemed {
-      background-image: url('@/assets/images/netease-werewolf/task-wolf-redeemed.png');
-    }
+}
+.task-item2-1,
+.task-item3-1,
+.task-item5-1,
+.task-item7-1 {
+  &.wait {
+    background-image: url('@/assets/images/netease-werewolf/task-wolf-wait.png');
+  }
+  &.can {
+    background-image: url('@/assets/images/netease-werewolf/task-wolf-can.png');
+  }
+  &.redeemed {
+    background-image: url('@/assets/images/netease-werewolf/task-wolf-redeemed.png');
   }
 }
 .extra-reward-list {

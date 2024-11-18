@@ -450,7 +450,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'NeteaseWerewolf',
     component: () => import('@/views/NeteaseWerewolf'),
     meta: {
-      title: '中国绊爱 与光重逢',
+      title: '追随钟声 即刻启程',
       module: 'activitycenter_netease_werewolf',
     },
   },
