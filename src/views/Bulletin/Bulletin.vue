@@ -6,23 +6,23 @@
         <van-swipe
           class="swipe border-r-10"
           :autoplay="3000"
+          :lazy-render="true"
           indicator-color="white"
           :style="generateDynamicStyles({ width: 1260 + 4, height: 712 + 4 })"
         >
-          <van-swipe-item v-for="banner in banners" :key="banner.id">
-            <a
-              class="bulletin-item"
+          <van-swipe-item
+            v-for="banner in banners"
+            :key="banner.id"
+            @touchstart="handleTouchStart"
+            @touchend="(event) => handleTouchEnd(banner, event)"
+          >
+            <img
+              class="img-border img-effect w-full select-none"
               draggable="false"
-              :href="banner.link_url || 'javascript:void(0)'"
-              @click="handleItemClick(banner, $event)"
-            >
-              <img
-                :src="`./images/${banner.img_name}`"
-                class="img-border img-effect w-full"
-                :alt="banner.name"
-              />
-              <div class="overlay"></div>
-            </a>
+              :src="`./images/${banner.img_name}`"
+              :alt="banner.name"
+            />
+            <div class="overlay"></div>
           </van-swipe-item>
         </van-swipe>
         <!-- 固定位 -->
@@ -30,21 +30,20 @@
           class="flex flex-col-reverse pb-0.5"
           :style="generateDynamicStyles({ width: 330, marginLeft: 30 })"
         >
-          <p v-for="fixed in fixeds" :key="fixed.id" class="mt-4">
-            <a
-              class="bulletin-item"
+          <div
+            v-for="fixed in fixeds"
+            class="relative mt-4 cursor-pointer"
+            :key="fixed.id"
+            @click="handleItemClick(fixed, $event)"
+          >
+            <img
+              class="img-effect w-full select-none"
               draggable="false"
-              :href="fixed.link_url || 'javascript:void(0)'"
-              @click="handleItemClick(fixed, $event)"
-            >
-              <img
-                :src="`./images/${fixed.img_name}`"
-                class="img-effect w-full"
-                :alt="fixed.name"
-              />
-              <div class="overlay"></div>
-            </a>
-          </p>
+              :src="`./images/${fixed.img_name}`"
+              :alt="fixed.name"
+            />
+            <div class="overlay"></div>
+          </div>
         </div>
       </div>
       <!-- 列表 -->
@@ -54,8 +53,8 @@
       >
         <div
           v-for="(sidebar, index) in sidebars"
+          class="sidebar-item cursor-pointer"
           :key="sidebar.id"
-          class="sidebar-item"
           :style="
             index === (sidebars && sidebars.length - 1)
               ? generateDynamicStyles({
@@ -68,26 +67,22 @@
                   marginRight: 30,
                 })
           "
+          @click="handleItemClick(sidebar, $event)"
         >
-          <a
-            class="bulletin-item"
-            href="javascript:void(0)"
+          <img
+            class="img-border w-full select-none"
             draggable="false"
-            @click="handleItemClick(sidebar, $event)"
+            :src="`./images/${sidebar.img_name}`"
+            :alt="sidebar.name"
+          />
+          <span
+            v-if="sidebar.tag"
+            class="sidebar-tag select-none"
+            draggable="false"
+            :style="generateDynamicStyles({ fontSize: 34 })"
+            >{{ sidebar.tag }}</span
           >
-            <img
-              :src="`./images/${sidebar.img_name}`"
-              class="img-border w-full"
-              :alt="sidebar.name"
-            />
-            <span
-              v-if="sidebar.tag"
-              class="sidebar-tag"
-              :style="generateDynamicStyles({ fontSize: 34 })"
-              >{{ sidebar.tag }}</span
-            >
-            <div class="overlay"></div>
-          </a>
+          <div class="overlay"></div>
         </div>
       </div>
     </div>
@@ -253,8 +248,48 @@ function handleWebViewStatistics(module: string): void {
   })
 }
 
-// 点击事件
-function handleItemClick(item: BulletinItem, event: MouseEvent): void {
+let startX = 0
+let startY = 0
+
+/**
+ * @function handleTouchStart
+ * @description 轮播图 touchstart 事件
+ * @param {TouchEvent} event 触摸事件
+ * @returns {void}
+ */
+function handleTouchStart(event: TouchEvent): void {
+  startX = event.touches[0].clientX
+  startY = event.touches[0].clientY
+}
+
+/**
+ * @function handleTouchEnd
+ * @description 轮播图 touchend 事件
+ * @param {TouchEvent} event 触摸事件
+ * @returns {void}
+ */
+function handleTouchEnd(item: BulletinItem, event: TouchEvent): void {
+  const endX = event.changedTouches[0].clientX
+  const endY = event.changedTouches[0].clientY
+  const diffX = Math.abs(endX - startX)
+  const diffY = Math.abs(endY - startY)
+
+  const threshold = 10
+  if (diffX < threshold && diffY < threshold) {
+    handleItemClick(item, event)
+  }
+}
+
+/**
+ * @function handleItemClick
+ * @description 资源位点击事件
+ * @param {TouchEvent | MouseEvent} event 触摸或鼠标事件
+ * @returns {void}
+ */
+function handleItemClick(
+  item: BulletinItem,
+  event: TouchEvent | MouseEvent,
+): void {
   const overlay = (
     event.currentTarget as HTMLElement
   ).querySelector<HTMLElement>('.overlay')
@@ -321,10 +356,6 @@ function handleItemClick(item: BulletinItem, event: MouseEvent): void {
     background: #3ac2ee;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.13);
   }
-}
-.bulletin-item {
-  position: relative;
-  display: block;
 }
 .overlay {
   position: absolute;
