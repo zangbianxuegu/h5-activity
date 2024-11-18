@@ -34,6 +34,7 @@ export interface Event {
   ban_award_types?: any[]
   map?: number[]
   ticket?: number
+  is_werewolf_reward?: boolean
 }
 
 type SingleEventData<K extends EventName> = {
