@@ -388,6 +388,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '你就是 冥龙',
+    value: 'activitycenter_netease_werewolf_join',
+    routeName: 'NeteaseWerewolfJoin',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

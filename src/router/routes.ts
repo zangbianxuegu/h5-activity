@@ -472,4 +472,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_netease_werewolf',
     },
   },
+  {
+    path: '/netease-werewolf-join',
+    name: 'NeteaseWerewolfJoin',
+    component: () => import('@/views/NeteaseWerewolfJoin'),
+    meta: {
+      title: '你就是冥龙',
+      module: 'activitycenter_netease_werewolf_join',
+    },
+  },
 ]
