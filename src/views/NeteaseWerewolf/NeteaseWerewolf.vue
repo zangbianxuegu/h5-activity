@@ -148,7 +148,7 @@
             />
             <button
               class="ml-[-20px] h-[96px] w-[220px] rounded-[16px] bg-[#83b7e4] text-[38px] tracking-[4px] text-white"
-              @click="getWerewolfName"
+              @click="debouncedSearchClick"
             >
               查询
             </button>
@@ -271,6 +271,7 @@ import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
+import { debounce } from '@/utils/utils'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -562,10 +563,6 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
-    // 可领取狼头面具时，打开跑图分页，要把弹窗界面打开
-    if (taskList8.value[0].status === 'can') {
-      modalRewardList.value?.openModal()
-    }
   } catch (error) {
     console.error(error)
   }
@@ -617,7 +614,7 @@ function closeModalGuide(): void {
  * @function 获取狼人昵称
  * 通过UID获取狼人信息
  */
-function getWerewolfName(): void {
+const getWerewolfName = (): void => {
   werewolfNickname.value = ''
   getWerewolfInfo({
     user: gameUid,
@@ -631,6 +628,13 @@ function getWerewolfName(): void {
       console.warn(error.message)
     })
 }
+
+/**
+ * @const debouncedSearchClick
+ * @description 使用防抖函数包装getWerewolfName函数
+ * 当用户输入UID时，延迟300毫秒后才执行搜索，避免频繁请求
+ */
+const debouncedSearchClick = debounce(getWerewolfName, 300)
 
 /**
  * @function 显示确认绑定模态框
@@ -729,6 +733,10 @@ function getActivityData(): void {
       activityStore.updateActivityData(newActivityData)
       // 更新红点
       setRedDot()
+      // 可领取狼头面具时，打开跑图分页，要把弹窗界面打开
+      if (taskList8.value[0].status === 'can') {
+        modalRewardList.value?.openModal()
+      }
     })
     .catch((error) => {
       showToast(error.message)
