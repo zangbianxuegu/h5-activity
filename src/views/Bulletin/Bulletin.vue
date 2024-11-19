@@ -101,7 +101,7 @@ import { useBaseStore } from '@/stores/base'
 const baseStore = useBaseStore()
 let currentTime = baseStore.baseInfo.currentTime
 const currentChannel = baseStore.baseInfo.channel
-const currentAppChannel = baseStore.baseInfo.appChannel
+const currentAppChannel = baseStore.baseInfo.appchannel
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560

@@ -3,7 +3,7 @@ export interface BaseInfo {
   currentTime: number
   currentFriendshipWeek: number
   channel: string
-  appChannel: string
+  appchannel: string
   token: string
   returnBuff: string
   gameUid: string
