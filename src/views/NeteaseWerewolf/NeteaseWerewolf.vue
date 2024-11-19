@@ -41,10 +41,10 @@
                   >
                     <bubble
                       :reward="v"
-                      :ref="
-                        (el) => {
-                          if (el) bubbleRefs[i + index] = el
-                        }
+                      :multiple="!item.isWerewolfReward"
+                      :rewardList="
+                        allTaskList.find((item) => item.taskId === v.taskId)
+                          ?.content.value
                       "
                     >
                       <div
@@ -68,14 +68,7 @@
             <p class="sr-only">领取头狼面具 光遇指引团再出发！</p>
             <!-- 额外奖励列表 -->
             <div v-if="isPassedStorm" class="extra-reward-list">
-              <bubble
-                :reward="taskList8[0]"
-                :ref="
-                  (el) => {
-                    if (el) bubbleRefs[0] = el
-                  }
-                "
-              >
+              <bubble :reward="taskList8[0]" :isPlayAnimation="false">
                 <div
                   :class="[
                     'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow relative z-10 bg-contain',
@@ -127,11 +120,8 @@
           <div class="relative mt-[60px]">
             <bubble
               :reward="taskListModal[0]"
-              :ref="
-                (el) => {
-                  if (el) bubbleRefs[0] = el
-                }
-              "
+              :multiple="true"
+              :rewardList="[taskList8[0], taskListModal[0]]"
             >
               <div
                 :class="[
@@ -274,7 +264,7 @@ import { Session } from '@/utils/storage'
 import HelpModal from '@/components/Modal'
 import ActivityModal from './components/ActivityModal.vue'
 import BindModal from './components/BindModal.vue'
-import Bubble from './components/Bubble.vue'
+import Bubble from '@/components/Bubble'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
@@ -368,7 +358,6 @@ const modalBind = ref<InstanceType<typeof BindModal> | null>(null)
 const modalConfirmBind = ref<InstanceType<typeof BindModal> | null>(null)
 const modalReward = ref<InstanceType<typeof BindModal> | null>(null)
 const modalGuide = ref<InstanceType<typeof BindModal> | null>(null)
-const bubbleRefs = ref<any[]>([])
 const UID = ref<string>('')
 const werewolfNickname = ref<string>('')
 const curRewards: Ref<Rewards[]> = ref([{ name: 'message_boat', count: 3 }])
@@ -554,10 +543,6 @@ onMounted(() => {
   Session.set('isVisitedNeteaseWerewolf', true)
 })
 
-onBeforeUpdate(() => {
-  bubbleRefs.value = []
-})
-
 /**
  * @function 显示帮助
  */
@@ -652,7 +637,7 @@ function handleBind(): void {
         isBinded.value = false
       }
       // 领取任务奖励
-      toClaimMissionReward([], clickTask as Reward, clickIndex)
+      toClaimMissionReward(clickTask as Reward, clickIndex)
     })
     .catch((error) => {
       showToast(error.message)
@@ -731,8 +716,6 @@ async function handleReward(
   index: number,
   openModal = false,
 ): Promise<void> {
-  const taskItems = document.querySelectorAll(`.task-item${index + 1}`)
-  const domList = Array.from(taskItems) as HTMLElement[]
   clickTask = task
   clickIndex = index
   const { status } = task
@@ -741,9 +724,6 @@ async function handleReward(
   }
   if (status === 'wait') {
     showToast('还未完成任务')
-    domList.forEach((dom) => {
-      bubbleRefs.value?.[0].clickBubbleReward(dom)
-    })
     return
   }
   if (index === 7 && openModal) {
@@ -756,22 +736,17 @@ async function handleReward(
       modalBind.value?.openModal()
       return
     }
-    toClaimMissionReward(domList, task, index)
+    toClaimMissionReward(task, index)
   }
 }
 
 /**
  * @function 领取任务奖励
- * @param {HTMLElement[]} domList - DOM元素列表
  * @param {Reward} task - 任务对象
  * @param {number} index - 任务索引
  * @returns {void}
  */
-const toClaimMissionReward = (
-  domList: HTMLElement[],
-  task: Reward,
-  index: number,
-): void => {
+const toClaimMissionReward = (task: Reward, index: number): void => {
   const { taskId, isWerewolfReward } = task
   claimMissionReward({
     event: EVENT_NAME,
@@ -780,26 +755,6 @@ const toClaimMissionReward = (
   })
     .then(async (res) => {
       curRewards.value = res.data.rewards
-      if (!isWerewolfReward) {
-        const bubbleRef = bubbleRefs.value?.[0]
-        if (bubbleRef) {
-          if (index < 7) {
-            const clickCol = allTaskList.value.find(
-              (item) => item.taskId === taskId,
-            )
-            if (clickCol) {
-              // 为每个内容创建气泡爆炸效果任务
-              const tasks = clickCol.content.value.map((content, idx) =>
-                bubbleRef.bubbleBurst(domList[idx], content),
-              )
-              // 等待所有气泡爆炸效果完成
-              await Promise.all(tasks)
-            }
-          } else {
-            domList.map((dom) => bubbleRef.bubbleBurst(dom, task))
-          }
-        }
-      }
       // 更新页面数据
       activityData.value.event_data[EVENT_NAME][index].award[0] = 1
       let text = '领取成功，您获得了'
