@@ -7,7 +7,7 @@ export const useBaseStore = defineStore('base', () => {
     currentTime: 0,
     currentFriendshipWeek: 0,
     channel: '',
-    appchannel: '',
+    appChannel: '',
     token: '',
     returnBuff: 'true',
     gameUid: '',

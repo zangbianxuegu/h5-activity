@@ -1,5 +1,5 @@
 export interface UserInfo {
-  appChannel: string
+  appchannel: string
   channel: string
   cmd: string
   game_server: number
