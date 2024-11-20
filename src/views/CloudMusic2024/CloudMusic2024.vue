@@ -56,7 +56,7 @@
                   <audio
                     ref="music"
                     :controls="false"
-                    :autoplay="true"
+                    :autoplay="false"
                     src="./audio/night _lambent_light_tempaaa.mp3"
                   ></audio>
                 </figure>
