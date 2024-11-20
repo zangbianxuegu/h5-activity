@@ -23,7 +23,6 @@ interface Reward {
   val: number // 奖励值
   canRewardLottieRef: Ref<InstanceType<typeof CanRewardBubbleAnimation>> // 可领取动画引用
   hadRenderLottie?: Ref<boolean> // 是否已渲染动画
-  isWerewolfReward: boolean // 是否是狼人杀侧奖励
 }
 
 const props = defineProps({
@@ -83,7 +82,7 @@ const clickBubble = async (e: MouseEvent): Promise<void> => {
       )
     } else {
       // 如果是多个奖励，执行多个气泡爆炸动画
-      await multiplebubbleBurst(innerDomList, props.rewardList as Reward[])
+      await multipleBubbleBurst(innerDomList, props.rewardList as Reward[])
     }
   }
 }
@@ -122,7 +121,7 @@ const handleTask = (reward: Reward): void => {
  * @returns {Promise<void>}
  * @description 为每个DOM元素创建气泡爆炸效果，并等待所有效果完成
  */
-const multiplebubbleBurst = async (
+const multipleBubbleBurst = async (
   domList: HTMLElement[],
   rewardList: Reward[],
 ): Promise<void> => {
@@ -176,7 +175,7 @@ watchEffect(() => {
 defineExpose({
   animateBounce,
   bubbleBurst,
-  multiplebubbleBurst,
+  multipleBubbleBurst,
 })
 </script>
 

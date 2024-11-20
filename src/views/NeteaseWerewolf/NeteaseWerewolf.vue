@@ -42,6 +42,7 @@
                     <bubble
                       :reward="v"
                       :multiple="!item.isWerewolfReward"
+                      :isPlayAnimation="!item.isWerewolfReward"
                       :rewardList="
                         allTaskList.find((item) => item.taskId === v.taskId)
                           ?.content.value
@@ -147,7 +148,7 @@
             />
             <button
               class="ml-[-20px] h-[96px] w-[220px] rounded-[16px] bg-[#83b7e4] text-[38px] tracking-[4px] text-white"
-              @click="getWerewolfName"
+              @click="debouncedSearchClick"
             >
               查询
             </button>
@@ -165,7 +166,7 @@
           <div
             class="mt-[32px] text-center text-[38px] tracking-[2px] text-[#83b7e4]"
           >
-            {{ werewolfNickname ? werewolfNickname : '狼人杀角色名' }}
+            {{ werewolfNickname ? werewolfNickname : '狼人杀角色昵称' }}
           </div>
           <div class="mt-[44px] text-center text-[32px] text-[#e85340]">
             注意：奖品将直接发送至绑定的《狼人杀》角色编号内
@@ -270,6 +271,7 @@ import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
+import { debounce } from '@/utils/utils'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -325,6 +327,18 @@ interface RewardsName {
   activitycenter_netease_werewolf_m7: '联动光崽麦克风'
   CharSkyKid_Mask_Werewolf: '头狼面具'
 }
+
+// 定义奖励名称接口，将任务id映射到中文描述
+interface RewardsMap {
+  activitycenter_netease_werewolf_m1: '体型重塑*3 传信纸船*3'
+  activitycenter_netease_werewolf_m2: '狼人杀奖励：礼物小心心'
+  activitycenter_netease_werewolf_m3: '联动表情：关心'
+  activitycenter_netease_werewolf_m4: '彩虹尾迹*3 冥龙克星*3'
+  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)'
+  activitycenter_netease_werewolf_m6: '爱心*3 绚丽彩虹*3'
+  activitycenter_netease_werewolf_m7: '狼人杀奖励：联动光崽麦克风'
+  activitycenter_netease_werewolf_extra: '头狼面具'
+}
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
   message_boat: '传信纸船',
@@ -338,6 +352,18 @@ const rewardsText: RewardsName = {
   heart: '爱心',
   activitycenter_netease_werewolf_m7: '联动光崽麦克风',
   CharSkyKid_Mask_Werewolf: '头狼面具',
+}
+
+// 定义奖励文本对象，用于将任务id映射到中文描述
+const rewardsMap: RewardsMap = {
+  activitycenter_netease_werewolf_m1: '体型重塑*3 传信纸船*3',
+  activitycenter_netease_werewolf_m2: '狼人杀奖励：礼物小心心',
+  activitycenter_netease_werewolf_m3: '联动表情：关心',
+  activitycenter_netease_werewolf_m4: '彩虹尾迹*3 冥龙克星*3',
+  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)',
+  activitycenter_netease_werewolf_m6: '爱心*3 绚丽彩虹*3',
+  activitycenter_netease_werewolf_m7: '狼人杀奖励：联动光崽麦克风',
+  activitycenter_netease_werewolf_extra: '头狼面具',
 }
 
 // 定义规则信息数组，包含各个关卡的奖励信息
@@ -588,7 +614,7 @@ function closeModalGuide(): void {
  * @function 获取狼人昵称
  * 通过UID获取狼人信息
  */
-function getWerewolfName(): void {
+const getWerewolfName = (): void => {
   werewolfNickname.value = ''
   getWerewolfInfo({
     user: gameUid,
@@ -602,6 +628,13 @@ function getWerewolfName(): void {
       console.warn(error.message)
     })
 }
+
+/**
+ * @const debouncedSearchClick
+ * @description 使用防抖函数包装getWerewolfName函数
+ * 当用户输入UID时，延迟300毫秒后才执行搜索，避免频繁请求
+ */
+const debouncedSearchClick = debounce(getWerewolfName, 300)
 
 /**
  * @function 显示确认绑定模态框
@@ -700,6 +733,10 @@ function getActivityData(): void {
       activityStore.updateActivityData(newActivityData)
       // 更新红点
       setRedDot()
+      // 可领取狼头面具时，打开跑图分页，要把弹窗界面打开
+      if (taskList8.value[0].status === 'can') {
+        modalRewardList.value?.openModal()
+      }
     })
     .catch((error) => {
       showToast(error.message)
@@ -718,12 +755,14 @@ async function handleReward(
 ): Promise<void> {
   clickTask = task
   clickIndex = index
-  const { status } = task
+  const { status, taskId } = task
   if (status === 'redeemed') {
     return
   }
   if (status === 'wait') {
-    showToast('还未完成任务')
+    showToast(
+      `还未完成任务，任务奖励：${rewardsMap[taskId as keyof RewardsMap]}`,
+    )
     return
   }
   if (index === 7 && openModal) {
@@ -765,6 +804,7 @@ const toClaimMissionReward = (task: Reward, index: number): void => {
       if (isWerewolfReward) {
         modalConfirmBind.value?.closeModal()
         modalReward.value?.openModal()
+        task.canRewardLottieRef.value.playAnimationClickBubble()
       } else {
         showToast(text)
       }
