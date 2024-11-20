@@ -57,7 +57,7 @@ export function handlePostMessageToNative({
             })
             resolve()
           }
-          if (pollCount >= 3) {
+          if (pollCount >= 20) {
             clearInterval(intervalId)
             reject(setErrorCustom('nativeError', 'UniSDKJSBridge mount fail!'))
           }

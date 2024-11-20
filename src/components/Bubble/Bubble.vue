@@ -1,10 +1,14 @@
 <template>
-  <can-reward-bubble-animation
-    :ref="reward.canRewardLottieRef"
-    :id="`${reward.taskId}`"
-    class="reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow"
-  ></can-reward-bubble-animation>
-  <slot></slot>
+  <div @click.capture="clickBubble">
+    <can-reward-bubble-animation
+      :ref="reward.canRewardLottieRef"
+      :id="`${reward.taskId}`"
+      class="reward-can-dynamic-bubble animate__animated animate__fadeIn animate__slow pointer-events-none z-0"
+    ></can-reward-bubble-animation>
+    <div :class="`reward-icon-${reward.taskId}`">
+      <slot></slot>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -19,15 +23,10 @@ interface Reward {
   val: number // 奖励值
   canRewardLottieRef: Ref<InstanceType<typeof CanRewardBubbleAnimation>> // 可领取动画引用
   hadRenderLottie?: Ref<boolean> // 是否已渲染动画
-  isWerewolfReward: boolean // 是否是狼人杀侧奖励
-}
-const emit = defineEmits(['close'])
-
-const closeModal = (): void => {
-  emit('close')
 }
 
 const props = defineProps({
+  // 奖励对象
   reward: {
     type: Object,
     default: () => ({
@@ -40,7 +39,53 @@ const props = defineProps({
       hadRenderLottie: ref(false),
     }),
   },
+  // 奖励列表
+  rewardList: {
+    type: Array,
+    default: () => [],
+  },
+  // 是否为多个奖励
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+  // 点击是否播放动画
+  isPlayAnimation: {
+    type: Boolean,
+    default: true,
+  },
 })
+
+/**
+ * @function 点击气泡事件处理函数
+ * @param {MouseEvent} e - 鼠标事件对象
+ * @description 处理气泡点击事件，根据奖励状态执行不同的动画效果
+ */
+const clickBubble = async (e: MouseEvent): Promise<void> => {
+  // 获取所有与当前奖励任务相关的DOM元素
+  const taskItems = document.querySelectorAll(
+    `.reward-icon-${props.reward.taskId}`,
+  )
+  const domList = Array.from(taskItems) as HTMLElement[]
+  const innerDomList = domList.map((dom) => dom.children[0]) as HTMLElement[]
+  if (props.reward.status === 'wait') {
+    // 如果奖励状态为等待，对每个DOM元素执行弹跳动画
+    domList.forEach((dom) => {
+      animateBounce(dom)
+    })
+  } else if (props.reward.status === 'can' && props.isPlayAnimation) {
+    if (!props.multiple) {
+      await Promise.all(
+        domList.map((_) => {
+          return bubbleBurst(e.target as HTMLElement, props.reward as Reward)
+        }),
+      )
+    } else {
+      // 如果是多个奖励，执行多个气泡爆炸动画
+      await multipleBubbleBurst(innerDomList, props.rewardList as Reward[])
+    }
+  }
+}
 
 /**
  * @function 初始化可领取奖励的Lottie动画
@@ -66,25 +111,27 @@ const handleTask = (reward: Reward): void => {
         initCanRewardLottie(reward)
       }
     })
-  } else {
-    // 如果任务状态不是 'can'，销毁相关的 Lottie 动画
-    reward.canRewardLottieRef?.value?.destroyAnimation()
   }
 }
 
 /**
- * @function 处理气泡爆炸动画
- * @param {HTMLElement[]} domList - 需要处理动画的DOM元素列表
- * @param {Reward} item - 奖励对象
+ * @function 处理多个气泡爆炸效果
+ * @param {HTMLElement[]} domList - DOM元素列表
+ * @param {Reward[]} rewardList - 奖励列表
  * @returns {Promise<void>}
- * @description 并行处理所有元素的气泡爆炸动画
+ * @description 为每个DOM元素创建气泡爆炸效果，并等待所有效果完成
  */
-async function handleBubbleBurst(
+const multipleBubbleBurst = async (
   domList: HTMLElement[],
-  item: Reward,
-): Promise<void> {
-  // 使用 Promise.all 并行处理所有元素的动画
-  await Promise.all(domList.map((dom) => bubbleBurst(dom, item)))
+  rewardList: Reward[],
+): Promise<void> => {
+  // 使用Promise.all并行处理所有气泡爆炸效果
+  await Promise.all(
+    domList.map((_, idx) => {
+      // 对每个DOM元素调用bubbleBurst方法
+      return bubbleBurst(domList[idx], rewardList[idx])
+    }),
+  )
 }
 
 /**
@@ -99,7 +146,7 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
     reward.canRewardLottieRef.value.playAnimationClickBubble()
   }
   // 果冻效果
-  gsap
+  await gsap
     .timeline()
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in', opacity: 0.9 }) // 垂直压挤
     .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out', opacity: 0.5 }) // 垂直拉伸
@@ -107,11 +154,11 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 }
 
 /**
- * @function 点击气泡弹弹弹的果冻效果
+ * @function 点击气泡弹动的果冻效果
  * @param {HTMLElement} dom - dom元素
  * @returns {void}
  */
-const clickBubbleReward = (dom: HTMLElement): void => {
+const animateBounce = (dom: HTMLElement): void => {
   gsap
     .timeline()
     .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
@@ -126,9 +173,9 @@ watchEffect(() => {
 })
 
 defineExpose({
-  closeModal,
-  handleBubbleBurst,
-  clickBubbleReward,
+  animateBounce,
+  bubbleBurst,
+  multipleBubbleBurst,
 })
 </script>
 
