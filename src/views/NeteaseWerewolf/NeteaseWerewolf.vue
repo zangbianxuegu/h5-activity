@@ -271,7 +271,7 @@ import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
