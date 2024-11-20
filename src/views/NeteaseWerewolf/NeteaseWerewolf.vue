@@ -118,7 +118,7 @@
           <div class="sr-only">
             在暴风眼的考验中传递勇气和温暖的你，已拥有指引其他光之子飞行的能力，请收下这份特别的奖励，去帮助更多的光之子
           </div>
-          <div class="relative mt-[60px]">
+          <div class="relative mt-[150px]">
             <bubble
               :reward="taskListModal[0]"
               :multiple="true"
@@ -271,7 +271,7 @@ import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
-import { debounce } from '@/utils/utils'
+import { debounce } from 'lodash'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -615,6 +615,7 @@ function closeModalGuide(): void {
  * 通过UID获取狼人信息
  */
 const getWerewolfName = (): void => {
+  if (!UID.value) return
   werewolfNickname.value = ''
   getWerewolfInfo({
     user: gameUid,
@@ -928,6 +929,7 @@ input::placeholder {
     background-image: url('@/assets/images/netease-werewolf/modal-reward-can.png');
   }
   &.redeemed {
+    transition: background-image 0.8s ease;
     background-image: url('@/assets/images/netease-werewolf/modal-reward-redeemed.png');
   }
 }

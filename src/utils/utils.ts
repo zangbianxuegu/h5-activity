@@ -152,26 +152,3 @@ export const animateBounceEase = async (target: EventTarget): Promise<void> => {
       opacity: 0,
     }) // 再次垂直压挤
 }
-
-/**
- * @description 防抖函数
- * @template T 函数类型
- * @param {T} func 需要防抖的函数
- * @param {number} wait 等待时间（毫秒）
- * @returns {(...args: Parameters<T>) => void} 防抖后的函数
- */
-export function debounce<T extends (...args: any[]) => void>(
-  func: T,
-  wait: number,
-): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout>
-  return function (...args: Parameters<T>): void {
-    // 清除之前的定时器
-    clearTimeout(timeout)
-    // 设置新的定时器
-    timeout = setTimeout(() => {
-      // 在等待时间结束后执行原函数
-      func(...args)
-    }, wait)
-  }
-}

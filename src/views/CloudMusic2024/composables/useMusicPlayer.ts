@@ -5,8 +5,24 @@ export function useMusicPlayer(audioElementRef: Ref<HTMLAudioElement | null>): {
   isPlaying: Ref<boolean>
   togglePlay: () => void
 } {
-  const isPlaying = ref(true)
+  const isPlaying = ref(false)
 
+  /**
+   * @function handleAudioEnded
+   * @description 处理音乐播放结束
+   * @returns {void}
+   */
+  function handleAudioEnded(): void {
+    isPlaying.value = false
+    if (audioElementRef.value) {
+      audioElementRef.value.currentTime = 0
+    }
+  }
+  /**
+   * @function togglePlay
+   * @description 切换音乐播放暂停
+   * @returns {void}
+   */
   function togglePlay(): void {
     const audioElement = audioElementRef.value
     if (audioElement) {
@@ -25,22 +41,44 @@ export function useMusicPlayer(audioElementRef: Ref<HTMLAudioElement | null>): {
     }
   }
 
-  onMounted(() => {
+  /**
+   * @function handleVisibilityChange
+   * @description 处理页面可见性事件
+   * @returns {void}
+   */
+  function handleVisibilityChange(): void {
+    if (document.hidden) {
+      if (isPlaying.value) {
+        togglePlay()
+      }
+    }
+  }
+
+  /**
+   * @function setAppAudioState
+   * @description 设置游戏音频状态
+   * @param mute 是否静音
+   */
+  function setAppAudioState(mute: boolean): void {
     setAudioState({
-      mute: true,
+      mute,
     }).catch((error) => {
       showToast(error.message)
     })
+  }
+
+  onMounted(() => {
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    audioElementRef.value?.addEventListener('ended', handleAudioEnded)
+    setAppAudioState(true)
   })
 
   onBeforeUnmount(() => {
+    document.removeEventListener('visibilitychange', handleVisibilityChange)
+    audioElementRef.value?.removeEventListener('ended', handleAudioEnded)
     audioElementRef.value?.pause()
     audioElementRef.value = null
-    setAudioState({
-      mute: false,
-    }).catch((error) => {
-      showToast(error.message)
-    })
+    setAppAudioState(false)
   })
 
   return {
