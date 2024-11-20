@@ -8,6 +8,17 @@ export function useMusicPlayer(audioElementRef: Ref<HTMLAudioElement | null>): {
   const isPlaying = ref(false)
 
   /**
+   * @function handleAudioEnded
+   * @description 处理音乐播放结束
+   * @returns {void}
+   */
+  function handleAudioEnded(): void {
+    isPlaying.value = false
+    if (audioElementRef.value) {
+      audioElementRef.value.currentTime = 0
+    }
+  }
+  /**
    * @function togglePlay
    * @description 切换音乐播放暂停
    * @returns {void}
@@ -58,11 +69,13 @@ export function useMusicPlayer(audioElementRef: Ref<HTMLAudioElement | null>): {
 
   onMounted(() => {
     document.addEventListener('visibilitychange', handleVisibilityChange)
+    audioElementRef.value?.addEventListener('ended', handleAudioEnded)
     setAppAudioState(true)
   })
 
   onBeforeUnmount(() => {
     document.removeEventListener('visibilitychange', handleVisibilityChange)
+    audioElementRef.value?.removeEventListener('ended', handleAudioEnded)
     audioElementRef.value?.pause()
     audioElementRef.value = null
     setAppAudioState(false)
