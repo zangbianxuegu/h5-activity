@@ -1,5 +1,5 @@
 <template>
-  <div @click.capture="clickBubble">
+  <div class="relative" @click.capture="clickBubble">
     <can-reward-bubble-animation
       :ref="reward.canRewardLottieRef"
       :id="`${reward.taskId}`"
