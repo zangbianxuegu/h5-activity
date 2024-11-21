@@ -14,7 +14,7 @@
             >)
           </span>
         </p>
-        <bubble :reward="item" :bubbleScale="1.8">
+        <bubble :reward="item">
           <div
             :class="[
               'task-item animate__animated animate__fadeIn relative z-10 bg-contain',

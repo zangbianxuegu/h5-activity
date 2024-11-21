@@ -10,6 +10,7 @@
                 <time datetime="2024-12-19">12.19</time>-
                 <time datetime="2025-1-8">1.8</time>
               </p>
+              <p>活动期间，参与“你就是冥龙”玩法，完成任务获得奖励</p>
             </div>
             <div
               class="help cursor-pointer bg-contain"
@@ -48,7 +49,7 @@
                   :key="item.id"
                   class="flex h-[280px] flex-col items-center justify-between"
                 >
-                  <bubble :reward="item" :isAccTask="true" :bubbleScale="1.3">
+                  <bubble :reward="item">
                     <div
                       :class="[
                         'acc-task-item animate__animated animate__fadeIn bg-contain',
