@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="halloween flex h-screen">
-      <div class="halloween-main">
+    <div class="werewolf-join flex h-screen">
+      <div class="werewolf-join-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -21,10 +21,11 @@
           <section>
             <!-- 任务列表组件 -->
             <!-- 遍历 taskLists 对象，为每种类型的任务创建一个 TaskList 组件 -->
-            <div class="absolute left-[100px] top-[364px] flex justify-between">
+            <div class="absolute left-[100px] top-[356px] flex justify-between">
               <TaskList
                 v-for="(tasks, type) in taskLists"
                 :key="type"
+                :type="type"
                 :title="titles[type]"
                 :tasks="tasks"
                 @reward="handleReward"
@@ -39,20 +40,23 @@
                 完成<br />“你就是冥龙” 天数
               </div>
               <ul
-                class="absolute left-[330px] top-[-82px] flex justify-between"
+                class="absolute left-[330px] top-[-132px] flex w-[1400px] justify-between"
                 aria-labelledby="accTaskListHeading"
               >
                 <li
                   v-for="(item, index) in accTaskList"
                   :key="item.id"
-                  class="mr-[64px] flex h-[230px] flex-col items-center justify-between"
+                  class="flex h-[280px] flex-col items-center justify-between"
                 >
-                  <div
-                    :class="[
-                      'acc-task-item animate__animated animate__fadeIn bg-contain',
-                      `${item.status}${index + 1}`,
-                    ]"
-                  ></div>
+                  <bubble :reward="item" :isAccTask="true" :bubbleScale="1.3">
+                    <div
+                      :class="[
+                        'acc-task-item animate__animated animate__fadeIn bg-contain',
+                        `${item.status}${index + 1}`,
+                      ]"
+                      @click="handleReward(index + 1, item)"
+                    ></div>
+                  </bubble>
                   <p
                     class="h-[30px] text-center text-[30px] leading-[36px] text-white"
                   >
@@ -71,69 +75,7 @@
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
-        <help-modal ref="modalHelp">
-          <template #content>
-            <section
-              aria-labelledby="activity-rules-title"
-              class="h-[680px] overflow-y-scroll p-4"
-            >
-              <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动时间：</span>
-                2024年12月19日~2025年1月8日
-              </h3>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动内容：</span>
-              </h3>
-              <ul class="modal-text list-inside list-decimal">
-                <li>活动期间，完成不同任务，获得奖励。</li>
-                <li>
-                  以光之子身份完成以下任务：<br />
-                  &nbsp;活动任务：成功指认冥龙3次，获得
-                  <span class="text-[#ffcb4d]">蜡烛*2</span><br />
-                  &nbsp;每周任务：每周完成一场游戏，获得
-                  <span class="text-[#ffcb4d]">篝火*1</span><br />
-                  &nbsp;每周任务：每周在顺序发言到自己时做1个动作，<br />
-                  &nbsp;获得
-                  <span class="text-[#ffcb4d]">璀璨之星*1</span><br />
-                </li>
-                <li>
-                  以冥龙身份完成以下任务：<br />
-                  &nbsp;活动任务：撞翻光之子或长老5次，获得
-                  <span class="text-[#ffcb4d]">蜡烛*2</span><br />
-                  &nbsp;每周任务：每周完成一场游戏，获得
-                  <span class="text-[#ffcb4d]">秋千*1</span><br />
-                  &nbsp;每周任务：每周在顺序发言到自己时做1个动作，<br />
-                  &nbsp;获得
-                  <span class="text-[#ffcb4d]">漂浮*1</span><br />
-                </li>
-                <li>
-                  以长老身份完成以下任务：<br />
-                  &nbsp;活动任务：成功查验到冥龙2次，获得
-                  <span class="text-[#ffcb4d]">蜡烛*2</span><br />
-                  &nbsp;每周任务：每周完成一场游戏，获得
-                  <span class="text-[#ffcb4d]">畅谈长桌*1</span><br />
-                  &nbsp;每周任务：每周在顺序发言到自己时做1个动作，<br />
-                  &nbsp;获得
-                  <span class="text-[#ffcb4d]">冥龙克星*1</span><br />
-                </li>
-                <li>
-                  不限制身份的任务：<br />
-                  &nbsp;至少完成1局“谁是冥龙”游戏，累计1天，获得
-                  <span class="text-[#ffcb4d]">光能药剂*1</span><br />
-                  &nbsp;至少完成1局“谁是冥龙”游戏，累计3天，获得
-                  <span class="text-[#ffcb4d]">体型重塑*1</span><br />
-                  &nbsp;至少完成1局“谁是冥龙”游戏，累计5天，获得
-                  <span class="text-[#ffcb4d]">兜帽女巫发型</span><br />
-                  &nbsp;至少完成1局“谁是冥龙”游戏，累计7天，获得
-                  <span class="text-[#ffcb4d]">爱心*1</span><br />
-                  &nbsp;至少完成1局“谁是冥龙”游戏，累计10天，获得
-                  <span class="text-[#ffcb4d]">红底女巫斗篷</span>
-                </li>
-              </ul>
-            </section>
-          </template>
-        </help-modal>
+        <ModalHelp ref="modalHelp" />
       </div>
     </div>
   </Transition>
@@ -144,12 +86,14 @@ import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
-import HelpModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/neteaseWerewolfJoin'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import TaskList from './components/TaskList.vue'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
+import Bubble from '@/components/Bubble'
+import { REWARD_MAP, type RewardMap } from '@/constants/rewardMap'
+import ModalHelp from './components/ModalHelp.vue'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -158,9 +102,7 @@ interface Rewards {
   name: string
   count: number
 }
-interface RewardsName {
-  candles: string
-}
+
 /**
  * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
  */
@@ -169,12 +111,10 @@ interface Reward {
   taskId: string
   title: string
   status: 'wait' | 'redeemed' | 'can' | string
+  val: number
+  stages: number[]
   canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
   hadRenderLottie?: Ref<boolean>
-}
-
-const rewardsText: RewardsName = {
-  candles: '蜡烛',
 }
 
 const curRewards: Ref<Rewards[]> = ref([
@@ -184,24 +124,14 @@ const curRewards: Ref<Rewards[]> = ref([
   },
 ])
 
-// const taskInfoList = [
-//   { name: '被骑扫帚的皮皮猫炸飞一次', count: 1 },
-//   { name: '找到戴帽子的螃蟹', count: 1 },
-//   { name: '成功击败怪物', count: 1 },
-//   { name: '逃脱滚动螃蟹的追击', count: 1 },
-//   { name: '使用【万圣节】代币兑换任意外观', count: 1 },
-//   { name: '触发扫帚制作间的陷阱', count: 1 },
-//   { name: '在活动场景的衣柜换装', count: 1 },
-//   { name: '完成一次魔法扫帚的练习', count: 2 },
-//   { name: '获得40个活动代币', count: 2 },
-// ]
-
 // 创建任务的函数
 const createTaskItem = (
   id: number,
   taskId: string,
   title: string,
   status = 'wait',
+  val = 0,
+  stages = [1],
   canRewardLottieRef = ref() as Ref<
     Array<InstanceType<typeof CanRewardBubbleAnimation>>
   >,
@@ -211,6 +141,8 @@ const createTaskItem = (
   taskId,
   title,
   status,
+  val,
+  stages,
   canRewardLottieRef,
   hadRenderLottie,
 })
@@ -258,7 +190,7 @@ const ACC_TASK_LIST = [
 ]
 
 // 弹框
-const modalHelp = ref<InstanceType<typeof HelpModal> | null>(null)
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 活动数据
 const EVENT_NAME = 'activitycenter_netease_werewolf_join'
@@ -291,38 +223,22 @@ const getTaskStatus = (award: number, value: number, stage: number): string => {
   return 'wait'
 }
 
-// const updateTaskList = (
-//   taskList: Reward[],
-//   activityIndex: number,
-//   isAccTask: boolean = false,
-// ): ComputedRef<Reward[]> => {
-//   return computed(() => {
-//     return taskList.map((item, index) => {
-//       const { award, value, stages } = eventData.value[activityIndex]
-//       const awardIndex = isAccTask ? index : 0
-//       return {
-//         ...item,
-//         val: value,
-//         status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
-//       }
-//     })
-//   })
-// }
-
-// 创建任务列表
+// 更新任务列表状态
 const updateTaskList = (
   taskList: Reward[],
   activityIndex: number,
+  isAccTask: boolean = false,
 ): ComputedRef<Reward[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
-      // console.log(eventData.value[activityIndex], 'activityIndex');
-
-      const { award, value, stages } = eventData.value[activityIndex]
+      const eventDataIndex = isAccTask ? activityIndex : activityIndex + index
+      const { award, value, stages } = eventData.value[eventDataIndex]
+      const awardIndex = isAccTask ? index : 0
       return {
         ...item,
         val: value,
-        status: getTaskStatus(award[index], value, stages[index]),
+        stages,
+        status: getTaskStatus(award[awardIndex], value, stages[awardIndex]),
       }
     })
   })
@@ -335,11 +251,9 @@ const krillTaskList = updateTaskList(KRILL_TASK_LIST, 3)
 // 长老身份
 const spiritTaskList = updateTaskList(SPIRIT_TASK_LIST, 6)
 // 累积任务列表
-const accTaskList = updateTaskList(ACC_TASK_LIST, 9)
+const accTaskList = updateTaskList(ACC_TASK_LIST, ACC_TASK_ACTIVITY_INDEX, true)
 // 累计任务完成值
 const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value)
-
-console.log(playerTaskList.value, 'playerTaskList')
 
 // 任务列表
 const taskLists = computed(() => ({
@@ -418,43 +332,43 @@ function getActivityData(): void {
           }),
         },
       }
-      console.log('newActivityData', JSON.stringify(newActivityData))
-      // newActivityData = {"own_unlocks":[],"event_data":{"activitycenter_netease_werewolf_join":[
-      //   {"value":3,"task_id":"activitycenter_werewolf_player_m3","stages":[3],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[1]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_player_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_player_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_krill_m3","stages":[5],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_krill_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_krill_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_spirit_m3","stages":[2],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_spirit_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":0,"task_id":"activitycenter_werewolf_spirit_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":3,"task_id":"activitycenter_werewolf_join_m1","stages":[1,3,5,7,10],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0,0,0,0,0]}]},"current_time":1732092773}
-      // accTaskValue.value = newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value * 10
+      const accTaskVal =
+        newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value *
+        10
+      accTaskValue.value = calculateAccTaskValue(accTaskVal)
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
-      console.log('activityStore: ', activityStore)
       setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
-      // let newActivityData = {"own_unlocks":[],"event_data":{"activitycenter_netease_werewolf_join":[
-      //   {"value":5,"task_id":"activitycenter_werewolf_player_m3","stages":[3],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[1]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_player_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_player_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_krill_m3","stages":[5],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_krill_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_krill_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_spirit_m3","stages":[2],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_spirit_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_spirit_m2","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0]},
-      //   {"value":5,"task_id":"activitycenter_werewolf_join_m1","stages":[1,3,5,7,10],"score":"","is_werewolf_reward":false,"awarded_types":[],"award":[0,0,0,0,0]}]},"current_time":1732092773}
-      // accTaskValue.value = newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value * 10
-      // // 更新缓存活动数据
-      // activityStore.updateActivityData(newActivityData)
-      // console.log('activityStore: ', activityStore)
-      // setRedDot()
     })
+}
+
+/**
+ * 适配异形滚动条 计算累积任务值
+ * @param accTaskVal 累积任务原始值
+ * @returns 计算后的累积任务值占比
+ */
+function calculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 100) return 100
+  switch (true) {
+    case accTaskVal <= 4:
+      return accTaskVal
+    case accTaskVal <= 10:
+      return accTaskVal - 1
+    case accTaskVal <= 40:
+      return accTaskVal
+    case accTaskVal <= 60:
+      return accTaskVal + 2
+    case accTaskVal < 80:
+      return accTaskVal + 4
+    case accTaskVal < 100:
+      return accTaskVal + 3
+    default:
+      return 0 // 其他情况（理论上不会发生），返回0
+  }
 }
 
 /**
@@ -490,7 +404,7 @@ function handleReward(rewardId: number, item: Reward): void {
         '领取成功，您获得了' +
           curRewards.value.map(
             (item) =>
-              ` ${rewardsText[item.name as keyof RewardsName]}*${item.count}`,
+              ` ${REWARD_MAP[item.name as keyof RewardMap]}*${item.count}`,
           ),
       )
       // 更新红点
@@ -506,7 +420,7 @@ function handleReward(rewardId: number, item: Reward): void {
  * @returns {void}
  */
 function handleHelp(): void {
-  modalHelp.value?.openModal()
+  modalHelp.value?.open()
 }
 </script>
 
@@ -529,7 +443,7 @@ function handleHelp(): void {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.halloween {
+.werewolf-join {
   position: relative;
   width: 2100px;
 
@@ -559,8 +473,6 @@ function handleHelp(): void {
   height: 20px;
   background-color: #484c50;
   border-radius: 8px;
-  // margin-top: 182px;
-  // margin-left: 330px;
   .progress-bar {
     height: 20px;
     background-color: #ffd972;
@@ -582,20 +494,20 @@ function handleHelp(): void {
   }
 }
 .acc-task-item {
-  width: 230px;
-  height: 160px;
+  width: 256px;
+  height: 230px;
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
   @for $i from 1 through 5 {
     &.wait#{$i} {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task#{$i}-wait.png');
+      background-image: url('@/assets/images/netease-werewolf-join/acc-task#{$i}-wait.png');
     }
     &.can#{$i} {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task#{$i}-can.png');
+      background-image: url('@/assets/images/netease-werewolf-join/acc-task#{$i}-can.png');
     }
     &.redeemed#{$i} {
-      background-image: url('@/assets/images/kizuna-china-2024/acc-task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/netease-werewolf-join/acc-task#{$i}-redeemed.png');
     }
   }
 }
