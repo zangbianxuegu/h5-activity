@@ -757,7 +757,7 @@ async function handleReward(
   clickTask = task
   clickIndex = index
   const { status, taskId } = task
-  if (status === 'redeemed') {
+  if (status === 'redeemed' && index !== 7) {
     return
   }
   if (status === 'wait') {
