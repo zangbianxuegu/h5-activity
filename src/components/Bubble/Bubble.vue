@@ -1,5 +1,5 @@
 <template>
-  <div class="relative" @click.capture="clickBubble">
+  <div class="relative" @click.capture="handleClickBubble">
     <can-reward-bubble-animation
       :ref="reward.canRewardLottieRef"
       :id="`${reward.taskId}-${reward.id}`"
@@ -8,7 +8,7 @@
         bubbleClass,
       ]"
     ></can-reward-bubble-animation>
-    <div :class="`reward-icon-${reward.taskId}-${reward.id}`">
+    <div :class="bounceClass">
       <slot></slot>
     </div>
   </div>
@@ -53,6 +53,14 @@ const props = defineProps({
     type: String,
     default: 'reward-bubble',
   },
+  /**
+   * bounce 元素 class 名
+   * 当存在 rewardList 时，关联的 Bubble 组件需要设置相同的 `bounce-class`
+   */
+  bounceClass: {
+    type: String,
+    default: '',
+  },
   // 点击是否播放动画
   isPlayAnimation: {
     type: Boolean,
@@ -65,23 +73,12 @@ const props = defineProps({
  * @description 处理气泡点击事件，根据奖励状态执行不同的动画效果
  * @returns {Promise<void>}
  */
-const clickBubble = async (): Promise<void> => {
-  // 获取所有与当前奖励任务相关的DOM元素
-  const curTask = document.querySelector(
-    `.reward-icon-${props.reward.taskId}-${props.reward.id}`,
-  )
-  let taskList = [] as HTMLElement[]
-  if (curTask) {
-    const closestLiAncestor = curTask.closest('li')
-    if (closestLiAncestor) {
-      const taskListEle = closestLiAncestor.querySelectorAll(
-        `[class*="reward-icon-${props.reward.taskId}-"]`,
-      )
-      taskList = Array.from(taskListEle).map(
-        (task) => task.children[0],
-      ) as HTMLElement[]
-    }
-  }
+const handleClickBubble = async (): Promise<void> => {
+  // 获取所有需要bounce的元素
+  const bounceElEList = document.querySelectorAll(`.${props.bounceClass}`)
+  const taskList = Array.from(bounceElEList).map(
+    (bounceEle) => bounceEle.children[0],
+  ) as HTMLElement[]
   // 奖励列表
   let rewardList = props.rewardList
   if (!props.rewardList || props.rewardList.length === 0) {
@@ -154,9 +151,5 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
 
 watchEffect(() => {
   handleRewardLottie(props.reward as Reward)
-})
-
-defineExpose({
-  bubbleBurst,
 })
 </script>

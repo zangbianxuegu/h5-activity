@@ -126,7 +126,11 @@
                     :aria-label="`累计获得积分 ${index + 1}`"
                     class="acc-task-item animate__animated animate__fadeIn h-[230px]"
                   >
-                    <bubble :reward="item" :bubble-class="'acc-reward-bubble'">
+                    <bubble
+                      :reward="item"
+                      :bubble-class="'acc-reward-bubble'"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
                       <div
                         :class="[
                           'acc-task-icon animate__animated animate__fadeIn relative z-10 bg-contain bg-center bg-no-repeat',

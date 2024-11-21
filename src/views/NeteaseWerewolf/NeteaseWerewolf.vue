@@ -24,30 +24,31 @@
             <!-- 任务列表 -->
             <ul class="task-list flex">
               <li
-                v-for="(item, index) in allTaskList"
-                :key="item.title"
+                v-for="(task, index) in allTaskList"
+                :key="task.title"
                 :class="[
                   'animate-flip relative mr-[4px] flex flex-col bg-cover',
-                  `bg-task${index + 1}${item.status !== 'can' ? '-gray' : ''}`,
-                  `${item.isWerewolfReward ? 'pt-[330px]' : 'pt-[210px]'}`,
+                  `bg-task${index + 1}${task.status !== 'can' ? '-gray' : ''}`,
+                  `${task.isWerewolfReward ? 'pt-[330px]' : 'pt-[210px]'}`,
                 ]"
               >
-                <p class="sr-only">{{ item.title }}</p>
+                <p class="sr-only">{{ task.title }}</p>
                 <bubble
-                  v-for="(content, cIndex) in item.content.value"
-                  :key="content.taskId"
-                  :reward="content"
-                  :is-play-animation="!item.isWerewolfReward"
-                  :reward-list="item.content.value"
+                  v-for="(item, cIndex) in task.content.value"
+                  :key="item.taskId"
+                  :reward="item"
+                  :is-play-animation="!task.isWerewolfReward"
+                  :reward-list="task.content.value"
                   :bubble-class="'reward-bubble'"
-                  @click="handleReward(content, index)"
+                  :bounce-class="`reward-bounce-${item.taskId}`"
+                  @click="handleReward(item, index)"
                 >
                   <div
                     :class="[
                       'task-item animate__animated animate__fadeIn animate__slow relative z-10',
                       `task-item${index + 1}-${cIndex + 1}`,
                       `task-item${index + 1}`,
-                      `${item.status}`,
+                      `${task.status}`,
                     ]"
                   ></div>
                 </bubble>
@@ -60,7 +61,11 @@
             <p class="sr-only">领取头狼面具 光遇指引团再出发！</p>
             <!-- 额外奖励列表 -->
             <div v-if="isPassedStorm" class="extra-reward-list">
-              <bubble :reward="taskList8[0]" :isPlayAnimation="false">
+              <bubble
+                :reward="taskList8[0]"
+                :is-playAnimation="false"
+                :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
+              >
                 <div
                   :class="[
                     'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow relative z-10 bg-contain',
@@ -112,7 +117,8 @@
           <div class="relative mt-[150px]">
             <bubble
               :reward="taskListModal[0]"
-              :rewardList="[taskList8[0], taskListModal[0]]"
+              :reward-list="[taskList8[0], taskListModal[0]]"
+              :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
             >
               <div
                 :class="[
@@ -535,6 +541,7 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
 
 // 所有任务列表
 const allTaskList = processTaskList(TASKS.slice(0, 7))
+console.log('allTaskList: ', allTaskList)
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const isBinded = ref(false)
