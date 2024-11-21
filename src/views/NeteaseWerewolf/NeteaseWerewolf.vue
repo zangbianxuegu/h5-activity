@@ -33,33 +33,24 @@
                 ]"
               >
                 <p class="sr-only">{{ item.title }}</p>
-                <div>
+                <bubble
+                  v-for="(content, cIndex) in item.content.value"
+                  :key="content.taskId"
+                  :reward="content"
+                  :is-play-animation="!item.isWerewolfReward"
+                  :reward-list="item.content.value"
+                  :bubble-class="'reward-bubble'"
+                  @click="handleReward(content, index)"
+                >
                   <div
-                    class="relative"
-                    v-for="(v, i) in item.content.value"
-                    :key="v.taskId"
-                  >
-                    <bubble
-                      :reward="v"
-                      :multiple="!item.isWerewolfReward"
-                      :isPlayAnimation="!item.isWerewolfReward"
-                      :rewardList="
-                        allTaskList.find((item) => item.taskId === v.taskId)
-                          ?.content.value
-                      "
-                    >
-                      <div
-                        :class="[
-                          'task-item animate__animated animate__fadeIn animate__slow relative z-10',
-                          `task-item${index + 1}-${i + 1}`,
-                          `task-item${index + 1}`,
-                          `${item.status}`,
-                        ]"
-                        @click="handleReward(v, index)"
-                      ></div>
-                    </bubble>
-                  </div>
-                </div>
+                    :class="[
+                      'task-item animate__animated animate__fadeIn animate__slow relative z-10',
+                      `task-item${index + 1}-${cIndex + 1}`,
+                      `task-item${index + 1}`,
+                      `${item.status}`,
+                    ]"
+                  ></div>
+                </bubble>
               </li>
             </ul>
             <!-- 文案和人物 -->
@@ -121,7 +112,6 @@
           <div class="relative mt-[150px]">
             <bubble
               :reward="taskListModal[0]"
-              :multiple="true"
               :rewardList="[taskList8[0], taskListModal[0]]"
             >
               <div
@@ -271,7 +261,7 @@ import { useActivityStore } from '@/stores/neteaseWerewolf'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { useBaseStore } from '@/stores/base'
-import { debounce } from 'lodash'
+import debounce from 'lodash.debounce'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -545,6 +535,7 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
 
 // 所有任务列表
 const allTaskList = processTaskList(TASKS.slice(0, 7))
+console.log('allTaskList: ', allTaskList.value)
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const isBinded = ref(false)
@@ -1011,6 +1002,13 @@ input::placeholder {
   }
   100% {
     transform: rotateY(0deg);
+  }
+}
+::v-deep(.reward-bubble) {
+  position: absolute;
+  & > :first-child {
+    position: absolute;
+    transform: scale(1.6) !important;
   }
 }
 </style>

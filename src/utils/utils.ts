@@ -115,14 +115,14 @@ export const generateDynamicStyles = (
  * @description 待领奖动画效果，果冻弹跳
  * @returns {void}
  */
-export const animateBounce = (target: EventTarget): void => {
+export const animateBounce = (dom: HTMLElement): void => {
   gsap
     .timeline()
-    .to(target, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
-    .to(target, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
-    .to(target, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(target, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(target, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
+    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
+    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
+    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
 }
 
 /**
@@ -130,22 +130,22 @@ export const animateBounce = (target: EventTarget): void => {
  * @description 可领奖动画效果，简单果冻效果
  * @returns {void}
  */
-export const animateBounceEase = async (target: EventTarget): Promise<void> => {
+export const animateBounceEase = async (dom: HTMLElement): Promise<void> => {
   await gsap
     .timeline()
-    .to(target, {
+    .to(dom, {
       scaleY: 0.8,
       duration: 0.2,
       ease: 'power1.in',
       opacity: 0.9,
     }) // 垂直压挤
-    .to(target, {
+    .to(dom, {
       scaleY: 1.1,
       duration: 0.2,
       ease: 'power1.out',
       opacity: 0.5,
     }) // 垂直拉伸
-    .to(target, {
+    .to(dom, {
       scaleY: 1,
       duration: 0.2,
       ease: 'power1.out',
