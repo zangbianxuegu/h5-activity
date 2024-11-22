@@ -38,6 +38,7 @@
     "@rollup/plugin-babel": "^6.0.4",
     "@types/dom-view-transitions": "^1.0.3",
     "@types/eslint": "^8.44.3",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/lodash.throttle": "^4.1.9",
     "@types/node": "^20.6.2",
     "@typescript-eslint/eslint-plugin": "^6.7.3",
