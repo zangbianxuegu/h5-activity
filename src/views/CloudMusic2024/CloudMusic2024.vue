@@ -128,7 +128,7 @@
                   >
                     <bubble
                       :reward="item"
-                      :bubble-class="'acc-reward-bubble'"
+                      :bubble-scale="1.3"
                       :bounce-class="`${item.taskId}-${item.id}`"
                     >
                       <div
@@ -739,24 +739,9 @@ function preloadImage(imgArr: string[]): void {
 }
 .reward-bubble {
   position: absolute;
-  width: 180px;
-  height: 160px;
-  left: -6px;
-  top: -20px;
   & > :first-child {
     position: absolute;
-    transform: scale(1.1) !important;
-  }
-}
-::v-deep(.acc-reward-bubble) {
-  position: absolute;
-  width: 180px;
-  height: 160px;
-  left: 38px;
-  top: 35px;
-  & > :first-child {
-    position: absolute;
-    transform: scale(1.9) !important;
+    transform: scale(1.3) !important;
   }
 }
 @keyframes spin {
