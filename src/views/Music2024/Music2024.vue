@@ -2,7 +2,6 @@
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="music2024 flex h-screen">
       <div class="music2024-main">
-        <div class="tips bg-contain"></div>
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -79,6 +78,11 @@
                 </div>
               </li>
             </ul>
+            <div class="tips bg-contain">
+              <p class="sr-only">
+                在指定时间内，前往特定活动场景，完成主体演奏录制
+              </p>
+            </div>
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -86,7 +90,7 @@
           <template #content>
             <section
               aria-labelledby="activity-rules-title"
-              class="h-[680px] overflow-y-scroll p-4"
+              class="h-[640px] overflow-y-scroll px-4"
             >
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
@@ -181,33 +185,32 @@ const taskOrderMap = new Map(
 )
 
 // 获取任务状态
-const getTaskStatus = (activity: Event): string => {
+const getTaskStatus = (activity: Event): TaskStatus => {
   const { award, value, stages } = activity
-  if (award?.[0] === 1) return 'redeemed'
-  if (award?.[0] === 0 && value >= stages?.[0]) return 'can'
-  return 'wait'
+  if (award?.[0] === 1) return TaskStatus.REDEEMED
+  if (award?.[0] === 0 && value >= stages?.[0]) return TaskStatus.CAN
+  return TaskStatus.WAIT
+}
+const statusMap: Record<
+  DateStatus,
+  Record<string, { className: string; tagText: string }>
+> = {
+  nostart: {
+    any: { className: 'nostart', tagText: '' },
+  },
+  ongoing: {
+    redeemed: { className: 'redeemed', tagText: '已完成' },
+    can: { className: 'redeemed', tagText: '已完成' },
+    wait: { className: 'ongoing', tagText: '正在进行' },
+  },
+  overdue: {
+    redeemed: { className: 'redeemed', tagText: '已完成' },
+    can: { className: 'redeemed', tagText: '已完成' },
+    overdue: { className: 'overdue', tagText: '已过期' },
+  },
 }
 // 任务列表
 const taskList = computed(() => {
-  const statusMap: Record<
-    DateStatus,
-    Record<string, { className: string; tagText: string }>
-  > = {
-    nostart: {
-      any: { className: 'nostart', tagText: '' },
-    },
-    ongoing: {
-      redeemed: { className: 'redeemed', tagText: '已完成' },
-      can: { className: 'redeemed', tagText: '已完成' },
-      wait: { className: 'ongoing', tagText: '正在进行' },
-    },
-    overdue: {
-      redeemed: { className: 'redeemed', tagText: '已完成' },
-      can: { className: 'redeemed', tagText: '已完成' },
-      overdue: { className: 'overdue', tagText: '已过期' },
-    },
-  }
-
   return TASK_LIST.map((item, index) => {
     const activity = activityData.value.event_data[EVENT_NAME][index]
     let status = getTaskStatus(activity)
@@ -371,7 +374,7 @@ function getActivityData(): void {
  * @param item 任务项
  * @returns {void}
  */
-function handleReward(event: MouseEvent, rewardId: number, item: any): void {
+function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
   const { status, value, id } = item
   if (status === TaskStatus.REDEEMED || status === TaskStatus.OVERDUE) {
     return
@@ -390,11 +393,7 @@ function handleReward(event: MouseEvent, rewardId: number, item: any): void {
     rewardId,
   })
     .then(async (res) => {
-      const rewards = res.data.rewards
-      curRewards.value = {
-        name: rewards[0].name,
-        count: rewards[0].count,
-      }
+      curRewards.value = res.data.rewards[0]
       id !== 1 && (await bubbleBurst(event, item))
       // 更新页面数据
       const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
@@ -417,32 +416,12 @@ function handleReward(event: MouseEvent, rewardId: number, item: any): void {
     })
 }
 
-const initCanRewardLottie = (reward: Reward): void => {
-  if (reward.canRewardLottieRef?.value) {
-    reward.canRewardLottieRef?.value[0].initLottie()
-  }
-  // 避免多次更新computed和watch所引起的多次渲染lottie
-  if (reward.hadRenderLottie) {
-    reward.hadRenderLottie.value = true
-  }
-}
-
-const handleTask = (task: any): void => {
-  if (task.status === TaskStatus.CAN) {
-    void nextTick(() => {
-      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
-        initCanRewardLottie(task)
-      }
-    })
-  } else {
-    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
-  }
-}
-
-watchEffect(() => {
-  taskList.value.forEach(handleTask)
-})
-
+/**
+ * @function 领奖气泡动画
+ * @param {MouseEvent} event 鼠标事件
+ * @param {Reward} reward 领奖项
+ * @returns {Promise<void>}
+ */
 const bubbleBurst = async (
   event: MouseEvent,
   reward: Reward,
@@ -455,6 +434,42 @@ const bubbleBurst = async (
     await animateBounceEase(target)
   }
 }
+
+/**
+ * @function 初始化可领奖动画
+ * @param {Reward} reward 任务项
+ * @returns {void}
+ */
+const initCanRewardLottie = (reward: Reward): void => {
+  if (reward.canRewardLottieRef?.value) {
+    reward.canRewardLottieRef?.value[0].initLottie()
+  }
+  // 避免多次更新computed和watch所引起的多次渲染lottie
+  if (reward.hadRenderLottie) {
+    reward.hadRenderLottie.value = true
+  }
+}
+
+/**
+ * @function 任务动画处理
+ * @param {Reward} task 任务项
+ * @returns {void}
+ */
+const handleInitTask = (task: Reward): void => {
+  if (task.status === TaskStatus.CAN) {
+    void nextTick(() => {
+      if (task.hadRenderLottie && !task.hadRenderLottie.value) {
+        initCanRewardLottie(task)
+      }
+    })
+  } else {
+    task.canRewardLottieRef?.value?.[0]?.destroyAnimation()
+  }
+}
+
+watchEffect(() => {
+  taskList.value.forEach(handleInitTask)
+})
 
 /**
  * @function 显示帮助

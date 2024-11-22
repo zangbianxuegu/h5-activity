@@ -9,9 +9,9 @@ export const useActivityStore = defineStore(
       event_data: {
         activitycenter_music_2024: [
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_music_2024_m8',
-            stages: [1],
+            stages: [5],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -27,16 +27,16 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_music_2024_m3',
             stages: [1],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
-            award: [1],
+            award: [0],
           },
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_music_2024_m4',
             stages: [1],
             score: '',
@@ -45,7 +45,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_music_2024_m5',
             stages: [1],
             score: '',
@@ -63,7 +63,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_music_2024_m7',
             stages: [1],
             score: '',
