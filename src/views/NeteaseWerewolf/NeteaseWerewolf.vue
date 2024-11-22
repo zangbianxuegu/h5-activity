@@ -39,7 +39,7 @@
                   :reward="item"
                   :is-play-animation="!task.isWerewolfReward"
                   :reward-list="task.content.value"
-                  :bubble-class="'reward-bubble'"
+                  :bubbleScale="1.5"
                   :bounce-class="`reward-bounce-${item.taskId}`"
                   @click="handleReward(item, index)"
                 >
@@ -64,6 +64,7 @@
               <bubble
                 :reward="taskList8[0]"
                 :is-playAnimation="false"
+                :bubbleScale="1.8"
                 :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
               >
                 <div
@@ -119,6 +120,7 @@
               :reward="taskListModal[0]"
               :reward-list="[taskList8[0], taskListModal[0]]"
               :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
+              :bubbleScale="1.75"
             >
               <div
                 :class="[
@@ -1007,13 +1009,6 @@ input::placeholder {
   }
   100% {
     transform: rotateY(0deg);
-  }
-}
-::v-deep(.reward-bubble) {
-  position: absolute;
-  & > :first-child {
-    position: absolute;
-    transform: scale(1.6) !important;
   }
 }
 </style>
