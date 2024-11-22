@@ -75,18 +75,16 @@ const identityMap = {
   background-repeat: no-repeat;
   background-size: cover;
 }
-@for $l from 1 through 3 {
-  .task-item#{$l} {
-    &.wait {
-      background-image: url('@/assets/images/netease-werewolf-join/task#{$l}-wait.png');
-    }
-    &.can {
-      background-image: url('@/assets/images/netease-werewolf-join/task#{$l}-can.png');
-    }
-    &.redeemed {
-      transition: background-image 1s ease;
-      background-image: url('@/assets/images/netease-werewolf-join/task#{$l}-redeemed.png');
-    }
+.task-item1 {
+  &.wait {
+    background-image: url('@/assets/images/netease-werewolf-join/task1-wait.png');
+  }
+  &.can {
+    background-image: url('@/assets/images/netease-werewolf-join/task1-can.png');
+  }
+  &.redeemed {
+    transition: background-image 1s ease;
+    background-image: url('@/assets/images/netease-werewolf-join/task1-redeemed.png');
   }
 }
 
