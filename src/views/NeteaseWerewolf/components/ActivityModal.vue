@@ -1,6 +1,6 @@
 <template>
   <div
-    class="fixed left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-75"
+    class="fixed left-0 top-0 z-20 flex h-full w-full items-center justify-center bg-black bg-opacity-70"
     :class="{ 'pointer-events-none opacity-0': !isOpen }"
     @click="openModal"
   >

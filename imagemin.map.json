@@ -1309,7 +1309,6 @@
   "src/assets/images/netease-werewolf/guide.png": 1731485765840.087,
   "src/assets/images/netease-werewolf/task6-2-wait.png": 1731485765840.087,
   "src/assets/images/netease-werewolf/task6-2-can.png": 1731485765840.087,
-  "src/assets/images/netease-werewolf/bg-pass.jpg": 1731485765840.087,
   "src/assets/images/season24-sprint/copyright.png": 1731035507652.4795,
   "src/assets/images/season24-sprint/acc-task1-can.png": 1731050803155.0334,
   "src/assets/images/season24-sprint/acc-task-bg.png": 1731050803155.0334,
@@ -1405,5 +1404,6 @@
   "src/assets/images/netease-werewolf-join/task3-2-wait.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/task3-3-redeemed.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/task3-3-wait.png": 1732193371437.6487,
-  "src/assets/images/netease-werewolf-join/bg.jpg": 1732193371439.643
+  "src/assets/images/netease-werewolf-join/bg.jpg": 1732193371439.643,
+  "src/assets/images/netease-werewolf/bg-pass.jpg": 1732192701620.2817
 }
