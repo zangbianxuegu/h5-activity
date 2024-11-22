@@ -143,124 +143,37 @@ import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
+import {
+  type Reward,
+  type Rewards,
+  REWARD_TEXT,
+  TaskStatus,
+  createTaskList,
+  EVENT_NAME,
+} from './config'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
+import { animateBounce, animateBounceEase } from '@/utils/utils'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/music2024'
-import gsap from 'gsap'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
-interface Rewards {
-  name: string
-  count: number
-}
-interface RewardsName {
-  glow: string
-  energy: string
-  recording_candle: string
-  energy_potion: string
-  gravity: string
-  grow: string
-  trail_rainbow: string
-  heart: string
-}
-/**
- * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
- */
-interface Reward {
-  id: number
-  value: string
-  title: string
-  date: string
-  status: 'wait' | 'redeemed' | 'can' | 'overdue' | string
-  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
-  hadRenderLottie?: Ref<boolean>
-  className?: string
-  tagTxt?: string
-}
-const rewardsText: RewardsName = {
-  glow: '璀璨之星魔法',
-  energy: '元气满满魔法',
-  recording_candle: '留影蜡烛',
-  energy_potion: '光能药剂',
-  gravity: '漂浮魔法',
-  grow: '长大成人',
-  trail_rainbow: '彩虹尾迹',
-  heart: '爱心',
-}
 const curRewards: Ref<Rewards> = ref({
   name: 'glow',
   count: 1,
 })
 
-// 创建任务的函数
-const taskItem = (
-  id: number,
-  value: string,
-  title: string,
-  date: string = '',
-  status = 'wait',
-  canRewardLottieRef = ref() as Ref<
-    Array<InstanceType<typeof CanRewardBubbleAnimation>>
-  >,
-  hadRenderLottie = ref(false),
-): Reward => ({
-  id,
-  value,
-  title,
-  date,
-  status,
-  canRewardLottieRef,
-  hadRenderLottie,
-})
-// 主任务列表
-const TASK_LIST = [
-  taskItem(
-    1,
-    'activitycenter_music_2024_m8',
-    '完成任意\n5个任务',
-    '',
-    'wait',
-    undefined,
-  ),
-  taskItem(2, 'activitycenter_music_2024_m2', '云巢小镇\n“喜悦”', '12.6-12.7'),
-  taskItem(3, 'activitycenter_music_2024_m3', '云巢小镇\n“希望”', '12.8-12.9'),
-  taskItem(
-    4,
-    'activitycenter_music_2024_m4',
-    '圆梦村剧场\n“梦想”',
-    '12.10-12.11',
-  ),
-  taskItem(
-    5,
-    'activitycenter_music_2024_m5',
-    '音乐餐厅\n“忧郁”',
-    '12.12-12.13',
-  ),
-  taskItem(
-    6,
-    'activitycenter_music_2024_m6',
-    '星光沙漠\n“信心”',
-    '12.14-12.16',
-  ),
-  taskItem(
-    7,
-    'activitycenter_music_2024_m7',
-    '落日竞技场\n“胜利”',
-    '12.17-12.19',
-  ),
-  taskItem(8, 'activitycenter_music_2024_m1', '用小镇舞台\n的乐器演奏'),
-]
-
+// 任务列表
+const TASK_LIST = createTaskList()
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 
 // 活动数据
-const EVENT_NAME = 'activitycenter_music_2024'
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
+const currentTime = activityData.value.current_time
 
 // 任务排序
 const taskOrderMap = new Map(
@@ -277,18 +190,18 @@ const getTaskStatus = (activity: Event): string => {
 // 任务列表
 const taskList = computed(() => {
   const statusMap: Record<
-    number,
+    DateStatus,
     Record<string, { className: string; tagText: string }>
   > = {
-    1: {
+    nostart: {
       any: { className: 'nostart', tagText: '' },
     },
-    2: {
+    ongoing: {
       redeemed: { className: 'redeemed', tagText: '已完成' },
       can: { className: 'redeemed', tagText: '已完成' },
       wait: { className: 'ongoing', tagText: '正在进行' },
     },
-    3: {
+    overdue: {
       redeemed: { className: 'redeemed', tagText: '已完成' },
       can: { className: 'redeemed', tagText: '已完成' },
       overdue: { className: 'overdue', tagText: '已过期' },
@@ -302,9 +215,12 @@ const taskList = computed(() => {
     let className: string = ''
     let tagText: string = ''
 
-    if (item.date !== '') {
+    if (item.date) {
       const result = checkTodayAgainstDateRange(item.date)
-      status = result === 3 && status === 'wait' ? 'overdue' : status
+      status =
+        result === 'overdue' && status === TaskStatus.WAIT
+          ? TaskStatus.OVERDUE
+          : status
       const statusInfo = getStatusInfo(statusMap, result, status, item.date)
       ;({ className, tagText } = statusInfo)
     }
@@ -321,17 +237,19 @@ const taskList = computed(() => {
 /**
  * @function 检查当前日期在指定日期范围的状态
  * @param {string} data 时间范围
- * @returns {1|2|3} 未到时间|正在进行|已过期
+ * @returns { DateStatus} 未到时间|正在进行|已过期
  */
-function checkTodayAgainstDateRange(data: string): 1 | 2 | 3 {
+type DateStatus = 'nostart' | 'ongoing' | 'overdue'
+function checkTodayAgainstDateRange(data: string): DateStatus {
   const [start, end] = data.split('-').map((date) => date.split('.'))
   // 解析给定的日期范围
   const startMonth = parseInt(start[0], 10)
   const startDay = parseInt(start[1], 10)
   const endMonth = parseInt(end[0], 10)
   const endDay = parseInt(end[1], 10)
-  // 获取当前日期
-  const today = new Date()
+
+  // 获取服务器时间
+  const today = new Date(currentTime * 1000)
   const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
   const currentDay = today.getDate()
   // 判断当前日期是否在范围内
@@ -339,20 +257,20 @@ function checkTodayAgainstDateRange(data: string): 1 | 2 | 3 {
     currentMonth < startMonth ||
     (currentMonth === startMonth && currentDay < startDay)
   ) {
-    return 1 // 未到时间
+    return 'nostart' // 未到时间
   }
   if (
     currentMonth > endMonth ||
     (currentMonth === endMonth && currentDay > endDay)
   ) {
-    return 3 // 已过期
+    return 'overdue' // 已过期
   }
-  return 2 // 正在进行
+  return 'ongoing' // 正在进行
 }
 
 function getStatusInfo(
   statusMap: Record<
-    number,
+    DateStatus,
     Record<
       string,
       {
@@ -361,7 +279,7 @@ function getStatusInfo(
       }
     >
   >,
-  result: number,
+  result: DateStatus,
   status: string,
   date: string,
 ): {
@@ -399,10 +317,10 @@ onMounted(() => {
  * @returns {boolean} 是否有未领奖
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 检查1-8项，任务列表
-  const tasksValid = tasks
-    .slice(0, 8)
-    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
+  // 检查任务列表
+  const tasksValid = tasks.some(
+    (task) => task.value >= task.stages[0] && task.award[0] === 0,
+  )
   return tasksValid
 }
 
@@ -453,14 +371,17 @@ function getActivityData(): void {
  * @param item 任务项
  * @returns {void}
  */
-function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
+function handleReward(event: MouseEvent, rewardId: number, item: any): void {
   const { status, value, id } = item
-  if (status === 'redeemed' || status === 'overdue') {
+  if (status === TaskStatus.REDEEMED || status === TaskStatus.OVERDUE) {
     return
   }
-  if (status === 'wait') {
+  if (status === TaskStatus.WAIT) {
     showToast('还未完成任务')
-    clickBubbleRewardWait(event)
+    const target = event.target
+    if (target) {
+      animateBounce(target)
+    }
     return
   }
   claimMissionReward({
@@ -485,7 +406,7 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
         1
       showToast(
         `领取成功，您获得了 ${
-          rewardsText[curRewards.value.name as keyof RewardsName]
+          REWARD_TEXT[curRewards.value.name as keyof typeof REWARD_TEXT]
         }*${curRewards.value.count}`,
       )
       // 更新红点
@@ -494,18 +415,6 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
     .catch((error) => {
       showToast(error.message)
     })
-}
-
-// 奖品wait状态点击果冻效果
-const clickBubbleRewardWait = (event: MouseEvent): void => {
-  const dom = event.target
-  gsap
-    .timeline()
-    .to(dom, { scaleY: 0.8, duration: 0.2, ease: 'power1.in' }) // 垂直压挤
-    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 垂直拉伸
-    .to(dom, { scaleY: 0.9, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(dom, { scaleY: 1.1, duration: 0.2, ease: 'power1.out' }) // 再次垂直压挤
-    .to(dom, { scaleY: 1, duration: 0.2, ease: 'power1.out' }) // 恢复原样
 }
 
 const initCanRewardLottie = (reward: Reward): void => {
@@ -518,8 +427,8 @@ const initCanRewardLottie = (reward: Reward): void => {
   }
 }
 
-const handleTask = (task: Reward): void => {
-  if (task.status === 'can') {
+const handleTask = (task: any): void => {
+  if (task.status === TaskStatus.CAN) {
     void nextTick(() => {
       if (task.hadRenderLottie && !task.hadRenderLottie.value) {
         initCanRewardLottie(task)
@@ -542,27 +451,9 @@ const bubbleBurst = async (
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   const target = event.target
-  // 溅射效果
-  await gsap
-    .timeline()
-    .to(target, {
-      scaleY: 0.8,
-      duration: 0.2,
-      ease: 'power1.in',
-      opacity: 0.9,
-    }) // 垂直压挤
-    .to(target, {
-      scaleY: 1.1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0.5,
-    }) // 垂直拉伸
-    .to(target, {
-      scaleY: 1,
-      duration: 0.2,
-      ease: 'power1.out',
-      opacity: 0,
-    }) // 再次垂直压挤
+  if (target) {
+    await animateBounceEase(target)
+  }
 }
 
 /**
