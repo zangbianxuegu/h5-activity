@@ -409,6 +409,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '曲意畅想 谱写乐章',
+    value: 'activitycenter_music_2024',
+    routeName: 'Music2024',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '光遇云音 心随律动',
     value: 'activitycenter_cloud_music_2024',
     routeName: 'CloudMusic2024',

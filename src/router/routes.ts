@@ -446,6 +446,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/music-2024',
+    name: 'Music2024',
+    component: () => import('@/views/Music2024'),
+    meta: {
+      title: '曲意畅想 谱写乐章',
+      module: 'activitycenter_music_2024',
+    },
+  },
+  {
     path: '/season24-sprint',
     name: 'Season24Sprint',
     component: () => import('@/views/Season24Sprint'),
