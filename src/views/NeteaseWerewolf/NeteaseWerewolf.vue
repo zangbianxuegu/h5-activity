@@ -24,42 +24,34 @@
             <!-- 任务列表 -->
             <ul class="task-list flex">
               <li
-                v-for="(item, index) in allTaskList"
-                :key="item.title"
+                v-for="(task, index) in allTaskList"
+                :key="task.title"
                 :class="[
                   'animate-flip relative mr-[4px] flex flex-col bg-cover',
-                  `bg-task${index + 1}${item.status !== 'can' ? '-gray' : ''}`,
-                  `${item.isWerewolfReward ? 'pt-[330px]' : 'pt-[210px]'}`,
+                  `bg-task${index + 1}${task.status !== 'can' ? '-gray' : ''}`,
+                  `${task.isWerewolfReward ? 'pt-[330px]' : 'pt-[210px]'}`,
                 ]"
               >
-                <p class="sr-only">{{ item.title }}</p>
-                <div>
+                <p class="sr-only">{{ task.title }}</p>
+                <bubble
+                  v-for="(item, cIndex) in task.content.value"
+                  :key="item.taskId"
+                  :reward="item"
+                  :is-play-animation="!task.isWerewolfReward"
+                  :reward-list="task.content.value"
+                  :bubble-class="'reward-bubble'"
+                  :bounce-class="`reward-bounce-${item.taskId}`"
+                  @click="handleReward(item, index)"
+                >
                   <div
-                    class="relative"
-                    v-for="(v, i) in item.content.value"
-                    :key="v.taskId"
-                  >
-                    <bubble
-                      :reward="v"
-                      :multiple="!item.isWerewolfReward"
-                      :isPlayAnimation="!item.isWerewolfReward"
-                      :rewardList="
-                        allTaskList.find((item) => item.taskId === v.taskId)
-                          ?.content.value
-                      "
-                    >
-                      <div
-                        :class="[
-                          'task-item animate__animated animate__fadeIn animate__slow relative z-10',
-                          `task-item${index + 1}-${i + 1}`,
-                          `task-item${index + 1}`,
-                          `${item.status}`,
-                        ]"
-                        @click="handleReward(v, index)"
-                      ></div>
-                    </bubble>
-                  </div>
-                </div>
+                    :class="[
+                      'task-item animate__animated animate__fadeIn animate__slow relative z-10',
+                      `task-item${index + 1}-${cIndex + 1}`,
+                      `task-item${index + 1}`,
+                      `${task.status}`,
+                    ]"
+                  ></div>
+                </bubble>
               </li>
             </ul>
             <!-- 文案和人物 -->
@@ -69,7 +61,11 @@
             <p class="sr-only">领取头狼面具 光遇指引团再出发！</p>
             <!-- 额外奖励列表 -->
             <div v-if="isPassedStorm" class="extra-reward-list">
-              <bubble :reward="taskList8[0]" :isPlayAnimation="false">
+              <bubble
+                :reward="taskList8[0]"
+                :is-playAnimation="false"
+                :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
+              >
                 <div
                   :class="[
                     'extra-reward-item task-item8 animate__animated animate__fadeIn animate__slow relative z-10 bg-contain',
@@ -121,8 +117,8 @@
           <div class="relative mt-[150px]">
             <bubble
               :reward="taskListModal[0]"
-              :multiple="true"
-              :rewardList="[taskList8[0], taskListModal[0]]"
+              :reward-list="[taskList8[0], taskListModal[0]]"
+              :bounce-class="`reward-bounce-${taskListModal[0].taskId}`"
             >
               <div
                 :class="[
@@ -140,7 +136,7 @@
         <template #content>
           <div class="mt-[130px] flex items-center">
             <input
-              class="h-[96px] w-[630px] grow rounded-[16px] pl-[40px]"
+              class="h-[96px] w-[630px] grow rounded-[16px] pl-[40px] pr-[50px]"
               style="border: 1px solid #6fa2dd"
               type="text"
               v-model="UID"
@@ -545,6 +541,7 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
 
 // 所有任务列表
 const allTaskList = processTaskList(TASKS.slice(0, 7))
+console.log('allTaskList: ', allTaskList)
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const isBinded = ref(false)
@@ -757,7 +754,7 @@ async function handleReward(
   clickTask = task
   clickIndex = index
   const { status, taskId } = task
-  if (status === 'redeemed') {
+  if (status === 'redeemed' && index !== 7) {
     return
   }
   if (status === 'wait') {
@@ -1011,6 +1008,13 @@ input::placeholder {
   }
   100% {
     transform: rotateY(0deg);
+  }
+}
+::v-deep(.reward-bubble) {
+  position: absolute;
+  & > :first-child {
+    position: absolute;
+    transform: scale(1.6) !important;
   }
 }
 </style>
