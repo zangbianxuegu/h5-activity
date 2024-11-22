@@ -41,7 +41,7 @@
                   <!-- 圆 -->
                   <div
                     :class="[
-                      'task-item animate__animated animate__fadeIn z-10',
+                      'task-item animate__animated animate__fadeIn relative z-10',
                       `task-item${index + 1}`,
                       `${item.status}`,
                     ]"
