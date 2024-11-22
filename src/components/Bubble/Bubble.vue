@@ -1,6 +1,7 @@
 <template>
   <div class="relative" @click.capture="handleClickBubble">
     <can-reward-bubble-animation
+      v-if="reward.status === 'can'"
       :ref="reward.canRewardLottieRef"
       :id="`${reward.taskId}-${reward.id}`"
       class="reward-bubble animate__animated animate__fadeIn animate__slow pointer-events-none z-0"

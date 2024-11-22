@@ -3,7 +3,7 @@
     <template #content>
       <section
         aria-labelledby="activity-rules-title"
-        class="h-[680px] overflow-y-scroll p-4"
+        class="h-[680px] overflow-y-scroll px-4"
       >
         <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
         <h3 class="modal-text">
