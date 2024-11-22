@@ -3,10 +3,7 @@
     <can-reward-bubble-animation
       :ref="reward.canRewardLottieRef"
       :id="`${reward.taskId}-${reward.id}`"
-      :class="[
-        'animate__animated animate__fadeIn animate__slow pointer-events-none z-0',
-        bubbleClass,
-      ]"
+      class="reward-bubble animate__animated animate__fadeIn animate__slow pointer-events-none z-0"
     ></can-reward-bubble-animation>
     <div :class="bounceClass">
       <slot></slot>
@@ -48,10 +45,10 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
-  // 气泡 class 名
-  bubbleClass: {
-    type: String,
-    default: 'reward-bubble',
+  // 动画气泡放大倍数
+  bubbleScale: {
+    type: Number,
+    default: 1,
   },
   /**
    * bounce 元素 class 名
@@ -75,8 +72,8 @@ const props = defineProps({
  */
 const handleClickBubble = async (): Promise<void> => {
   // 获取所有需要bounce的元素
-  const bounceElEList = document.querySelectorAll(`.${props.bounceClass}`)
-  const taskList = Array.from(bounceElEList).map(
+  const bounceEleList = document.querySelectorAll(`.${props.bounceClass}`)
+  const taskList = Array.from(bounceEleList).map(
     (bounceEle) => bounceEle.children[0],
   ) as HTMLElement[]
   // 奖励列表
@@ -153,3 +150,13 @@ watchEffect(() => {
   handleRewardLottie(props.reward as Reward)
 })
 </script>
+
+<style lang="scss" scoped>
+.reward-bubble {
+  position: absolute;
+  & > :first-child {
+    position: absolute;
+    transform: scale(v-bind('props.bubbleScale')) !important;
+  }
+}
+</style>
