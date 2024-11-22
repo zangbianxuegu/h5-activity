@@ -184,7 +184,7 @@
                 </li>
                 <li v-if="accTaskValue >= 100">
                   活动期间，达成品尝1000w中国绊爱饺子进度后，玩家可以通过完成隐藏任务获取额外奖励：<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱与中国绊爱合影，即可领取
+                  &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱和中国绊爱合影，即可领取
                   <span class="text-[#ffcb4d]"
                     >中国绊爱发饰试用魔法*1和璀璨之星魔法*1</span
                   ><br />
