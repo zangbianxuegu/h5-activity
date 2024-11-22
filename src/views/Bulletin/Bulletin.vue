@@ -173,7 +173,9 @@ const isEffective = (item: BulletinItem): boolean => {
 
 // 判断条目是否适用于当前渠道
 const isChannelApplicable = (item: BulletinItem): boolean => {
-  const parseChannels = (channelString: string | undefined): Set<string> => {
+  const parseChannels = (
+    channelString: string | undefined,
+  ): Set<string | null> => {
     if (!channelString) {
       return new Set()
     }

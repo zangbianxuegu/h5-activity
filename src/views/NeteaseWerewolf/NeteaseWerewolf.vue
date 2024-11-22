@@ -541,7 +541,6 @@ const processTaskList = (tasks: TaskLists[]): ComputedRef<ProcessedTask[]> => {
 
 // 所有任务列表
 const allTaskList = processTaskList(TASKS.slice(0, 7))
-console.log('allTaskList: ', allTaskList)
 
 const isVisited = Session.get('isVisitedNeteaseWerewolf')
 const isBinded = ref(false)
