@@ -660,7 +660,7 @@ function handleHelp(): void {
   background-repeat: no-repeat;
   background-size: contain;
 }
-@for $i from 1 through 10 {
+@for $i from 1 through 8 {
   .task-item-icon#{$i} {
     &.wait {
       background-image: url('@/assets/images/music-2024/task#{$i}-wait.png');
