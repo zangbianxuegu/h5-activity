@@ -379,7 +379,7 @@ function handleReward(event: MouseEvent, rewardId: number, item: any): void {
   if (status === TaskStatus.WAIT) {
     showToast('还未完成任务')
     const target = event.target
-    if (target) {
+    if (target && target instanceof HTMLElement) {
       animateBounce(target)
     }
     return
