@@ -136,7 +136,7 @@
         <template #content>
           <div class="mt-[130px] flex items-center">
             <input
-              class="h-[96px] w-[630px] grow rounded-[16px] pl-[40px]"
+              class="h-[96px] w-[630px] grow rounded-[16px] pl-[40px] pr-[50px]"
               style="border: 1px solid #6fa2dd"
               type="text"
               v-model="UID"
