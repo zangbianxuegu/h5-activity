@@ -14,7 +14,11 @@
             >)
           </span>
         </p>
-        <bubble :reward="item">
+        <bubble
+          :reward="item"
+          :bubbleScale="1.85"
+          :bounce-class="`reward-bounce-${item.taskId}`"
+        >
           <div
             :class="[
               'task-item animate__animated animate__fadeIn relative z-10 bg-contain',

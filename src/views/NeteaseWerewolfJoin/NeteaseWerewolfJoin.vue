@@ -49,7 +49,11 @@
                   :key="item.id"
                   class="flex h-[280px] flex-col items-center justify-between"
                 >
-                  <bubble :reward="item">
+                  <bubble
+                    :reward="item"
+                    :bubbleScale="1.3"
+                    :bounce-class="`${item.taskId}-${item.id}`"
+                  >
                     <div
                       :class="[
                         'acc-task-item animate__animated animate__fadeIn bg-contain',
@@ -93,7 +97,7 @@ import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation
 import TaskList from './components/TaskList.vue'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
-import { REWARD_MAP, type RewardMap } from '@/constants/rewardMap'
+import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
@@ -217,6 +221,35 @@ const taskOrderMap = new Map(
 // 用于在创建累积任务列表时获取正确的活动数据
 const ACC_TASK_ACTIVITY_INDEX = 9
 
+// 适配累积值不等分的进度条 计算累积任务值
+function calculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 100) return 100
+  switch (true) {
+    case accTaskVal <= 4:
+      return accTaskVal
+    case accTaskVal <= 10:
+      return accTaskVal - 1
+    case accTaskVal <= 40:
+      return accTaskVal
+    case accTaskVal <= 60:
+      return accTaskVal + 2
+    case accTaskVal < 80:
+      return accTaskVal + 4
+    case accTaskVal < 100:
+      return accTaskVal + 3
+    default:
+      return 0 // 其他情况（理论上不会发生），返回0
+  }
+}
+
+// 进度：1,3,5,7,10
+const accTaskValue = computed(() => {
+  return calculateAccTaskValue(
+    eventData.value[ACC_TASK_ACTIVITY_INDEX].value * 10,
+  )
+})
+
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
   if (award === 1) return 'redeemed'
@@ -253,8 +286,6 @@ const krillTaskList = updateTaskList(KRILL_TASK_LIST, 3)
 const spiritTaskList = updateTaskList(SPIRIT_TASK_LIST, 6)
 // 累积任务列表
 const accTaskList = updateTaskList(ACC_TASK_LIST, ACC_TASK_ACTIVITY_INDEX, true)
-// 累计任务完成值
-const accTaskValue = ref(eventData.value[ACC_TASK_ACTIVITY_INDEX].value)
 
 // 任务列表
 const taskLists = computed(() => ({
@@ -333,10 +364,6 @@ function getActivityData(): void {
           }),
         },
       }
-      const accTaskVal =
-        newActivityData.event_data[EVENT_NAME][ACC_TASK_ACTIVITY_INDEX].value *
-        10
-      accTaskValue.value = calculateAccTaskValue(accTaskVal)
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -344,32 +371,6 @@ function getActivityData(): void {
     .catch((error) => {
       showToast(error.message)
     })
-}
-
-/**
- * 适配异形滚动条 计算累积任务值
- * @param accTaskVal 累积任务原始值
- * @returns 计算后的累积任务值占比
- */
-function calculateAccTaskValue(accTaskVal: number): number {
-  // 如果累积任务值大于等于100，直接返回100
-  if (accTaskVal >= 100) return 100
-  switch (true) {
-    case accTaskVal <= 4:
-      return accTaskVal
-    case accTaskVal <= 10:
-      return accTaskVal - 1
-    case accTaskVal <= 40:
-      return accTaskVal
-    case accTaskVal <= 60:
-      return accTaskVal + 2
-    case accTaskVal < 80:
-      return accTaskVal + 4
-    case accTaskVal < 100:
-      return accTaskVal + 3
-    default:
-      return 0 // 其他情况（理论上不会发生），返回0
-  }
 }
 
 /**
@@ -405,7 +406,7 @@ function handleReward(rewardId: number, item: Reward): void {
         '领取成功，您获得了' +
           curRewards.value.map(
             (item) =>
-              ` ${REWARD_MAP[item.name as keyof RewardMap]}*${item.count}`,
+              ` ${REWARD_MAP[item.name as keyof typeof REWARD_MAP]}*${item.count}`,
           ),
       )
       // 更新红点
