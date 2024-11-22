@@ -451,7 +451,7 @@ const bubbleBurst = async (
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   const target = event.target
-  if (target) {
+  if (target && target instanceof HTMLElement) {
     await animateBounceEase(target)
   }
 }
