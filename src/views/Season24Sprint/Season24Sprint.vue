@@ -106,7 +106,7 @@
                       <div
                         v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                         :class="[
-                          'acc-task-item animate__animated animate__fadeIn z-10',
+                          'acc-task-item animate__animated animate__fadeIn relative z-10',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                         ]"

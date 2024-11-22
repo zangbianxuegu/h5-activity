@@ -741,7 +741,7 @@ function preloadImage(imgArr: string[]): void {
   position: absolute;
   & > :first-child {
     position: absolute;
-    transform: scale(1.3) !important;
+    transform: scale(1.4) !important;
   }
 }
 @keyframes spin {
