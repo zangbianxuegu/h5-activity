@@ -102,7 +102,7 @@
               </h3>
               <ul class="modal-text list-inside list-decimal">
                 <li>
-                  活动期间，使用云巢小镇上的乐器练习演奏，即可领取
+                  活动期间，使用云巢小镇舞台上的乐器练习演奏，即可领取
                   <span class="text-[#ffcb4d]">璀璨之星魔法*1</span>
                 </li>
                 <li>
@@ -122,8 +122,8 @@
                   <span class="text-[#ffcb4d]">漂浮魔法*1</span>
                 </li>
                 <li>
-                  12.14~12.16，在小王子的梦的舞台上录制一段自信主题的演奏，即可领取
-                  <span class="text-[#ffcb4d]">长大成人</span>
+                  12.14~12.16，在星光沙漠的舞台上录制一段自信主题的演奏，即可领取
+                  <span class="text-[#ffcb4d]">长大成人*1</span>
                 </li>
                 <li>
                   12.17~12.19，在落日竞技场的舞台上录制一段胜利主题演奏的演奏，即可领取
