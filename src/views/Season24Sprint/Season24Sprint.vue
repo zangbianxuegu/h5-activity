@@ -144,7 +144,7 @@
                   <span class="text-[#ffcb4d]">传信纸船*1，绚丽彩虹*1</span>
                 </li>
                 <li>
-                  活动期间，完成姆明季毕业，即可领取
+                  活动期间，完成姆明季毕业，即可在新季节领取
                   <span class="text-[#ffcb4d]">新季节蜡烛*6</span>
                 </li>
               </ul>
