@@ -191,6 +191,9 @@ export const ERROR_MESSAGES: ErrorMessages = {
       inactive_policy: '参数policy_name错误或配置出错',
       'bad request': '非法请求',
     },
+    401: {
+      unauthorized: '禁止投稿',
+    },
   },
 
   review_text: {
@@ -212,6 +215,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
     401: {
       'invalid user': '非法用户',
+      unauthorized: '禁止投稿',
     },
   },
 
@@ -262,6 +266,19 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
     409: {
       'already exists': '作品已收藏过',
+    },
+  },
+
+  review_share_design: {
+    400: {
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+    403: {
+      forbidden: '分享内容可能违规，请联系客服了解',
+    },
+    500: {
+      fail: '分享失败，请稍后重试',
     },
   },
 }

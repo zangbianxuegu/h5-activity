@@ -13,7 +13,7 @@ export const fileToBlob = (file: File): Promise<Blob> => {
 }
 
 /**
- * @description blob转为url
+ * @description blob转为url(base64)
  * @returns url
  */
 export const blobToUrl = (blob: Blob): Promise<string> => {

@@ -16,86 +16,59 @@
                 <p class="">请按模板上传大小为10MB，尺寸为1200×900px的图片</p>
                 <div class="flex flex-1 justify-between align-middle">
                   <div class="left">
-                    <div class="manuscript-container">
+                    <div
+                      class="works-img-container flex justify-center align-middle"
+                    >
+                      <upload-img
+                        v-model:data="worksData.worksImg"
+                        :cropper="true"
+                        :max-size="10 * 1024 * 1024"
+                        :min-size="100 * 1024"
+                        :reupload="false"
+                        :preview-full-image="true"
+                      ></upload-img>
+                      <!-- 查看作品详情 -->
                       <div
-                        v-show="!worksData.worksImgSrc"
-                        class="btn-manuscript-group"
+                        v-if="isCheckedSuccess && worksData.worksImgSrc"
+                        class="btn-view-works-details"
+                        @click="onClickViewMyWorks"
                       >
-                        <div
-                          class="btn-manuscript"
-                          @click="onClickGoToUploadWorks"
-                        >
-                          <div class="icon-container">
-                            <van-icon name="plus" />
-                          </div>
-                          <span>上传作品</span>
-                          <!-- 隐藏触发上传稿件的元素 -->
-                          <input
-                            ref="imageUploadsInputDomRef"
-                            type="file"
-                            id="image_uploads_cut_test"
-                            name="image_uploads"
-                            accept="image/png, image/jpg, image/jpeg"
-                            v-show="false"
-                          />
-                        </div>
+                        <van-icon name="aim" />
                       </div>
-                      <div
-                        v-show="worksData.worksImgSrc"
-                        class="works-image-container"
+                      <!-- 作品id -->
+                      <p
+                        v-if="isContributed && worksData.worksImgSrc"
+                        class="worksId"
                       >
-                        <!-- 删除作品按钮 -->
-                        <div
-                          v-if="!isContributed"
-                          class="remove-upload-img"
-                          @click="removeUploadImg"
-                        >
-                          <van-icon name="cross" />
-                        </div>
-                        <!-- 查看作品详情 -->
-                        <div
-                          v-if="isCheckedSuccess"
-                          class="btn-view-works-details"
-                          @click="onClickViewMyWorks"
-                        >
-                          <van-icon name="aim" />
-                        </div>
-                        <!-- 作品图 -->
-                        <img
-                          ref="formWorksRef"
-                          id="works-img"
-                          :src="worksData.worksImgSrc"
-                          alt=""
-                          srcset=""
+                        <span>【{{ worksGroupName }}组】</span>
+                        <span
+                          >ID
+                          <span id="works-id">{{ currentWorksPureId }}</span>
+                        </span>
+                        <van-icon
+                          id="copy-works-id"
+                          name="description-o"
+                          @click="onClickCopyWorksId"
                         />
-                        <!-- 作品id -->
-                        <p v-if="isContributed" class="worksId">
-                          <span>【{{ worksGroupName }}组】</span>
-                          <span
-                            >ID
-                            <span id="works-id">{{ currentWorksPureId }}</span>
-                          </span>
-                          <van-icon
-                            id="copy-works-id"
-                            name="description-o"
-                            @click="onClickCopyWorksId"
-                          />
-                        </p>
-                        <!-- 作品审查提示 -->
+                      </p>
+                      <!-- 作品审查提示 -->
+                      <div
+                        v-if="
+                          isContributed &&
+                          !isCheckedSuccess &&
+                          worksData.worksImgSrc
+                        "
+                        class="check-status-info-modal"
+                      >
                         <div
-                          v-if="isContributed && !isCheckedSuccess"
-                          class="check-status-info-modal"
+                          v-if="isShowCheckStatusTip"
+                          class="info-text-container"
+                          :class="{
+                            'check-fail': isCheckedFail,
+                            checking: isChecking,
+                          }"
                         >
-                          <div
-                            v-if="isShowCheckStatusTip"
-                            class="info-text-container"
-                            :class="{
-                              'check-fail': isCheckedFail,
-                              checking: isChecking,
-                            }"
-                          >
-                            {{ checkStatusTip }}
-                          </div>
+                          {{ checkStatusTip }}
                         </div>
                       </div>
                     </div>
@@ -267,51 +240,6 @@
           </div>
         </Teleport>
 
-        <!-- 裁剪弹窗 -->
-        <Teleport to="body">
-          <van-overlay
-            class="cropper-modal-container"
-            :show="cropperData.isShow"
-          >
-            <div class="modal-wrapper">
-              <div class="modal-body flex flex-col justify-center align-middle">
-                <div
-                  class="cropper-container-header flex w-full justify-between align-middle"
-                >
-                  <div @click="onClickCancelCropper" class="btn-cancel-cropper">
-                    <van-icon name="arrow-left" />
-                  </div>
-                  <div class="btn-cancel-cropper flex-1"></div>
-                  <div @click="onClickFinishCropper" class="btn-cancel-cropper">
-                    完成
-                  </div>
-                </div>
-                <div class="cropper-container-body">
-                  <div id="upload_img_cut_test_container" @click.stop>
-                    <img
-                      id="img-container"
-                      :src="cropperData.preCropperImgUrl"
-                      alt=""
-                      srcset=""
-                    />
-                  </div>
-                </div>
-                <div
-                  class="cropper-container-footer flex justify-center align-middle"
-                >
-                  已截取分辨率: 1200 * 900
-                </div>
-              </div>
-            </div>
-          </van-overlay>
-        </Teleport>
-        <!-- 裁剪弹窗边框样式 -->
-        <Teleport to=".cropper-view-box" v-if="cropperData.isShowBorderCorn">
-          <div class="cropper-corner left-top-corner"></div>
-          <div class="cropper-corner right-top-corner"></div>
-          <div class="cropper-corner right-bottom-corner"></div>
-          <div class="cropper-corner left-bottom-corner"></div>
-        </Teleport>
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
@@ -334,12 +262,9 @@ import {
   showToast,
 } from 'vant'
 import html2canvas from 'html2canvas'
-import 'cropperjs/dist/cropper.css'
-import Cropper from 'cropperjs'
-import ClipboardJS from 'clipboard'
 import WorksDetailModal from './components/WorksDetailModal.vue'
+import UploadImg from './components/UploadImg.vue'
 import { saveImgToDeviceAlbum } from '@/utils/request'
-import { useEnvironment } from '@/composables/useEnvironment'
 import {
   DESIGN_REVIEW_STATUS,
   type SelfDesignDetails,
@@ -347,7 +272,6 @@ import {
 import { blobToUrl } from '@/utils/file'
 import {
   FILE_PICKER_POLICY_NAME,
-  FILE_PICKER_SHARE_IMG_POLICY_NAME,
   groupNameAndCodeMap,
 } from '@/constants/dayofdesign01'
 import { type ReviewTextRejectResult } from '@/utils/filePicker/types'
@@ -360,8 +284,7 @@ import {
   getDesignDetails,
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
-
-const { isIos } = useEnvironment()
+import ClipboardJS from 'clipboard'
 
 interface WorksData {
   author: string
@@ -395,6 +318,15 @@ const worksData = ref<WorksData>({
   worksDecorateImg: null,
   worksDecorateImgSrc: '',
 })
+
+watch(
+  () => worksData.value.worksImg,
+  async (newValue) => {
+    if (newValue) {
+      worksData.value.worksImgSrc = await blobToUrl(newValue)
+    }
+  },
+)
 
 // 投稿前的确认作品
 const previewData = ref({
@@ -505,164 +437,6 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
   window.location.href = 'https://m.163.com/'
-}
-
-// 作品上传相关
-const formWorksRef = ref()
-const imageUploadsInputDomRef = ref()
-const onClickGoToUploadWorks = (): void => {
-  imageUploadsInputDomRef.value.click()
-}
-
-// 作品裁剪
-let CROPPER: Cropper | null
-const cropperData = ref({
-  isShow: false,
-  preCropperImgUrl: '',
-  isShowBorderCorn: false,
-})
-
-watch(
-  () => cropperData.value.isShow,
-  (newValue) => {
-    if (newValue) {
-      const img = new Image()
-      img.src = cropperData.value.preCropperImgUrl
-      img.onload = function () {
-        setTimeout(() => {
-          // 添加裁剪边框的边角修饰
-          cropperData.value.isShowBorderCorn = true
-        }, 500)
-      }
-    } else {
-      cropperData.value.isShowBorderCorn = false
-    }
-  },
-)
-
-// 添加上传作品的监听
-const listenUploadImgChange = (): void => {
-  imageUploadsInputDomRef.value.addEventListener(
-    'change',
-    function (event: Event) {
-      const target = event.target as HTMLInputElement
-      const files = target.files as FileList
-      const file = files[0]
-
-      // 设置允许的文件格式和文件大小限制
-      const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg']
-      const maxSize = 10 * 1024 * 1024 // 10 MB
-      const minSize = 100 * 1024 // 100kb
-
-      if (file) {
-        // 检查文件类型
-        if (!allowedTypes.includes(file.type)) {
-          showToast('上传失败，只能上传png和jpg')
-          return
-        }
-        // 检查文件大小
-        if (file.size > maxSize) {
-          showToast('您选择的图片大小超过10MB，无法上传')
-          return
-        } else if (file.size < minSize) {
-          showToast('您选择的图片过小，可能会影响展示效果')
-        }
-
-        showLoadingToast({
-          message: '准备裁剪中...',
-          forbidClick: true,
-          duration: 0,
-        })
-        const reader = new FileReader()
-        reader.readAsDataURL(file) // 读取文件为 Data URL
-        reader.onload = function (e) {
-          const readFileResult = e.target?.result as string
-          const img = new Image()
-          img.src = readFileResult
-          img.onload = function () {
-            const width = img.width // 获取图像的宽度
-            const height = img.height // 获取图像的高度
-            if (isIos && (width * height) / 1000000 > 15) {
-              // 处理ios MP影响
-              showToast(
-                '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
-              )
-            } else {
-              cropperData.value.isShow = true
-              cropperData.value.preCropperImgUrl = readFileResult
-              void nextTick(() => {
-                showCropperModal()
-              })
-            }
-          }
-        }
-      }
-    },
-  )
-}
-
-// 展示裁剪
-const showCropperModal = (): void => {
-  const image = document.querySelector(
-    '#upload_img_cut_test_container img',
-  ) as HTMLImageElement
-  CROPPER?.destroy()
-  CROPPER = new Cropper(image, {
-    aspectRatio: 4 / 3,
-    background: false,
-    highlight: true,
-    center: false,
-    viewMode: 3,
-    minCropBoxWidth: 1200,
-    minCropBoxHeight: 900,
-    cropBoxResizable: false,
-    cropBoxMovable: false,
-    responsive: true, // 响应式
-    dragMode: 'move',
-    ready: () => {
-      closeToast()
-    },
-  })
-}
-
-// 完成裁剪
-const onClickFinishCropper = (): void => {
-  try {
-    // getCroppedCanvas方法可以将裁剪区域的数据转换成canvas数据
-    const cropperCanvas = CROPPER?.getCroppedCanvas({
-      width: 1200,
-      height: 900,
-      imageSmoothingEnabled: true,
-      imageSmoothingQuality: 'high',
-    }) as HTMLCanvasElement
-
-    cropperCanvas?.toBlob((blob): void => {
-      void (async function (blob) {
-        worksData.value.worksImg = blob
-        worksData.value.worksImgSrc = await blobToUrl(blob as Blob)
-      })(blob)
-      hideCropperModal()
-    })
-  } catch (error) {
-    console.log('error', error)
-  }
-}
-
-// 隐藏裁剪
-const hideCropperModal = (): void => {
-  cropperData.value.isShow = false
-  cropperData.value.preCropperImgUrl = ''
-  imageUploadsInputDomRef.value.value = ''
-}
-
-// 取消裁剪
-const onClickCancelCropper = (): void => {
-  hideCropperModal()
-}
-
-// 删除上传作品
-const removeUploadImg = (): void => {
-  worksData.value.worksImgSrc = ''
 }
 
 // 删除作品确认弹窗
@@ -781,7 +555,7 @@ const changeDomToImage = (): Promise<void> => {
 const filePickerConfig = ref({
   token: '',
   policyName: FILE_PICKER_POLICY_NAME,
-  shareImgPolicyName: FILE_PICKER_SHARE_IMG_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_POLICY_NAME,
   filePickerUrl: '',
   currentUoloadFileUrl: '',
 })
@@ -928,7 +702,6 @@ const updateDesignDetails = async (): Promise<void> => {
 }
 
 onMounted(async () => {
-  listenUploadImgChange()
   await initPageData()
 })
 </script>
@@ -986,7 +759,7 @@ onMounted(async () => {
       width: 50%;
       height: 100%;
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       align-items: center;
       margin-right: 69px;
     }
@@ -1040,56 +813,12 @@ onMounted(async () => {
     }
   }
 }
-.manuscript-container {
+.works-img-container {
   width: 800px;
   height: 600px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
   border-radius: 50px;
   background-color: #abe5fa;
   overflow: hidden;
-}
-.btn-manuscript-group {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 0 80px;
-}
-.btn-manuscript {
-  width: 140px;
-  height: 160px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  .icon-container {
-    width: 100px;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: #fff;
-    background-color: #00b0f0;
-    border-radius: 20px;
-    .van-icon {
-      font-size: 50px;
-    }
-  }
-  span {
-    font-size: 28px;
-  }
-}
-.works-image-container {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  display: flex;
-  justify-content: center;
   .remove-upload-img {
     position: absolute;
     top: -10px;
@@ -1359,79 +1088,4 @@ onMounted(async () => {
   }
 }
 // 作品预览结束
-// 裁剪区域开始
-img {
-  display: block;
-  /* This rule is very important, please don't ignore this */
-  max-width: 100%;
-}
-#upload_img_cut_test_container {
-  width: 1200px;
-  height: 900px;
-}
-.cropper-modal-container {
-  .modal-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    .modal-body {
-      width: 1200px;
-      height: calc(100% - 70px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .cropper-container-header,
-      .cropper-container-footer {
-        color: #fff;
-      }
-    }
-  }
-}
-// 裁剪区域结束
-</style>
-<style>
-.cropper-dashed {
-  opacity: 0;
-}
-.cropper-view-box {
-  outline: none;
-  display: inline-block;
-  position: relative;
-}
-.cropper-corner {
-  width: 40px;
-  height: 40px;
-  border: 5px solid #fff;
-  &.left-top-corner {
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-right: none;
-    border-bottom: none;
-  }
-  &.right-top-corner {
-    position: absolute;
-    top: 0;
-    right: 0;
-    border-left: none;
-    border-bottom: none;
-  }
-  &.right-bottom-corner {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-top: none;
-    border-left: none;
-  }
-  &.left-bottom-corner {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    border-top: none;
-    border-right: none;
-  }
-}
 </style>

@@ -39,7 +39,10 @@
                     <p>{{ worksData.worksIntroduce }}</p>
                   </div>
                   <div class="handle-bar">
-                    <div v-if="!isPC" @click.stop="onClickHandleBarShare">
+                    <div
+                      v-if="isShowShareBtn"
+                      @click.stop="onClickHandleBarShare"
+                    >
                       <van-icon name="share-o" />
                     </div>
                     <div @click.stop="onClickHandleBarDelete">
@@ -73,9 +76,14 @@ import ClipboardJS from 'clipboard'
 import { useBaseStore } from '@/stores/base'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
-import { deleteDesignDetails, updateFavorites } from '@/apis/dayOfDesign01'
+import {
+  deleteDesignDetails,
+  reviewShareDesign,
+  updateFavorites,
+} from '@/apis/dayOfDesign01'
 import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
+import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -134,6 +142,36 @@ const getLogoUrl = (): string => {
 
 const environment = useEnvironment()
 const isPC = computed(() => environment.isPC)
+
+const isShowShareBtn = ref(true)
+
+watch(
+  () => props.worksData.worksDecorateImgSrc,
+  (newValue) => {
+    if (isPC.value) {
+      isShowShareBtn.value = false
+    } else {
+      const img = new Image()
+      img.src = newValue
+      // 审核图通过后，分享按钮显示
+      img.onload = () => {
+        isShowShareBtn.value = true
+      }
+      // 未通过时，请求审核接口更新审核状态
+      img.onerror = async () => {
+        isShowShareBtn.value = false
+        const { id } = props.worksData
+        reviewShareDesign(id, FILE_PICKER_POLICY_NAME)
+          .then(() => {
+            isShowShareBtn.value = true
+          })
+          .catch(() => {
+            isShowShareBtn.value = false
+          })
+      }
+    }
+  },
+)
 
 const onClickHandleBarShare = (): void => {
   shareData.value.show = true

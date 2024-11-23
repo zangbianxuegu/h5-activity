@@ -408,3 +408,33 @@ export const uploadWorksToServer = async (
     throw e
   }
 }
+
+/**
+ * 请求审核组合图
+ * @function reviewShareDesign 修改组合图审核状态
+ * @param {string} designId 作品id
+ * @param {string} policyName 传保存原图filePicker策略名
+ */
+export const reviewShareDesign = (
+  designId: string,
+  policyName: string,
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    void handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/review_share_design',
+      content: {
+        design_id: designId,
+        policy_name: policyName,
+      },
+      handleRes: (res: Response) => {
+        const { code, msg } = res
+        if (code === 200) {
+          resolve(true)
+        } else {
+          reject(new Error(getErrorMessage('review_share_design', code, msg)))
+        }
+      },
+    })
+  })
+}
