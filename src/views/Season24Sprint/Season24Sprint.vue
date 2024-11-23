@@ -145,7 +145,8 @@
                 </li>
                 <li>
                   活动期间，完成姆明季毕业，即可在新季节领取
-                  <span class="text-[#ffcb4d]">新季节蜡烛*6</span>
+                  <span class="text-[#ffcb4d]">新季节蜡烛*6</span
+                  >（奖励将在新季节开始后的一周内通过邮件发放）
                 </li>
               </ul>
             </section>
