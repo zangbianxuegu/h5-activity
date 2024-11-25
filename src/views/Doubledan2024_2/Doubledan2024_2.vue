@@ -83,12 +83,7 @@
                   class="relative mt-[26px]"
                   :aria-label="`累计任务 ${index + 1}: ${item.title}`"
                 >
-                  <div class="relative">
-                    <can-reward-bubble-animation
-                      :ref="item.canRewardLottieRef"
-                      :id="`${item.taskId}${item.id}`"
-                      class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble z-0"
-                    ></can-reward-bubble-animation>
+                  <Bubble :reward="item" :bubble-scale="1.3">
                     <div
                       v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                       :class="[
@@ -98,18 +93,14 @@
                       ]"
                       @click.capture="handleReward($event, index + 1, item)"
                     ></div>
-                  </div>
+                  </Bubble>
                   <p
-                    :class="[
-                      'absolute bottom-[0px] w-full text-center text-[28px] leading-tight',
-                      `${
-                        item.status === 'can'
-                          ? 'text-[#ffeea9]'
-                          : item.status === 'redeemed'
-                            ? 'text-[#bebebe]'
-                            : 'text-white'
-                      }`,
-                    ]"
+                    class="absolute bottom-[0px] w-full text-center text-[28px] leading-tight"
+                    :class="{
+                      'text-white': item.status === 'wait',
+                      'text-[#ffeea9]': item.status === 'can',
+                      'text-[#bebebe]': item.status === 'redeemed',
+                    }"
                   >
                     {{ item.title }}
                   </p>
@@ -167,6 +158,7 @@ import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { animateBounce, animateBounceEase } from '@/utils/utils'
+import Bubble from '@/components/Bubble/Bubble.vue'
 import {
   type TaskItem,
   type Reward,
@@ -653,11 +645,5 @@ watchEffect(() => {
     top: -12px;
     transform: scale(1.9) !important;
   }
-}
-.acc-reward-can-dynamic-bubble {
-  width: 210px;
-  height: 130px;
-  top: 50px;
-  left: 24px;
 }
 </style>
