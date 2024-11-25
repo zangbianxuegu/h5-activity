@@ -446,12 +446,48 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/dayofdesign01-post-exhibit',
-    name: 'DayOfDesign01PostExhibit',
-    component: () => import('@/views/DayOfDesign01PostExhibit'),
+    path: '/music-2024',
+    name: 'Music2024',
+    component: () => import('@/views/Music2024'),
     meta: {
-      title: '活动会场',
-      module: 'activitycenter_dayofdesign01_post_exhibit',
+      title: '曲意畅想 谱写乐章',
+      module: 'activitycenter_music_2024',
+    },
+  },
+  {
+    path: '/season24-sprint',
+    name: 'Season24Sprint',
+    component: () => import('@/views/Season24Sprint'),
+    meta: {
+      title: '与爱同行 温暖相拥',
+      module: 'activitycenter_season24_sprint',
+    },
+  },
+  {
+    path: '/cloud-music-2024',
+    name: 'CloudMusic2024',
+    component: () => import('@/views/CloudMusic2024'),
+    meta: {
+      title: '光遇云音 心随律动',
+      module: 'activitycenter_cloud_music_2024',
+    },
+  },
+  {
+    path: '/netease-werewolf',
+    name: 'NeteaseWerewolf',
+    component: () => import('@/views/NeteaseWerewolf'),
+    meta: {
+      title: '追随钟声 即刻启程',
+      module: 'activitycenter_netease_werewolf',
+    },
+  },
+  {
+    path: '/netease-werewolf-join',
+    name: 'NeteaseWerewolfJoin',
+    component: () => import('@/views/NeteaseWerewolfJoin'),
+    meta: {
+      title: '冥龙，在我们之中',
+      module: 'activitycenter_netease_werewolf_join',
     },
   },
   {
@@ -461,6 +497,15 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '我要投稿',
       module: 'activitycenter_dayofdesign01_post_submit',
+    },
+  },
+  {
+    path: '/dayofdesign01-post-exhibit',
+    name: 'DayOfDesign01PostExhibit',
+    component: () => import('@/views/DayOfDesign01PostExhibit'),
+    meta: {
+      title: '活动会场',
+      module: 'activitycenter_dayofdesign01_post_exhibit',
     },
   },
 ]

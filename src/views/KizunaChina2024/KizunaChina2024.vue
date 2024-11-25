@@ -213,19 +213,19 @@ import TaskList from './components/TaskList.vue'
 
 // 定义奖励名称接口，将奖励类型映射到中文描述
 interface RewardsName {
-  kizuna_ai_dumpling: '中国绊爱饺子'
+  kizuna_ai_dumpling: '中国绊爱饺子魔法'
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法'
   outfit_horn_kizuna: '中国绊爱发饰试用魔法'
-  outfit_wing_kizuna: '中国绊爱斗篷'
-  outfit_hair_kizuna: '中国绊爱发型'
+  outfit_wing_kizuna: '中国绊爱斗篷魔法'
+  outfit_hair_kizuna: '中国绊爱发型魔法'
   prestige: '升华蜡烛'
-  fireworks: '浪漫烟花'
+  fireworks: '浪漫烟花魔法'
   tiny: '小不点'
   resize_potion: '体型重塑'
   candles: '蜡烛'
   heart: '爱心'
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法'
-  glow: '璀璨之星'
+  glow: '璀璨之星魔法'
 }
 
 // 定义单个奖励项接口
@@ -259,24 +259,29 @@ interface ProcessedTask {
   status: string // 任务状态
 }
 
+interface Rewards {
+  name: string
+  count: number
+}
+
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
 
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
-  kizuna_ai_dumpling: '中国绊爱饺子',
+  kizuna_ai_dumpling: '中国绊爱饺子魔法',
   outfit_prop_kizuna_ai_tv: '中国绊爱大铁头礼包试用魔法',
   outfit_horn_kizuna: '中国绊爱发饰试用魔法',
-  outfit_wing_kizuna: '中国绊爱斗篷',
-  outfit_hair_kizuna: '中国绊爱发型',
+  outfit_wing_kizuna: '中国绊爱斗篷魔法',
+  outfit_hair_kizuna: '中国绊爱发型魔法',
   prestige: '升华蜡烛',
-  fireworks: '浪漫烟花',
+  fireworks: '浪漫烟花魔法',
   tiny: '小不点',
   resize_potion: '体型重塑',
   candles: '蜡烛',
   heart: '爱心',
   outfit_hair_kizuna_pink: '绊爱发型礼包试用魔法',
-  glow: '璀璨之星',
+  glow: '璀璨之星魔法',
 }
 
 // 弹框
@@ -287,6 +292,13 @@ const EVENT_NAME = 'activitycenter_kizuna_china_2024'
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
+
+const curRewards: Ref<Rewards[]> = ref([
+  {
+    name: 'kizuna_ai_dumpling',
+    count: 1,
+  },
+])
 
 // 创建任务的函数
 const createTaskItem = (
@@ -580,7 +592,7 @@ function handleReward(
     rewardId,
   })
     .then(async (res) => {
-      const rewards = res.data.rewards
+      curRewards.value = res.data.rewards
       await handleBubbleBurst(domList, item)
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
@@ -588,11 +600,13 @@ function handleReward(
       })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
-      let text = '领取成功，您获得了'
-      for (const [item, quantity] of Object.entries(rewards)) {
-        text += ` ${rewardsText[item as keyof RewardsName]}*${quantity as number}`
-      }
-      showToast(text)
+      showToast(
+        '领取成功，您获得了' +
+          curRewards.value.map(
+            (item) =>
+              ` ${rewardsText[item.name as keyof typeof rewardsText]}*${item.count}`,
+          ),
+      )
       // 更新红点
       setRedDot()
     })

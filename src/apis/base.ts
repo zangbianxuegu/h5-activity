@@ -158,3 +158,30 @@ export function webViewStatistics({
     })
   })
 }
+
+/**
+ * @function setAudioState
+ * @description 通知客户端更新音乐状态
+ * @param {boolean} mute 是否静音
+ * @returns {Promise<Response>}
+ */
+export function setAudioState({ mute }: { mute: boolean }): Promise<Response> {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'set_audio_state',
+      content: {
+        mute,
+      },
+      handleRes: (res) => {
+        if (res) {
+          resolve(res)
+        } else {
+          reject(new Error('通知客户端更新音乐状态出错'))
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
+  })
+}

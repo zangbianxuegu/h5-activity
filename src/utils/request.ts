@@ -59,7 +59,7 @@ export function handlePostMessageToNative({
             })
             resolve()
           }
-          if (pollCount >= 3) {
+          if (pollCount >= 20) {
             clearInterval(intervalId)
             reject(setErrorCustom('nativeError', 'UniSDKJSBridge mount fail!'))
           }
@@ -90,7 +90,7 @@ export function handlePostMessageToNative({
       const data =
         type === 'userinfo' || type === 'update_red_dot'
           ? { type }
-          : type === 'open_wechat_miniprogram'
+          : type === 'open_wechat_miniprogram' || type === 'set_audio_state'
             ? { type, content }
             : {
                 type,

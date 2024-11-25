@@ -118,7 +118,7 @@ function handleMenuIcon(curItem: MenuItem): string {
     '../../assets/images/common/nav-icon-sunflower.png',
     import.meta.url,
   ).href
-  const activitycenterSeason24Reserve = new URL(
+  const activitycenterSeason24 = new URL(
     '../../assets/images/common/nav-icon-moomin.png',
     import.meta.url,
   ).href
@@ -127,11 +127,14 @@ function handleMenuIcon(curItem: MenuItem): string {
     activitycenter_poster_anniversary_2024: activitycenterPosterAnniversary2024,
     activitycenter_anniversary_visit_2024: activitycenterAnniversaryVisit2024,
     activitycenter_friendship_2024: activitycenterFriendship2024,
-    activitycenter_season24_reserve: activitycenterSeason24Reserve,
+    activitycenter_season24: activitycenterSeason24,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {
     key = 'activitycenter_friendship_2024'
+  }
+  if (key.includes('activitycenter_season24')) {
+    key = 'activitycenter_season24'
   }
   return menuIconMap[key] || defaultIcon
 }
@@ -143,11 +146,14 @@ function getNavIconClass(curItem: MenuItem): string[] {
     activitycenter_poster_anniversary_2024: `${navIconPrefix}-poster-anniversary-2024`,
     activitycenter_anniversary_visit_2024: `${navIconPrefix}-anniversary-visit-2024`,
     activitycenter_friendship_2024: `${navIconPrefix}-friendship-2024`,
-    activitycenter_season24_reserve: `${navIconPrefix}-season24-reserve`,
+    activitycenter_season24: `${navIconPrefix}-season24`,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {
     key = 'activitycenter_friendship_2024'
+  }
+  if (key.includes('activitycenter_season24')) {
+    key = 'activitycenter_season24'
   }
   return menuIconMap[key] ? [menuIconMap[key]] : []
 }
@@ -260,7 +266,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
     width: 73px;
     height: 89px;
   }
-  &-season24-reserve {
+  &-season24 {
     width: 74px;
     height: 85px;
   }
