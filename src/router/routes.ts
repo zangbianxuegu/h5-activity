@@ -464,6 +464,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/doubledan-2024-2',
+    name: 'Doubledan2024_2',
+    component: () => import('@/views/Doubledan2024_2'),
+    meta: {
+      title: '落入奇遇茶会',
+      module: 'activitycenter_doubledan_2024_2',
+    },
+  },
+  {
     path: '/cloud-music-2024',
     name: 'CloudMusic2024',
     component: () => import('@/views/CloudMusic2024'),
