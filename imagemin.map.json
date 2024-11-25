@@ -1399,7 +1399,6 @@
   "src/assets/images/netease-werewolf-join/task3-2-wait.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/task3-3-redeemed.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/task3-3-wait.png": 1732193371437.6487,
-  "src/assets/images/netease-werewolf-join/bg.jpg": 1732193371439.643,
   "src/assets/images/netease-werewolf/bg-pass.jpg": 1732192701620.2817,
   "src/assets/images/netease-werewolf-join/acc-task1-can.png": 1732265805985.9453,
   "src/assets/images/netease-werewolf-join/acc-task2-can.png": 1732265805985.9453,
@@ -1437,5 +1436,6 @@
   "src/assets/images/music-2024/task5-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/title.png": 1732182314050.714,
   "src/assets/images/music-2024/task8-wait.png": 1732182314050.714,
-  "src/assets/images/music-2024/tips.png": 1732182314050.714
+  "src/assets/images/music-2024/tips.png": 1732182314050.714,
+  "src/assets/images/netease-werewolf-join/bg.jpg": 1732505834277.5222
 }

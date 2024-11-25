@@ -152,7 +152,7 @@ const createTaskItem = (
   hadRenderLottie,
 })
 
-// 光之子身份
+// 光之子
 const PLAYER_TASK_LIST = [
   createTaskItem(3, 'activitycenter_werewolf_player_m3', '成功指认冥龙'),
   createTaskItem(1, 'activitycenter_werewolf_player_m1', '完成一场游戏'),
@@ -163,9 +163,9 @@ const PLAYER_TASK_LIST = [
   ),
 ]
 
-// 冥龙身份
+// 冥龙之子
 const KRILL_TASK_LIST = [
-  createTaskItem(3, 'activitycenter_werewolf_krill_m3', '成功撞翻光之子或长老'),
+  createTaskItem(3, 'activitycenter_werewolf_krill_m3', '成功撞翻光之子或先知'),
   createTaskItem(1, 'activitycenter_werewolf_krill_m1', '完成一场游戏'),
   createTaskItem(
     2,
@@ -174,7 +174,7 @@ const KRILL_TASK_LIST = [
   ),
 ]
 
-// 长老身份
+// 先知
 const SPIRIT_TASK_LIST = [
   createTaskItem(3, 'activitycenter_werewolf_spirit_m3', '成功查验到冥龙'),
   createTaskItem(1, 'activitycenter_werewolf_spirit_m1', '完成一场游戏'),
@@ -278,11 +278,11 @@ const updateTaskList = (
   })
 }
 
-// 光之子身份
+// 光之子
 const playerTaskList = updateTaskList(PLAYER_TASK_LIST, 0)
-// 冥龙身份
+// 冥龙之子
 const krillTaskList = updateTaskList(KRILL_TASK_LIST, 3)
-// 长老身份
+// 先知
 const spiritTaskList = updateTaskList(SPIRIT_TASK_LIST, 6)
 // 累积任务列表
 const accTaskList = updateTaskList(ACC_TASK_LIST, ACC_TASK_ACTIVITY_INDEX, true)
@@ -295,9 +295,9 @@ const taskLists = computed(() => ({
 }))
 
 const titles: Record<string, string> = {
-  player: '光之子身份',
-  krill: '冥龙身份',
-  spirit: '长老身份',
+  player: '光之子',
+  krill: '冥龙之子',
+  spirit: '先知',
 }
 
 const sessionIsVisitedKey = 'isVisitedNeteaseWerewolfJoin'
