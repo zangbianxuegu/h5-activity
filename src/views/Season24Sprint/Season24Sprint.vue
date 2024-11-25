@@ -445,8 +445,13 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
       )
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
+      const toastText =
+        value === 'activitycenter_season24_sprint_m4'
+          ? '新季节通过邮件发送'
+          : '您获得了'
+
       showToast(
-        `领取成功，您获得了 ${
+        `领取成功，${toastText}${
           rewardsText[curRewards.value.name as keyof RewardsName]
         }*${curRewards.value.count}`,
       )
