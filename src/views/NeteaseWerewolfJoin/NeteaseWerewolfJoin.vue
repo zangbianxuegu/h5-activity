@@ -509,6 +509,7 @@ function handleHelp(): void {
       background-image: url('@/assets/images/netease-werewolf-join/acc-task#{$i}-can.png');
     }
     &.redeemed#{$i} {
+      transition: background-image 1s ease;
       background-image: url('@/assets/images/netease-werewolf-join/acc-task#{$i}-redeemed.png');
     }
   }

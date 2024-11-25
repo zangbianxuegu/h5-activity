@@ -17,7 +17,7 @@
           <li>活动期间，完成不同任务，获得奖励。</li>
           <li>
             以光之子身份完成以下任务：<br />
-            &nbsp;活动任务：成功指认冥龙3次，获得
+            &nbsp;活动任务：成功指认冥龙之子3次，获得
             <span class="text-[#ffcb4d]">蜡烛*2</span><br />
             &nbsp;每周任务：每周完成一场游戏，获得
             <span class="text-[#ffcb4d]">篝火*1</span><br />
@@ -26,8 +26,8 @@
             <span class="text-[#ffcb4d]">璀璨之星*1</span><br />
           </li>
           <li>
-            以冥龙身份完成以下任务：<br />
-            &nbsp;活动任务：撞翻光之子或长老5次，获得
+            以冥龙之子身份完成以下任务：<br />
+            &nbsp;活动任务：撞翻光之子或先知5次，获得
             <span class="text-[#ffcb4d]">蜡烛*2</span><br />
             &nbsp;每周任务：每周完成一场游戏，获得
             <span class="text-[#ffcb4d]">秋千*1</span><br />
@@ -36,8 +36,8 @@
             <span class="text-[#ffcb4d]">漂浮*1</span><br />
           </li>
           <li>
-            以长老身份完成以下任务：<br />
-            &nbsp;活动任务：成功查验到冥龙2次，获得
+            以先知身份完成以下任务：<br />
+            &nbsp;活动任务：成功查验到冥龙之子2次，获得
             <span class="text-[#ffcb4d]">蜡烛*2</span><br />
             &nbsp;每周任务：每周完成一场游戏，获得
             <span class="text-[#ffcb4d]">畅谈长桌*1</span><br />
