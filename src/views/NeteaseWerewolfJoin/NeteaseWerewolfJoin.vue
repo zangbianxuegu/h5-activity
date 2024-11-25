@@ -10,7 +10,7 @@
                 <time datetime="2024-12-19">12.19</time>-
                 <time datetime="2025-1-8">1.8</time>
               </p>
-              <p>活动期间，参与“你就是冥龙”玩法，完成任务获得奖励</p>
+              <p>活动期间，参与“冥龙之夜”玩法，完成任务获得奖励</p>
             </div>
             <div
               class="help cursor-pointer bg-contain"
@@ -38,7 +38,7 @@
               <div
                 class="absolute left-[10px] top-[0px] h-[60px] w-[300px] text-center text-[34px] leading-[60px] text-white"
               >
-                完成<br />“你就是冥龙” 天数
+                完成<br />“冥龙之夜” 天数
               </div>
               <ul
                 class="absolute left-[330px] top-[-132px] flex w-[1400px] justify-between"
@@ -187,11 +187,11 @@ const SPIRIT_TASK_LIST = [
 
 // 胜利追求（进度条）
 const ACC_TASK_LIST = [
-  createTaskItem(1, 'activitycenter_werewolf_join_m1', '完成1场“你就是冥龙”'),
-  createTaskItem(2, 'activitycenter_werewolf_join_m1', '完成1场“你就是冥龙”'),
-  createTaskItem(3, 'activitycenter_werewolf_join_m1', '完成1场“你就是冥龙”'),
-  createTaskItem(4, 'activitycenter_werewolf_join_m1', '完成1场“你就是冥龙”'),
-  createTaskItem(5, 'activitycenter_werewolf_join_m1', '完成1场“你就是冥龙”'),
+  createTaskItem(1, 'activitycenter_werewolf_join_m1', '完成1场“冥龙之夜”'),
+  createTaskItem(2, 'activitycenter_werewolf_join_m1', '完成1场“冥龙之夜”'),
+  createTaskItem(3, 'activitycenter_werewolf_join_m1', '完成1场“冥龙之夜”'),
+  createTaskItem(4, 'activitycenter_werewolf_join_m1', '完成1场“冥龙之夜”'),
+  createTaskItem(5, 'activitycenter_werewolf_join_m1', '完成1场“冥龙之夜”'),
 ]
 
 // 弹框
