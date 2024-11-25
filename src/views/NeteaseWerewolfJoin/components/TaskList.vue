@@ -16,7 +16,7 @@
         </p>
         <bubble
           :reward="item"
-          :bubbleScale="1.85"
+          :bubbleScale="1.9"
           :bounce-class="`reward-bounce-${item.taskId}`"
         >
           <div
