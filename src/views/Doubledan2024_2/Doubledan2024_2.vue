@@ -303,7 +303,7 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
-    dateStatus.value = checkTodayAgainstDateRange('12.25-11.25')
+    dateStatus.value = checkTodayAgainstDateRange('12.25-12.25')
   } catch (error) {
     console.error(error)
   }
