@@ -490,4 +490,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_netease_werewolf_join',
     },
   },
+  {
+    path: '/invitation-code',
+    name: 'InvitationCode',
+    component: () => import('@/views/InvitationCode'),
+    meta: {
+      title: '共沐温暖，不期而遇',
+      module: 'activitycenter_invitation_code',
+    },
+  },
 ]
