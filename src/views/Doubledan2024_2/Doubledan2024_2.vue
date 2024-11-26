@@ -83,9 +83,12 @@
                   class="relative mt-[26px]"
                   :aria-label="`累计任务 ${index + 1}: ${item.title}`"
                 >
-                  <Bubble :reward="item" :bubble-scale="1.3">
+                  <Bubble
+                    :reward="item"
+                    :bubble-scale="1.3"
+                    :bounce-class="`${item.taskId}-${item.id}`"
+                  >
                     <div
-                      v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                       :class="[
                         'acc-task-item animate__animated animate__fadeIn relative z-10',
                         `acc-task-item${index + 1}`,
@@ -168,6 +171,7 @@ import {
   type Reward,
   EVENT_NAME,
   ACC_TASK_INDEX,
+  ACC_TASK_VALUE,
   TaskStatus,
   REWARD_TEXT,
   createTaskList,
@@ -370,7 +374,10 @@ function handleReward(
   })
     .then(async (res) => {
       curRewards.value = res.data.rewards[0]
-      await bubbleBurst(event, item)
+      if (taskId !== ACC_TASK_VALUE) {
+        // 领奖动画
+        await bubbleBurst(event, item)
+      }
       // 更新页面数据
       const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
         (item) => {
@@ -424,7 +431,7 @@ const initCanRewardLottie = (reward: TaskItem): void => {
     reward.hadRenderLottie.value = true
   }
 }
-const allTasks = computed(() => [...taskList.value, ...accTaskList.value])
+
 const handleInitTask = (task: TaskItem): void => {
   if (task.status === TaskStatus.CAN) {
     void nextTick(() => {
@@ -437,7 +444,7 @@ const handleInitTask = (task: TaskItem): void => {
   }
 }
 watchEffect(() => {
-  allTasks.value.forEach(handleInitTask)
+  taskList.value.forEach(handleInitTask)
 })
 </script>
 
