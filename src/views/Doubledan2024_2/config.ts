@@ -7,9 +7,11 @@ export const ACC_TASK_INDEX = 4
 
 // 任务状态枚举
 export enum TaskStatus {
+  NOSTART = 'nostart',
   WAIT = 'wait',
   REDEEMED = 'redeemed',
   CAN = 'can',
+  OVERDUE = 'overdue',
 }
 
 // 任务项类型

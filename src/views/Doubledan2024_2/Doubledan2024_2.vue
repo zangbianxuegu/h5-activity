@@ -27,7 +27,10 @@
                 :key="item.id"
                 class="task-list-item relative flex w-[252px] flex-col items-center"
               >
-                <div class="task-item-tag" v-if="hasTagLock(index)">
+                <div
+                  class="task-item-tag"
+                  v-if="index === 3 && item.status === TaskStatus.NOSTART"
+                >
                   25日解锁
                 </div>
                 <div
@@ -58,7 +61,8 @@
                     `${
                       item.status === 'can'
                         ? 'mt-[47px] text-[#ffeea9]'
-                        : item.status === 'redeemed'
+                        : item.status === 'redeemed' ||
+                            item.status === 'overdue'
                           ? 'mt-[4px] text-[#bebebe]'
                           : 'mt-[47px] text-white'
                     }`,
@@ -227,9 +231,18 @@ const getTaskStatus = (activity: Event, index: number): TaskStatus => {
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
     const activity = activityData.value.event_data[EVENT_NAME][index]
+    let status = getTaskStatus(activity, 0)
+    // 特定任务ID的特殊状态处理
+    if (item.taskId === 'activitycenter_doubledan_2024_m5') {
+      if (dateStatus.value === 'nostart') {
+        status = TaskStatus.NOSTART
+      } else if (dateStatus.value === 'overdue' && status === TaskStatus.WAIT) {
+        status = TaskStatus.OVERDUE
+      }
+    }
     return {
       ...item,
-      status: getTaskStatus(activity, 0),
+      status,
     }
   })
 })
@@ -245,16 +258,36 @@ const accTaskList = computed(() => {
   })
 })
 
-// 是否未解锁状态
-function hasTagLock(index: number): boolean {
+// 当前日期状态
+type DateStatus = 'nostart' | 'ongoing' | 'overdue'
+function checkTodayAgainstDateRange(data: string): DateStatus {
+  const [start, end] = data.split('-').map((date) => date.split('.'))
+  // 解析给定的日期范围
+  const startMonth = parseInt(start[0], 10)
+  const startDay = parseInt(start[1], 10)
+  const endMonth = parseInt(end[0], 10)
+  const endDay = parseInt(end[1], 10)
+
+  // 获取服务器时间
   const today = new Date(currentTime * 1000)
-  const currentYear = today.getFullYear()
-  const december25 = new Date(currentYear, 11, 25)
-  if (index === 3 && today < december25) {
-    return true
+  const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
+  const currentDay = today.getDate()
+  // 判断当前日期是否在范围内
+  if (
+    currentMonth < startMonth ||
+    (currentMonth === startMonth && currentDay < startDay)
+  ) {
+    return 'nostart' // 未到时间
   }
-  return false
+  if (
+    currentMonth > endMonth ||
+    (currentMonth === endMonth && currentDay > endDay)
+  ) {
+    return 'overdue' // 已过期
+  }
+  return 'ongoing' // 正在进行
 }
+const dateStatus = ref<DateStatus>('nostart')
 
 const sessionIsVisitedKey = 'isVisitedDoubleDan2024_2'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -270,6 +303,7 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
+    dateStatus.value = checkTodayAgainstDateRange('12.25-11.25')
   } catch (error) {
     console.error(error)
   }
@@ -356,11 +390,23 @@ function handleReward(
   item: TaskItem,
 ): void {
   const { status, taskId } = item
+  if (status === TaskStatus.NOSTART) {
+    showToast('任务还未解锁')
+    const target = event.target
+    if (target && target instanceof HTMLElement) {
+      animateBounce(target)
+    }
+    return
+  }
+  if (status === TaskStatus.OVERDUE) {
+    showToast('任务已过期')
+    return
+  }
   if (status === TaskStatus.REDEEMED) {
     return
   }
   if (status === TaskStatus.WAIT) {
-    showToast('还未完成任务')
+    showToast('任务还未完成')
     const target = event.target
     if (target && target instanceof HTMLElement) {
       animateBounce(target)
@@ -533,13 +579,15 @@ watchEffect(() => {
   background-position: center;
   pointer-events: none;
 
-  &.wait {
+  &.wait,
+  &.nostart {
     background-image: url('@/assets/images/season24-sprint/task-wait-bg.png');
   }
   &.can {
     background-image: url('@/assets/images/season24-sprint/task-can-bg.png');
   }
-  &.redeemed {
+  &.redeemed,
+  &.overdue {
     display: none;
   }
 }
@@ -560,7 +608,8 @@ watchEffect(() => {
 
 @for $i from 1 through 4 {
   .task-item#{$i} {
-    &.wait {
+    &.wait,
+    &.nostart {
       background-image: url('@/assets/images/doubledan-2024-2/task-wait-circle.png'),
         url('@/assets/images/doubledan-2024-2/task#{$i}-icon.png');
     }
@@ -589,7 +638,8 @@ watchEffect(() => {
     contain,
     86px 90px;
 }
-.task-item4.wait {
+.task-item4.wait,
+.task-item4.nostart {
   background-size:
     contain,
     57px 107px;
@@ -605,6 +655,11 @@ watchEffect(() => {
 }
 .task-item4.can {
   background-size: 57px 107px;
+}
+.task-item4.overdue {
+  width: 252px;
+  height: 232px;
+  background-image: url('@/assets/images/doubledan-2024-2/task4-overdue.png');
 }
 .acc-task-container {
   position: absolute;

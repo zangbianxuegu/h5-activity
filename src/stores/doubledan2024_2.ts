@@ -45,7 +45,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 0,
+            value: 30,
             task_id: 'collecting_event_candles',
             stages: [15, 30, 50],
             score: '',
