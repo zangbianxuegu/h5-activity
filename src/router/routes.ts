@@ -499,4 +499,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_netease_werewolf_join',
     },
   },
+  {
+    path: '/pc-celebration',
+    name: 'PcCelebration',
+    component: () => import('@/views/PcCelebration'),
+    meta: {
+      title: '相遇在更广阔的天空下',
+      module: 'activitycenter_pc_celebration',
+    },
+  },
 ]
