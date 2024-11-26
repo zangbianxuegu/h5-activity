@@ -119,7 +119,7 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section aria-labelledby="activity-rules-title" class="p-4">
+            <section aria-labelledby="activity-rules-title" class="px-4">
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
