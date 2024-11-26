@@ -402,6 +402,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '落入奇遇 茶会',
+    value: 'activitycenter_doubledan_2024_2',
+    routeName: 'Doubledan2024_2',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '与爱同行 温暖相拥',
     value: 'activitycenter_season24_sprint',
     routeName: 'Season24Sprint',
