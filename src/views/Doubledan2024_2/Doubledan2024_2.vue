@@ -72,13 +72,16 @@
                 </p>
               </li>
             </ul>
-            <!-- 收集宴会节代币 -->
-            <h2 id="accTaskListHeading" class="sr-only">收集宴会节代币</h2>
+            <!-- 收集雪花代币 -->
+            <h2 id="accTaskListHeading" class="sr-only">收集雪花代币</h2>
             <div class="acc-task-container">
-              <div class="acc-task-title text-[#f9ff92]">
-                （{{ rewardTokenCoin.currentCount }}/{{
-                  rewardTokenCoin.targetCount
-                }}）
+              <div class="acc-task-title">
+                <p class="text-[40px] text-[#fff]">收集雪花代币</p>
+                <span class="text-[#f9ff92]">
+                  （{{ rewardTokenCoin.currentCount }}/{{
+                    rewardTokenCoin.targetCount
+                  }}）
+                </span>
               </div>
               <ul class="ml-[364px] flex" aria-labelledby="accTaskListHeading">
                 <li
@@ -134,7 +137,7 @@
                   <span class="text-[#ffcb4d]">漂浮魔法*1</span>
                 </li>
                 <li>
-                  活动期间，累计收集宴会节代币达到指定数量，即可领取
+                  活动期间，累计收集雪花代币达到指定数量，即可领取
                   <span class="text-[#ffcb4d]"
                     >传信纸船*1，彩虹尾迹*1，爱心*1</span
                   >
@@ -673,9 +676,10 @@ watchEffect(() => {
 }
 .acc-task-title {
   position: absolute;
-  left: 140px;
-  bottom: 60px;
+  left: 90px;
+  bottom: 50px;
   font-size: 32px;
+  text-align: center;
 }
 
 .acc-task-item {

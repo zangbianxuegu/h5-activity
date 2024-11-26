@@ -1435,7 +1435,6 @@
   "src/assets/images/music-2024/task8-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/tips.png": 1732182314050.714,
   "src/assets/images/netease-werewolf-join/bg.jpg": 1732505834277.5222,
-  "src/assets/images/doubledan-2024-2/acc-task-bg.png": 1732522601624.3254,
   "src/assets/images/doubledan-2024-2/acc-task1-can.png": 1732522790987.7087,
   "src/assets/images/doubledan-2024-2/acc-task1-redeemed.png": 1732522790988.6868,
   "src/assets/images/doubledan-2024-2/acc-task1-wait.png": 1732522790988.6868,
@@ -1468,5 +1467,6 @@
   "src/assets/images/doubledan-2024-2/task4-overdue.png": 1732615524730.1426,
   "src/public/images/banner5.png": 1732615524730.1426,
   "src/public/images/banner4.png": 1732615524730.1426,
-  "src/public/images/sidebar6.png": 1732615524730.1426
+  "src/public/images/sidebar6.png": 1732615524730.1426,
+  "src/assets/images/doubledan-2024-2/acc-task-bg.png": 1732626200971.2434
 }
