@@ -3,9 +3,7 @@
     <div class="pc-celebration flex h-screen">
       <div class="pc-celebration-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1
-            class="title relative h-full overflow-hidden bg-contain bg-no-repeat"
-          >
+          <h1 class="title relative h-full">
             <div class="sr-only">
               相遇在更广阔的天空下
               <p>
@@ -21,10 +19,10 @@
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
-            <!-- 奖励 -->
-            <h2 class="sr-only">奖励</h2>
+            <!-- 光标发饰 -->
+            <h2 class="sr-only">光标发饰</h2>
             <div class="star"></div>
-            <div class="reward-container clear-both flex bg-cover">
+            <div class="reward-container">
               <bubble
                 :reward="taskItem"
                 :bubbleScale="1.9"
@@ -52,64 +50,30 @@
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { Event } from '@/types'
-import { Session } from '@/utils/storage'
 import { useMenuStore } from '@/stores/menu'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { useActivityStore } from '@/stores/pcCelebration'
 import { REWARD_MAP } from '@/constants/rewardMap'
-import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import ModalHelp from './components/ModalHelp.vue'
 import Bubble from '@/components/Bubble'
+import { EVENT_NAME, type TaskItem, curRewards, createTaskItem } from './config'
+import { useTransitions } from './composables/useTransition'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
+const { bodyTransitionName, headTransitionName, mainTransitionName } =
+  useTransitions()
 
-interface Rewards {
-  name: string
-  count: number
-}
-
-/**
- * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
- */
-interface Reward {
-  id: number
-  taskId: string
-  title: string
-  status: 'wait' | 'redeemed' | 'can' | string
-  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
-  hadRenderLottie?: Ref<boolean>
-}
-
-// 主任务列表
-const TASK_ITEM = {
-  id: 1,
-  taskId: 'activitycenter_pc_celebration_m1',
-  title: '领光标发饰',
-  status: 'wait',
-  canRewardLottieRef: ref() as Ref<
-    Array<InstanceType<typeof CanRewardBubbleAnimation>>
-  >,
-  hadRenderLottie: ref(false),
-}
+const TASK_ITEM = createTaskItem()
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 活动数据
-const EVENT_NAME = 'activitycenter_pc_celebration'
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-// activityData中存储各个事件数据的对象
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
-
-const curRewards: Ref<Rewards[]> = ref([
-  {
-    name: 'CharSkyKid_Horn_CursorHairpin',
-    count: 1,
-  },
-])
 
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
@@ -128,52 +92,13 @@ const taskItem = computed(() => {
   }
 })
 
-const sessionIsVisitedKey = 'isVisitedPcCelebration'
-const isVisited = Session.get(sessionIsVisitedKey)
-const bodyTransitionName = ref('')
-const headTransitionName = ref('')
-const mainTransitionName = ref('')
-if (!isVisited) {
-  bodyTransitionName.value = 'fade-in-body'
-  headTransitionName.value = 'fade-in-head'
-  mainTransitionName.value = 'fade-in-main'
-}
-
 onMounted(() => {
   try {
     getActivityData()
   } catch (error) {
     console.error(error)
   }
-  Session.set(sessionIsVisitedKey, true)
 })
-
-/**
- * @function 显示帮助
- * @returns {void}
- */
-function handleHelp(): void {
-  modalHelp.value?.open()
-}
-/**
- * @function 是否已领奖
- * @param tasks 任务列表
- */
-function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  return tasks.some((task) => {
-    return task.stages.some(
-      (item, index) => task.value >= item && task.award[index] === 0,
-    )
-  })
-}
-
-/**
- * @function 设置红点
- */
-function setRedDot(): void {
-  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
-  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
-}
 
 /**
  * @function 获取任务进度
@@ -197,7 +122,7 @@ function getActivityData(): void {
  * @param item 任务项
  * @returns {void}
  */
-function handleReward(rewardId: number, item: Reward): void {
+function handleReward(rewardId: number, item: TaskItem): void {
   const { taskId, status } = item
   if (status === 'redeemed') {
     return
@@ -232,6 +157,33 @@ function handleReward(rewardId: number, item: Reward): void {
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+/**
+ * @function 显示帮助
+ * @returns {void}
+ */
+function handleHelp(): void {
+  modalHelp.value?.open()
+}
+/**
+ * @function 是否已领奖
+ * @param tasks 任务列表
+ */
+function checkHasUnclaimedReward(tasks: Event[]): boolean {
+  return tasks.some((task) => {
+    return task.stages.some(
+      (item, index) => task.value >= item && task.award[index] === 0,
+    )
+  })
+}
+
+/**
+ * @function 设置红点
+ */
+function setRedDot(): void {
+  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
 }
 </script>
 
@@ -276,7 +228,7 @@ function handleReward(rewardId: number, item: Reward): void {
   width: 61px;
   height: 61px;
   top: 68px;
-  right: 384px;
+  right: 424px;
   background-image: url('@/assets/images/pc-celebration/help.png');
   background-repeat: no-repeat;
 }
@@ -291,6 +243,7 @@ function handleReward(rewardId: number, item: Reward): void {
   background-position: center;
   background-image: url('@/assets/images/pc-celebration/star.png');
   z-index: 20;
+  pointer-events: none;
 }
 .reward-container {
   position: absolute;
