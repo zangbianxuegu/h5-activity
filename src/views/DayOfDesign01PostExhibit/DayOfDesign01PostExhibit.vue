@@ -1,55 +1,69 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="design flex h-screen">
-      <div class="design-main">
+    <div class="page flex h-screen">
+      <div class="page-main">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <section class="relative">
+          <header class="design-header relative">
             <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
-              <div class="sr-only">
-                绘梦节活动会场
-                <p>
-                  <time datetime="2025-01-01">1.1</time>-
-                  <time datetime="2025-01-31">1.31</time>
-                </p>
-              </div>
+              <p class="sr-only">执笔畅想 绘梦成真</p>
+            </h1>
+            <h2 class="sub-title relative bg-contain bg-no-repeat">
+              <p class="sr-only">
+                活动时间
+                <time datetime="2025-01-01">1.1</time>-
+                <time datetime="2025-02-12">2.12</time>
+              </p>
+              <p class="sr-only">本期主题-国风演绎</p>
               <div
                 class="help cursor-pointer bg-contain"
                 @click="handleHelp"
               ></div>
-            </h1>
-            <button
-              class="absolute right-4 top-4 rounded bg-teal-600 px-4 py-2 text-white"
-            >
+            </h2>
+            <button class="my-work absolute right-0 top-[60px]">
               我的作品
             </button>
-          </section>
+          </header>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section class="main">
+          <section class="design-main m-auto">
             <!-- 操作区 -->
-            <div class="justify-space m-auto flex w-[1600px] items-center py-2">
-              <input
-                v-model="searchTerm"
-                type="text"
-                placeholder="搜索作者名称或作品编号"
-                class="grow p-2 shadow-md"
-                @keyup.enter="handleSearch()"
-              />
+            <div class="mx-auto flex items-center">
+              <div class="search relative">
+                <input
+                  v-model="searchTerm"
+                  type="text"
+                  placeholder="输入作者名或作品编号"
+                  class="search-input rounded-full bg-transparent bg-contain bg-no-repeat"
+                  @keyup.enter="handleSearch()"
+                />
+                <button
+                  class="search-btn absolute rounded-full bg-center bg-no-repeat"
+                  @click="handleSearch()"
+                >
+                  <span class="sr-only">搜索</span>
+                </button>
+              </div>
               <button
-                class="bg-blue-500 px-4 py-2 text-white"
-                @click="handleSearch()"
-              >
-                搜索
-              </button>
-              <button
-                class="ml-4 rounded bg-green-500 px-4 py-2 text-white"
+                class="nav-btn nav-btn--favorite flex items-center justify-center rounded-full bg-white"
                 @click="handleFavorite()"
               >
-                我的收藏
+                <img
+                  v-show="type === 'favorite'"
+                  class="nav-icon transition-all"
+                  src="@/assets/images/dayOfDesign01PostExhibit/favorite-selected.png"
+                  alt="favorite"
+                />
+                <img
+                  v-show="type !== 'favorite'"
+                  class="nav-icon transition-all"
+                  src="@/assets/images/dayOfDesign01PostExhibit/favorite-unselected.png"
+                  alt="favorite"
+                />
+                <span class="">收藏</span>
               </button>
               <button
                 :class="[
-                  'ml-4 rounded bg-gray-500 px-4 py-2 text-white',
+                  'nav-btn nav-btn--recommend flex items-center justify-center rounded-full bg-white',
                   {
                     'cursor-not-allowed opacity-50': isCoolDownActive,
                   },
@@ -57,100 +71,114 @@
                 :disabled="isCoolDownActive"
                 @click="handleRecommend"
               >
-                <span v-show="isCoolDownActive">({{ countdown }})</span>推荐
+                <img
+                  class="nav-icon"
+                  src="@/assets/images/dayOfDesign01PostExhibit/refresh.png"
+                  alt="recommend"
+                />
+                推荐<span v-show="isCoolDownActive">({{ countdown }})</span>
               </button>
             </div>
             <!-- 主体内容 -->
-            <div class="">
-              <div class="relative mx-auto h-[700px] w-[1700px]">
-                <!-- 左箭头 -->
-                <Transition name="fade">
-                  <div
-                    v-show="isPrevVisible"
-                    class="absolute left-0 top-1/2 flex -translate-y-1/2 items-center justify-center"
-                  >
-                    <button
-                      class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
-                      @click="handlePrev"
-                    >
-                      &#9664;
-                    </button>
-                  </div>
-                </Transition>
-                <!-- 作品列表 -->
-                <ul
-                  v-if="list"
-                  class="absolute left-1/2 grid w-[1400px] -translate-x-1/2 grid-cols-3 gap-4"
+            <div class="relative h-[760px]">
+              <!-- 左箭头 -->
+              <Transition name="fade">
+                <button
+                  type="button"
+                  v-show="isPrevVisible"
+                  class="arrow arrow-left absolute cursor-pointer bg-contain bg-no-repeat"
+                  aria-label="上一页"
+                  @click="handlePrev()"
                 >
-                  <li
-                    v-for="item in list"
-                    :key="item.design_id"
-                    class="relative cursor-pointer rounded bg-white shadow-md"
-                    @click="handleItemClick"
-                  >
+                  <span class="sr-only">上一页</span>
+                </button>
+              </Transition>
+              <!-- 作品列表 -->
+              <ul v-if="list" class="work-list flex w-full flex-wrap">
+                <li
+                  v-for="item in list"
+                  :key="item.design_id"
+                  class="work-item relative cursor-pointer rounded bg-white shadow-md"
+                  @click="handleItemClick"
+                >
+                  <template v-if="item.design_id">
+                    <!-- 作品图片 -->
                     <img
                       :src="item.raw_url"
                       :alt="item.design_name"
                       class="w-full rounded"
                     />
-                    <!-- ID -->
-                    <div
-                      class="absolute left-0 top-0 h-[40px] bg-blue-500 px-1 leading-[40px] text-white"
-                    >
+                    <!-- 作品 ID -->
+                    <div class="work-id absolute left-0 top-0">
                       {{ item.design_id }}
                     </div>
-                    <!-- 底部 -->
+                    <!-- 收藏图标 -->
+                    <img
+                      v-if="item.favorite"
+                      class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
+                      src="@/assets/images/dayOfDesign01PostExhibit/favorite-work.png"
+                      alt="已收藏"
+                    />
+                    <!-- 底部信息 -->
                     <div
-                      class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-b from-transparent to-black/40 px-1"
+                      class="work-info absolute inset-x-0 bottom-0 text-center"
                     >
-                      <!-- 作者标题 -->
-                      <div>
-                        <h3 class="text-sm text-white">
+                      <div
+                        class="pointer-events-none flex h-full w-full flex-col justify-center bg-gradient-to-b from-transparent to-[#feffff]"
+                      >
+                        <h3 class="work-info-author">
                           {{ item.author_name }}
                         </h3>
-                        <p class="text-white">{{ item.design_name }}</p>
+                        <p class="work-info-title">
+                          {{ item.design_name }}
+                        </p>
                       </div>
-                      <!-- 收藏图标 -->
-                      <img
-                        v-if="item.favorite"
-                        class="h-[40px] w-[40px]"
-                        src="http://iph.href.lu/20x20"
-                        alt="已收藏"
-                      />
                     </div>
-                  </li>
-                </ul>
-                <div
-                  v-else
-                  class="flex h-[800px] w-[1400px] items-center justify-center"
-                >
-                  暂无作品
-                </div>
-                <!-- 右箭头 -->
-                <Transition name="fade">
+                  </template>
+                  <!-- 数据不存在 -->
                   <div
-                    v-show="isNextVisible"
-                    class="absolute right-0 top-1/2 flex -translate-y-1/2 items-center justify-center"
-                    @click="handleNext"
+                    v-else
+                    class="flex h-full w-full flex-col items-center justify-center"
                   >
-                    <button
-                      class="h-[100px] w-[100px] rounded-full bg-blue-500 p-2 text-center text-white"
-                    >
-                      &#9654;
-                    </button>
+                    <img
+                      src="@/assets/images/dayOfDesign01PostExhibit/no-exist.jpg"
+                      alt="作品已删除"
+                      class="h-[201px] w-[135px]"
+                    />
+                    <p class="mt-[10px] text-[28px] text-[#b8b8b8]">
+                      作品已删除
+                    </p>
                   </div>
-                </Transition>
+                </li>
+              </ul>
+              <div
+                v-else
+                class="flex h-[800px] w-[1400px] items-center justify-center"
+              >
+                暂无作品
               </div>
-              <!-- 分页 -->
+              <!-- 右箭头 -->
               <Transition name="fade">
-                <div
-                  v-if="isPagesVisible"
-                  class="mt-2 flex items-center justify-center"
+                <button
+                  type="button"
+                  v-show="isNextVisible"
+                  class="arrow arrow-right absolute cursor-pointer bg-contain bg-no-repeat"
+                  aria-label="下一页"
+                  @click="handleNext"
                 >
-                  <p class="text-white">{{ currentPage }}/{{ totalPage }}</p>
-                </div>
+                  <span class="sr-only">下一页</span>
+                </button>
               </Transition>
             </div>
+            <!-- 分页 -->
+            <Transition name="fade">
+              <div
+                v-if="isPagesVisible"
+                class="pagination flex items-center justify-center"
+              >
+                <p>{{ currentPage }}/{{ totalPage }}</p>
+              </div>
+            </Transition>
           </section>
         </Transition>
 
@@ -345,7 +373,7 @@ async function handleCachedRecommend(): Promise<void> {
       // 测试代码
       const designs = data.map((design, index) => ({
         ...design,
-        raw_url: `http://iph.href.lu/800x600?text=${index}`,
+        // raw_url: `http://iph.href.lu/800x600?text=${index}`,
       }))
       console.log('designs: ', designs)
       updateCachedRecommend(designs)
@@ -579,7 +607,7 @@ async function handleFavorite(dir?: string): Promise<void> {
  */
 async function handleSearch(dir?: string): Promise<void> {
   if (!searchTerm.value.trim()) {
-    showToast('请输入作者名称或作品编号~')
+    showToast('请输入作者名或作品编号~')
     return
   }
   type.value = 'search'
@@ -642,6 +670,11 @@ function handleHelp(): void {
 </script>
 
 <style lang="scss" scoped>
+$bg-color: rgba(238, 251, 255, 0.8);
+$font-color: #5a7191;
+$font-family: 'Source Han Sans CN';
+$font-family-bold: 'Source Han Sans CN Medium';
+
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
@@ -681,7 +714,7 @@ function handleHelp(): void {
 .list-leave-active {
   position: absolute;
 }
-.design {
+.page {
   position: relative;
   width: 2100px;
 
@@ -695,17 +728,201 @@ function handleHelp(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background: linear-gradient(0deg, #8bd6d3, #8bd6d3),
-      linear-gradient(
-        180deg,
-        rgba(133, 207, 198, 0.2) 69.22%,
-        rgba(31, 79, 71, 0.2) 92.53%
-      );
+    background-image: url('@/assets/images/dayOfDesign01PostExhibit/bg.jpg');
   }
 }
 .title {
-  width: 1200px;
-  height: 200px;
-  background-image: url('http://iph.href.lu/1200x200');
+  position: absolute;
+  left: 236px;
+  top: 3px;
+  width: 1060px;
+  height: 241px;
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/title.png');
+}
+.sub-title {
+  position: absolute;
+  left: 1210px;
+  top: 50px;
+  width: 505px;
+  height: 145px;
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/sub-title.png');
+}
+.help {
+  position: absolute;
+  left: 240px;
+  top: 24px;
+  width: 47px;
+  height: 49px;
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/help.png');
+}
+.my-work {
+  border-top-left-radius: 38px;
+  border-bottom-left-radius: 38px;
+  padding-left: 80px;
+  width: 240px;
+  height: 76px;
+  line-height: 76px;
+  font-size: 34px;
+  color: $font-color;
+  background-color: #eaf5f2;
+  background-position: 32px 14px;
+  background-size: 50px 50px;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/color-palette.png');
+  box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
+
+  &::before {
+    position: absolute;
+    content: '';
+    left: 5px;
+    top: 5px;
+    border: 2px solid #fff;
+    border-top-left-radius: 33px;
+    border-bottom-left-radius: 33px;
+    border-right: 0;
+    width: 235px;
+    height: 66px;
+  }
+}
+.design {
+  font-family: $font-family;
+
+  &-header {
+    height: 208px;
+  }
+
+  &-main {
+    width: 1480px;
+  }
+}
+.search {
+  width: 902px;
+  height: 82px;
+
+  &-input {
+    padding-left: 40px;
+    width: 902px;
+    height: 82px;
+    font-size: 32px;
+    color: #fff;
+    background-image: url('@/assets/images/dayOfDesign01PostExhibit/search-input.png');
+
+    &::placeholder {
+      color: #fff;
+      opacity: 0.6;
+    }
+  }
+
+  &-btn {
+    top: 3px;
+    right: 5px;
+    width: 140px;
+    height: 76px;
+    background-color: #fff;
+    background-size: 50px 50px;
+    background-image: url('@/assets/images/dayOfDesign01PostExhibit/search-btn.png');
+    box-shadow: 0 2px 6px rgba(108, 108, 108, 0.3);
+
+    &:hover {
+      border: 3px solid #809bab;
+    }
+
+    &:active {
+      border: 0;
+      background-color: #d7e3f0;
+    }
+  }
+}
+.nav-btn {
+  margin-left: 29px;
+  width: 260px;
+  height: 76px;
+  font-size: 34px;
+  color: $font-color;
+  box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
+  &:hover {
+    border: 3px solid #809bab;
+  }
+
+  &:active {
+    border: 0;
+    background-color: #d4fff8;
+  }
+}
+.nav-icon {
+  width: 50px;
+  height: 50px;
+}
+.work-list {
+  margin-top: 30px;
+}
+.work-item {
+  margin: 0 20px 20px 0;
+  border: 2px solid $bg-color;
+  border-radius: 20px;
+  width: 480px;
+  height: 360px;
+  box-shadow:
+    2.3px 3.3px 21px 8px rgba(255, 255, 255, 0.2),
+    6.8px 7.8px 16px 0 rgba(77, 77, 77, 0.2);
+  overflow: hidden;
+
+  &:nth-of-type(3n) {
+    margin-right: 0;
+  }
+}
+.work-id {
+  padding: 0 15px;
+  height: 35px;
+  line-height: 35px;
+  font-size: 28px;
+  color: $font-color;
+  background-color: $bg-color;
+  border-bottom-right-radius: 22px;
+}
+.work-info {
+  width: 100%;
+  height: 100px;
+  color: $font-color;
+  background-color: $bg-color;
+  box-shadow: 0 -2px 6px 2px rgba(90, 113, 145, 0.06);
+
+  &-author {
+    height: 40px;
+    line-height: 40px;
+    font-size: 28px;
+  }
+
+  &-title {
+    height: 44px;
+    line-height: 44px;
+    font-size: 32px;
+    font-weight: 500;
+    font-family: $font-family-bold;
+  }
+}
+.arrow {
+  top: 188px;
+  width: 128px;
+  height: 128px;
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/arrow.png');
+
+  &:hover {
+    background-image: url('@/assets/images/dayOfDesign01PostExhibit/arrow-hover.png');
+  }
+
+  &-left {
+    left: -208px;
+  }
+
+  &-right {
+    right: -208px;
+    transform: rotate(180deg);
+  }
+}
+.pagination {
+  font-size: 32px;
+  font-weight: $font-family-bold;
+  color: $font-color;
 }
 </style>
