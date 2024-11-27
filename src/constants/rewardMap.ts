@@ -93,4 +93,5 @@ export const REWARD_MAP = {
   outfit_prop_mantafloat: '遥鲲泳圈试用魔法',
   outfit_prop_surfboard: '夏日冲浪礼包试用魔法',
   flair_flower: '炫彩步尘',
+  CharSkyKid_Horn_CursorHairpin: '光标发饰',
 }

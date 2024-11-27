@@ -1,61 +1,57 @@
-// 2024 云音乐活动
 import { defineStore } from 'pinia'
 import type { ActivityData } from '@/types'
 
 export const useActivityStore = defineStore(
-  'activitycenter_cloud_music_2024', // 须与活动事件名一致
+  'activitycenter_doubledan_2024_2', // 须与活动事件名一致
   () => {
     // 活动数据
-    const activityData = ref<ActivityData<'activitycenter_cloud_music_2024'>>({
+    const activityData = ref<ActivityData<'activitycenter_doubledan_2024_2'>>({
       event_data: {
-        activitycenter_cloud_music_2024: [
+        activitycenter_doubledan_2024_2: [
           {
             value: 0,
-            task_id: 'activitycenter_cloud_music_2024_m1',
+            task_id: 'activitycenter_doubledan_2024_m1',
             stages: [1],
             score: '',
+            is_eggy_reward: false,
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
-            task_id: 'activitycenter_cloud_music_2024_m2',
+            task_id: 'activitycenter_doubledan_2024_m3',
             stages: [1],
             score: '',
-            awarded_types: [],
-            award: [0],
-          },
-          {
-            value: 1,
-            task_id: 'activitycenter_cloud_music_2024_m3',
-            stages: [2],
-            score: '',
+            is_eggy_reward: false,
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
-            task_id: 'activitycenter_cloud_music_2024_m4',
+            task_id: 'activitycenter_doubledan_2024_m4',
             stages: [1],
             score: '',
+            is_eggy_reward: false,
             awarded_types: [],
             award: [0],
           },
           {
             value: 0,
-            task_id: 'activitycenter_cloud_music_2024_m5',
+            task_id: 'activitycenter_doubledan_2024_m5',
             stages: [1],
             score: '',
+            is_eggy_reward: false,
             awarded_types: [],
             award: [0],
           },
           {
-            value: 0,
-            task_id: 'activitycenter_cloud_music_2024_m6',
-            stages: [1, 2, 3, 4, 5],
+            value: 30,
+            task_id: 'collecting_event_candles',
+            stages: [15, 30, 50],
             score: '',
+            is_eggy_reward: false,
             awarded_types: [],
-            award: [0, 0, 0, 0, 0],
+            award: [0, 0, 0],
           },
         ],
       },
@@ -63,7 +59,7 @@ export const useActivityStore = defineStore(
     })
     // 更新活动数据
     function updateActivityData(
-      newEventData: ActivityData<'activitycenter_cloud_music_2024'>,
+      newEventData: ActivityData<'activitycenter_doubledan_2024_2'>,
     ): void {
       activityData.value = newEventData
     }

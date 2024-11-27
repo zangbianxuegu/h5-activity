@@ -402,6 +402,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '落入奇遇 茶会',
+    value: 'activitycenter_doubledan_2024_2',
+    routeName: 'Doubledan2024_2',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '与爱同行 温暖相拥',
     value: 'activitycenter_season24_sprint',
     routeName: 'Season24Sprint',
@@ -426,6 +433,13 @@ export const MENU_ITEMS: MenuItem[] = [
     label: '共沐温暖，不期而遇',
     value: 'activitycenter_invitation_code',
     routeName: 'InvitationCode',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '相遇在更广阔的天空下',
+    value: 'activitycenter_pc_celebration',
+    routeName: 'PcCelebration',
     isNew: false,
     hasUnclaimedReward: false,
   },
