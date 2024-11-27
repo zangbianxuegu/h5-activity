@@ -26,27 +26,6 @@ export interface Reward {
   count: number
 }
 
-// 奖励名称
-export const REWARD_TEXT = {
-  outfit_prop_crabbitportal: '仙境茶会门扉礼包试用魔法',
-  outfit_hat_bluebow: '进行曲制服礼包试用魔法',
-  outfit_body_yellowpinafore: '爱丽丝围裙套装礼包试用魔法',
-  candles: '蜡烛',
-  heart: '爱心',
-  grow: '长大成人',
-  huge: '大只佬',
-  shrink: '返老还童',
-  tiny: '小不点',
-  gravity: '漂浮魔法',
-  glow: '璀璨之星魔法',
-  energy: '元气满满魔法',
-  energy_potion: '光能药剂',
-  fireworks: '浪漫烟花魔法',
-  resize_potion: '体型重塑',
-  trail_rainbow: '彩虹尾迹',
-  swing: '秋千',
-}
-
 // 任务列表
 export function createTaskList(): TaskItem[] {
   return [

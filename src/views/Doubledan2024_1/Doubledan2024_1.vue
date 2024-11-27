@@ -107,11 +107,11 @@ import {
   EVENT_NAME,
   ACC_TASK_INDEX,
   TaskStatus,
-  REWARD_TEXT,
   createTaskList,
   createAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
+import { REWARD_MAP } from '@/constants/rewardMap'
 import ActivityModal from '@/components/Modal'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/doubledan2024_1'
@@ -285,7 +285,7 @@ function handleReward(rewardId: number, item: TaskItem): void {
 
       showToast(
         `领取成功，您获得了 ${
-          REWARD_TEXT[curRewards.value.name as keyof typeof REWARD_TEXT]
+          REWARD_MAP[curRewards.value.name as keyof typeof REWARD_MAP]
         }*${curRewards.value.count}`,
       )
       // 更新红点
