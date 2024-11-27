@@ -163,6 +163,9 @@
             :is="tabs[currentTab].component"
             :currentTab="currentTab"
             :tabs="tabs"
+            :inviteInfo="inviteInfo"
+            :m1Status="m1Status"
+            @reward="handleRewardM1"
           ></component>
         </ActivityTab>
       </div>
@@ -173,6 +176,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
+import { getInviteInfo } from '@/apis/invitationCode'
 import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
 import { useMenuStore } from '@/stores/menu'
@@ -194,9 +198,6 @@ interface Rewards {
   count: number
 }
 
-/**
- * hadRenderLottie: 是否渲染过lottie（解决因computed和watch多次更新导致多次渲染lottie）
- */
 interface Reward {
   id: number
   taskId: string
@@ -230,6 +231,12 @@ const tabs = reactive([
 const switchTab = (index: number): void => {
   currentTab.value = index
 }
+
+const inviteInfo = reactive({
+  canBind: true,
+  myCode: '',
+  bindCode: '',
+})
 
 // 创建任务的函数
 const createTaskItem = (
@@ -364,6 +371,12 @@ const getTaskStatus = (award: number, value: number, stage: number): string => {
   return 'wait'
 }
 
+// m1绑定奖励领取状态
+const m1Status = computed(() => {
+  const { award, value, stages } = eventData.value[0]
+  return getTaskStatus(award[0], value, stages[0])
+})
+
 // 更新任务列表状态
 const updateTaskList = (
   taskList: Reward[],
@@ -382,6 +395,10 @@ const updateTaskList = (
     })
   })
 }
+
+// 绑定任务
+const bindList = updateTaskList(BIND_LIST, 0)
+console.log(bindList, 'bindList')
 
 // 累积任务列表
 const topAccTaskList = updateTaskList(TOP_ACC_TASK_LIST, 1)
@@ -404,6 +421,7 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
+    getUserInviteInfo()
   } catch (error) {
     console.error(error)
   }
@@ -430,6 +448,22 @@ function checkHasUnclaimedReward(tasks: Event[]): boolean {
 function setRedDot(): void {
   const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
   menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
+}
+
+/**
+ * @function 获取邀请码相关信息
+ * @returns {void}
+ */
+function getUserInviteInfo(): void {
+  getInviteInfo()
+    .then((res) => {
+      inviteInfo.canBind = res.can_bind
+      inviteInfo.myCode = res.my_code
+      inviteInfo.bindCode = res.bind_code
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 /**
@@ -466,6 +500,14 @@ function getActivityData(): void {
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+/**
+ * @function 领取第一个任务奖励
+ * @returns {void}
+ */
+const handleRewardM1 = (): void => {
+  handleReward(1, bindList.value[0])
 }
 
 /**
@@ -595,7 +637,7 @@ function handleHelp(): void {
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center;
-  @for $i from 1 through 5 {
+  @for $i from 1 through 3 {
     &.wait#{$i} {
       background-image: url('@/assets/images/invitation-code/top-acc-task#{$i}-wait.png');
     }

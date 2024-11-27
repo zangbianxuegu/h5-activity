@@ -2,7 +2,7 @@
   <div class="flex h-full items-center justify-between px-[120px]">
     <div class="text-white">
       <p class="text-[36px]">我的邀请码</p>
-      <p class="text-[56px] font-medium">VT6nVT6n</p>
+      <p class="text-[56px] font-medium">{{ inviteInfo.myCode }}</p>
     </div>
     <!-- 分隔线 -->
     <div class="line"></div>
@@ -14,6 +14,13 @@
 </template>
 
 <script setup lang="ts">
+const props = defineProps({
+  inviteInfo: {
+    type: Object,
+    default: () => {},
+  },
+})
+
 function copyTextToClipboard(text: string): void {
   // 使用文本域复制
   const textArea = document.createElement('textarea')
@@ -32,7 +39,7 @@ function copyTextToClipboard(text: string): void {
 }
 
 const copyCode = (): void => {
-  copyTextToClipboard('VT6nVT6n')
+  copyTextToClipboard(props.inviteInfo.myCode)
 }
 </script>
 

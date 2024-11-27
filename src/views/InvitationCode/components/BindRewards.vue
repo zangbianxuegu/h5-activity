@@ -5,18 +5,24 @@
     <div
       class="flex h-[100px] items-center self-start overflow-hidden pl-[150px]"
     >
-      <div class="bind-task bind-task1"></div>
-      <div class="bind-task bind-task2"></div>
-      <div class="bind-task bind-task3"></div>
+      <!-- 奖励图标 -->
+      <div
+        v-for="(_, index) in 3"
+        :key="index"
+        :class="['bind-task', `bind-task${index + 1}`, m1Status]"
+        @click="handleReward"
+      ></div>
     </div>
     <div class="flex items-center">
       <input
-        class="ml-[36px] mr-[10px] h-[58px] w-[530px] rounded-[29px] pl-[30px] text-[32px]"
+        v-model="bindCode"
+        class="ml-[36px] mr-[10px] h-[58px] w-[530px] rounded-[29px] pl-[30px] pr-[40px] text-[32px]"
         placeholder="点击输入好友邀请码"
         type="text"
       />
       <button
         class="h-[58px] w-[166px] rounded-[29px] bg-[#ffc75b] text-[32px] text-white"
+        @click="handleBind"
       >
         绑定
       </button>
@@ -25,7 +31,52 @@
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { acceptInvite } from '@/apis/invitationCode'
+import { showToast } from 'vant'
+
+const emit = defineEmits(['reward'])
+
+const props = defineProps({
+  m1Status: {
+    type: String,
+    default: 'wait',
+  },
+})
+
+const bindCode = ref('')
+
+/**
+ * @function 获取邀请码相关信息
+ * @returns {void}
+ */
+function handleBind(): void {
+  if (!bindCode.value) return
+  acceptInvite({ code: bindCode.value })
+    .then((res) => {
+      console.log(res, 'res')
+      showToast('绑定成功')
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+
+/**
+ * @function 获取邀请码相关信息
+ * @returns {void}
+ */
+function handleReward(): void {
+  if (props.m1Status === 'redeemed') {
+    return
+  }
+  if (props.m1Status === 'wait') {
+    showToast('还未完成任务')
+    return
+  }
+  emit('reward')
+}
+</script>
 
 <style lang="scss" scoped>
 .bind-task {
@@ -35,14 +86,19 @@
   background-size: cover;
   background-position: center;
 }
-.bind-task1 {
-  background-image: url('@/assets/images/invitation-code/bind-task1-wait.png');
-}
-.bind-task2 {
-  background-image: url('@/assets/images/invitation-code/bind-task2-wait.png');
-}
-.bind-task3 {
-  background-image: url('@/assets/images/invitation-code/bind-task3-wait.png');
+@for $i from 1 through 3 {
+  .bind-task#{$i} {
+    &.wait {
+      background-image: url('@/assets/images/invitation-code/bind-task#{$i}-wait.png');
+    }
+    &.can {
+      background-image: url('@/assets/images/invitation-code/bind-task#{$i}-can.png');
+    }
+    &.redeemed {
+      transition: background-image 1s ease;
+      background-image: url('@/assets/images/invitation-code/bind-task#{$i}-redeemed.png');
+    }
+  }
 }
 .bottom-text {
   width: 614px;

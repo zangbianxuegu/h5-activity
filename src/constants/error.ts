@@ -194,4 +194,11 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'internal server error': '服务器异常，请稍后重试',
     },
   },
+  // 绑定pc上线庆典邀请码
+  accept_invite: {
+    400: {
+      'invalid code': '无效的邀请码',
+      'cannot bind': '无法绑定',
+    },
+  },
 }
