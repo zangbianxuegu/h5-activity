@@ -429,4 +429,11 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '相遇在更广阔的天空下',
+    value: 'activitycenter_pc_celebration',
+    routeName: 'PcCelebration',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]
