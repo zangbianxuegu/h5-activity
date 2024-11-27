@@ -3,18 +3,13 @@ import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation
 // 常量
 export const EVENT_NAME = 'activitycenter_pc_celebration'
 
-export const curRewards: Ref<Rewards[]> = ref([
-  {
-    name: 'CharSkyKid_Horn_CursorHairpin',
-    count: 1,
-  },
-])
-
-export interface Rewards {
+// 奖励类型
+export interface Reward {
   name: string
   count: number
 }
 
+// 任务项类型
 export interface TaskItem {
   id: number
   taskId: string

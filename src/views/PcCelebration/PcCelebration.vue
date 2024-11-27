@@ -56,7 +56,12 @@ import { useActivityStore } from '@/stores/pcCelebration'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
 import Bubble from '@/components/Bubble'
-import { EVENT_NAME, type TaskItem, curRewards, createTaskItem } from './config'
+import {
+  EVENT_NAME,
+  type TaskItem,
+  type Reward,
+  createTaskItem,
+} from './config'
 import { useTransitions } from './composables/useTransition'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
@@ -74,6 +79,13 @@ const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
+
+const curRewards: Ref<Reward[]> = ref([
+  {
+    name: 'CharSkyKid_Horn_CursorHairpin',
+    count: 1,
+  },
+])
 
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
