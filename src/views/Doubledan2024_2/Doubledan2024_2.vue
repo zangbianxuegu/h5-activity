@@ -27,7 +27,10 @@
                 :key="item.id"
                 class="task-list-item relative flex w-[252px] flex-col items-center"
               >
-                <div class="task-item-tag" v-if="hasTagLock(index)">
+                <div
+                  class="task-item-tag"
+                  v-if="index === 3 && item.status === TaskStatus.NOSTART"
+                >
                   25日解锁
                 </div>
                 <div
@@ -58,7 +61,8 @@
                     `${
                       item.status === 'can'
                         ? 'mt-[47px] text-[#ffeea9]'
-                        : item.status === 'redeemed'
+                        : item.status === 'redeemed' ||
+                            item.status === 'overdue'
                           ? 'mt-[4px] text-[#bebebe]'
                           : 'mt-[47px] text-white'
                     }`,
@@ -68,13 +72,16 @@
                 </p>
               </li>
             </ul>
-            <!-- 收集宴会节代币 -->
-            <h2 id="accTaskListHeading" class="sr-only">收集宴会节代币</h2>
+            <!-- 收集雪花代币 -->
+            <h2 id="accTaskListHeading" class="sr-only">收集雪花代币</h2>
             <div class="acc-task-container">
-              <div class="acc-task-title text-[#f9ff92]">
-                （{{ rewardTokenCoin.currentCount }}/{{
-                  rewardTokenCoin.targetCount
-                }}）
+              <div class="acc-task-title">
+                <p class="text-[40px] text-[#fff]">收集雪花代币</p>
+                <span class="text-[#f9ff92]">
+                  （{{ rewardTokenCoin.currentCount }}/{{
+                    rewardTokenCoin.targetCount
+                  }}）
+                </span>
               </div>
               <ul class="ml-[364px] flex" aria-labelledby="accTaskListHeading">
                 <li
@@ -83,9 +90,12 @@
                   class="relative mt-[26px]"
                   :aria-label="`累计任务 ${index + 1}: ${item.title}`"
                 >
-                  <Bubble :reward="item" :bubble-scale="1.3">
+                  <Bubble
+                    :reward="item"
+                    :bubble-scale="1.3"
+                    :bounce-class="`${item.taskId}-${item.id}`"
+                  >
                     <div
-                      v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                       :class="[
                         'acc-task-item animate__animated animate__fadeIn relative z-10',
                         `acc-task-item${index + 1}`,
@@ -112,7 +122,7 @@
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
-            <section aria-labelledby="activity-rules-title" class="p-4">
+            <section aria-labelledby="activity-rules-title" class="px-4">
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
@@ -127,17 +137,21 @@
                   <span class="text-[#ffcb4d]">漂浮魔法*1</span>
                 </li>
                 <li>
-                  活动期间，累计收集宴会节代币达到指定数量，即可领取
+                  活动期间，累计收集雪花代币达到指定数量，即可领取
                   <span class="text-[#ffcb4d]"
                     >传信纸船*1，彩虹尾迹*1，爱心*1</span
                   >
                 </li>
                 <li>
-                  活动期间，帮助一次瞌睡海牛，即可领取
+                  活动期间，完成任意一次帮助瞌睡海牛的代币任务，即可领取
                   <span class="text-[#ffcb4d]">小不点*1</span>
                 </li>
                 <li>
-                  12月25日，领取宴会节奶奶的礼物，即可领取
+                  活动期间，完成任意一次帮助帽匠的代币任务，即可领取
+                  <span class="text-[#ffcb4d]">返老还童*1</span>
+                </li>
+                <li>
+                  12月25日，在茶桌领取宴会节奶奶的礼物，即可领取
                   <span class="text-[#ffcb4d]"
                     >爱丽丝围裙套装礼包试用魔法*1</span
                   >
@@ -164,6 +178,7 @@ import {
   type Reward,
   EVENT_NAME,
   ACC_TASK_INDEX,
+  ACC_TASK_VALUE,
   TaskStatus,
   REWARD_TEXT,
   createTaskList,
@@ -219,9 +234,18 @@ const getTaskStatus = (activity: Event, index: number): TaskStatus => {
 const taskList = computed(() => {
   return TASK_LIST.map((item, index) => {
     const activity = activityData.value.event_data[EVENT_NAME][index]
+    let status = getTaskStatus(activity, 0)
+    // 特定任务ID的特殊状态处理
+    if (item.taskId === 'activitycenter_doubledan_2024_m5') {
+      if (dateStatus.value === 'nostart') {
+        status = TaskStatus.NOSTART
+      } else if (dateStatus.value === 'overdue' && status === TaskStatus.WAIT) {
+        status = TaskStatus.OVERDUE
+      }
+    }
     return {
       ...item,
-      status: getTaskStatus(activity, 0),
+      status,
     }
   })
 })
@@ -237,16 +261,36 @@ const accTaskList = computed(() => {
   })
 })
 
-// 是否未解锁状态
-function hasTagLock(index: number): boolean {
+// 当前日期状态
+type DateStatus = 'nostart' | 'ongoing' | 'overdue'
+function checkTodayAgainstDateRange(data: string): DateStatus {
+  const [start, end] = data.split('-').map((date) => date.split('.'))
+  // 解析给定的日期范围
+  const startMonth = parseInt(start[0], 10)
+  const startDay = parseInt(start[1], 10)
+  const endMonth = parseInt(end[0], 10)
+  const endDay = parseInt(end[1], 10)
+
+  // 获取服务器时间
   const today = new Date(currentTime * 1000)
-  const currentYear = today.getFullYear()
-  const december25 = new Date(currentYear, 11, 25)
-  if (index === 3 && today < december25) {
-    return true
+  const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
+  const currentDay = today.getDate()
+  // 判断当前日期是否在范围内
+  if (
+    currentMonth < startMonth ||
+    (currentMonth === startMonth && currentDay < startDay)
+  ) {
+    return 'nostart' // 未到时间
   }
-  return false
+  if (
+    currentMonth > endMonth ||
+    (currentMonth === endMonth && currentDay > endDay)
+  ) {
+    return 'overdue' // 已过期
+  }
+  return 'ongoing' // 正在进行
 }
+const dateStatus = ref<DateStatus>('nostart')
 
 const sessionIsVisitedKey = 'isVisitedDoubleDan2024_2'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -262,6 +306,7 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
+    dateStatus.value = checkTodayAgainstDateRange('12.25-12.25')
   } catch (error) {
     console.error(error)
   }
@@ -348,11 +393,23 @@ function handleReward(
   item: TaskItem,
 ): void {
   const { status, taskId } = item
+  if (status === TaskStatus.NOSTART) {
+    showToast('任务还未解锁')
+    const target = event.target
+    if (target && target instanceof HTMLElement) {
+      animateBounce(target)
+    }
+    return
+  }
+  if (status === TaskStatus.OVERDUE) {
+    showToast('任务已过期')
+    return
+  }
   if (status === TaskStatus.REDEEMED) {
     return
   }
   if (status === TaskStatus.WAIT) {
-    showToast('还未完成任务')
+    showToast('任务还未完成')
     const target = event.target
     if (target && target instanceof HTMLElement) {
       animateBounce(target)
@@ -366,7 +423,10 @@ function handleReward(
   })
     .then(async (res) => {
       curRewards.value = res.data.rewards[0]
-      await bubbleBurst(event, item)
+      if (taskId !== ACC_TASK_VALUE) {
+        // 领奖动画
+        await bubbleBurst(event, item)
+      }
       // 更新页面数据
       const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
         (item) => {
@@ -420,7 +480,7 @@ const initCanRewardLottie = (reward: TaskItem): void => {
     reward.hadRenderLottie.value = true
   }
 }
-const allTasks = computed(() => [...taskList.value, ...accTaskList.value])
+
 const handleInitTask = (task: TaskItem): void => {
   if (task.status === TaskStatus.CAN) {
     void nextTick(() => {
@@ -433,7 +493,7 @@ const handleInitTask = (task: TaskItem): void => {
   }
 }
 watchEffect(() => {
-  allTasks.value.forEach(handleInitTask)
+  taskList.value.forEach(handleInitTask)
 })
 </script>
 
@@ -522,13 +582,15 @@ watchEffect(() => {
   background-position: center;
   pointer-events: none;
 
-  &.wait {
+  &.wait,
+  &.nostart {
     background-image: url('@/assets/images/season24-sprint/task-wait-bg.png');
   }
   &.can {
     background-image: url('@/assets/images/season24-sprint/task-can-bg.png');
   }
-  &.redeemed {
+  &.redeemed,
+  &.overdue {
     display: none;
   }
 }
@@ -549,7 +611,8 @@ watchEffect(() => {
 
 @for $i from 1 through 4 {
   .task-item#{$i} {
-    &.wait {
+    &.wait,
+    &.nostart {
       background-image: url('@/assets/images/doubledan-2024-2/task-wait-circle.png'),
         url('@/assets/images/doubledan-2024-2/task#{$i}-icon.png');
     }
@@ -578,7 +641,8 @@ watchEffect(() => {
     contain,
     86px 90px;
 }
-.task-item4.wait {
+.task-item4.wait,
+.task-item4.nostart {
   background-size:
     contain,
     57px 107px;
@@ -595,6 +659,11 @@ watchEffect(() => {
 .task-item4.can {
   background-size: 57px 107px;
 }
+.task-item4.overdue {
+  width: 252px;
+  height: 232px;
+  background-image: url('@/assets/images/doubledan-2024-2/task4-overdue.png');
+}
 .acc-task-container {
   position: absolute;
   left: 90px;
@@ -607,9 +676,10 @@ watchEffect(() => {
 }
 .acc-task-title {
   position: absolute;
-  left: 140px;
-  bottom: 60px;
+  left: 90px;
+  bottom: 50px;
   font-size: 32px;
+  text-align: center;
 }
 
 .acc-task-item {
