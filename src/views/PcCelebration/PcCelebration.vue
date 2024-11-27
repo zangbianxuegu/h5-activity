@@ -30,7 +30,7 @@
               >
                 <div
                   :class="[
-                    'reward-item animate__animated animate__fadeIn bg-contain',
+                    'reward-item animate__animated animate__fadeIn',
                     `${taskItem.status}`,
                   ]"
                   @click="handleReward(1, taskItem)"
@@ -151,11 +151,7 @@ function handleReward(rewardId: number, item: TaskItem): void {
     .then(async (res) => {
       curRewards.value = res.data.rewards
       // 更新页面数据
-      const taskIndex = eventData.value.findIndex(
-        (item) => item.task_id === taskId,
-      )
-      activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
-        1
+      activityData.value.event_data[EVENT_NAME][0].award[rewardId - 1] = 1
       showToast(
         '领取成功，您获得了' +
           curRewards.value.map(
@@ -183,11 +179,10 @@ function handleHelp(): void {
  * @param tasks 任务列表
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  return tasks.some((task) => {
-    return task.stages.some(
-      (item, index) => task.value >= item && task.award[index] === 0,
-    )
-  })
+  if (tasks.length === 0) return false
+  const firstTask = tasks[0]
+  const { value, stages, award } = firstTask
+  return value >= stages[0] && award[0] === 0
 }
 
 /**
