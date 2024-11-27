@@ -26,7 +26,7 @@
               <bubble
                 :reward="taskItem"
                 :bubbleScale="1.9"
-                :bounce-class="`${taskItem.taskId}-${taskItem.id}`"
+                :bounce-class="`${taskItem.taskId}`"
               >
                 <div
                   :class="[
