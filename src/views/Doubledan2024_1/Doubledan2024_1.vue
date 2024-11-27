@@ -263,16 +263,6 @@ function handleReward(rewardId: number, item: TaskItem): void {
     return
   }
 
-  // const taskIndex = activityData.value.event_data[EVENT_NAME].findIndex(
-  //   (item) => {
-  //     return item.task_id === taskId
-  //   },
-  // )
-  // activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] = 1
-  // activityData.value.event_data[EVENT_NAME][taskIndex].awarded_infos[
-  //   rewardId - 1
-  // ] = [{ name: 'huge', count: 1 }]
-
   claimMissionReward({
     event: EVENT_NAME,
     task: taskId,
