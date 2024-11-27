@@ -11,7 +11,7 @@ export const useActivityStore = defineStore(
           {
             value: 0,
             task_id: 'activitycenter_doubledan_2024_m11',
-            stages: [10],
+            stages: [0],
             score: '',
             is_eggy_reward: false,
             awarded_types: [],
@@ -19,7 +19,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 4,
+            value: 0,
             task_id: 'login_days',
             stages: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
             score: '',
