@@ -153,6 +153,18 @@
         </Transition>
         <!-- 活动规则弹框 -->
         <ModalHelp ref="modalHelp" />
+        <!-- 活动tab标签页 -->
+        <ActivityTab
+          :currentTab="currentTab"
+          :tabs="tabs"
+          @switchTab="switchTab"
+        >
+          <component
+            :is="tabs[currentTab].component"
+            :currentTab="currentTab"
+            :tabs="tabs"
+          ></component>
+        </ActivityTab>
       </div>
     </div>
   </Transition>
@@ -170,6 +182,9 @@ import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
+import ActivityTab from './components/ActivityTab.vue'
+import InvitationCode from './components/InvitationCode.vue'
+import BindRewards from './components/BindRewards.vue'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -199,6 +214,22 @@ const curRewards: Ref<Rewards[]> = ref([
     count: 1,
   },
 ])
+
+const currentTab = ref(0)
+const tabs = reactive([
+  {
+    name: 'InvitationCode',
+    component: markRaw(InvitationCode),
+  },
+  {
+    name: 'BindRewards',
+    component: markRaw(BindRewards),
+  },
+])
+
+const switchTab = (index: number): void => {
+  currentTab.value = index
+}
 
 // 创建任务的函数
 const createTaskItem = (
@@ -552,7 +583,7 @@ function handleHelp(): void {
     top: -22px;
     height: 65px;
     width: 60px;
-    background-image: url('@/assets/images/double-eleven-2024-2/star.png');
+    background-image: url('@/assets/images/invitation-code/star.png');
     background-repeat: no-repeat;
     background-size: contain;
     transition: right 0.4s ease;
