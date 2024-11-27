@@ -499,4 +499,13 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_netease_werewolf_join',
     },
   },
+  {
+    path: '/doubledan-2024-1',
+    name: 'Doubledan2024_1',
+    component: () => import('@/views/Doubledan2024_1'),
+    meta: {
+      title: '温暖冬日 翻开惊喜',
+      module: 'activitycenter_doubledan_2024_1',
+    },
+  },
 ]
