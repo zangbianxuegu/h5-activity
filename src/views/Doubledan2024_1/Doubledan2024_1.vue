@@ -302,7 +302,7 @@ function handleReward(rewardId: number, item: TaskItem): void {
  */
 function handleSrc(name: string): string {
   const imgSrc = new URL(
-    `../../assets/images/doubledan-2024-1/reward/${name}.png`,
+    `../../assets/images/common/rewards/${name}.png`,
     import.meta.url,
   ).href
   return imgSrc
