@@ -187,7 +187,7 @@ import Bubble from '@/components/Bubble'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
 import ActivityTab from './components/ActivityTab.vue'
-import InvitationCode from './components/InvitationCode.vue'
+import MyCode from './components/MyCode.vue'
 import BindRewards from './components/BindRewards.vue'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
@@ -219,8 +219,8 @@ const curRewards: Ref<Rewards[]> = ref([
 const currentTab = ref(0)
 const tabs = reactive([
   {
-    name: 'InvitationCode',
-    component: markRaw(InvitationCode),
+    name: 'MyCode',
+    component: markRaw(MyCode),
   },
   {
     name: 'BindRewards',
