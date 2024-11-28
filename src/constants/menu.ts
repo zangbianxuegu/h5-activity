@@ -395,6 +395,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '绘梦节',
+    value: 'activitycenter_dayofdesign01_post_main',
+    routeName: 'DayOfDesign01PostMain',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '我要投稿',
     value: 'activitycenter_dayofdesign01_post_submit',
     routeName: 'DayOfDesign01PostSubmit',

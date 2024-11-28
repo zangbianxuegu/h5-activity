@@ -76,7 +76,7 @@ import type {
   TokenParams,
   UserInfo,
 } from '@/types'
-import { HALLOWEEN_2024_LIST, MENU_ITEMS } from '@/constants'
+import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
@@ -176,21 +176,23 @@ function handleToSprite(): void {
 }
 
 /**
- * @description 调整2024万圣节活动
- * @param arr 菜单列表
- * @param startTime 活动开始时间
+ * @description 根据传入的活动列表调整菜单排序
+ * @param {Activity[]} arr 菜单列表
+ * @param {string[]} list 活动名称列表
+ * @returns {Activity[]} 返回菜单列表
  */
-function adjustActivitySort(arr: Activity[], startTime: number): Activity[] {
-  // 万圣节活动
-  const predefinedActivities = HALLOWEEN_2024_LIST.map((activityName) =>
-    arr.find((activity) => activity.activity === activityName),
-  ).filter((activity) => activity !== undefined) as Activity[]
-
+function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
+  // 绘梦节活动
+  const predefinedActivities = list
+    .map((activityName) =>
+      arr.find((activity) => activity.activity === activityName),
+    )
+    .filter((activity) => activity !== undefined) as Activity[]
+  const startTime = predefinedActivities[0].startTime
   // 其余的活动
   const otherActivities = arr.filter(
-    (activity) => !HALLOWEEN_2024_LIST.includes(activity.activity),
+    (activity) => !list.includes(activity.activity),
   )
-
   // 合并
   return [
     ...otherActivities.filter(
@@ -205,7 +207,6 @@ function adjustActivitySort(arr: Activity[], startTime: number): Activity[] {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  let halloween2024StartTime: number = 0
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -218,9 +219,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
             activityName === 'activity_center_notice'
               ? false
               : activityInfo.has_unclaimed_reward > 0,
-        }
-        if (activityName === 'activitycenter_Halloweentask_2024') {
-          halloween2024StartTime = activity.startTime
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -248,16 +246,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
-  // 测试绘梦节活动会场
-  // res.push({
-  //   activity: 'activitycenter_dayofdesign01_post_exhibit',
-  //   startTime: 0,
-  //   endTime: 0,
-  //   isNew: false,
-  //   hasUnclaimedReward: false,
-  // })
-  // 调整2024万圣节活动排序
-  res = adjustActivitySort(res, halloween2024StartTime)
+  // 调整绘梦节活动排序
+  res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1

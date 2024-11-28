@@ -491,6 +491,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/dayofdesign01-post-main',
+    name: 'DayOfDesign01PostMain',
+    component: () => import('@/views/DayOfDesign01PostMain'),
+    meta: {
+      title: '绘梦节',
+      module: 'activitycenter_dayofdesign01_post_main',
+    },
+  },
+  {
     path: '/dayofdesign01-post-submit',
     name: 'DayOfDesign01PostSubmit',
     component: () => import('@/views/DayOfDesign01PostSubmit'),

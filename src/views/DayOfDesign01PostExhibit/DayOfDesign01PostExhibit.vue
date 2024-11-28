@@ -55,13 +55,13 @@
                 <img
                   v-show="type === 'favorite'"
                   class="nav-icon transition-all"
-                  src="@/assets/images/dayOfDesign01PostExhibit/favorite-selected.png"
+                  src="@/assets/images/dayofdesign01-post-exhibit/favorite-selected.png"
                   alt="favorite"
                 />
                 <img
                   v-show="type !== 'favorite'"
                   class="nav-icon transition-all"
-                  src="@/assets/images/dayOfDesign01PostExhibit/favorite-unselected.png"
+                  src="@/assets/images/dayofdesign01-post-exhibit/favorite-unselected.png"
                   alt="favorite"
                 />
                 <span class="">收藏</span>
@@ -81,7 +81,7 @@
               >
                 <img
                   class="nav-icon"
-                  src="@/assets/images/dayOfDesign01PostExhibit/refresh.png"
+                  src="@/assets/images/dayofdesign01-post-exhibit/refresh.png"
                   alt="recommend"
                 />
                 推荐<span v-show="isCoolDownActive">({{ countdown }})</span>
@@ -124,7 +124,7 @@
                     <img
                       v-if="item.favorite"
                       class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
-                      src="@/assets/images/dayOfDesign01PostExhibit/favorite-work.png"
+                      src="@/assets/images/dayofdesign01-post-exhibit/favorite-work.png"
                       alt="已收藏"
                     />
                     <!-- 底部信息 -->
@@ -149,7 +149,7 @@
                     class="flex h-full w-full flex-col items-center justify-center"
                   >
                     <img
-                      src="@/assets/images/dayOfDesign01PostExhibit/no-exist.jpg"
+                      src="@/assets/images/dayofdesign01-post-exhibit/no-exist.jpg"
                       alt="作品已删除"
                       class="h-[201px] w-[135px]"
                     />
@@ -789,7 +789,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/dayOfDesign01PostExhibit/bg.jpg');
+    background-image: url('@/assets/images/dayofdesign01-post-exhibit/bg.jpg');
   }
 }
 .title {
@@ -798,7 +798,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 3px;
   width: 1060px;
   height: 241px;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/title.png');
+  background-image: url('@/assets/images/dayofdesign01-post-exhibit/title.png');
 }
 .sub-title {
   position: absolute;
@@ -806,7 +806,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 50px;
   width: 505px;
   height: 145px;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/sub-title.png');
+  background-image: url('@/assets/images/dayofdesign01-post-exhibit/sub-title.png');
 }
 .help {
   position: absolute;
@@ -814,7 +814,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 24px;
   width: 47px;
   height: 49px;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/help.png');
+  background-image: url('@/assets/images/dayofdesign01-post-exhibit/help.png');
 }
 .my-work {
   border-top-left-radius: 38px;
@@ -829,7 +829,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/rules-icon.png');
+  background-image: url('@/assets/images/dayofdesign01-post-exhibit/rules-icon.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {
@@ -866,7 +866,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     height: 82px;
     font-size: 32px;
     color: #fff;
-    background-image: url('@/assets/images/dayOfDesign01PostExhibit/search-input.png');
+    background-image: url('@/assets/images/dayofdesign01-post-exhibit/search-input.png');
 
     &::placeholder {
       color: #fff;
@@ -881,7 +881,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     height: 76px;
     background-color: #fff;
     background-size: 50px 50px;
-    background-image: url('@/assets/images/dayOfDesign01PostExhibit/search-btn.png');
+    background-image: url('@/assets/images/dayofdesign01-post-exhibit/search-btn.png');
     box-shadow: 0 2px 6px rgba(108, 108, 108, 0.3);
 
     &:hover {
@@ -966,10 +966,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 188px;
   width: 128px;
   height: 128px;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/arrow.png');
+  background-image: url('@/assets/images/dayofdesign01-post-exhibit/arrow.png');
 
   &:hover {
-    background-image: url('@/assets/images/dayOfDesign01PostExhibit/arrow-hover.png');
+    background-image: url('@/assets/images/dayofdesign01-post-exhibit/arrow-hover.png');
   }
 
   &-left {
