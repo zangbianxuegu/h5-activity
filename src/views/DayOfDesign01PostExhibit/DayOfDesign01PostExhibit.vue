@@ -20,7 +20,7 @@
               ></div>
             </h2>
             <button class="my-work absolute right-0 top-[60px]">
-              我的作品
+              活动规则
             </button>
           </header>
         </Transition>
@@ -44,7 +44,12 @@
                 </button>
               </div>
               <button
-                class="nav-btn nav-btn--favorite flex items-center justify-center rounded-full bg-white"
+                :class="[
+                  'nav-btn nav-btn--favorite flex items-center justify-center rounded-full bg-white',
+                  {
+                    'bg-[#d9fff5]': type === 'favorite',
+                  },
+                ]"
                 @click="handleFavorite()"
               >
                 <img
@@ -65,7 +70,10 @@
                 :class="[
                   'nav-btn nav-btn--recommend flex items-center justify-center rounded-full bg-white',
                   {
-                    'cursor-not-allowed opacity-50': isCoolDownActive,
+                    'cursor-not-allowed bg-[#d7e3f0]': isCoolDownActive,
+                  },
+                  {
+                    'bg-[#d9fff5]': type === 'recommend',
                   },
                 ]"
                 :disabled="isCoolDownActive"
@@ -99,7 +107,7 @@
                   v-for="item in list"
                   :key="item.design_id"
                   class="work-item relative cursor-pointer rounded bg-white shadow-md"
-                  @click="handleItemClick"
+                  @click="handleItemClick(item)"
                 >
                   <template v-if="item.design_id">
                     <!-- 作品图片 -->
@@ -223,6 +231,15 @@
             </section>
           </template>
         </activity-modal>
+
+        <!-- 我的作品弹窗 -->
+        <works-detail-modal
+          v-model:show="isDetailVisible"
+          :event="EVENT_DAY_OF_DESIGN_01.ALL"
+          :type="DESIGN_DETAILS_TYPE.OTHER"
+          :works-data="detailData"
+          :file-picker-config="filePickerConfig"
+        ></works-detail-modal>
       </div>
     </div>
   </Transition>
@@ -233,23 +250,27 @@ import { showToast } from 'vant'
 import type {
   DesignConfig,
   ListRecommendParams,
-  ListRecommendRes,
   ListFavoriteParams,
-  ListFavoriteRes,
   ListSearchParams,
-  ListSearchRes,
   DesignItem,
+  FavoriteData,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 import {
+  DESIGN_DETAILS_TYPE,
+  EVENT_DAY_OF_DESIGN_01,
+} from '@/types/activity/dayofdesign01'
+import {
   getFavorites,
   getRecommendations,
   searchDesigns,
+  getDesignDetails,
 } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
 import ActivityModal from '@/components/Modal'
+import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
 import { useStore, initCachedData } from './store'
 
 // 设计稿宽
@@ -332,6 +353,30 @@ const isPagesVisible = computed(
     (type.value === 'favorite' && cachedFavorite.value.totalPage > 1) ||
     (type.value === 'search' && cachedSearch.value.totalPage > 1),
 )
+interface Detail {
+  author: string
+  worksName: string
+  worksIntroduce: string
+  id: string
+  worksImgSrc: string
+  worksDecorateImgSrc: string
+}
+// 详情
+const detailData = ref<Detail>({
+  id: '',
+  author: '',
+  worksName: '',
+  worksIntroduce: '',
+  worksImgSrc: '',
+  worksDecorateImgSrc: '',
+})
+const filePickerConfig = ref({
+  token: '',
+  policyName: FILE_PICKER_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_POLICY_NAME,
+  filePickerUrl: '',
+  currentUoloadFileUrl: '',
+})
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostExhibit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -366,19 +411,10 @@ async function handleCachedRecommend(): Promise<void> {
     policy_name: FILE_PICKER_POLICY_NAME,
   }
   try {
-    const res: ListRecommendRes = await getRecommendations(params)
-    console.log('接口返回推荐数据: ', res)
-    if (res.code === 200) {
-      const data = res.data
-      // 测试代码
-      const designs = data.map((design, index) => ({
-        ...design,
-        // raw_url: `http://iph.href.lu/800x600?text=${index}`,
-      }))
-      console.log('designs: ', designs)
-      updateCachedRecommend(designs)
-      console.log('cachedRecommend: ', cachedRecommend.value)
-    }
+    const data: DesignItem[] = await getRecommendations(params)
+    console.log('接口返回推荐数据: ', data)
+    updateCachedRecommend(data)
+    console.log('cachedRecommend: ', cachedRecommend.value)
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
@@ -403,42 +439,36 @@ async function handleCachedFavorite(): Promise<void> {
     }
   }
   try {
-    const res: ListFavoriteRes = await getFavorites(params)
-    console.log('接口返回收藏数据: ', res)
-    if (res.code === 200) {
-      const data = res.data
-      // 处理收藏数据，加入字段 favorite，是否收藏，用于取消收藏展示
-      const designs = data.designs.map((design, index) => ({
-        ...design,
-        favorite: true,
-        // 测试代码
-        raw_url: `http://iph.href.lu/800x600?text=${index}`,
-      }))
-      // 更新缓存的收藏数据
-      const newDesignData = {
-        designList: [...cachedFavorite.value.designList, ...designs],
-        totalPage:
-          cachedFavorite.value?.totalPage === 0
-            ? Math.ceil(data.count / ITEMS_PER_PAGE)
-            : cachedFavorite.value?.totalPage,
-      }
-      // 修正总页数。如果没有数据了，判断计算的总页数是否和第一次请求页数相符
-      // 针对：在第一次请求之后，后面页数的数据已经被删除了
-      // 如果是前面页数的数据被删除了，则前端数据正常显示，不做处理
-      if (data.is_end) {
-        const pageCount = Math.ceil(data.designs.length / ITEMS_PER_PAGE)
-        if (
-          currentPage.value - 1 + pageCount <
-          cachedFavorite.value?.totalPage
-        ) {
-          newDesignData.totalPage = currentPage.value - 1 + pageCount
-        }
-      }
-      updateCachedFavorite(newDesignData)
-      // 更新最小收藏时间
-      const lastIdex = data.designs.length - 1
-      minFavoriteTime = data.designs[lastIdex].favorite_time
+    const data: FavoriteData = await getFavorites(params)
+    console.log('接口返回收藏数据: ', data)
+    // 处理收藏数据，加入字段 favorite，是否收藏，用于取消收藏展示
+    const designs = data.designs.map((design) => ({
+      ...design,
+      favorite: true,
+      // 测试代码
+      // raw_url: `http://iph.href.lu/800x600?text=${index}`,
+    }))
+    // 更新缓存的收藏数据
+    const newDesignData = {
+      designList: [...cachedFavorite.value.designList, ...designs],
+      totalPage:
+        cachedFavorite.value?.totalPage === 0
+          ? Math.ceil(data.count / ITEMS_PER_PAGE)
+          : cachedFavorite.value?.totalPage,
     }
+    // 修正总页数。如果没有数据了，判断计算的总页数是否和第一次请求页数相符
+    // 针对：在第一次请求之后，后面页数的数据已经被删除了
+    // 如果是前面页数的数据被删除了，则前端数据正常显示，不做处理
+    if (data.is_end) {
+      const pageCount = Math.ceil(data.designs.length / ITEMS_PER_PAGE)
+      if (currentPage.value - 1 + pageCount < cachedFavorite.value?.totalPage) {
+        newDesignData.totalPage = currentPage.value - 1 + pageCount
+      }
+    }
+    updateCachedFavorite(newDesignData)
+    // 更新最小收藏时间
+    const lastIdex = data.designs.length - 1
+    minFavoriteTime = data.designs[lastIdex].favorite_time
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
@@ -464,32 +494,25 @@ async function handleCachedSearch(): Promise<void> {
     }
   }
   try {
-    const res: ListSearchRes = await searchDesigns(params)
-    console.log('接口返回搜索数据: ', res)
-    if (res.code === 200) {
-      const data = res.data
-      if (data.designs.length === 0) {
-        showToast('暂无搜索数据~')
-        return
-      }
-      // 测试代码
-      const designs = data.designs.map((design, index) => ({
-        ...design,
-        raw_url: `http://iph.href.lu/800x600?text=${index}`,
-      }))
-      // 更新缓存的搜索数据
-      const newDesignData = {
-        designList: [...cachedSearch.value.designList, ...designs],
-        totalPage:
-          cachedSearch.value.totalPage === 0
-            ? Math.ceil(data.count / ITEMS_PER_PAGE)
-            : cachedSearch.value.totalPage,
-      }
-      updateCachedSearch(newDesignData)
-      // 更新最小作品ID
-      const lastIdex = data.designs.length - 1
-      minIdOffset = data.designs[lastIdex].design_id
+    const data: FavoriteData = await searchDesigns(params)
+    console.log('接口返回搜索数据: ', data)
+    const designs = data.designs
+    if (designs.length === 0) {
+      showToast('暂无搜索数据~')
+      return
     }
+    // 更新缓存的搜索数据
+    const newDesignData = {
+      designList: [...cachedSearch.value.designList, ...designs],
+      totalPage:
+        cachedSearch.value.totalPage === 0
+          ? Math.ceil(data.count / ITEMS_PER_PAGE)
+          : cachedSearch.value.totalPage,
+    }
+    updateCachedSearch(newDesignData)
+    // 更新最小作品ID
+    const lastIdex = designs.length - 1
+    minIdOffset = designs[lastIdex].design_id
   } catch (error) {
     const err = error as Error
     showToast(err.message || '搜索作品失败')
@@ -610,6 +633,15 @@ async function handleSearch(dir?: string): Promise<void> {
     showToast('请输入作者名或作品编号~')
     return
   }
+  const authorPattern = /^[0-9A-Za-z\u4e00-\u9fa5]{1,8}$/
+  const workIdPattern = /^[XGYM]\d{8,}$/
+  if (
+    !authorPattern.test(searchTerm.value) &&
+    !workIdPattern.test(searchTerm.value)
+  ) {
+    showToast('请输入准确的作者名或作品编号~')
+    return
+  }
   type.value = 'search'
   if (dir === 'prev') {
     currentPage.value -= 1
@@ -653,10 +685,30 @@ async function handleNext(): Promise<void> {
 /**
  * @function handleItemClick
  * @description 查看作品详情
- * @returns {void}
+ * @param {DesignItem} item 作品项
+ * @returns {Promise<void>}
  */
-function handleItemClick(): void {
-  isDetailVisible.value = true
+async function handleItemClick(item: DesignItem): Promise<void> {
+  try {
+    const { design_id: designId, favorite_time: favoriteTime } = item
+    const detail = await getDesignDetails({
+      policy_name: FILE_PICKER_POLICY_NAME,
+      design_id: designId,
+      favorite_time: favoriteTime,
+    })
+    detailData.value = {
+      id: item.design_id,
+      author: detail.author_name,
+      worksName: detail.design_name,
+      worksIntroduce: detail.description,
+      worksImgSrc: detail.raw_url,
+      worksDecorateImgSrc: detail.share_url,
+    }
+    isDetailVisible.value = true
+  } catch (error) {
+    const err = error as Error
+    showToast(err.message || '查看作品详情失败')
+  }
 }
 
 /**
@@ -768,7 +820,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayOfDesign01PostExhibit/color-palette.png');
+  background-image: url('@/assets/images/dayOfDesign01PostExhibit/rules-icon.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {
@@ -840,9 +892,9 @@ $font-family-bold: 'Source Han Sans CN Medium';
   font-size: 34px;
   color: $font-color;
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
-  &:hover {
-    border: 3px solid #809bab;
-  }
+  // &:hover {
+  //   border: 3px solid #809bab;
+  // }
 
   &:active {
     border: 0;

@@ -46,3 +46,9 @@ export interface ListSearchParams extends ListParams {
 }
 
 export type ListSearchRes = ListResponse<FavoriteData>
+
+export interface DetailParams {
+  policy_name: string
+  design_id?: string
+  favorite_time?: number
+}

@@ -675,9 +675,9 @@ const confirmSubmitWork = async (): Promise<void> => {
 
 const updateDesignDetails = async (): Promise<void> => {
   try {
-    const designDetails = (await getDesignDetails(
-      filePickerConfig.value.policyName,
-    )) as SelfDesignDetails
+    const designDetails = (await getDesignDetails({
+      policy_name: filePickerConfig.value.policyName,
+    })) as SelfDesignDetails
     const isCountribute = JSON.stringify(designDetails) !== '{}'
     if (isCountribute) {
       worksData.value.id = designDetails.design_id

@@ -183,6 +183,37 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  // 绘梦节 - 搜索
+  search_designs: {
+    400: {
+      'invalid term': '没有找到相关结果，请准确输入作者名或作品编码',
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+    500: {
+      'internal server error': '服务器错误，请稍后重试',
+    },
+  },
+
+  // 绘梦节 - 收藏
+  get_favorites: {
+    400: {
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+    500: {
+      'internal server error': '服务器错误，请稍后重试',
+    },
+  },
+
+  // 绘梦节 - 推荐
+  get_recommendations: {
+    400: {
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+  },
+
   // 狼人杀联动查询账号
   get_werewolf_info: {
     401: {

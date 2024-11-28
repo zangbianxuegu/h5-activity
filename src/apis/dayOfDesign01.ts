@@ -6,6 +6,9 @@ import type {
   ListFavoriteRes,
   ListSearchParams,
   ListSearchRes,
+  DesignItem,
+  FavoriteData,
+  DetailParams,
 } from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
@@ -36,7 +39,7 @@ import Loading from '@/components/Loading'
  */
 export function getRecommendations(
   params: ListRecommendParams,
-): Promise<ListRecommendRes> {
+): Promise<DesignItem[]> {
   return new Promise((resolve, reject) => {
     Loading.show()
     handlePostMessageToNative({
@@ -45,14 +48,11 @@ export function getRecommendations(
       content: params,
       handleRes: (res: ListRecommendRes) => {
         Loading.hide()
-        if (res.code === 200) {
-          resolve(res)
+        const { code, data, msg } = res
+        if (code === 200) {
+          resolve(data)
         } else {
-          const errorMessage = getErrorMessage(
-            'new_common_error',
-            res.code,
-            res.msg,
-          )
+          const errorMessage = getErrorMessage('new_common_error', code, msg)
           reject(new Error(errorMessage))
         }
       },
@@ -73,7 +73,7 @@ export function getRecommendations(
  */
 export function getFavorites(
   params: ListFavoriteParams,
-): Promise<ListFavoriteRes> {
+): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
     Loading.show()
     handlePostMessageToNative({
@@ -82,14 +82,11 @@ export function getFavorites(
       content: params,
       handleRes: (res: ListFavoriteRes) => {
         Loading.hide()
-        if (res.code === 200) {
-          resolve(res)
+        const { code, data, msg } = res
+        if (code === 200) {
+          resolve(data)
         } else {
-          const errorMessage = getErrorMessage(
-            'new_common_error',
-            res.code,
-            res.msg,
-          )
+          const errorMessage = getErrorMessage('get_favorites', code, msg)
           reject(new Error(errorMessage))
         }
       },
@@ -109,9 +106,7 @@ export function getFavorites(
  * @property {string} group 分组
  * @returns {Promise<ListSearchRes>}
  */
-export function searchDesigns(
-  params: ListSearchParams,
-): Promise<ListSearchRes> {
+export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
     Loading.show()
     handlePostMessageToNative({
@@ -120,14 +115,11 @@ export function searchDesigns(
       content: params,
       handleRes: (res: ListSearchRes) => {
         Loading.hide()
-        if (res.code === 200) {
-          resolve(res)
+        const { code, data, msg } = res
+        if (code === 200) {
+          resolve(data)
         } else {
-          const errorMessage = getErrorMessage(
-            'new_common_error',
-            res.code,
-            res.msg,
-          )
+          const errorMessage = getErrorMessage('search_designs', code, msg)
           reject(new Error(errorMessage))
         }
       },
@@ -139,26 +131,20 @@ export function searchDesigns(
 
 /**
  * 获取作品详情信息
- * @function getDesignDetails
- * @param {string} policyName 在线图片的url
- * @returns {boolean} 上传是否成功的结果
+ * @param {DetailParams} params 参数
+ * @property {string} policy_name 策略名
+ * @property {string} [design_id] 作品 ID（可选）
+ * @property {string} [favorite_time] 收藏时间（可选）
+ * @returns {Promise<BaseDesignDetails | SelfDesignDetails>} 作品详情
  */
 export const getDesignDetails = (
-  policyName: string,
-  designId?: string,
+  params: DetailParams,
 ): Promise<BaseDesignDetails | SelfDesignDetails> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_design_details',
-      content: designId
-        ? {
-            policy_name: policyName,
-            design_id: designId,
-          }
-        : {
-            policy_name: policyName,
-          },
+      content: params,
       handleRes: (res: Response) => {
         const { code, msg, data } = res
         if (code === 200) {
