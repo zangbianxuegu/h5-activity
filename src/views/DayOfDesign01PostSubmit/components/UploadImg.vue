@@ -8,10 +8,12 @@
         v-show="!data"
         class="img-wait-upload-container flex items-center justify-center"
       >
-        <div class="upload-btn-container flex items-center justify-center">
-          <div class="icon-container">
-            <van-icon name="plus" />
-          </div>
+        <div
+          class="upload-btn-container flex flex-col items-center justify-center"
+        >
+          <div class="icon-upload bg-contain bg-center bg-no-repeat"></div>
+          <span>上传作品</span>
+          <span>请按模板上传小于10MB，尺寸为1200×900px的图片</span>
         </div>
         <!-- 隐藏触发上传稿件的元素 -->
         <input
@@ -29,14 +31,14 @@
       >
         <!-- 删除作品按钮 -->
         <div
-          v-if="data"
+          v-if="data && showDeleteBtn"
           class="remove-upload-icon"
           @click.stop="removeUploadImg"
         >
           <van-icon name="cross" :max-count="1" :deletable="false" />
         </div>
         <!-- 作品图 -->
-        <img ref="formWorksRef" :src="imgDataBase64" alt="" srcset="" />
+        <img ref="formWorksRef" :src="imgDataSrc" alt="" srcset="" />
       </div>
     </div>
 
@@ -48,16 +50,24 @@
             <div
               class="cropper-container-header flex w-full items-center justify-between"
             >
-              <div @click="onClickCancelCropper" class="btn-cancel-cropper">
-                <van-icon name="arrow-left" />
+              <div
+                @click="onClickCancelCropper"
+                class="btn-cancel-cropper bg-contain bg-center bg-no-repeat"
+              ></div>
+              <div
+                class="flex flex-1 items-center justify-center text-[#e4f9ff]"
+              >
+                裁剪 1200px*900px 尺寸
               </div>
-              <div class="btn-cancel-cropper flex-1"></div>
-              <div @click="onClickFinishCropper" class="btn-cancel-cropper">
+              <div
+                @click="onClickFinishCropper"
+                class="btn-finish-cropper flex items-center justify-center"
+              >
                 完成
               </div>
             </div>
-            <div class="cropper-container-body">
-              <div id="upload_img_cut_test_container" @click.stop>
+            <div ref="cropperContainerBodyRef" class="cropper-container-body">
+              <div id="upload_img_cut_container" @click.stop>
                 <img
                   id="img-container"
                   :src="cropperData.preCropperImgUrl"
@@ -67,20 +77,24 @@
               </div>
             </div>
             <div
-              class="cropper-container-footer flex items-center justify-center"
+              class="cropper-container-footer flex w-full items-center justify-center text-[#bfbfbf]"
             >
-              已截取分辨率: 1200 * 900
+              已截取分辨率：1200*900
             </div>
           </div>
         </div>
       </van-overlay>
     </Teleport>
     <!-- 裁剪弹窗边框样式 -->
-    <Teleport to=".cropper-view-box" v-if="cropperData.isShowBorderCorn">
+    <Teleport to=".cropper-crop-box" v-if="cropperData.isShowBorderCorn">
       <div class="cropper-corner left-top-corner"></div>
       <div class="cropper-corner right-top-corner"></div>
       <div class="cropper-corner right-bottom-corner"></div>
       <div class="cropper-corner left-bottom-corner"></div>
+      <div class="cropper-center-line top-line"></div>
+      <div class="cropper-center-line right-line"></div>
+      <div class="cropper-center-line bottom-line"></div>
+      <div class="cropper-center-line left-line"></div>
     </Teleport>
   </div>
 </template>
@@ -106,9 +120,10 @@ import { showToast, showLoadingToast, closeToast, showImagePreview } from 'vant'
  * @param {number} maxSize 上传图片体积的最大限制
  * @param {number} minSize 上传图片体积的最小限制
  * @param {boolean} reupload 是否可重新上传
+ * @param {boolean} showDeleteBtn 是否显示默认的删除按钮
  */
 interface UploadImgProps {
-  data: any
+  data: string | Blob | null | undefined
   accept?: string
   previewFullImage?: boolean
   reupload?: boolean
@@ -121,11 +136,13 @@ interface UploadImgProps {
   maxSize?: number
   minSize?: number
   cropper?: boolean
+  showDeleteBtn?: boolean
 }
 
 const props = withDefaults(defineProps<UploadImgProps>(), {
   accept: 'image/png, image/jpg, image/jpeg',
   reupload: false,
+  showDeleteBtn: true,
 })
 
 const emits = defineEmits<{
@@ -142,12 +159,17 @@ const updateFileData = (data: Blob): void => {
   emits('update:data', data)
 }
 
-const imgDataBase64 = ref()
+// 可以为在线图片link或者base64
+const imgDataSrc = ref()
 watch(
   () => props.data,
   async (newVal) => {
     if (newVal) {
-      imgDataBase64.value = await blobToUrl(newVal)
+      if (Object.prototype.toString.call(newVal) === '[object Blob]') {
+        imgDataSrc.value = await blobToUrl(newVal as Blob)
+      } else {
+        imgDataSrc.value = newVal
+      }
     }
   },
 )
@@ -161,7 +183,7 @@ const onClickGoToUploadWorks = (): void => {
     if (props.reupload) {
       imageUploadsInputDomRef.value.click()
     } else if (props.previewFullImage) {
-      showImagePreview([imgDataBase64.value])
+      showImagePreview([imgDataSrc.value])
     }
   }
 }
@@ -179,6 +201,7 @@ const cropperData = ref({
   preCropperImgUrl: '',
   isShowBorderCorn: false,
 })
+const cropperContainerBodyRef = ref<HTMLElement | null>()
 
 watch(
   () => cropperData.value.isShow,
@@ -265,23 +288,75 @@ const listenUploadImgChange = (): void => {
 // 展示裁剪
 const showCropperModal = (): void => {
   const image = document.querySelector(
-    '#upload_img_cut_test_container img',
+    '#upload_img_cut_container img',
   ) as HTMLImageElement
   CROPPER?.destroy()
   CROPPER = new Cropper(image, {
     aspectRatio: 4 / 3,
     background: false,
-    highlight: true,
+    highlight: false,
     center: false,
-    viewMode: 3,
-    minCropBoxWidth: 1200,
-    minCropBoxHeight: 900,
-    cropBoxResizable: false,
+    viewMode: 1,
+    cropBoxResizable: true,
     cropBoxMovable: false,
-    responsive: true, // 响应式
+    responsive: false, // 响应式
     dragMode: 'move',
     ready: () => {
       closeToast()
+      void nextTick(async () => {
+        if (!CROPPER) return
+        const cropperContainerDom = cropperContainerBodyRef.value
+        const cropperContainerDomWidth = cropperContainerDom?.offsetWidth || 0
+        const cropperContainerDomHeight = cropperContainerDom?.offsetHeight || 0
+        const imageDataOrigin = CROPPER.getImageData()
+        const imageDataOriginWith = imageDataOrigin.width
+        // 先放大图片至宽度撑满裁剪容器
+        const zoomLevel = Math.ceil(
+          cropperContainerDomWidth / imageDataOriginWith,
+        )
+        CROPPER.zoomTo(zoomLevel)
+
+        CROPPER.setCropBoxData({
+          width: cropperContainerDomWidth,
+          height: cropperContainerDomHeight,
+          left: 0,
+          top: 0,
+        })
+        const imageData = CROPPER.getImageData()
+        const containerData = CROPPER.getContainerData()
+        const cropBoxData = CROPPER.getCropBoxData()
+
+        // 计算设置裁剪框居中
+        const cropBoxLeft = (containerData.width - cropBoxData.width) / 2
+        CROPPER.setCropBoxData({
+          left: cropBoxLeft,
+        })
+
+        // 计算设置裁剪的图片居中（宽度大于高度时，zoomTo(0)复原前设置居中）
+        if (imageData.width > imageData.height) {
+          if (imageData.width >= containerData.width) {
+            CROPPER.moveTo(0, 0)
+          } else {
+            if (imageData.width <= cropBoxData.width) {
+              CROPPER.moveTo(0, 0)
+            }
+          }
+        }
+        // 复原
+        CROPPER.zoomTo(0)
+        const imageDataFinal = CROPPER.getImageData()
+        // 计算设置裁剪的图片居中（宽度小于高度时，zoomTo(0)复原后设置居中）
+        if (imageDataOrigin.width <= imageDataOrigin.height) {
+          CROPPER.moveTo(0, -((imageDataFinal.height - cropBoxData.height) / 2))
+        }
+        // 计算设置裁剪的图片居中（宽度大于高度，且宽度大于裁剪区域的宽度，zoomTo(0)复原后设置居中）
+        if (imageDataFinal.width > cropBoxData.width) {
+          CROPPER.moveTo(
+            cropBoxLeft - (imageDataFinal.width - cropBoxData.width) / 2,
+            0,
+          )
+        }
+      })
     },
   })
 }
@@ -326,38 +401,15 @@ onMounted(() => {
 </script>
 
 <style scoped lang="scss">
-// 预览弹窗
-.works-preview-modal {
-  padding: 20px 60px;
-  .wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    .modal-body {
-      height: calc(100% - 100px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-footer {
-      height: 100px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-}
 // 裁剪区域开始
 img {
   display: block;
   /* This rule is very important, please don't ignore this */
   max-width: 100%;
 }
-#upload_img_cut_test_container {
-  width: 1200px;
-  height: 900px;
+#upload_img_cut_container {
+  width: 1280px;
+  height: 682px;
 }
 .cropper-modal-container {
   .modal-wrapper {
@@ -368,14 +420,43 @@ img {
     justify-content: center;
     align-items: center;
     .modal-body {
-      width: 1200px;
-      height: calc(100% - 70px);
+      width: 1280px;
+      height: 960px;
+      // height: calc(100% - 70px);
       display: flex;
       justify-content: center;
       align-items: center;
       .cropper-container-header,
       .cropper-container-footer {
-        color: #fff;
+        height: 141px;
+        font-size: 32px;
+        background-color: #000000;
+      }
+      .cropper-container-header {
+        border-radius: 40px 40px 0 0;
+        padding: 0 32px 0 62px;
+        .btn-cancel-cropper {
+          width: 71px;
+          height: 48px;
+          background-image: url('@/assets/images/dayofdesign01-post-submit/icon-cancel-cropper.png');
+        }
+        .btn-finish-cropper {
+          width: 200px;
+          height: 76px;
+          background-color: #ffffff;
+          box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+          border-radius: 38px;
+          font-size: 34px;
+          letter-spacing: 1px;
+          color: #5a7191;
+        }
+      }
+      .cropper-container-footer {
+        border-radius: 0px 0px 40px 40px;
+      }
+      .cropper-container-body {
+        width: 100%;
+        height: 682px;
       }
     }
   }
@@ -385,6 +466,21 @@ img {
 }
 // 待upload区域
 .img-wait-upload-container {
+}
+// 上传按钮与文本
+.upload-btn-container {
+  .icon-upload {
+    width: 119px;
+    height: 119px;
+    background-image: url('@/assets/images/dayofdesign01-post-submit/icon-upload.png');
+    &:hover {
+      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-upload-hover.png');
+    }
+  }
+  & > span {
+    font-size: 32px;
+    color: #ffffff;
+  }
 }
 // 已upload区域
 .img-uploaded-container {
@@ -421,56 +517,84 @@ img {
 }
 .cropper-view-box {
   outline: none;
+  border: 4px solid #fff;
   display: inline-block;
   position: relative;
 }
+.cropper-point {
+  display: none;
+}
 .cropper-corner {
-  width: 40px;
-  height: 40px;
-  border: 5px solid #fff;
+  width: 60px;
+  height: 60px;
+  border: 10px solid #fff;
   &.left-top-corner {
     position: absolute;
-    top: 0;
-    left: 0;
+    top: -5px;
+    left: -5px;
     border-right: none;
     border-bottom: none;
+    border-radius: 20px 5px 5px 5px;
   }
   &.right-top-corner {
     position: absolute;
-    top: 0;
-    right: 0;
+    top: -5px;
+    right: -5px;
     border-left: none;
     border-bottom: none;
+    border-radius: 5px 20px 5px 5px;
   }
   &.right-bottom-corner {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -5px;
+    right: -5px;
     border-top: none;
     border-left: none;
+    border-radius: 5px 5px 20px 5px;
   }
   &.left-bottom-corner {
     position: absolute;
-    bottom: 0;
-    left: 0;
+    bottom: -5px;
+    left: -5px;
     border-top: none;
     border-right: none;
+    border-radius: 5px 5px 5px 20px;
   }
 }
-.van-uploader {
-  width: 100%;
-  height: 100%;
-  .van-uploader__wrapper {
-    width: 100%;
-    height: 100%;
-    .van-uploader__preview {
-      width: 100%;
-      height: 100%;
-      .van-uploader__preview-image {
-        width: 100%;
-        height: 100%;
-      }
-    }
+.cropper-center-line {
+  border-radius: 5px;
+  background-color: #fff;
+  &.top-line {
+    width: 60px;
+    height: 12px;
+    position: absolute;
+    top: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &.bottom-line {
+    width: 60px;
+    height: 12px;
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &.right-line {
+    width: 12px;
+    height: 60px;
+    position: absolute;
+    right: -5px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  &.left-line {
+    width: 12px;
+    height: 60px;
+    position: absolute;
+    left: -5px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 }
 </style>

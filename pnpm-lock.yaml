@@ -96,6 +96,9 @@ importers:
       '@types/node':
         specifier: ^20.6.2
         version: 20.12.13
+      '@types/qs':
+        specifier: ^6.9.17
+        version: 6.9.17
       '@typescript-eslint/eslint-plugin':
         specifier: ^6.7.3
         version: 6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.0)(typescript@5.4.5))(eslint@8.57.0)(typescript@5.4.5)
@@ -1382,6 +1385,9 @@ packages:
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
+
+  '@types/qs@6.9.17':
+    resolution: {integrity: sha512-rX4/bPcfmvxHDv0XjfJELTTr+iB+tn032nPILqHm5wbthUUUuVtNGGqzhya9XUxjTP8Fpr0qYgSZZKxGY++svQ==}
 
   '@types/responselike@1.0.3':
     resolution: {integrity: sha512-H/+L+UkTV33uf49PH5pCAUBVPNj2nDBXTN+qS1dOwyyg24l3CcicicCA7ca+HMvJBZcFgl5r8e+RR6elsb4Lyw==}
@@ -6495,6 +6501,8 @@ snapshots:
   '@types/node@20.5.1': {}
 
   '@types/normalize-package-data@2.4.4': {}
+
+  '@types/qs@6.9.17': {}
 
   '@types/responselike@1.0.3':
     dependencies:

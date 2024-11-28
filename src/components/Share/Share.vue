@@ -1,11 +1,10 @@
 <template>
   <div class="page-container">
-    <van-share-sheet
+    <sky-share-sheet
       v-model:show="isShow"
-      title="立即分享给好友"
       :options="shareChannel"
       @select="onSelectChannel"
-      @closed="onClosed"
+      :shareFormatConfig="shareFormatConfig"
     />
   </div>
 </template>
@@ -20,12 +19,15 @@ import type {
   NgshareShareImageConfig,
 } from '@/utils/ngShare/types'
 import { ngshareByH5 } from '@/utils/ngShare/index'
+import SkyShareSheet from './SkyShareSheet.vue'
+import type { ShareFormatConfig } from '@/utils/ngShare/share'
 
 /**
  * @prop shareChannel 分享渠道，传[]默认分享所有渠道
  */
 const props = defineProps<{
   show?: boolean
+  shareFormatConfig: ShareFormatConfig
   shareChannel: NGSHARE_SHARE_CHANNEL[] | []
   shareLinkConfig: NgshareShareLinkConfig
   shareImageConfig: NgshareShareImageConfig
@@ -36,9 +38,6 @@ const isShow = ref(false)
 onMounted(() => {
   isShow.value = true
 })
-const onClosed = (): void => {
-  props.closed()
-}
 
 interface ShareOption {
   name: string
@@ -50,37 +49,37 @@ const showShare = ref(false)
 const options: ShareOption[] = [
   {
     name: '微信朋友圈',
-    icon: 'wechat',
+    icon: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
     shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
   },
   {
     name: '微信',
-    icon: 'wechat',
+    icon: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
     shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
   },
   {
     name: '抖音',
-    icon: 'weibo',
+    icon: NGSHARE_SHARE_CHANNEL.DOU_YIN,
     shareChannel: NGSHARE_SHARE_CHANNEL.DOU_YIN,
   },
   {
     name: '哔哩哔哩',
-    icon: 'weibo',
+    icon: NGSHARE_SHARE_CHANNEL.BILIBILI,
     shareChannel: NGSHARE_SHARE_CHANNEL.BILIBILI,
   },
   {
     name: '微博',
-    icon: 'weibo',
+    icon: NGSHARE_SHARE_CHANNEL.WEI_BO,
     shareChannel: NGSHARE_SHARE_CHANNEL.WEI_BO,
   },
   {
     name: '网易大神圈子',
-    icon: 'weibo',
+    icon: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
     shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
   },
   {
     name: '小红书',
-    icon: 'weibo',
+    icon: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
     shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
   },
 ]
