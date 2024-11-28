@@ -35,8 +35,12 @@
                     ]"
                     @click="handleReward(index + 1, item)"
                   >
-                    <div class="acc-task-front"></div>
-                    <div class="acc-task-back">
+                    <div
+                      class="acc-task-front animate__animated animate__fadeIn"
+                    ></div>
+                    <div
+                      class="acc-task-back animate__animated animate__fadeIn"
+                    >
                       <div class="acc-task-gift">
                         <img
                           :src="handleSrc(item.info.name)"
@@ -55,7 +59,11 @@
                 <ul>
                   <template v-for="item in taskList" :key="item.id">
                     <li
-                      :class="['task-item', `${item.status}`]"
+                      :class="[
+                        'task-item',
+                        'animate__animated animate__fadeIn',
+                        `${item.status}`,
+                      ]"
                       @click="handleReward(1, item)"
                     ></li>
                   </template>
@@ -197,9 +205,8 @@ function handleHelp(): void {
  * @returns {boolean} 是否有未领奖
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  const tasksValid = tasks
-    .slice(0, ACC_TASK_INDEX)
-    .some((task) => task.value >= task.stages[0] && task.award[0] === 0)
+  const tasksValid =
+    tasks[0].value >= tasks[0].stages[0] && tasks[0].award[0] === 0
   const accTask = tasks[ACC_TASK_INDEX]
   const accTasksValid = accTask.stages.some(
     (stage, index) => accTask.value >= stage && accTask.award[index] === 0,
