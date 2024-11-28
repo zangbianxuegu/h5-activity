@@ -52,10 +52,11 @@ const bindCode = ref('')
  */
 function handleBind(): void {
   if (!bindCode.value) return
-  acceptInvite({ code: bindCode.value })
+  acceptInvite({ code: bindCode.value.trim() })
     .then((res) => {
-      console.log(res, 'res')
-      showToast('绑定成功')
+      if (res.code === 200) {
+        showToast('绑定成功')
+      }
     })
     .catch((error) => {
       showToast(error.message)

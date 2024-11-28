@@ -61,9 +61,9 @@
               </div>
             </div>
             <div
-              class="absolute left-[1766px] top-[170px] font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
+              class="absolute left-[1700px] top-[170px] w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
             >
-              {{ topAccTaskList[0].val }}
+              {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
             </div>
             <!-- 被邀请玩家累计收集光之翼数量 -->
             <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
@@ -157,6 +157,7 @@
         <ActivityTab
           :currentTab="currentTab"
           :tabs="tabs"
+          :inviteInfo="inviteInfo"
           @switchTab="switchTab"
         >
           <component
@@ -331,7 +332,7 @@ const BOTTOM_ACC_TASK_LIST = [
   ),
 ]
 
-// 弹框
+// 规则弹框
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 活动数据
@@ -352,17 +353,6 @@ const taskOrderMap = new Map(
     BOTTOM_ACC_TASK_LIST[0],
   ].map((task, index) => [task.taskId, index]),
 )
-
-// 进度：1,3,5,7,10
-const topAccTaskValue = computed(() => {
-  return eventData.value[1].value * 25
-})
-const middleAccTaskValue = computed(() => {
-  return eventData.value[2].value
-})
-const bottomAccTaskValue = computed(() => {
-  return eventData.value[3].value * 20
-})
 
 // 获取任务状态
 const getTaskStatus = (award: number, value: number, stage: number): string => {
@@ -460,6 +450,13 @@ function getUserInviteInfo(): void {
       inviteInfo.canBind = res.can_bind
       inviteInfo.myCode = res.my_code
       inviteInfo.bindCode = res.bind_code
+      if (inviteInfo.canBind) {
+        if (m1Status.value === 'redeemed') {
+          currentTab.value = 0
+        } else {
+          currentTab.value = 1
+        }
+      }
     })
     .catch((error) => {
       showToast(error.message)
@@ -486,13 +483,6 @@ function getActivityData(): void {
           ),
         },
       }
-      // console.log(newActivityData, 'newActivityData');
-      // newActivityData = {"own_unlocks":[],"event_data":{"activitycenter_invitation_code":[
-      //   {"value":1,"task_id":"activitycenter_invitation_code_m1","stages":[1],"score":"","is_werewolf_reward":false,"awarded_types":[],"awarded_infos":[[]],"award":[0]},
-      //   {"value":2,"task_id":"activitycenter_invitation_code_m2","stages":[1,2,3],"score":"","is_werewolf_reward":false,"awarded_types":[],"awarded_infos":[[],[],[]],"award":[0,0,0]},
-      //   {"value":30,"task_id":"activitycenter_invitation_code_m3","stages":[30,60,100,150,300],"score":"","is_werewolf_reward":false,"awarded_types":[],"awarded_infos":[[],[],[],[],[]],"award":[0,0,0,0,0]},
-      //   {"value":2,"task_id":"activitycenter_invitation_code_m4","stages":[1,2,3,4,5],"score":"","is_werewolf_reward":false,"awarded_types":[],"awarded_infos":[[],[],[],[],[]],"award":[0,0,0,0,0]},
-      // ]},"current_time":1732611390}
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -553,6 +543,77 @@ function handleReward(rewardId: number, item: Reward): void {
       showToast(error.message)
     })
 }
+
+// 顶部 适配累积值不等分的进度条 计算累积任务值
+function topCalculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 3) return 100
+  const ACC_TASK_VALUES: Readonly<Record<number, number>> = {
+    0: 0,
+    1: 14,
+    2: 50,
+    3: 100,
+  }
+  return ACC_TASK_VALUES[accTaskVal]
+}
+
+// 顶部 进度：1,2,3
+const topAccTaskValue = computed(() => {
+  return topCalculateAccTaskValue(eventData.value[1].value)
+})
+
+// 中间 适配累积值不等分的进度条 计算累积任务值
+function middleCalculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 300) return 100
+  switch (true) {
+    case accTaskVal < 30:
+      return accTaskVal * 0.3
+    case accTaskVal === 30:
+      return 9
+    case accTaskVal < 60:
+      return (accTaskVal - 30) * 0.7 + 9
+    case accTaskVal === 60:
+      return 30
+    case accTaskVal < 100:
+      return (accTaskVal - 60) * 0.5 + 30
+    case accTaskVal === 100:
+      return 50
+    case accTaskVal <= 150:
+      return (accTaskVal - 100) * 0.44 + 50
+    case accTaskVal === 150:
+      return 72
+    case accTaskVal < 300:
+      return (accTaskVal - 150) * 0.18 + 72
+    default:
+      return 0 // 其他情况（理论上不会发生），返回0
+  }
+}
+
+// 中间 进度：30,60,100,150,300
+const middleAccTaskValue = computed(() => {
+  return middleCalculateAccTaskValue(eventData.value[2].value)
+})
+
+// 底部 适配累积值不等分的进度条 计算累积任务值
+function bottomCalculateAccTaskValue(accTaskVal: number): number {
+  // 如果累积任务值大于等于100，直接返回100
+  if (accTaskVal >= 5) return 100
+  const ACC_TASK_VALUES: Readonly<Record<number, number>> = {
+    0: 0,
+    1: 9,
+    2: 30,
+    3: 50,
+    4: 71,
+    5: 100,
+  }
+  return ACC_TASK_VALUES[accTaskVal]
+}
+
+// 底部 进度：1,2,3,4,5
+const bottomAccTaskValue = computed(() => {
+  return bottomCalculateAccTaskValue(eventData.value[3].value)
+})
 
 /**
  * @function 显示帮助

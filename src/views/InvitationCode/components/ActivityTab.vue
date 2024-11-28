@@ -1,6 +1,6 @@
 <template>
   <div class="tab-container">
-    <div class="tab-title-container">
+    <div v-if="inviteInfo.canBind" class="tab-title-container">
       <div
         v-for="(item, index) in tabs"
         :key="(item as Tab).name"
@@ -14,49 +14,32 @@
     </div>
     <div class="tab-content">
       <slot></slot>
-      <!-- <component :is="tabs[currentTab].component"></component> -->
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import type InvitationCode from './InvitationCode.vue'
-// import BindRewards from './BindRewards.vue'
-
 interface Tab {
   name: string
-  component: InstanceType<typeof InvitationCode>
+  component: Component
 }
 
 defineProps({
   tabs: {
     type: Array,
-    default: () => [
-      // {
-      // 	name: 'InvitationCode',
-      // 	component: InvitationCode,
-      // }
-    ],
+    default: () => [],
   },
   currentTab: {
     type: Number,
     default: 0,
   },
+  inviteInfo: {
+    type: Object,
+    default: () => {},
+  },
 })
 
 const emit = defineEmits(['switchTab'])
-
-// const currentTab = ref(0)
-// const tabs = [
-// 	{
-// 		name: 'InvitationCode',
-// 		component: InvitationCode,
-// 	},
-// 	{
-// 		name: 'BindRewards',
-// 		component: BindRewards,
-// 	},
-// ]
 
 // 切换组件
 const switchComponent = (index: number): void => {

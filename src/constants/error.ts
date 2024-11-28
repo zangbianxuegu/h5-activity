@@ -197,8 +197,8 @@ export const ERROR_MESSAGES: ErrorMessages = {
   // 绑定pc上线庆典邀请码
   accept_invite: {
     400: {
-      'invalid code': '无效的邀请码',
-      'cannot bind': '无法绑定',
+      'invalid code': '请输入正确的邀请码',
+      'cannot bind': '账号无法绑定',
     },
   },
 }

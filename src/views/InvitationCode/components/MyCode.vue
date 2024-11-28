@@ -1,15 +1,15 @@
 <template>
-  <div class="flex h-full items-center justify-between px-[120px]">
+  <div class="flex h-full items-center justify-between px-[140px]">
     <div class="text-white">
       <p class="text-[36px]">我的邀请码</p>
-      <p class="text-[56px] font-medium">{{ inviteInfo.myCode }}</p>
+      <p class="text-[56px] font-medium">
+        {{ inviteInfo.myCode || '00000000' }}
+      </p>
     </div>
     <!-- 分隔线 -->
     <div class="line"></div>
     <!-- 复制按钮 -->
     <div class="copy" @click="copyCode"></div>
-    <!-- 分享按钮 -->
-    <div class="share"></div>
   </div>
 </template>
 
@@ -39,7 +39,9 @@ function copyTextToClipboard(text: string): void {
 }
 
 const copyCode = (): void => {
-  copyTextToClipboard(props.inviteInfo.myCode)
+  copyTextToClipboard(
+    `给你我的邀请码${props.inviteInfo.myCode}，下载《光·遇》和我一同遇见温暖，云间探险！~绑定邀请码即可共同获得邀约礼遇！`,
+  )
 }
 </script>
 
@@ -55,13 +57,6 @@ const copyCode = (): void => {
   width: 74px;
   height: 82px;
   background-image: url('@/assets/images/invitation-code/copy.png');
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-.share {
-  width: 74px;
-  height: 82px;
-  background-image: url('@/assets/images/invitation-code/share.png');
   background-repeat: no-repeat;
   background-size: contain;
 }
