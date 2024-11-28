@@ -662,6 +662,9 @@ async function handleSearch(dir?: string): Promise<void> {
  * @returns {Promise<void>}
  */
 async function handlePrev(): Promise<void> {
+  if (currentPage.value <= 1) {
+    return
+  }
   if (type.value === 'favorite') {
     await handleFavorite('prev')
   } else {
@@ -675,6 +678,9 @@ async function handlePrev(): Promise<void> {
  * @returns {Promise<void>}
  */
 async function handleNext(): Promise<void> {
+  if (currentPage.value >= totalPage.value) {
+    return
+  }
   if (type.value === 'favorite') {
     await handleFavorite('next')
   } else {
@@ -689,6 +695,9 @@ async function handleNext(): Promise<void> {
  * @returns {Promise<void>}
  */
 async function handleItemClick(item: DesignItem): Promise<void> {
+  if (!item.design_id) {
+    return
+  }
   try {
     const { design_id: designId, favorite_time: favoriteTime } = item
     const detail = await getDesignDetails({
