@@ -22,7 +22,6 @@
             <!-- 邀请人数 -->
             <h2 class="sr-only">邀请人数</h2>
             <div class="absolute left-[1140px] top-[300px] flex">
-              <div class="sr-only">邀请人数</div>
               <ul
                 class="absolute left-0 top-[-80px] flex w-[500px] justify-between"
               >
@@ -38,7 +37,7 @@
                   >
                     <div
                       :class="[
-                        'top-acc-task-item animate__animated animate__fadeIn bg-contain',
+                        'top-acc-task-item animate__animated animate__fadeIn',
                         `${item.status}${index + 1}`,
                       ]"
                       @click="handleReward(index + 1, item)"
@@ -68,7 +67,6 @@
             <!-- 被邀请玩家累计收集光之翼数量 -->
             <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
             <div class="absolute left-[1140px] top-[580px] flex">
-              <div class="sr-only">被邀请玩家累计收集光之翼数量</div>
               <ul
                 class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
               >
@@ -84,7 +82,7 @@
                   >
                     <div
                       :class="[
-                        'middle-acc-task-item animate__animated animate__fadeIn bg-contain',
+                        'middle-acc-task-item animate__animated animate__fadeIn',
                         `${item.status}${index + 1}`,
                       ]"
                       @click="handleReward(index + 1, item)"
@@ -110,7 +108,6 @@
             <!-- 被邀请玩家累计献祭次数 -->
             <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
             <div class="absolute left-[1140px] top-[860px] flex">
-              <div class="sr-only">被邀请玩家累计献祭次数</div>
               <ul
                 class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
               >
@@ -126,7 +123,7 @@
                   >
                     <div
                       :class="[
-                        'bottom-acc-task-item animate__animated animate__fadeIn bg-contain',
+                        'bottom-acc-task-item animate__animated animate__fadeIn',
                         item.status,
                       ]"
                       @click="handleReward(index + 1, item)"
@@ -219,16 +216,19 @@ const curRewards: Ref<Rewards[]> = ref([
 
 const currentTab = ref(0)
 const tabs = reactive([
+  // 邀请码
   {
     name: 'MyCode',
     component: markRaw(MyCode),
   },
+  // 绑定奖励
   {
     name: 'BindRewards',
     component: markRaw(BindRewards),
   },
 ])
 
+// 切换标签页的函数
 const switchTab = (index: number): void => {
   currentTab.value = index
 }
@@ -388,7 +388,6 @@ const updateTaskList = (
 
 // 绑定任务
 const bindList = updateTaskList(BIND_LIST, 0)
-console.log(bindList, 'bindList')
 
 // 累积任务列表
 const topAccTaskList = updateTaskList(TOP_ACC_TASK_LIST, 1)

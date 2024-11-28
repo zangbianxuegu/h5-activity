@@ -1,5 +1,6 @@
 <template>
   <div class="tab-container">
+    <!-- 页签 -->
     <div v-if="inviteInfo.canBind" class="tab-title-container">
       <div
         v-for="(item, index) in tabs"
@@ -12,6 +13,7 @@
         @click="switchComponent(index)"
       ></div>
     </div>
+    <!-- 内容 -->
     <div class="tab-content">
       <slot></slot>
     </div>

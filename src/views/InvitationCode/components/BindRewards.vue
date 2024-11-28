@@ -14,12 +14,14 @@
       ></div>
     </div>
     <div class="flex items-center">
+      <!-- 输入框 -->
       <input
         v-model="bindCode"
         class="ml-[36px] mr-[10px] h-[58px] w-[530px] rounded-[29px] pl-[30px] pr-[40px] text-[32px]"
         placeholder="点击输入好友邀请码"
         type="text"
       />
+      <!-- 绑定按钮 -->
       <button
         class="h-[58px] w-[166px] rounded-[29px] bg-[#ffc75b] text-[32px] text-white"
         @click="handleBind"
@@ -27,6 +29,8 @@
         绑定
       </button>
     </div>
+    <!-- 文案 -->
+    <div class="sr-only">绑定好友邀请码获得奖励！</div>
     <div class="bottom-text mb-[4px] mt-[14px]"></div>
   </div>
 </template>
