@@ -1523,7 +1523,6 @@
   "src/assets/images/doubledan-2024-1/bg.jpg": 1732709629679.2332,
   "src/assets/images/doubledan-2024-1/main-bg.png": 1732709629679.2332,
   "src/assets/images/doubledan-2024-1/acc-task2-can-bg.png": 1732709629678.258,
-  "src/assets/images/common/rewards/candles.png": 1732712210503.671,
   "src/assets/images/common/rewards/fireworks.png": 1732712210503.671,
   "src/assets/images/common/rewards/grow.png": 1732712210503.671,
   "src/assets/images/common/rewards/energy_potion.png": 1732712210503.671,
@@ -1539,5 +1538,6 @@
   "src/assets/images/common/rewards/swing.png": 1732712210503.671,
   "src/assets/images/common/rewards/trail_rainbow.png": 1732712210504.635,
   "src/assets/images/common/rewards/tiny.png": 1732712210504.635,
-  "src/assets/images/common/rewards/energy.png": 1732712210503.671
+  "src/assets/images/common/rewards/energy.png": 1732712210503.671,
+  "src/assets/images/common/rewards/candles.png": 1732761414150.3633
 }
