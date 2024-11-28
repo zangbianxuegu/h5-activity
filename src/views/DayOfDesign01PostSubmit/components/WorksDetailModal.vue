@@ -3,63 +3,76 @@
     <Teleport to="body">
       <van-overlay class="works-detail-overlay" :show="show">
         <div class="wrapper">
-          <div class="works-detail-modal-body modal-body">
+          <div class="works-detail-modal-body bg-cover bg-center bg-no-repeat">
             <div class="works-detail-modal-container">
-              <div id="works-detail-modal">
-                <div class="left">
-                  <img
-                    id="img-container"
-                    :src="worksData.worksImgSrc"
-                    alt=""
-                    srcset=""
-                  />
-                </div>
-                <div class="right">
-                  <div class="works-preview-basic-info">
-                    <p>
-                      <span>编号: </span>
-                      <span id="works-id">{{ worksData.id }}</span>
-                      <van-icon
-                        id="copy-works-id"
-                        name="description-o"
-                        @click="onClickCopyWorksId"
-                      />
-                    </p>
-                    <p>
-                      <span>作品名: </span>
-                      <span>{{ worksData.worksName }}</span>
-                    </p>
-                    <p>
-                      <span>作者名: </span>
-                      <span>{{ worksData.author }}</span>
-                    </p>
-                  </div>
-                  <div class="works-preview-introduce">
-                    <span>作品介绍：</span>
-                    <p>{{ worksData.worksIntroduce }}</p>
-                  </div>
-                  <div class="handle-bar">
-                    <div
-                      v-if="isShowShareBtn"
-                      @click.stop="onClickHandleBarShare"
+              <div class="left">
+                <img
+                  id="img-container"
+                  :src="worksData.worksImgSrc"
+                  alt=""
+                  srcset=""
+                />
+              </div>
+              <div class="right">
+                <div class="works-preview-basic-info">
+                  <p>
+                    <span>编号：</span>
+                    <span id="works-id">{{ worksData.id }}</span>
+                    <span
+                      id="copy-works-id"
+                      @click="onClickCopyWorksId"
+                      class="btn-copy"
+                      >复制</span
                     >
-                      <van-icon name="share-o" />
-                    </div>
-                    <div @click.stop="onClickHandleBarDelete">
-                      <van-icon name="delete-o" />
-                    </div>
-                    <div v-if="isSelf" @click.stop="onClickHandleBarDownload">
-                      <van-icon name="down" />
-                    </div>
-                    <div v-if="isOther" @click.stop="throttleClickShare">
-                      <van-icon :name="favorite ? 'like' : 'like-o'" />
-                    </div>
-                  </div>
+                  </p>
+                  <p>
+                    <span>作者：</span>
+                    <span>{{ worksData.author }}</span>
+                  </p>
+                  <p>
+                    <span>作品：</span>
+                    <span>{{ worksData.worksName }}</span>
+                  </p>
                 </div>
-                <div class="btn-close" @click="onClickCloseModal">
-                  <van-icon name="cross" />
+                <div class="line bg-cover bg-center bg-no-repeat"></div>
+                <div class="works-preview-introduce">
+                  <p>{{ worksData.worksIntroduce }}</p>
+                </div>
+                <div class="btn-group-bar">
+                  <div
+                    v-if="isOther"
+                    @click.stop="throttleClickShare"
+                    :class="['btn', 'like']"
+                  >
+                    <img :src="likeBtnImg" alt="" />
+                  </div>
+                  <div
+                    v-if="isSelf"
+                    @click.stop="onClickHandleBarDownload"
+                    :class="['btn', 'down']"
+                  >
+                    <img :src="downloadBtnIcon" alt="" />
+                  </div>
+                  <div
+                    v-if="isShowShareBtn"
+                    @click.stop="onClickHandleBarShare"
+                    :class="['btn', 'share']"
+                    id="WorksDetailModalShareBtn"
+                  >
+                    <img :src="shareBtnIcon" alt="" />
+                  </div>
+                  <div
+                    @click.stop="onClickHandleBarDelete"
+                    :class="['btn', 'delete']"
+                  >
+                    <img :src="deleteBtnIcon" alt="" />
+                  </div>
                 </div>
               </div>
+              <div
+                class="btn-close bg-contain bg-center bg-no-repeat"
+                @click="onClickCloseModal"
+              ></div>
             </div>
           </div>
         </div>
@@ -73,6 +86,7 @@ import throttle from 'lodash.throttle'
 import { showConfirmDialog, showToast } from 'vant'
 import { showShare } from '@/utils/ngShare/share'
 import ClipboardJS from 'clipboard'
+import qs from 'qs'
 import { useBaseStore } from '@/stores/base'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
@@ -84,6 +98,11 @@ import {
 import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
+import likeBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-favorite.png'
+import likedBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-favorited.png'
+import deleteBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-delete.png'
+import shareBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-share.png'
+import downloadBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-download.png'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -116,6 +135,11 @@ watch(
   },
 )
 const emits = defineEmits(['update:show', 'update:favorite', 'afterDelete'])
+
+// 点赞按钮
+const likeBtnImg = computed(() => {
+  return props.favorite ? likedBtnIcon : likeBtnIcon
+})
 
 const isSelf = computed(() => {
   return props.type === DESIGN_DETAILS_TYPE.SELF
@@ -173,9 +197,27 @@ watch(
   },
 )
 
+const shareLinkParams = computed(() => {
+  return encodeURIComponent(
+    qs.stringify({
+      d_id: props.worksData.id,
+      d_name: props.worksData.worksName,
+      d_author: props.worksData.author,
+      d_introduce: props.worksData.worksIntroduce,
+      d_img: props.worksData.worksImgSrc,
+      d_img_share: props.worksData.worksDecorateImgSrc,
+    }),
+  )
+})
+
 const onClickHandleBarShare = (): void => {
+  console.log(
+    `http://10.227.199.103:3000/dayofdesign01.html?${shareLinkParams.value}`,
+  )
+
   shareData.value.show = true
   showShare(
+    { targetElByHover: '#WorksDetailModalShareBtn' },
     props.worksData.worksDecorateImgSrc
       ? []
       : [
@@ -187,8 +229,8 @@ const onClickHandleBarShare = (): void => {
     {
       title: '绘梦节分享标题',
       text: '绘梦节分享文本',
-      link: 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html',
-      // link: 'http://10.227.199.103:3000/dayofdesign01.html',
+      // link: `https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?${shareLinkParams.value}`,
+      link: `http://10.227.199.103:3000/dayofdesign01.html?${shareLinkParams.value}`,
       desc: '绘梦节分享说明',
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
@@ -230,6 +272,8 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 // 点击下载按钮，下载作品拼装图
 const onClickHandleBarDownload = async (): Promise<void> => {
   try {
+    // const module = 'download'
+    // void webViewStatistics({ module })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
       const res = await saveImgToDeviceAlbum(worksDecorateImgSrc)
@@ -245,6 +289,8 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const onClickHandleBarLike = async (): Promise<void> => {
   try {
+    // const module = 'download'
+    // void webViewStatistics({ module })
     const favoriteResult = !props.favorite
     if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
       await updateFavorites(
@@ -254,7 +300,7 @@ const onClickHandleBarLike = async (): Promise<void> => {
         props.filePickerConfig.policyName,
       )
       showToast(favoriteResult ? '收藏成功' : '取消收藏成功')
-      emits('update:favorite', !props.favorite)
+      emits('update:favorite', favoriteResult)
     }
   } catch (error: any) {
     showToast(error?.message as string)
@@ -290,16 +336,17 @@ onMounted(async () => {})
     height: 100%;
     display: flex;
     flex-direction: column;
-    .modal-body {
-      height: 100%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
+    justify-content: center;
+    align-items: center;
   }
 }
 .works-detail-modal-body {
-  height: 100%;
+  width: 1831px;
+  height: 961px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url('@/assets/images/dayofdesign01-post-submit/bg-works-detail.png');
   .works-detail-modal-container {
     width: 100%;
     height: 100%;
@@ -307,71 +354,110 @@ onMounted(async () => {})
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 30px 0 30px 30px;
   }
-  #works-detail-modal {
-    height: 900px;
-    width: 1788px;
+
+  .left {
+    flex: 1;
+    height: 100%;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    .left {
+    justify-content: flex-end;
+    img {
       width: 1200px;
-      height: 100%;
-      display: flex;
-      justify-content: flex-end;
-      img {
-        width: 1200px;
-        height: 900px;
-        border-radius: 40px;
-      }
+      height: 900px;
+      border-radius: 40px;
     }
-    .right {
-      width: calc(1788px - 1200px);
-      height: 100%;
+  }
+  .right {
+    width: 600px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 80px 60px;
+    color: #ababab;
+    font-size: 40px;
+    color: #fff;
+    .works-preview-basic-info {
+      width: 100%;
+      height: 228px;
       display: flex;
       flex-direction: column;
-      justify-content: flex-start;
-      align-items: flex-start;
-      padding-left: 80px;
-      color: #ababab;
-      font-size: 40px;
-      color: #fff;
-      .works-preview-basic-info {
-        width: 100%;
-        height: 228px;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        p {
-          span {
-            margin-right: 10px;
-          }
-        }
-      }
-      .works-preview-introduce {
-        width: 100%;
-        flex: 1;
-      }
-      .handle-bar {
-        width: 100%;
-        height: 128px;
+      justify-content: space-between;
+      gap: 30px;
+      p {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        font-size: 108px;
-        & > div {
-          margin-right: 70px;
+        .btn-copy {
+          width: 100px;
+          height: 47px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          margin-left: 24px;
+          background-color: #e4f9ff;
+          box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+          border-radius: 23px;
+          font-size: 28px;
+          font-weight: 700;
+          letter-spacing: 1px;
+          color: #5a7191;
+        }
+        span {
+          font-size: 36px;
+          color: #5a7191;
+          font-family: SourceHanSansCN-Regular;
+        }
+      }
+    }
+    .line {
+      width: 480px;
+      height: 2px;
+      margin: 37px 0 30px 0;
+      background-image: url('@/assets/images/dayofdesign01-post-submit/line-dot.png');
+    }
+    .works-preview-introduce {
+      width: 100%;
+      flex: 1;
+      p {
+        font-size: 30px;
+        color: #5a7191;
+        font-family: SourceHanSansCN-Regular;
+        line-height: 50px;
+      }
+    }
+    .btn-group-bar {
+      width: 100%;
+      height: 128px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 108px;
+      & > .btn {
+        width: 121px;
+        height: 121px;
+        background-color: rgba(90, 113, 145, 0.6);
+        border-radius: 30px;
+        box-sizing: border-box;
+        &:hover {
+          border: 3px solid #fff;
+        }
+        &.delete img {
+          padding: 24px;
         }
       }
     }
   }
 }
 .btn-close {
+  width: 69px;
+  height: 69px;
   position: absolute;
-  top: 26px;
-  right: 64px;
-  font-size: 100px;
-  color: #fff;
+  top: 32px;
+  right: 32px;
+  background-image: url('@/assets/images/dayofdesign01-post-submit/icon-close.png');
 }
 // 查看稿件结束
 </style>

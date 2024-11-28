@@ -89,7 +89,7 @@ export const animateCSS = (
  * @param {string} px 设计稿像素值
  * @returns {string} 转换的像素值
  */
-const calculatePxToViewport = (px: number): string => {
+export const calculatePxToViewport = (px: number): string => {
   const DESIGN_WIDTH = 2560
   const clientWidth = document.documentElement.clientWidth
   return Math.round((px / DESIGN_WIDTH) * clientWidth) + 'px'

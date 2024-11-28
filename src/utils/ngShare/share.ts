@@ -6,7 +6,12 @@ import type {
   NgshareShareLinkConfig,
 } from './types'
 
+export interface ShareFormatConfig {
+  targetElByHover?: string | HTMLElement
+}
+
 export const showShare = (
+  shareFormatConfig: ShareFormatConfig,
   shareChannel: NGSHARE_SHARE_CHANNEL[] | [] = [],
   shareLinkConfig: NgshareShareLinkConfig,
   shareImageConfig: NgshareShareImageConfig,
@@ -15,6 +20,7 @@ export const showShare = (
   document.body.appendChild(div)
 
   const vnode = createVNode(Share, {
+    shareFormatConfig,
     shareChannel,
     shareLinkConfig,
     shareImageConfig,

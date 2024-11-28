@@ -2,162 +2,174 @@
   <Transition appear mode="out-in">
     <div class="hmj-contribute flex h-screen">
       <div class="hmj-contribute-main">
+        <Transition appear :name="headTransitionName" mode="out-in">
+          <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+            <div class="sr-only">绘梦节-我要投稿</div>
+            <div
+              class="date-help bg-contain bg-center bg-no-repeat"
+              @click="handleHelp"
+            ></div>
+          </h1>
+        </Transition>
         <Transition appear mode="out-in">
-          <div class="main-container">
-            <div class="test-btn-group absolute"></div>
-            <div class="header">
-              <h1>投递稿件</h1>
-              <p>投递期：2025年1月1日~2025年1月31日</p>
-            </div>
-            <div class="body">
-              <div
-                class="main-container flex flex-col justify-between align-middle"
-              >
-                <p class="">请按模板上传大小为10MB，尺寸为1200×900px的图片</p>
-                <div class="flex flex-1 justify-between align-middle">
-                  <div class="left">
+          <div
+            class="main-container flex flex-col items-center justify-between bg-contain bg-center bg-no-repeat"
+          >
+            <div class="main flex flex-1 justify-between align-middle">
+              <div class="left">
+                <div
+                  class="works-img-container flex justify-center bg-contain bg-center bg-no-repeat align-middle"
+                >
+                  <upload-img
+                    v-model:data="worksData.worksImg"
+                    :cropper="true"
+                    :max-size="10 * 1024 * 1024"
+                    :min-size="100 * 1024"
+                    :reupload="false"
+                    :preview-full-image="true"
+                    :show-delete-btn="false"
+                  ></upload-img>
+                  <div class="works-operate-btn-container">
+                    <!-- 删除作品作品 -->
                     <div
-                      class="works-img-container flex justify-center align-middle"
-                    >
-                      <upload-img
-                        v-model:data="worksData.worksImg"
-                        :cropper="true"
-                        :max-size="10 * 1024 * 1024"
-                        :min-size="100 * 1024"
-                        :reupload="false"
-                        :preview-full-image="true"
-                      ></upload-img>
-                      <!-- 查看作品详情 -->
-                      <div
-                        v-if="isCheckedSuccess && worksData.worksImgSrc"
-                        class="btn-view-works-details"
-                        @click="onClickViewMyWorks"
-                      >
-                        <van-icon name="aim" />
-                      </div>
-                      <!-- 作品id -->
-                      <p
-                        v-if="isContributed && worksData.worksImgSrc"
-                        class="worksId"
-                      >
-                        <span>【{{ worksGroupName }}组】</span>
-                        <span
-                          >ID
-                          <span id="works-id">{{ currentWorksPureId }}</span>
-                        </span>
-                        <van-icon
-                          id="copy-works-id"
-                          name="description-o"
-                          @click="onClickCopyWorksId"
-                        />
-                      </p>
-                      <!-- 作品审查提示 -->
-                      <div
-                        v-if="
-                          isContributed &&
-                          !isCheckedSuccess &&
-                          worksData.worksImgSrc
-                        "
-                        class="check-status-info-modal"
-                      >
-                        <div
-                          v-if="isShowCheckStatusTip"
-                          class="info-text-container"
-                          :class="{
-                            'check-fail': isCheckedFail,
-                            checking: isChecking,
-                          }"
-                        >
-                          {{ checkStatusTip }}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <div class="right">
-                    <div class="form-container">
-                      <div class="field-container author-field-container">
-                        <label for="author">作者名</label>
-                        <input
-                          v-model="worksData.author"
-                          name="author"
-                          id="author"
-                          type="text"
-                          maxlength="8"
-                          placeholder="请输入作者名，不含符号"
-                          :disabled="isContributed"
-                          @change="
-                            (event: Event) =>
-                              onChangeAuthorWordCount(event, 'author')
-                          "
-                          @blur="onBlurInput"
-                        />
-                        <span class="word-count">{{ authorWordCount }}/8</span>
-                      </div>
-                      <div class="field-container works-field-container">
-                        <label for="works">作品名</label>
-                        <input
-                          v-model="worksData.worksName"
-                          name="works"
-                          id="works"
-                          type="text"
-                          maxlength="8"
-                          placeholder="请输入作品名，不含符号"
-                          :disabled="isContributed"
-                          @change="
-                            (event: Event) =>
-                              onChangeAuthorWordCount(event, 'worksName')
-                          "
-                          @blur="onBlurInput"
-                        />
-                        <span class="word-count"
-                          >{{ worksNameWordCount }}/8</span
-                        >
-                      </div>
-                      <div class="works-introduce-field-container">
-                        <label for="worksIntroduce">作品介绍</label>
-                        <textarea
-                          v-model="worksData.worksIntroduce"
-                          name="worksIntroduce"
-                          id="worksIntroduce"
-                          type="text"
-                          maxlength="50"
-                          placeholder="请分享你的创作故事"
-                          :disabled="isContributed"
-                          @blur="onBlurInput"
-                        ></textarea>
-                        <span class="word-count"
-                          >{{ worksIntroduceWordCount }}/50</span
-                        >
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div class="footer flex justify-between align-middle">
-                  <div class="left-btn-group flex flex-1 justify-start">
+                      v-if="!isContributed && isUploaded"
+                      class="btn-delete-works bg-contain bg-center bg-no-repeat"
+                      @click="onClickDeleteWorks"
+                    ></div>
+                    <!-- 查看作品详情 -->
                     <div
-                      class="btn-edit-basic"
-                      @click="onClickDownloadTemplate"
-                    >
-                      下载模板
-                    </div>
-                    <div
-                      class="btn-edit-basic"
-                      @click="onClickGoToDrawingGuide"
-                    >
-                      绘制指南
-                    </div>
+                      v-if="isCheckedSuccess && isUploaded"
+                      class="btn-view-works-details bg-contain bg-center bg-no-repeat"
+                      @click="onClickViewMyWorks"
+                    ></div>
                   </div>
-                  <div
-                    @click="onClickContributeWorks"
-                    class="right-btn-group flex flex-1 justify-end align-middle"
+                  <!-- 作品id -->
+                  <p
+                    v-if="isContributed && isCheckedSuccess && isUploaded"
+                    class="worksId"
                   >
-                    <div :class="contributeBtnClass">
-                      {{ contributeBtnText }}
+                    <span class="group-value">【{{ worksGroupName }}组】</span>
+                    <span class="id-value">
+                      ID:&ensp;<span id="works-id">{{
+                        currentWorksPureId
+                      }}</span>
+                    </span>
+                    <span @click="onClickCopyWorksId" class="btn-copy"
+                      >复制</span
+                    >
+                  </p>
+                  <!-- 作品审查提示 -->
+                  <div
+                    v-if="
+                      isContributed &&
+                      !isCheckedSuccess &&
+                      worksData.worksImgSrc
+                    "
+                    class="check-status-info-modal"
+                  >
+                    <div
+                      v-if="isShowCheckStatusTip"
+                      class="info-text-container"
+                      :class="{
+                        'check-fail': isCheckedFail,
+                        checking: isChecking,
+                      }"
+                    >
+                      <span v-html="checkStatusTip"></span>
                     </div>
                   </div>
                 </div>
               </div>
+              <div class="right">
+                <div class="form-container">
+                  <div
+                    class="field-container author-field-container bg-cover bg-center bg-no-repeat"
+                  >
+                    <div class="field-bg"></div>
+                    <label
+                      for="author"
+                      class="label-author bg-cover bg-center bg-no-repeat"
+                    ></label>
+                    <input
+                      v-model="worksData.author"
+                      name="author"
+                      id="author"
+                      type="text"
+                      maxlength="8"
+                      placeholder="请输入作者名，不含符号"
+                      :disabled="isContributed"
+                      @change="
+                        (event: Event) =>
+                          onChangeAuthorWordCount(event, 'author')
+                      "
+                      @blur="onBlurInput"
+                    />
+                    <span class="word-count">{{ authorWordCount }}/8</span>
+                  </div>
+                  <div
+                    class="field-container works-field-container bg-cover bg-center bg-no-repeat"
+                  >
+                    <div class="field-bg"></div>
+                    <label
+                      for="works"
+                      class="label-works bg-cover bg-center bg-no-repeat"
+                    ></label>
+                    <input
+                      v-model="worksData.worksName"
+                      name="works"
+                      id="works"
+                      type="text"
+                      maxlength="8"
+                      placeholder="请输入作品名，不含符号"
+                      :disabled="isContributed"
+                      @change="
+                        (event: Event) =>
+                          onChangeAuthorWordCount(event, 'worksName')
+                      "
+                      @blur="onBlurInput"
+                    />
+                    <span class="word-count">{{ worksNameWordCount }}/8</span>
+                  </div>
+                  <div
+                    class="works-introduce-field-container bg-cover bg-center bg-no-repeat"
+                  >
+                    <div class="field-textarea-bg"></div>
+                    <textarea
+                      v-model="worksData.worksIntroduce"
+                      name="worksIntroduce"
+                      id="worksIntroduce"
+                      type="text"
+                      maxlength="50"
+                      placeholder="请分享你的创作故事"
+                      :disabled="isContributed"
+                      @blur="onBlurInput"
+                    ></textarea>
+                    <span class="word-count"
+                      >{{ worksIntroduceWordCount }}/50</span
+                    >
+                  </div>
+                </div>
+              </div>
             </div>
+            <div class="footer flex justify-between align-middle">
+              <div class="left-btn-group">
+                <div class="btn-edit-basic" @click="onClickDownloadTemplate">
+                  下载模板
+                </div>
+                <div class="btn-edit-basic" @click="onClickGoToDrawingGuide">
+                  绘制指南
+                </div>
+              </div>
+              <div @click="onClickContributeWorks" class="right-btn-group">
+                <div
+                  :class="contributeBtnClass"
+                  class="bg-cover bg-center bg-no-repeat"
+                >
+                  {{ contributeBtnText }}
+                </div>
+              </div>
+            </div>
+            <div class="cat-npc bg-contain bg-center bg-no-repeat"></div>
           </div>
         </Transition>
         <!-- 确认投稿弹窗 -->
@@ -250,19 +262,17 @@
           @after-delete="initPageData"
         ></works-detail-modal>
       </div>
+      <!-- 活动规则弹框 -->
+      <ModalHelp ref="modalHelp" />
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
-import {
-  closeToast,
-  showConfirmDialog,
-  showLoadingToast,
-  showToast,
-} from 'vant'
+import { closeToast, showLoadingToast, showToast } from 'vant'
 import html2canvas from 'html2canvas'
 import WorksDetailModal from './components/WorksDetailModal.vue'
+import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
 import UploadImg from './components/UploadImg.vue'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import {
@@ -285,6 +295,25 @@ import {
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
 import ClipboardJS from 'clipboard'
+import { Session } from '@/utils/storage'
+import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
+
+const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
+const isVisited = Session.get(sessionIsVisitedKey)
+const bodyTransitionName = ref('')
+const headTransitionName = ref('')
+const mainTransitionName = ref('')
+if (!isVisited) {
+  bodyTransitionName.value = 'fade-in-body'
+  headTransitionName.value = 'fade-in-head'
+  mainTransitionName.value = 'fade-in-main'
+}
+
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
+// 显示帮助
+function handleHelp(): void {
+  modalHelp.value?.open()
+}
 
 interface WorksData {
   author: string
@@ -333,6 +362,10 @@ const previewData = ref({
   isShow: false,
 })
 
+// 是否已上传作品（只显示，不一定上传）
+const isUploaded = computed((): boolean => {
+  return !!worksData.value.worksImgSrc
+})
 // 是否已上传作品
 const isContributed = computed((): boolean => {
   return worksData.value.id !== ''
@@ -375,9 +408,9 @@ const isShowCheckStatusTip = computed((): boolean => {
 const checkStatusTip = computed((): string => {
   // 0 表示审核中，1 表示审核未通过，2表示审核通过
   if (isChecking.value) {
-    return `作品编号 ${worksData.value.id} 预计将于48小时内审核完毕`
+    return `您的稿件被收录到了【${worksGroupName.value}组】作品编号${worksData.value.id}<br />预计将于48小时内审核完毕`
   }
-  return `很抱歉，您的作品编号 ${worksData.value.id}，未通过审核，请联系客服了解详情`
+  return `很抱歉，您的作品编号 ${worksData.value.id}<br />未通过审核`
 })
 
 // 投稿按钮的文本
@@ -385,9 +418,9 @@ const contributeBtnText = computed((): string => {
   if (!isContributed.value) {
     return '立即投稿'
   } else if (isChecking.value) {
-    return '审核中......'
+    return '审核中...'
   }
-  return '重新上传'
+  return '重新投稿'
 })
 
 const contributeBtnClass = computed((): string => {
@@ -418,14 +451,13 @@ const onChangeAuthorWordCount = (
 }
 
 const onBlurInput = (): void => {
-  console.log('blur')
   document.querySelector('body')?.focus()
 }
 
 // 下载模板
 const onClickDownloadTemplate = async (): Promise<void> => {
   try {
-    const imageUrl = 'http://10.227.199.103:7897/images/hmj-works-template.png'
+    const imageUrl = 'https://ma75.gsf.netease.com/dayofdesign01_template.png'
     const res = await saveImgToDeviceAlbum(imageUrl)
     if (res) {
       showToast('下载成功')
@@ -441,28 +473,26 @@ const onClickGoToDrawingGuide = (): void => {
 
 // 删除作品确认弹窗
 const showConfirmDialogForReupload = (): void => {
-  void showConfirmDialog({
-    title: '',
-    message: '确认删除投稿作品？',
-  }).then(async () => {
-    // on confirm
-    try {
-      const res = await deleteDesignDetails(
-        filePickerConfig.value.policyName,
-        worksData.value.id,
-        worksData.value.worksImgSrc,
-      )
-      if (res) {
-        showToast('删除成功')
+  void showConfirmDialog('确认删除投稿作品？')
+    .then(async () => {
+      try {
+        const res = await deleteDesignDetails(
+          filePickerConfig.value.policyName,
+          worksData.value.id,
+          worksData.value.worksImgSrc,
+        )
+        if (res) {
+          showToast('删除成功')
+        }
+        setTimeout(() => {
+          void initPageData()
+        }, 500)
+      } catch (error) {
+        showToast('网络波动，删除失败，请稍后再试')
+        console.error(error)
       }
-      setTimeout(() => {
-        void initPageData()
-      }, 500)
-    } catch (error) {
-      showToast('网络波动，删除失败，请稍后再试')
-      console.error(error)
-    }
-  })
+    })
+    .catch(() => {})
 }
 
 // 点击我要投稿按钮
@@ -569,6 +599,11 @@ const myWorksData = ref<MyWorksData>({
   worksImgSrc: '',
   worksDecorateImgSrc: '',
 })
+
+const onClickDeleteWorks = (): void => {
+  worksData.value.worksImg = null
+  worksData.value.worksImgSrc = ''
+}
 
 // 查看我的作品
 const onClickViewMyWorks = async (): Promise<void> => {
@@ -703,6 +738,7 @@ const updateDesignDetails = async (): Promise<void> => {
 
 onMounted(async () => {
   await initPageData()
+  Session.set(sessionIsVisitedKey, true)
 })
 </script>
 
@@ -720,135 +756,184 @@ onMounted(async () => {
     height: 1140px;
     background-color: #fff;
     padding: 20px 40px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+    background-image: url('@/assets/images/dayofdesign01-post-submit/bg.png');
   }
+}
+.title {
+  width: 902px;
+  height: 228px;
+  position: absolute;
+  top: 10px;
+  left: 190px;
+  background-image: url('@/assets/images/dayofdesign01-post-submit/title.png');
+}
+.date-help {
+  position: absolute;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  top: 52px;
+  left: 634px;
+  // border: 1px solid red;
 }
 .main-container {
-  width: 100%;
-  height: 100%;
-}
-.header {
-  width: 100%;
-  height: 160px;
-  border: 1px solid red;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  h1 {
-    font-size: 50px;
-    color: #00b0f0;
-  }
-  p {
-    font-size: 40px;
-    color: #a6a6a6;
-  }
-}
-.body {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border: 1px solid pink;
-  height: calc(100% - 160px);
-  padding: 160px 0;
-  .main-container {
-    width: 1549px;
-    height: 774px;
-    border: 1px solid red;
+  width: 1630px;
+  height: 850px;
+  position: absolute;
+  top: 207px;
+  left: 204px;
+  padding: 50px 42px 0px 50px;
+  background-image: url('@/assets/images/dayofdesign01-post-submit/bg-content.png');
+  .main {
     .left {
-      width: 50%;
+      flex: 1;
       height: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
-      margin-right: 69px;
+      padding-right: 50px;
     }
     .right {
-      flex: 1;
+      width: 600px;
       height: 100%;
       display: flex;
       justify-content: flex-start;
       align-items: center;
     }
-    .footer {
-      width: 100%;
-      height: 90px;
-      margin-top: 10px;
-      .btn-edit-basic {
-        width: 230px;
-        height: 90px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 0px;
-        border-radius: 69.93px;
-        border: 3px;
-        opacity: 0px;
-        color: #10576a;
-        background-color: #d0eeec;
-        margin-right: 40px;
-      }
-      .btn-contribute {
-        width: 680px;
-        height: 90px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 69.93px;
-        font-size: 40px;
-        color: #fff;
-        background: #41ddff;
-      }
-      .btn-checking {
-        width: 680px;
-        height: 90px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-radius: 69.93px;
-        font-size: 40px;
-        color: #fff;
-        background: #256a79;
-      }
-    }
   }
-}
-.works-img-container {
-  width: 800px;
-  height: 600px;
-  border-radius: 50px;
-  background-color: #abe5fa;
-  overflow: hidden;
-  .remove-upload-img {
-    position: absolute;
-    top: -10px;
-    right: 0;
-    font-size: 50px;
-    color: #fff;
-  }
-  .btn-view-works-details {
-    position: absolute;
-    bottom: 0px;
-    right: 10px;
-    font-size: 60px;
-    color: #fff;
-  }
-  img {
+  .footer {
     width: 100%;
-    height: 100%;
-  }
-  .worksId {
+    height: 140px;
     display: flex;
     justify-content: center;
     align-items: center;
+    & > div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .left-btn-group {
+      flex: 1;
+      padding-right: 50px;
+    }
+    .right-btn-group {
+      width: 600px;
+      & > div {
+        width: 420px;
+        height: 76px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-image: url('@/assets/images/dayofdesign01-post-submit/btn-main.png');
+        box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+        font-size: 34px;
+        font-family: SourceHanSansCN-Medium;
+        font-weight: 700;
+        letter-spacing: 1px;
+        &.btn-contribute {
+          color: #836a4e;
+          opacity: 0.9;
+        }
+        &.btn-checking {
+          color: #836a4e;
+          opacity: 0.75;
+        }
+      }
+    }
+    .btn-edit-basic {
+      width: 260px;
+      height: 76px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0px;
+      border-radius: 38px;
+      border: 3px;
+      margin-right: 40px;
+      background-color: #ffffff;
+      box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+      color: #5a7191;
+      font-size: 34px;
+      letter-spacing: 1px;
+      font-family: SourceHanSansCN-Medium;
+      font-weight: 700;
+    }
+  }
+  .cat-npc {
+    width: 328px;
+    height: 216px;
+    position: absolute;
+    top: calc((-216px + 45px));
+    right: 75px;
+    background-image: url('@/assets/images/dayofdesign01-post-submit/cat-npc.png');
+  }
+}
+.works-img-container {
+  width: 880px;
+  height: 660px;
+  position: relative;
+  border-radius: 22px;
+  background-image: url('@/assets/images/dayofdesign01-post-submit/border-upload-container.png');
+  overflow: hidden;
+  .works-operate-btn-container {
+    position: absolute;
+    right: 40px;
+    bottom: 40px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    .btn-delete-works {
+      width: 67px;
+      height: 67px;
+      background-size: 200%;
+      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-delete.png');
+      &:hover {
+        background-image: url('@/assets/images/dayofdesign01-post-submit/icon-delete-hover.png');
+      }
+    }
+    .btn-view-works-details {
+      width: 67px;
+      height: 67px;
+      background-size: 200%;
+      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-view-detail.png');
+      &:hover {
+        background-image: url('@/assets/images/dayofdesign01-post-submit/icon-view-detail-hover.png');
+      }
+    }
+  }
+  .worksId {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
     position: absolute;
     top: 0;
     left: 0;
-    width: 468px;
-    height: 70px;
+    width: 500px;
+    height: 76px;
+    padding: 0 28px;
     color: #fff;
-    font-size: 38px;
-    background-color: #33ccff;
+    font-size: 32px;
+    background-color: rgba(89, 128, 143, 0.9);
+    border-radius: 22px 0px 22px 0px;
+    .btn-copy {
+      width: 100px;
+      height: 47px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-left: 14px;
+      background-color: #e4f9ff;
+      box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+      border-radius: 23px;
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      color: #5a7191;
+    }
   }
   .check-status-info-modal {
     width: 100%;
@@ -859,23 +944,23 @@ onMounted(async () => {
     position: absolute;
     top: 0;
     left: 0;
-    background-color: #00000026;
+    background-color: rgba(0, 0, 0, 0.3);
     .info-text-container {
-      width: 730px;
-      height: 136px;
+      width: 810px;
+      height: 160px;
       display: flex;
       justify-content: center;
       align-items: center;
-      padding: 22px 38.5px;
       text-align: center;
-      border-radius: 30px;
-      font-size: 38px;
-      background-color: #00000099;
+      background-color: rgba(228, 249, 255, 0.7);
+      font-size: 32px;
+      font-weight: 700;
+      border-radius: 22px;
       &.checking {
-        color: #fff;
+        color: #5a7191;
       }
       &.check-fail {
-        color: #ff6060;
+        color: #cf5a4d;
       }
     }
   }
@@ -887,19 +972,29 @@ onMounted(async () => {
   flex-direction: column;
   justify-content: space-between;
   align-items: center;
+  gap: 32px;
   .word-count {
     font-size: 36px;
     color: #fff;
+    opacity: 0.8;
   }
 }
 .field-container {
   width: 100%;
-  height: 70px;
+  height: 76px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-radius: 10px;
-  background-color: #abe5fa;
+  position: relative;
+  padding-right: 28px;
+  .field-bg {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    background-color: #5a7191;
+    border-radius: 38px;
+    opacity: 0.3;
+  }
   label {
     width: 180px;
     height: 100%;
@@ -908,16 +1003,29 @@ onMounted(async () => {
     align-items: center;
     font-size: 30px;
     color: #fff;
-    border-radius: 10px;
-    background-color: #00b0f0;
+    opacity: 1;
+    z-index: 10;
+    &.label-author {
+      width: 19px;
+      height: 24px;
+      margin-left: 30px;
+      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-input-user.png');
+    }
+    &.label-works {
+      width: 21px;
+      height: 43px;
+      margin-left: 29px;
+      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-input-pen.png');
+    }
   }
   input {
-    width: calc(100% - 180px);
+    flex: 1;
     height: 100%;
-    padding-left: 10px;
-    font-size: 30px;
+    margin-left: 20px;
+    font-size: 28px;
     color: #fff;
     background-color: transparent;
+    opacity: 0.6;
     &::placeholder {
       color: #fff;
     }
@@ -925,37 +1033,28 @@ onMounted(async () => {
 }
 .works-introduce-field-container {
   width: 100%;
-  height: 270px;
+  height: 444px;
   position: relative;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding-top: 60px;
-  border-radius: 40px;
-  background-color: #abe5fa;
-  label {
-    width: 180px;
-    height: 60px;
+  .field-textarea-bg {
+    width: 100%;
+    height: 100%;
     position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 30px;
-    color: #fff;
-    border-radius: 10px;
-    background-color: #00b0f0;
+    background-color: #5a7191;
+    border-radius: 24px;
+    opacity: 0.3;
   }
   textarea {
     width: 100%;
     height: 100%;
-    padding-left: 10px;
-    padding-bottom: 40px;
+    padding: 23px;
     font-size: 30px;
     color: #fff;
     resize: none;
     background-color: transparent;
+    opacity: 0.6;
     &::placeholder {
       color: #fff;
     }
@@ -964,6 +1063,7 @@ onMounted(async () => {
     position: absolute;
     bottom: 0;
     right: 10px;
+    opacity: 0.8;
   }
 }
 .btn-contribute-works {
