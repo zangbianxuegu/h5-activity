@@ -464,6 +464,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/doubledan-2024-1',
+    name: 'Doubledan2024_1',
+    component: () => import('@/views/Doubledan2024_1'),
+    meta: {
+      title: '温暖冬日 翻开惊喜',
+      module: 'activitycenter_doubledan_2024_1',
+    },
+  },
+  {
     path: '/doubledan-2024-2',
     name: 'Doubledan2024_2',
     component: () => import('@/views/Doubledan2024_2'),

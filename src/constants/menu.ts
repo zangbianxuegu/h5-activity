@@ -416,6 +416,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '温暖冬日 翻开惊喜',
+    value: 'activitycenter_doubledan_2024_1',
+    routeName: 'Doubledan2024_1',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '曲意畅想 谱写乐章',
     value: 'activitycenter_music_2024',
     routeName: 'Music2024',

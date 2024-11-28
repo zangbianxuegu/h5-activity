@@ -30,6 +30,7 @@ export interface Event {
   is_eggy_reward?: boolean
   is_today_sign_in?: boolean | number
   awarded_types: any[]
+  awarded_infos?: any[]
   task_names?: string[]
   ban_award_types?: any[]
   map?: number[]

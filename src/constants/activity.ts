@@ -88,6 +88,7 @@ export const ACTIVITY_LIST = [
   'activitycenter_double_eleven_2024_1',
   'activitycenter_double_eleven_2024_2',
   'activitycenter_kizuna_china_2024',
+  'activitycenter_doubledan_2024_1',
   'activitycenter_netease_werewolf',
   'activitycenter_netease_werewolf_join',
   ...DICE_MAP_LIST,
