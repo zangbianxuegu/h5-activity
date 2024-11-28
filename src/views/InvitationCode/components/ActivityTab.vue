@@ -43,7 +43,6 @@ const emit = defineEmits(['switchTab'])
 
 // 切换组件
 const switchComponent = (index: number): void => {
-  // props.currentTab = index
   emit('switchTab', index)
 }
 </script>
