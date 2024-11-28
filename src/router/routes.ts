@@ -500,12 +500,12 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/doubledan-2024-1',
-    name: 'Doubledan2024_1',
-    component: () => import('@/views/Doubledan2024_1'),
+    path: '/pc-celebration',
+    name: 'PcCelebration',
+    component: () => import('@/views/PcCelebration'),
     meta: {
-      title: '温暖冬日 翻开惊喜',
-      module: 'activitycenter_doubledan_2024_1',
+      title: '相遇在更广阔的天空下',
+      module: 'activitycenter_pc_celebration',
     },
   },
 ]
