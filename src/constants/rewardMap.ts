@@ -95,6 +95,6 @@ export const REWARD_MAP = {
   flair_flower: '炫彩步尘',
   CharSkyKid_Horn_CursorHairpin: '光标发饰',
   outfit_prop_crabbitportal: '仙境茶会门扉礼包试用魔法',
-  outfit_hat_bluebow: '进行曲制服礼包试用魔法',
+  outfit_hat_bluebow: '蓝色蝴蝶结发带试用魔法',
   outfit_body_yellowpinafore: '爱丽丝围裙套装礼包试用魔法',
 }

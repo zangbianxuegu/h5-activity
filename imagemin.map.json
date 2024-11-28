@@ -1529,7 +1529,6 @@
   "src/assets/images/common/rewards/heart.png": 1732712210503.671,
   "src/assets/images/common/rewards/huge.png": 1732712210503.671,
   "src/assets/images/common/rewards/outfit_body_yellowpinafore.png": 1732712210503.671,
-  "src/assets/images/common/rewards/outfit_hat_bluebow.png": 1732712210503.671,
   "src/assets/images/common/rewards/glow.png": 1732712210503.671,
   "src/assets/images/common/rewards/resize_potion.png": 1732712210503.671,
   "src/assets/images/common/rewards/gravity.png": 1732712210503.671,
@@ -1539,5 +1538,6 @@
   "src/assets/images/common/rewards/trail_rainbow.png": 1732712210504.635,
   "src/assets/images/common/rewards/tiny.png": 1732712210504.635,
   "src/assets/images/common/rewards/energy.png": 1732712210503.671,
-  "src/assets/images/common/rewards/candles.png": 1732761414150.3633
+  "src/assets/images/common/rewards/candles.png": 1732761414150.3633,
+  "src/assets/images/common/rewards/outfit_hat_bluebow.png": 1732775291557.9648
 }
