@@ -24,7 +24,7 @@
       <!-- 绑定按钮 -->
       <button
         class="h-[58px] w-[166px] rounded-[29px] bg-[#ffc75b] text-[32px] text-white"
-        @click="handleBind"
+        @click="debouncedBindClick"
       >
         绑定
       </button>
@@ -38,6 +38,7 @@
 <script setup lang="ts">
 import { acceptInvite } from '@/apis/invitationCode'
 import { showToast } from 'vant'
+import debounce from 'lodash.debounce'
 
 const emit = defineEmits(['reward'])
 
@@ -66,6 +67,13 @@ function handleBind(): void {
       showToast(error.message)
     })
 }
+
+/**
+ * @const debouncedBindClick
+ * @description 使用防抖函数包装handleBind函数
+ * 延迟300毫秒后才执行绑定，避免频繁请求
+ */
+const debouncedBindClick = debounce(handleBind, 300)
 
 /**
  * @function 获取邀请码相关信息

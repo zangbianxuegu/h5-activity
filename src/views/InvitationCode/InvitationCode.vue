@@ -152,6 +152,7 @@
         <ModalHelp ref="modalHelp" />
         <!-- 活动tab标签页 -->
         <ActivityTab
+          class="animate__animated animate__fadeIn"
           :currentTab="currentTab"
           :tabs="tabs"
           :inviteInfo="inviteInfo"
@@ -176,10 +177,8 @@ import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import { getInviteInfo } from '@/apis/invitationCode'
 import type { Event } from '@/types'
-import { Session } from '@/utils/storage'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/invitationCode'
-import type CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
 import { REWARD_MAP } from '@/constants/rewardMap'
@@ -187,27 +186,25 @@ import ModalHelp from './components/ModalHelp.vue'
 import ActivityTab from './components/ActivityTab.vue'
 import MyCode from './components/MyCode.vue'
 import BindRewards from './components/BindRewards.vue'
+import { useTransition } from '@/composables/useTransition'
+import {
+  EVENT_NAME,
+  type Reward,
+  type TaskItem,
+  createBindList,
+  createTopAccTaskList,
+  createMiddleAccTaskList,
+  createBottomAccTaskList,
+  SESSION_IS_VISITED_KEY,
+} from './config'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
 
-interface Rewards {
-  name: string
-  count: number
-}
+const { bodyTransitionName, headTransitionName, mainTransitionName } =
+  useTransition(SESSION_IS_VISITED_KEY)
 
-interface Reward {
-  id: number
-  taskId: string
-  title: string
-  status: 'wait' | 'redeemed' | 'can' | string
-  val: number
-  stages: number[]
-  canRewardLottieRef: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
-  hadRenderLottie?: Ref<boolean>
-}
-
-const curRewards: Ref<Rewards[]> = ref([
+const curRewards: Ref<Reward[]> = ref([
   {
     name: 'heart',
     count: 1,
@@ -233,110 +230,26 @@ const switchTab = (index: number): void => {
   currentTab.value = index
 }
 
+// 邀请信息
 const inviteInfo = reactive({
-  canBind: true,
-  myCode: '',
-  bindCode: '',
+  canBind: true, // 是否可以绑定邀请码
+  myCode: '', // 我的邀请码
+  bindCode: '', // 要绑定的邀请码
 })
 
-// 创建任务的函数
-const createTaskItem = (
-  id: number,
-  taskId: string,
-  title: string,
-  status = 'wait',
-  val = 0,
-  stages = [1],
-  canRewardLottieRef = ref() as Ref<
-    Array<InstanceType<typeof CanRewardBubbleAnimation>>
-  >,
-  hadRenderLottie = ref(false),
-): Reward => ({
-  id,
-  taskId,
-  title,
-  status,
-  val,
-  stages,
-  canRewardLottieRef,
-  hadRenderLottie,
-})
-
+// 新玩家绑定任务
+const BIND_TASK_LIST = createBindList()
 // 邀请人数
-const BIND_LIST = [
-  createTaskItem(1, 'activitycenter_invitation_code_m1', '绑定奖励'),
-]
-
-// 邀请人数
-const TOP_ACC_TASK_LIST = [
-  createTaskItem(1, 'activitycenter_invitation_code_m2', '邀请人数'),
-  createTaskItem(2, 'activitycenter_invitation_code_m2', '邀请人数'),
-  createTaskItem(3, 'activitycenter_invitation_code_m2', '邀请人数'),
-]
-
+const TOP_ACC_TASK_LIST = createTopAccTaskList()
 // 被邀请玩家累计收集光之翼数量
-const MIDDLE_ACC_TASK_LIST = [
-  createTaskItem(
-    1,
-    'activitycenter_invitation_code_m3',
-    '被邀请玩家累计收集光之翼数量',
-  ),
-  createTaskItem(
-    2,
-    'activitycenter_invitation_code_m3',
-    '被邀请玩家累计收集光之翼数量',
-  ),
-  createTaskItem(
-    3,
-    'activitycenter_invitation_code_m3',
-    '被邀请玩家累计收集光之翼数量',
-  ),
-  createTaskItem(
-    4,
-    'activitycenter_invitation_code_m3',
-    '被邀请玩家累计收集光之翼数量',
-  ),
-  createTaskItem(
-    5,
-    'activitycenter_invitation_code_m3',
-    '被邀请玩家累计收集光之翼数量',
-  ),
-]
-
+const MIDDLE_ACC_TASK_LIST = createMiddleAccTaskList()
 // 被邀请玩家累计献祭次数
-const BOTTOM_ACC_TASK_LIST = [
-  createTaskItem(
-    1,
-    'activitycenter_invitation_code_m4',
-    '被邀请玩家累计献祭次数',
-  ),
-  createTaskItem(
-    2,
-    'activitycenter_invitation_code_m4',
-    '被邀请玩家累计献祭次数',
-  ),
-  createTaskItem(
-    3,
-    'activitycenter_invitation_code_m4',
-    '被邀请玩家累计献祭次数',
-  ),
-  createTaskItem(
-    4,
-    'activitycenter_invitation_code_m4',
-    '被邀请玩家累计献祭次数',
-  ),
-  createTaskItem(
-    5,
-    'activitycenter_invitation_code_m4',
-    '被邀请玩家累计献祭次数',
-  ),
-]
+const BOTTOM_ACC_TASK_LIST = createBottomAccTaskList()
 
 // 规则弹框
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 活动数据
-const EVENT_NAME = 'activitycenter_invitation_code'
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
@@ -347,7 +260,7 @@ const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 // 任务排序
 const taskOrderMap = new Map(
   [
-    BIND_LIST[0],
+    BIND_TASK_LIST[0],
     TOP_ACC_TASK_LIST[0],
     MIDDLE_ACC_TASK_LIST[0],
     BOTTOM_ACC_TASK_LIST[0],
@@ -369,9 +282,9 @@ const m1Status = computed(() => {
 
 // 更新任务列表状态
 const updateTaskList = (
-  taskList: Reward[],
+  taskList: TaskItem[],
   activityIndex: number,
-): ComputedRef<Reward[]> => {
+): ComputedRef<TaskItem[]> => {
   return computed(() => {
     return taskList.map((item, index) => {
       const { award, value, stages } = eventData.value[activityIndex]
@@ -387,25 +300,13 @@ const updateTaskList = (
 }
 
 // 绑定任务
-const bindList = updateTaskList(BIND_LIST, 0)
-
-// 累积任务列表
+const bindList = updateTaskList(BIND_TASK_LIST, 0)
+// 邀请人数
 const topAccTaskList = updateTaskList(TOP_ACC_TASK_LIST, 1)
-// 累积任务列表
+// 被邀请玩家累计收集光之翼数量
 const middleAccTaskList = updateTaskList(MIDDLE_ACC_TASK_LIST, 2)
-// 累积任务列表
+// 被邀请玩家累计献祭次数
 const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
-
-const sessionIsVisitedKey = 'isVisitedInvitationCode'
-const isVisited = Session.get(sessionIsVisitedKey)
-const bodyTransitionName = ref('')
-const headTransitionName = ref('')
-const mainTransitionName = ref('')
-if (!isVisited) {
-  bodyTransitionName.value = 'fade-in-body'
-  headTransitionName.value = 'fade-in-head'
-  mainTransitionName.value = 'fade-in-main'
-}
 
 onMounted(() => {
   try {
@@ -414,7 +315,6 @@ onMounted(() => {
   } catch (error) {
     console.error(error)
   }
-  Session.set(sessionIsVisitedKey, true)
 })
 
 /**
@@ -450,6 +350,7 @@ function getUserInviteInfo(): void {
       inviteInfo.myCode = res.my_code
       inviteInfo.bindCode = res.bind_code
       if (inviteInfo.canBind) {
+        // 已领奖默认邀请码页，否则绑定奖励页
         if (m1Status.value === 'redeemed') {
           currentTab.value = 0
         } else {
@@ -505,7 +406,7 @@ const handleRewardM1 = (): void => {
  * @param item 任务项
  * @returns {void}
  */
-function handleReward(rewardId: number, item: Reward): void {
+function handleReward(rewardId: number, item: TaskItem): void {
   const { taskId, status } = item
   if (status === 'redeemed') {
     return
