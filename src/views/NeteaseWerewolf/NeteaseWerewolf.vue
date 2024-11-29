@@ -54,7 +54,7 @@
                 </bubble>
                 <div
                   v-if="index === 6"
-                  class="absolute bottom-[-2px] w-full scale-[0.65] text-center text-[22px] text-[#9b9b9b]"
+                  class="absolute bottom-[-2px] w-full scale-[0.8] text-center text-[22px] text-[#9b9b9b]"
                 >
                   (伊甸重生)
                 </div>
