@@ -196,10 +196,11 @@
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
-          :event="EVENT_DAY_OF_DESIGN_01.ALL"
+          :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
           :type="DESIGN_DETAILS_TYPE.OTHER"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
+          @update-favorite="handleUpdateFavorites"
         ></works-detail-modal>
       </div>
     </div>
@@ -215,12 +216,14 @@ import type {
   ListSearchParams,
   DesignItem,
   FavoriteData,
+  DetailParams,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 import {
   DESIGN_DETAILS_TYPE,
   EVENT_DAY_OF_DESIGN_01,
+  type OtherDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import {
   getFavorites,
@@ -302,6 +305,7 @@ let timer: NodeJS.Timeout | undefined
 const isCoolDownActive = computed(() => countdown.value > 0)
 // 详情显示
 const isDetailVisible = ref(false)
+let curDetailId = ''
 // 左右箭头和页数的显示
 const isPrevVisible = computed(
   () => type.value !== 'recommend' && currentPage.value > 1,
@@ -321,6 +325,7 @@ interface Detail {
   id: string
   worksImgSrc: string
   worksDecorateImgSrc: string
+  isFavorite: boolean
 }
 // 详情
 const detailData = ref<Detail>({
@@ -328,6 +333,7 @@ const detailData = ref<Detail>({
   author: '',
   worksName: '',
   worksIntroduce: '',
+  isFavorite: false,
   worksImgSrc: '',
   worksDecorateImgSrc: '',
 })
@@ -406,9 +412,11 @@ async function handleCachedFavorite(): Promise<void> {
     const designs = data.designs.map((design) => ({
       ...design,
       favorite: true,
-      // 测试代码
-      // raw_url: `http://iph.href.lu/800x600?text=${index}`,
     }))
+    if (designs.length === 0) {
+      showToast('暂无收藏作品~')
+      return
+    }
     // 更新缓存的收藏数据
     const newDesignData = {
       designList: [...cachedFavorite.value.designList, ...designs],
@@ -459,7 +467,7 @@ async function handleCachedSearch(): Promise<void> {
     console.log('接口返回搜索数据: ', data)
     const designs = data.designs
     if (designs.length === 0) {
-      showToast('暂无搜索数据~')
+      showToast('没有找到相关结果')
       return
     }
     // 更新缓存的搜索数据
@@ -659,13 +667,20 @@ async function handleItemClick(item: DesignItem): Promise<void> {
   if (!item.design_id) {
     return
   }
+  curDetailId = item.design_id
   try {
     const { design_id: designId, favorite_time: favoriteTime } = item
-    const detail = await getDesignDetails({
+    let params: DetailParams = {
       policy_name: FILE_PICKER_POLICY_NAME,
       design_id: designId,
-      favorite_time: favoriteTime,
-    })
+    }
+    if (type.value === 'favorite') {
+      params = {
+        ...params,
+        favorite_time: favoriteTime,
+      }
+    }
+    const detail = (await getDesignDetails(params)) as OtherDesignDetails
     detailData.value = {
       id: item.design_id,
       author: detail.author_name,
@@ -673,11 +688,29 @@ async function handleItemClick(item: DesignItem): Promise<void> {
       worksIntroduce: detail.description,
       worksImgSrc: detail.raw_url,
       worksDecorateImgSrc: detail.share_url,
+      isFavorite: detail.is_favorite,
     }
     isDetailVisible.value = true
   } catch (error) {
     const err = error as Error
     showToast(err.message || '查看作品详情失败')
+  }
+}
+
+/**
+ * @function handleUpdateFavorites
+ * @description 作品详情收藏回调
+ * @param isFavorite 是否收藏
+ * @returns {void}
+ */
+function handleUpdateFavorites(isFavorite: boolean): void {
+  if (type.value !== 'recommend') {
+    list.value = list.value.map((item) => {
+      return {
+        ...item,
+        favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
+      }
+    })
   }
 }
 

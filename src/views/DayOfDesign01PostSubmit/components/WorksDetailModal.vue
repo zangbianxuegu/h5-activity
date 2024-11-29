@@ -111,7 +111,6 @@ const props = defineProps<{
   type: DESIGN_DETAILS_TYPE
   event: string
   show: boolean
-  favorite?: boolean
   worksData: {
     id: string
     author: string
@@ -119,6 +118,7 @@ const props = defineProps<{
     worksIntroduce: string
     worksImgSrc: string
     worksDecorateImgSrc: string
+    isFavorite?: boolean
   }
   filePickerConfig: {
     policyName: string
@@ -134,11 +134,13 @@ watch(
     }
   },
 )
-const emits = defineEmits(['update:show', 'update:favorite', 'afterDelete'])
+const emits = defineEmits(['update:show', 'afterDelete', 'update-favorite'])
+
+const isFavorite = ref(props.worksData.isFavorite)
 
 // 点赞按钮
 const likeBtnImg = computed(() => {
-  return props.favorite ? likedBtnIcon : likeBtnIcon
+  return isFavorite.value ? likedBtnIcon : likeBtnIcon
 })
 
 const isSelf = computed(() => {
@@ -291,16 +293,16 @@ const onClickHandleBarLike = async (): Promise<void> => {
   try {
     // const module = 'download'
     // void webViewStatistics({ module })
-    const favoriteResult = !props.favorite
     if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
       await updateFavorites(
         props.worksData.id,
-        favoriteResult,
+        !isFavorite.value,
         props.event,
         props.filePickerConfig.policyName,
       )
-      showToast(favoriteResult ? '收藏成功' : '取消收藏成功')
-      emits('update:favorite', favoriteResult)
+      showToast(!isFavorite.value ? '收藏成功' : '取消收藏成功')
+      isFavorite.value = !isFavorite.value
+      emits('update-favorite', isFavorite)
     }
   } catch (error: any) {
     showToast(error?.message as string)

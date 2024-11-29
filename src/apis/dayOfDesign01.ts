@@ -14,7 +14,7 @@ import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
 
 import type {
-  BaseDesignDetails,
+  OtherDesignDetails,
   SelfDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import {
@@ -139,7 +139,7 @@ export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
  */
 export const getDesignDetails = (
   params: DetailParams,
-): Promise<BaseDesignDetails | SelfDesignDetails> => {
+): Promise<OtherDesignDetails | SelfDesignDetails> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
