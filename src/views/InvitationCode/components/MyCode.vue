@@ -18,7 +18,7 @@
 import { useClipboard } from '@vueuse/core'
 import { showToast } from 'vant'
 
-const { copy, isSupported } = useClipboard()
+const { copy, isSupported } = useClipboard({ legacy: true })
 
 const props = defineProps({
   inviteInfo: {
