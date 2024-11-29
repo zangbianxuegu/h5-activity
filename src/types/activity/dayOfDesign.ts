@@ -1,5 +1,3 @@
-export type SearchType = 'collect' | 'recommend'
-
 export interface ListParams {
   event: string
   policy_name: string
@@ -26,7 +24,7 @@ export interface DesignItem {
   author_name: string
   design_name: string
   raw_url: string
-  favorite_time: number
+  favorite_time?: number
   favorite: boolean
 }
 

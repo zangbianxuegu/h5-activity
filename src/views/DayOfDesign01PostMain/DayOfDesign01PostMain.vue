@@ -28,13 +28,23 @@
           <section class="animate__animated animate__fadeIn">
             <div class="absolute bottom-[74px] right-[252px] flex">
               <button type="button" class="btn mr-[50px] rounded-full bg-white">
-                前往活动
+                <RouterLink
+                  to="/dayofdesign01-post-exhibit"
+                  class="block h-full w-full"
+                >
+                  前往活动
+                </RouterLink>
               </button>
               <button
                 type="button"
                 class="btn rounded-full bg-[#fffab6] text-[#836a4e]"
               >
-                参与投稿
+                <RouterLink
+                  to="/dayofdesign01-post-submit"
+                  class="block h-full w-full"
+                >
+                  参与投稿
+                </RouterLink>
               </button>
             </div>
             <div class="brush bg-contain">

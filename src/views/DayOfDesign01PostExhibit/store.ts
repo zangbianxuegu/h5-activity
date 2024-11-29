@@ -7,10 +7,8 @@ interface DesignData {
 }
 
 interface Store {
-  cachedRecommend: globalThis.Ref<DesignItem[]>
   cachedFavorite: globalThis.Ref<DesignData>
   cachedSearch: globalThis.Ref<DesignData>
-  updateCachedRecommend: (newData: DesignItem[]) => void
   updateCachedFavorite: (newData: DesignData) => void
   updateCachedSearch: (newData: DesignData) => void
 }
@@ -21,14 +19,6 @@ export const initCachedData = {
 }
 
 export function useStore(): Store {
-  // 本地缓存的推荐数据
-  const cachedRecommend = ref<DesignItem[]>([])
-
-  // 更新本地缓存的推荐数据
-  function updateCachedRecommend(newData: DesignItem[]): void {
-    cachedRecommend.value = newData
-  }
-
   // 本地缓存的收藏数据
   const cachedFavorite = ref<DesignData>(initCachedData)
 
@@ -47,10 +37,8 @@ export function useStore(): Store {
 
   // 返回状态和更新函数
   return {
-    cachedRecommend,
     cachedFavorite,
     cachedSearch,
-    updateCachedRecommend,
     updateCachedFavorite,
     updateCachedSearch,
   }

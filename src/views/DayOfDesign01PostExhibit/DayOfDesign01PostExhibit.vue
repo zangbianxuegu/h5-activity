@@ -209,6 +209,7 @@
 
 <script setup lang="ts">
 import { showToast } from 'vant'
+import qs from 'qs'
 import type {
   DesignConfig,
   ListRecommendParams,
@@ -235,6 +236,7 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
 import ModalHelp from './components/ModalHelp.vue'
 import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
+import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
 
 // 设计稿宽
@@ -274,13 +276,16 @@ const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 缓存数据
 const {
-  cachedRecommend,
   cachedFavorite,
   cachedSearch,
-  updateCachedRecommend,
   updateCachedFavorite,
   updateCachedSearch,
 } = useStore()
+// 全局缓存 - 推荐作品
+// 刷新页面会获取推荐作品，为避免触发接口 CD，进行全局状态管理并持久化、而非简单缓存
+const activityStore = useActivityStore()
+const cachedRecommend = computed(() => activityStore.recommendData)
+
 // 页面数据类型
 const type = ref<'recommend' | 'favorite' | 'search'>('favorite') // recommend、favorite、search
 // 页面显示的作品列表数据
@@ -295,7 +300,7 @@ let recommendPage = 0
 const searchTerm = ref('')
 // 当前页最小收藏时间：获取收藏数据传参，第一次不传
 // 根据已获取的收藏数据的最小收藏时间进行下一次的请求
-let minFavoriteTime: null | number = null
+let minFavoriteTime: undefined | number
 // 当前页最小ID：获取收藏数据传参，第一次不传
 // 根据已获取的搜索数据的最小作品ID进行下一次的请求
 let minIdOffset: null | string = null
@@ -359,6 +364,7 @@ if (!isVisited) {
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
   await handleRecommend()
+  await openSharedDetail()
 })
 
 onBeforeUnmount(() => {
@@ -366,6 +372,23 @@ onBeforeUnmount(() => {
     clearInterval(timer)
   }
 })
+
+/**
+ * @function openSharedDetail
+ * @description 打开分享的作品详情
+ * @returns {Promise<void>}
+ */
+async function openSharedDetail(): Promise<void> {
+  const href = window.location.href
+  const queryStr = href.split('?')[1]
+  if (queryStr) {
+    const detailParams: DetailParams = {
+      policy_name: FILE_PICKER_POLICY_NAME,
+      design_id: qs.parse(queryStr).d_id,
+    }
+    await getDetail(detailParams)
+  }
+}
 
 /**
  * @function handleCachedRecommend
@@ -379,8 +402,10 @@ async function handleCachedRecommend(): Promise<void> {
   }
   try {
     const data: DesignItem[] = await getRecommendations(params)
-    console.log('接口返回推荐数据: ', data)
-    updateCachedRecommend(data)
+    // 更新全局缓存数据
+    activityStore.updateRecommendData(data)
+    const now = Date.now()
+    Session.set('lastFetchTime-dayofdesign01-recommend', now.toString())
     console.log('cachedRecommend: ', cachedRecommend.value)
   } catch (error) {
     const err = error as Error
@@ -497,9 +522,14 @@ async function handleCachedSearch(): Promise<void> {
 async function getRecommendByPage(page: number): Promise<DesignItem[]> {
   const startIndex = (page - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE
-  if (startIndex >= cachedRecommend.value.length) {
-    // 请求接口获取新数据
-    await handleCachedRecommend()
+  if (recommendPage === 1) {
+    const now = Date.now()
+    const lastFetchTime =
+      parseInt(Session.get('lastFetchTime-dayofdesign01-recommend')) || 0
+    if (now - lastFetchTime > 3000) {
+      // 请求接口获取新数据
+      await handleCachedRecommend()
+    }
   } else {
     Loading.show()
     // 随机延迟 100 到 300 毫秒
@@ -519,8 +549,8 @@ async function getRecommendByPage(page: number): Promise<DesignItem[]> {
  * @returns {DesignItem}
  */
 async function getFavoritesByPage(page: number): Promise<DesignItem[]> {
-  const startIndex = (page - 1) * 6
-  const endIndex = startIndex + 6
+  const startIndex = (page - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
   if (startIndex >= cachedFavorite.value.designList.length) {
     // 请求接口获取新数据
     await handleCachedFavorite()
@@ -537,8 +567,8 @@ async function getFavoritesByPage(page: number): Promise<DesignItem[]> {
  * @returns {DesignItem}
  */
 async function getSearchByPage(page: number): Promise<DesignItem[]> {
-  const startIndex = (page - 1) * 6
-  const endIndex = startIndex + 6
+  const startIndex = (page - 1) * ITEMS_PER_PAGE
+  const endIndex = startIndex + ITEMS_PER_PAGE
   if (startIndex >= cachedSearch.value.designList.length) {
     // 请求接口获取新数据
     await handleCachedSearch()
@@ -556,9 +586,10 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
 async function handleRecommend(): Promise<void> {
   type.value = 'recommend'
   recommendPage++
-  if (cachedRecommend.value.length < 6 || recommendPage > 3) {
+  // 不足一页或推荐页数(1、2、3)大于 3，进行重置
+  if (cachedRecommend.value.length < ITEMS_PER_PAGE || recommendPage > 3) {
     recommendPage = 1
-    updateCachedRecommend([])
+    activityStore.updateRecommendData([])
   }
   countdown.value = 3
   timer = setInterval(() => {
@@ -583,7 +614,7 @@ async function handleFavorite(dir?: string): Promise<void> {
   } else if (dir === 'next') {
     currentPage.value += 1
   } else {
-    minFavoriteTime = null
+    minFavoriteTime = undefined
     currentPage.value = 1
     updateCachedFavorite(initCachedData)
   }
@@ -680,21 +711,31 @@ async function handleItemClick(item: DesignItem): Promise<void> {
         favorite_time: favoriteTime,
       }
     }
-    const detail = (await getDesignDetails(params)) as OtherDesignDetails
-    detailData.value = {
-      id: item.design_id,
-      author: detail.author_name,
-      worksName: detail.design_name,
-      worksIntroduce: detail.description,
-      worksImgSrc: detail.raw_url,
-      worksDecorateImgSrc: detail.share_url,
-      isFavorite: detail.is_favorite,
-    }
-    isDetailVisible.value = true
+    await getDetail(params)
   } catch (error) {
     const err = error as Error
     showToast(err.message || '查看作品详情失败')
   }
+}
+
+/**
+ * @function getDetail
+ * @description 获取详情数据、打开详情
+ * @param {DetailParams} params 参数
+ * @returns {Promise<void>}
+ */
+async function getDetail(params: DetailParams): Promise<void> {
+  const detail = (await getDesignDetails(params)) as OtherDesignDetails
+  detailData.value = {
+    id: curDetailId,
+    author: detail.author_name,
+    worksName: detail.design_name,
+    worksIntroduce: detail.description,
+    worksImgSrc: detail.raw_url,
+    worksDecorateImgSrc: detail.share_url,
+    isFavorite: detail.is_favorite,
+  }
+  isDetailVisible.value = true
 }
 
 /**

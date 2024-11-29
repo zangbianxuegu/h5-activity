@@ -135,6 +135,15 @@ watch(
     }
   },
 )
+
+watch(
+  () => props.worksData.isFavorite,
+  (newVal, oldVal) => {
+    if (newVal !== oldVal) {
+      isFavorite.value = newVal
+    }
+  },
+)
 const emits = defineEmits(['update:show', 'afterDelete', 'update-favorite'])
 
 const isFavorite = ref(props.worksData.isFavorite)
