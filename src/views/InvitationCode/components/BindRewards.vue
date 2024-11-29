@@ -75,11 +75,10 @@ function handleBind(): void {
         showToast('绑定成功')
         emit('getUserInviteInfo')
       }
+      btnLoading.value = false
     })
     .catch((error) => {
       showToast(error.message)
-    })
-    .finally(() => {
       btnLoading.value = false
     })
 }
