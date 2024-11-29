@@ -437,6 +437,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '共沐温暖，不期而遇',
+    value: 'activitycenter_invitation_code',
+    routeName: 'InvitationCode',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '相遇在更广阔的天空下',
     value: 'activitycenter_pc_celebration',
     routeName: 'PcCelebration',
