@@ -6,7 +6,7 @@
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">绘梦节-我要投稿</div>
             <div
-              class="date-help bg-contain bg-center bg-no-repeat"
+              class="date-help cursor-pointer bg-contain bg-center bg-no-repeat"
               @click="handleHelp"
             ></div>
           </h1>
@@ -33,13 +33,13 @@
                     <!-- 删除作品作品 -->
                     <div
                       v-if="!isContributed && isUploaded"
-                      class="btn-delete-works bg-contain bg-center bg-no-repeat"
+                      class="btn-delete-works cursor-pointer bg-contain bg-center bg-no-repeat"
                       @click="onClickDeleteWorks"
                     ></div>
                     <!-- 查看作品详情 -->
                     <div
                       v-if="isCheckedSuccess && isUploaded"
-                      class="btn-view-works-details bg-contain bg-center bg-no-repeat"
+                      class="btn-view-works-details cursor-pointer bg-contain bg-center bg-no-repeat"
                       @click="onClickViewMyWorks"
                     ></div>
                   </div>
@@ -54,7 +54,9 @@
                         currentWorksPureId
                       }}</span>
                     </span>
-                    <span @click="onClickCopyWorksId" class="btn-copy"
+                    <span
+                      @click="onClickCopyWorksId"
+                      class="btn-copy cursor-pointer"
                       >复制</span
                     >
                   </p>
@@ -153,14 +155,23 @@
             </div>
             <div class="footer flex justify-between align-middle">
               <div class="left-btn-group">
-                <div class="btn-edit-basic" @click="onClickDownloadTemplate">
+                <div
+                  class="btn-edit-basic cursor-pointer"
+                  @click="onClickDownloadTemplate"
+                >
                   下载模板
                 </div>
-                <div class="btn-edit-basic" @click="onClickGoToDrawingGuide">
+                <div
+                  class="btn-edit-basic cursor-pointer"
+                  @click="onClickGoToDrawingGuide"
+                >
                   绘制指南
                 </div>
               </div>
-              <div @click="onClickContributeWorks" class="right-btn-group">
+              <div
+                @click="onClickContributeWorks"
+                class="right-btn-group cursor-pointer"
+              >
                 <div
                   :class="contributeBtnClass"
                   class="bg-cover bg-center bg-no-repeat"
@@ -172,50 +183,6 @@
             <div class="cat-npc bg-contain bg-center bg-no-repeat"></div>
           </div>
         </Transition>
-        <!-- 确认投稿弹窗 -->
-        <Teleport to="body">
-          <van-overlay
-            :show="previewData.isShow"
-            @click="previewData.isShow = false"
-            class="works-preview-modal"
-          >
-            <div class="wrapper">
-              <div class="modal-body">
-                <div id="user-work-container">
-                  <div class="left">
-                    <div class="works-preview-basic-info">
-                      <p>
-                        <span>作品名: </span>
-                        <span>{{ worksData.worksName }}</span>
-                      </p>
-                      <p>
-                        <span>作者名: </span>
-                        <span>{{ worksData.author }}</span>
-                      </p>
-                    </div>
-                    <div class="works-preview-introduce">
-                      <span>作品介绍：</span>
-                      <p>{{ worksData.worksIntroduce }}</p>
-                    </div>
-                  </div>
-                  <div class="right">
-                    <img
-                      id="img-container"
-                      :src="worksData.worksImgSrc"
-                      alt=""
-                      srcset=""
-                    />
-                  </div>
-                </div>
-              </div>
-              <div class="modal-footer">
-                <van-button @click="confirmSubmitWork" size="small"
-                  >确认投稿</van-button
-                >
-              </div>
-            </div>
-          </van-overlay>
-        </Teleport>
         <!-- web生成拼装图的隐藏DOM -->
         <Teleport to="body">
           <div
@@ -315,13 +282,16 @@ function handleHelp(): void {
   modalHelp.value?.open()
 }
 
+/**
+ * @param worksImg 作品图片(string时，为在线的img url)
+ */
 interface WorksData {
   author: string
   worksName: string
   worksIntroduce: string
   id: string
   checkStatus: DESIGN_REVIEW_STATUS | undefined
-  worksImg?: Blob | null
+  worksImg?: Blob | string | null
   worksImgSrc: string
   worksDecorateImg: Blob | null
   worksDecorateImgSrc: string
@@ -351,16 +321,14 @@ const worksData = ref<WorksData>({
 watch(
   () => worksData.value.worksImg,
   async (newValue) => {
-    if (newValue) {
-      worksData.value.worksImgSrc = await blobToUrl(newValue)
+    if (
+      newValue &&
+      Object.prototype.toString.call(newValue) === '[object Blob]'
+    ) {
+      worksData.value.worksImgSrc = await blobToUrl(newValue as Blob)
     }
   },
 )
-
-// 投稿前的确认作品
-const previewData = ref({
-  isShow: false,
-})
 
 // 是否已上传作品（只显示，不一定上传）
 const isUploaded = computed((): boolean => {
@@ -548,8 +516,9 @@ const onClickContributeWorks = async (): Promise<void> => {
       return
     }
 
-    // 预览
-    previewData.value.isShow = true
+    void showConfirmDialog('是否确认投稿？').then(() => {
+      void confirmSubmitWork()
+    })
   } else if (isCheckedSuccess.value || isCheckedFail.value) {
     // 上传作品后并且审核成功
     showConfirmDialogForReupload()
@@ -682,7 +651,7 @@ const confirmSubmitWork = async (): Promise<void> => {
           worksData.value.worksName,
           worksData.value.worksIntroduce,
         ),
-        worksData.value.worksImg,
+        worksData.value.worksImg as Blob,
         worksData.value.worksDecorateImg,
       )
       worksData.value.id = res?.design_id
@@ -719,6 +688,7 @@ const updateDesignDetails = async (): Promise<void> => {
       worksData.value.author = designDetails.author_name
       worksData.value.worksName = designDetails.design_name
       worksData.value.worksIntroduce = designDetails.description
+      worksData.value.worksImg = designDetails.raw_url
       worksData.value.worksImgSrc = designDetails.raw_url
       worksData.value.worksDecorateImgSrc = designDetails.share_url
       worksData.value.checkStatus = designDetails.review_status
@@ -912,7 +882,6 @@ onMounted(async () => {
     position: absolute;
     top: 0;
     left: 0;
-    width: 500px;
     height: 76px;
     padding: 0 28px;
     color: #fff;
@@ -1128,7 +1097,7 @@ onMounted(async () => {
   // left: 0;
   top: -10000px;
   left: -1000px;
-  background-image: url('@/assets/images/hmj/bg-decrote-works.png');
+  background-image: url('@/assets/dayofdesign01/images/dayofdesign01-post-submit/bg-decrote-works.png');
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1161,29 +1130,6 @@ onMounted(async () => {
     span {
       font-size: 2.3em;
       width: 100%;
-    }
-  }
-}
-// 预览弹窗
-.works-preview-modal {
-  padding: 20px 60px;
-  .wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    .modal-body {
-      height: calc(100% - 100px);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-footer {
-      height: 100px;
-      margin-top: 10px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
     }
   }
 }

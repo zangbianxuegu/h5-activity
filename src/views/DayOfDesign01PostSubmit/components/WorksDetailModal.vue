@@ -21,7 +21,7 @@
                     <span
                       id="copy-works-id"
                       @click="onClickCopyWorksId"
-                      class="btn-copy"
+                      class="btn-copy cursor-pointer"
                       >复制</span
                     >
                   </p>
@@ -42,35 +42,35 @@
                   <div
                     v-if="isOther"
                     @click.stop="throttleClickShare"
-                    :class="['btn', 'like']"
+                    :class="['btn', 'like', 'cursor-pointer']"
                   >
                     <img :src="likeBtnImg" alt="" />
                   </div>
                   <div
                     v-if="isSelf"
                     @click.stop="onClickHandleBarDownload"
-                    :class="['btn', 'down']"
+                    :class="['btn', 'down', 'cursor-pointer']"
                   >
                     <img :src="downloadBtnIcon" alt="" />
                   </div>
                   <div
                     v-if="isShowShareBtn"
                     @click.stop="onClickHandleBarShare"
-                    :class="['btn', 'share']"
+                    :class="['btn', 'share', 'cursor-pointer']"
                     id="WorksDetailModalShareBtn"
                   >
                     <img :src="shareBtnIcon" alt="" />
                   </div>
                   <div
                     @click.stop="onClickHandleBarDelete"
-                    :class="['btn', 'delete']"
+                    :class="['btn', 'delete', 'cursor-pointer']"
                   >
                     <img :src="deleteBtnIcon" alt="" />
                   </div>
                 </div>
               </div>
               <div
-                class="btn-close bg-contain bg-center bg-no-repeat"
+                class="btn-close cursor-pointer bg-contain bg-center bg-no-repeat"
                 @click="onClickCloseModal"
               ></div>
             </div>
@@ -83,7 +83,7 @@
 
 <script setup lang="ts">
 import throttle from 'lodash.throttle'
-import { showConfirmDialog, showToast } from 'vant'
+import { showToast } from 'vant'
 import { showShare } from '@/utils/ngShare/share'
 import ClipboardJS from 'clipboard'
 import qs from 'qs'
@@ -103,6 +103,7 @@ import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submi
 import deleteBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-delete.png'
 import shareBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-share.png'
 import downloadBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-download.png'
+import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -247,11 +248,7 @@ const onClickHandleBarShare = (): void => {
 
 // 点击删除作品按钮
 const onClickHandleBarDelete = async (): Promise<void> => {
-  void showConfirmDialog({
-    title: '',
-    message: '确认删除投稿作品？',
-  }).then(async () => {
-    // on confirm
+  void showConfirmDialog('确认删除投稿作品？').then(async () => {
     try {
       const res = await deleteDesignDetails(
         props.filePickerConfig.policyName,
@@ -263,9 +260,10 @@ const onClickHandleBarDelete = async (): Promise<void> => {
       }
       setTimeout(() => {
         emits('afterDelete')
+        onClickCloseModal()
       }, 500)
     } catch (error) {
-      showToast('删除失败')
+      showToast('网络波动，删除失败，请稍后再试')
       console.error(error)
     }
   })
@@ -274,7 +272,7 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 // 点击下载按钮，下载作品拼装图
 const onClickHandleBarDownload = async (): Promise<void> => {
   try {
-    // const module = 'download'
+    // const module = 'day_of_design_download'
     // void webViewStatistics({ module })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
@@ -291,7 +289,7 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const onClickHandleBarLike = async (): Promise<void> => {
   try {
-    // const module = 'download'
+    // const module = 'day_of_design_share'
     // void webViewStatistics({ module })
     if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
       await updateFavorites(
