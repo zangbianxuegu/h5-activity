@@ -15,6 +15,11 @@
 </template>
 
 <script setup lang="ts">
+import { useClipboard } from '@vueuse/core'
+import { showToast } from 'vant'
+
+const { copy, isSupported } = useClipboard()
+
 const props = defineProps({
   inviteInfo: {
     type: Object,
@@ -22,31 +27,34 @@ const props = defineProps({
   },
 })
 
-// 复制文本到剪贴板的函数
-function copyTextToClipboard(text: string): void {
-  // 使用文本域复制
-  const textArea = document.createElement('textarea')
-  textArea.value = text
-  textArea.style.position = 'fixed' // 避免页面滚动
-  textArea.style.top = '-9999px'
-  document.body.appendChild(textArea)
-  textArea.focus()
-  textArea.select()
-  try {
-    // 执行复制命令
-    document.execCommand('copy')
-  } catch (err) {
-    console.error('无法复制文本: ', err)
+/**
+ * @function 复制文本的异步函数
+ * @param textToCopy 要复制的文本
+ * @returns {Promise<void>}
+ */
+const onCopy = async (textToCopy: string): Promise<void> => {
+  // 检查是否支持复制功能
+  if (!isSupported.value) {
+    showToast('未授权,不支持')
+    return
   }
-  // 移除临时创建的文本域
-  document.body.removeChild(textArea)
+  // 执行复制操作
+  await copy(textToCopy)
+  showToast('已复制')
 }
 
-// 复制邀请码的函数
-const copyCode = (): void => {
-  copyTextToClipboard(
-    `给你我的邀请码${props.inviteInfo.myCode}，下载《光·遇》和我一同遇见温暖，云间探险！~绑定邀请码即可共同获得邀约礼遇！`,
-  )
+/**
+ * @function 复制邀请码
+ * @returns {void}
+ */
+const copyCode = async (): Promise<void> => {
+  try {
+    await onCopy(
+      `给你我的邀请码${props.inviteInfo.myCode}，下载《光·遇》和我一同遇见温暖，云间探险！~绑定邀请码即可共同获得邀约礼遇！`,
+    )
+  } catch (error) {
+    showToast('复制失败')
+  }
 }
 </script>
 

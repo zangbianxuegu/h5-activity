@@ -165,6 +165,7 @@
             :inviteInfo="inviteInfo"
             :m1Status="m1Status"
             @reward="handleRewardM1"
+            @getUserInviteInfo="getUserInviteInfo"
           ></component>
         </ActivityTab>
       </div>
@@ -225,7 +226,11 @@ const tabs = reactive([
   },
 ])
 
-// 切换标签页的函数
+/**
+ * @function 切换标签页的函数
+ * @param index 第几个tab
+ * @returns {void}
+ */
 const switchTab = (index: number): void => {
   currentTab.value = index
 }
@@ -267,7 +272,13 @@ const taskOrderMap = new Map(
   ].map((task, index) => [task.taskId, index]),
 )
 
-// 获取任务状态
+/**
+ * @function 获取任务状态
+ * @param award 奖励状态，1表示已领取，0表示未领取
+ * @param value 当前任务进度值
+ * @param stage 任务目标值
+ * @returns {string} 返回任务状态：'redeemed'（已领取）, 'can'（可领取）, 'wait'（等待中）
+ */
 const getTaskStatus = (award: number, value: number, stage: number): string => {
   if (award === 1) return 'redeemed'
   if (award === 0 && value >= stage) return 'can'
@@ -280,7 +291,12 @@ const m1Status = computed(() => {
   return getTaskStatus(award[0], value, stages[0])
 })
 
-// 更新任务列表状态
+/**
+ * @function 更新任务列表
+ * @param taskList 任务列表
+ * @param activityIndex 活动索引
+ * @returns {ComputedRef<TaskItem[]>} 返回计算属性，包含更新后的任务列表
+ */
 const updateTaskList = (
   taskList: TaskItem[],
   activityIndex: number,
@@ -444,9 +460,14 @@ function handleReward(rewardId: number, item: TaskItem): void {
     })
 }
 
-// 顶部 适配累积值不等分的进度条 计算累积任务值
+/**
+ * @function 适配顶部累积值不等分的进度条，计算累积任务值
+ * @param accTaskVal 累积任务值
+ * @returns {number} 返回计算后的任务值
+ * @description 根据累积任务值计算顶部进度条的值
+ */
 function topCalculateAccTaskValue(accTaskVal: number): number {
-  // 如果累积任务值大于等于100，直接返回100
+  // 如果累积任务值大于等于3，直接返回100
   if (accTaskVal >= 3) return 100
   const ACC_TASK_VALUES: Readonly<Record<number, number>> = {
     0: 0,
@@ -462,9 +483,14 @@ const topAccTaskValue = computed(() => {
   return topCalculateAccTaskValue(eventData.value[1].value)
 })
 
-// 中间 适配累积值不等分的进度条 计算累积任务值
+/**
+ * @function 适配中间累积值不等分的进度条，计算累积任务值
+ * @param accTaskVal 累积任务值
+ * @returns {number} 返回计算后的任务值
+ * @description 根据累积任务值计算中间进度条的值
+ */
 function middleCalculateAccTaskValue(accTaskVal: number): number {
-  // 如果累积任务值大于等于100，直接返回100
+  // 如果累积任务值大于等于300，直接返回100
   if (accTaskVal >= 300) return 100
   switch (true) {
     case accTaskVal < 30:
@@ -495,9 +521,14 @@ const middleAccTaskValue = computed(() => {
   return middleCalculateAccTaskValue(eventData.value[2].value)
 })
 
-// 底部 适配累积值不等分的进度条 计算累积任务值
+/**
+ * @function 适配底部累积值不等分的进度条，计算累积任务值
+ * @param accTaskVal 累积任务值
+ * @returns {number} 返回计算后的任务值
+ * @description 根据累积任务值计算底部进度条的值
+ */
 function bottomCalculateAccTaskValue(accTaskVal: number): number {
-  // 如果累积任务值大于等于100，直接返回100
+  // 如果累积任务值大于等于5，直接返回100
   if (accTaskVal >= 5) return 100
   const ACC_TASK_VALUES: Readonly<Record<number, number>> = {
     0: 0,

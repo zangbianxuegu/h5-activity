@@ -23,10 +23,17 @@
       />
       <!-- 绑定按钮 -->
       <button
-        class="h-[58px] w-[166px] rounded-[29px] bg-[#ffc75b] text-[32px] text-white"
-        @click="debouncedBindClick"
+        class="flex h-[58px] w-[166px] items-center justify-center rounded-[29px] bg-[#ffc75b] text-[32px] text-white"
+        :disabled="btnLoading"
+        @click="handleBind"
       >
-        绑定
+        <van-loading
+          v-show="btnLoading"
+          color="#fff"
+          size="8px"
+          class="mr-[8px]"
+        />
+        {{ inviteInfo.bindCode ? '已绑定' : btnLoading ? '绑定中' : '绑定' }}
       </button>
     </div>
     <!-- 文案 -->
@@ -38,42 +45,44 @@
 <script setup lang="ts">
 import { acceptInvite } from '@/apis/invitationCode'
 import { showToast } from 'vant'
-import debounce from 'lodash.debounce'
 
-const emit = defineEmits(['reward'])
+const emit = defineEmits(['reward', 'getUserInviteInfo'])
 
 const props = defineProps({
   m1Status: {
     type: String,
     default: 'wait',
   },
+  inviteInfo: {
+    type: Object,
+    default: () => {},
+  },
 })
 
 const bindCode = ref('')
+const btnLoading = ref(false)
 
 /**
  * @function 获取邀请码相关信息
  * @returns {void}
  */
 function handleBind(): void {
-  if (!bindCode.value) return
+  if (!bindCode.value || props.inviteInfo.bindCode) return
+  btnLoading.value = true
   acceptInvite({ code: bindCode.value.trim() })
     .then((res) => {
       if (res.code === 200) {
         showToast('绑定成功')
+        emit('getUserInviteInfo')
       }
     })
     .catch((error) => {
       showToast(error.message)
     })
+    .finally(() => {
+      btnLoading.value = false
+    })
 }
-
-/**
- * @const debouncedBindClick
- * @description 使用防抖函数包装handleBind函数
- * 延迟300毫秒后才执行绑定，避免频繁请求
- */
-const debouncedBindClick = debounce(handleBind, 300)
 
 /**
  * @function 获取邀请码相关信息

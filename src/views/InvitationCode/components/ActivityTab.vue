@@ -54,49 +54,47 @@ const switchComponent = (index: number): void => {
   position: absolute;
   left: 50px;
   bottom: 50px;
+}
+.tab-title-container {
+  display: flex;
+  justify-content: center;
+}
+.tab-title {
+  width: 218px;
+  height: 58px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 10;
 
-  .tab-title-container {
-    display: flex;
-    justify-content: center;
+  &.tab-title1 {
+    margin-right: 10px;
 
-    .tab-title {
-      width: 218px;
-      height: 58px;
-      background-repeat: no-repeat;
-      background-size: contain;
-      z-index: 10;
+    &.active {
+      background-image: url('@/assets/images/invitation-code/tab1-active.png');
+    }
 
-      &.tab-title1 {
-        margin-right: 10px;
-
-        &.active {
-          background-image: url('@/assets/images/invitation-code/tab1-active.png');
-        }
-
-        &.inactive {
-          background-image: url('@/assets/images/invitation-code/tab1-inactive.png');
-        }
-      }
-
-      &.tab-title2 {
-        &.active {
-          background-image: url('@/assets/images/invitation-code/tab2-active.png');
-        }
-
-        &.inactive {
-          background-image: url('@/assets/images/invitation-code/tab2-inactive.png');
-        }
-      }
+    &.inactive {
+      background-image: url('@/assets/images/invitation-code/tab1-inactive.png');
     }
   }
 
-  .tab-content {
-    width: 833px;
-    height: 242px;
-    background-image: url('@/assets/images/invitation-code/tab-bg.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-top: -10px;
+  &.tab-title2 {
+    &.active {
+      background-image: url('@/assets/images/invitation-code/tab2-active.png');
+    }
+
+    &.inactive {
+      background-image: url('@/assets/images/invitation-code/tab2-inactive.png');
+    }
   }
+}
+
+.tab-content {
+  width: 833px;
+  height: 242px;
+  background-image: url('@/assets/images/invitation-code/tab-bg.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  margin-top: -10px;
 }
 </style>
