@@ -513,7 +513,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'InvitationCode',
     component: () => import('@/views/InvitationCode'),
     meta: {
-      title: '共沐温暖，不期而遇',
+      title: '共沐温暖 不期而遇',
       module: 'activitycenter_invitation_code',
     },
   },

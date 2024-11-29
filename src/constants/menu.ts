@@ -437,7 +437,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '共沐温暖，不期而遇',
+    label: '共沐温暖 不期而遇',
     value: 'activitycenter_invitation_code',
     routeName: 'InvitationCode',
     isNew: false,

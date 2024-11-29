@@ -5,7 +5,7 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
-              共沐温暖，不期而遇
+              共沐温暖 不期而遇
               <p>
                 <time datetime="2024-12-6">12.6</time>-
                 <time datetime="2025-2-17">2.17</time>
