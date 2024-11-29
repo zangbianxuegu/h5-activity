@@ -1,7 +1,7 @@
 <template>
   <div class="flex h-full w-full items-center justify-center">
     <div
-      class="upload-img-container flex h-full w-full items-center justify-center"
+      class="upload-img-container flex h-full w-full cursor-pointer items-center justify-center"
       @click="onClickGoToUploadWorks"
     >
       <div
@@ -32,13 +32,19 @@
         <!-- 删除作品按钮 -->
         <div
           v-if="data && showDeleteBtn"
-          class="remove-upload-icon"
+          class="remove-upload-icon cursor-pointer"
           @click.stop="removeUploadImg"
         >
           <van-icon name="cross" :max-count="1" :deletable="false" />
         </div>
         <!-- 作品图 -->
-        <img ref="formWorksRef" :src="imgDataSrc" alt="" srcset="" />
+        <img
+          ref="formWorksRef"
+          :src="imgDataSrc"
+          alt=""
+          srcset=""
+          :onerror="errorDefaultWorksImg"
+        />
       </div>
     </div>
 
@@ -52,7 +58,7 @@
             >
               <div
                 @click="onClickCancelCropper"
-                class="btn-cancel-cropper bg-contain bg-center bg-no-repeat"
+                class="btn-cancel-cropper cursor-pointer bg-contain bg-center bg-no-repeat"
               ></div>
               <div
                 class="flex flex-1 items-center justify-center text-[#e4f9ff]"
@@ -61,13 +67,17 @@
               </div>
               <div
                 @click="onClickFinishCropper"
-                class="btn-finish-cropper flex items-center justify-center"
+                class="btn-finish-cropper flex cursor-pointer items-center justify-center"
               >
                 完成
               </div>
             </div>
             <div ref="cropperContainerBodyRef" class="cropper-container-body">
-              <div id="upload_img_cut_container" @click.stop>
+              <div
+                id="upload_img_cut_container"
+                @click.stop
+                class="cursor-pointer"
+              >
                 <img
                   id="img-container"
                   :src="cropperData.preCropperImgUrl"
@@ -102,6 +112,7 @@
 <script setup lang="ts">
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
+import defaultWorksImg from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/works-default.png'
 import { useEnvironment } from '@/composables/useEnvironment'
 import { blobToUrl } from '@/utils/file'
 import { showToast, showLoadingToast, closeToast, showImagePreview } from 'vant'
@@ -144,6 +155,8 @@ const props = withDefaults(defineProps<UploadImgProps>(), {
   reupload: false,
   showDeleteBtn: true,
 })
+
+const errorDefaultWorksImg = ref(`this.src="${defaultWorksImg}"`)
 
 const emits = defineEmits<{
   (e: 'update:data', value: any): void

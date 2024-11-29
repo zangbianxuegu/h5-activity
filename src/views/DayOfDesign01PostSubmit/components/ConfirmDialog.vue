@@ -5,7 +5,7 @@
   >
     <div
       ref="modalRef"
-      class="modal animate__animated animate__fadeInUp animate__faster relative flex transform flex-col items-center justify-between bg-contain bg-center bg-no-repeat transition duration-300"
+      class="modal animate__animated animate__fadeInUp animate__faster relative flex transform cursor-pointer flex-col items-center justify-between bg-contain bg-center bg-no-repeat transition duration-300"
       @click.stop
     >
       <div class="modal-header flex items-center justify-between">
@@ -17,18 +17,20 @@
           </h2>
         </div>
         <div
-          class="modal-close overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
+          class="modal-close cursor-pointer overflow-hidden bg-contain bg-center bg-no-repeat indent-[-9999px]"
           @click="closeModal"
         >
           关闭
         </div>
       </div>
       <div class="modal-content flex flex-1 items-center justify-center">
-        {{ text }}
+        {{ props.text }}
       </div>
       <div class="modal-footer flex items-center justify-center">
-        <div class="footer_btn" @click="closeModal">我再想想</div>
-        <div class="footer_btn" @click="onConfirm">确认</div>
+        <div class="footer_btn cursor-pointer" @click="closeModal">
+          我再想想
+        </div>
+        <div class="footer_btn cursor-pointer" @click="onConfirm">确认</div>
       </div>
     </div>
   </div>
@@ -37,7 +39,9 @@
 <script setup lang="ts">
 import { animateCSS } from '@/utils/utils'
 
-const text = '确认删除投稿作品？'
+const props = defineProps<{
+  text: string
+}>()
 
 const isOpen = ref(false)
 const emit = defineEmits(['confirm', 'close'])
