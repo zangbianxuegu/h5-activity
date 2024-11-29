@@ -208,7 +208,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01-post-main/bg.jpg');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/bg.jpg');
   }
 }
 .title {
@@ -217,7 +217,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 3px;
   width: 1060px;
   height: 241px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/title.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/title.png');
 }
 .sub-title {
   position: absolute;
@@ -225,7 +225,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 170px;
   width: 766px;
   height: 109px;
-  background-image: url('@/assets/images/dayofdesign01-post-main/sub-title.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/sub-title.png');
 }
 .help {
   position: absolute;
@@ -233,7 +233,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 32px;
   width: 47px;
   height: 49px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/help.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/help.png');
 }
 .my-work {
   border-top-left-radius: 38px;
@@ -248,7 +248,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01-post-main/color-palette.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {
@@ -280,6 +280,6 @@ $font-family-bold: 'Source Han Sans CN Medium';
   bottom: 155px;
   width: 150px;
   height: 147px;
-  background-image: url('@/assets/images/dayofdesign01-post-main/brush.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/brush.png');
 }
 </style>

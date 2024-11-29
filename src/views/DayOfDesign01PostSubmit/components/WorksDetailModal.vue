@@ -98,11 +98,11 @@ import {
 import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
-import likeBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-favorite.png'
-import likedBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-favorited.png'
-import deleteBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-delete.png'
-import shareBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-share.png'
-import downloadBtnIcon from '@/assets/images/dayofdesign01-post-submit/icon-share-btn-download.png'
+import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
+import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorited.png'
+import deleteBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-delete.png'
+import shareBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-share.png'
+import downloadBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-download.png'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -346,7 +346,7 @@ onMounted(async () => {})
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/bg-works-detail.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-works-detail.png');
   .works-detail-modal-container {
     width: 100%;
     height: 100%;
@@ -416,7 +416,7 @@ onMounted(async () => {})
       width: 480px;
       height: 2px;
       margin: 37px 0 30px 0;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/line-dot.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/line-dot.png');
     }
     .works-preview-introduce {
       width: 100%;
@@ -457,7 +457,7 @@ onMounted(async () => {})
   position: absolute;
   top: 32px;
   right: 32px;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/icon-close.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-close.png');
 }
 // 查看稿件结束
 </style>

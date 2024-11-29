@@ -759,7 +759,7 @@ onMounted(async () => {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01-post-submit/bg.png');
+    background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
   }
 }
 .title {
@@ -768,7 +768,7 @@ onMounted(async () => {
   position: absolute;
   top: 10px;
   left: 190px;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/title.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/title.png');
 }
 .date-help {
   position: absolute;
@@ -786,7 +786,7 @@ onMounted(async () => {
   top: 207px;
   left: 204px;
   padding: 50px 42px 0px 50px;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/bg-content.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-content.png');
   .main {
     .left {
       flex: 1;
@@ -827,7 +827,7 @@ onMounted(async () => {
         display: flex;
         justify-content: center;
         align-items: center;
-        background-image: url('@/assets/images/dayofdesign01-post-submit/btn-main.png');
+        background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/btn-main.png');
         box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
         font-size: 34px;
         font-family: SourceHanSansCN-Medium;
@@ -868,7 +868,7 @@ onMounted(async () => {
     position: absolute;
     top: calc((-216px + 45px));
     right: 75px;
-    background-image: url('@/assets/images/dayofdesign01-post-submit/cat-npc.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/cat-npc.png');
   }
 }
 .works-img-container {
@@ -876,7 +876,7 @@ onMounted(async () => {
   height: 660px;
   position: relative;
   border-radius: 22px;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/border-upload-container.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/border-upload-container.png');
   overflow: hidden;
   .works-operate-btn-container {
     position: absolute;
@@ -889,18 +889,18 @@ onMounted(async () => {
       width: 67px;
       height: 67px;
       background-size: 200%;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-delete.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-delete.png');
       &:hover {
-        background-image: url('@/assets/images/dayofdesign01-post-submit/icon-delete-hover.png');
+        background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-delete-hover.png');
       }
     }
     .btn-view-works-details {
       width: 67px;
       height: 67px;
       background-size: 200%;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-view-detail.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-view-detail.png');
       &:hover {
-        background-image: url('@/assets/images/dayofdesign01-post-submit/icon-view-detail-hover.png');
+        background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-view-detail-hover.png');
       }
     }
   }
@@ -1009,13 +1009,13 @@ onMounted(async () => {
       width: 19px;
       height: 24px;
       margin-left: 30px;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-input-user.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-input-user.png');
     }
     &.label-works {
       width: 21px;
       height: 43px;
       margin-left: 29px;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-input-pen.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-input-pen.png');
     }
   }
   input {

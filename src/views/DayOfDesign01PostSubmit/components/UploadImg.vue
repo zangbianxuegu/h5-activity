@@ -438,7 +438,7 @@ img {
         .btn-cancel-cropper {
           width: 71px;
           height: 48px;
-          background-image: url('@/assets/images/dayofdesign01-post-submit/icon-cancel-cropper.png');
+          background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-cancel-cropper.png');
         }
         .btn-finish-cropper {
           width: 200px;
@@ -472,9 +472,9 @@ img {
   .icon-upload {
     width: 119px;
     height: 119px;
-    background-image: url('@/assets/images/dayofdesign01-post-submit/icon-upload.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-upload.png');
     &:hover {
-      background-image: url('@/assets/images/dayofdesign01-post-submit/icon-upload-hover.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-upload-hover.png');
     }
   }
   & > span {

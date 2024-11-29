@@ -79,7 +79,7 @@ onMounted(() => {
   width: 1000px;
   height: 640px;
   padding: 21px 30px 87px 30px;
-  background-image: url('@/assets/images/dayofdesign01-post-submit/bg-modal-tip.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-modal-tip.png');
   overflow: hidden;
 }
 .modal-header {
@@ -92,7 +92,7 @@ onMounted(() => {
     .modal-title-img {
       width: 113px;
       height: 66px;
-      background-image: url('@/assets/images/dayofdesign01-post-submit/title-modal.png');
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/title-modal.png');
     }
   }
 
@@ -102,7 +102,7 @@ onMounted(() => {
     position: absolute;
     right: -6px;
     top: -6px;
-    background-image: url('@/assets/images/dayofdesign01-post-submit/icon-close.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-close.png');
   }
 }
 .modal-content {

@@ -55,13 +55,13 @@
                 <img
                   v-show="type === 'favorite'"
                   class="nav-icon transition-all"
-                  src="@/assets/images/dayofdesign01-post-exhibit/favorite-selected.png"
+                  src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-selected.png"
                   alt="favorite"
                 />
                 <img
                   v-show="type !== 'favorite'"
                   class="nav-icon transition-all"
-                  src="@/assets/images/dayofdesign01-post-exhibit/favorite-unselected.png"
+                  src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-unselected.png"
                   alt="favorite"
                 />
                 <span class="">收藏</span>
@@ -81,7 +81,7 @@
               >
                 <img
                   class="nav-icon"
-                  src="@/assets/images/dayofdesign01-post-exhibit/refresh.png"
+                  src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/refresh.png"
                   alt="recommend"
                 />
                 推荐<span v-show="isCoolDownActive">({{ countdown }})</span>
@@ -124,7 +124,7 @@
                     <img
                       v-if="item.favorite"
                       class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
-                      src="@/assets/images/dayofdesign01-post-exhibit/favorite-work.png"
+                      src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-work.png"
                       alt="已收藏"
                     />
                     <!-- 底部信息 -->
@@ -149,7 +149,7 @@
                     class="flex h-full w-full flex-col items-center justify-center"
                   >
                     <img
-                      src="@/assets/images/dayofdesign01-post-exhibit/no-exist.jpg"
+                      src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/no-exist.jpg"
                       alt="作品已删除"
                       class="h-[201px] w-[135px]"
                     />
@@ -191,46 +191,7 @@
         </Transition>
 
         <!-- 活动规则弹框 -->
-        <activity-modal ref="modalHelp">
-          <template #content>
-            <section
-              class="h-[640px] overflow-auto px-4"
-              aria-labelledby="activity-rules-title"
-            >
-              <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
-              <h3 class="modal-text mt-4">
-                <span class="font-semibold">活动时间：</span>
-                2024年10月26日~2024年11月15日
-              </h3>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动内容：</span>
-              </h3>
-              <p class="modal-text">
-                活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：
-              </p>
-              <ul class="modal-text list-inside list-decimal">
-                <li>每次挖宝均可获得10捣蛋币的奖励</li>
-                <li>
-                  挖出宝藏可获得额外捣蛋币奖励，对应奖励如
-                  <div class="grid grid-cols-2">
-                    <span>宝藏</span>
-                    <span>奖励</span>
-                    <span>糖果</span>
-                    <span class="text-[#ffcb4d]">20</span>
-                    <span>皮皮猫</span>
-                    <span class="text-[#ffcb4d]">80</span>
-                    <span>螃蟹</span>
-                    <span class="text-[#ffcb4d]">30</span>
-                    <span>冥龙</span>
-                    <span class="text-[#ffcb4d]">100</span>
-                    <span>南瓜螃蟹</span>
-                    <span class="text-[#ffcb4d]">50</span>
-                  </div>
-                </li>
-              </ul>
-            </section>
-          </template>
-        </activity-modal>
+        <ModalHelp ref="modalHelp" />
 
         <!-- 我的作品弹窗 -->
         <works-detail-modal
@@ -269,7 +230,7 @@ import {
 } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
-import ActivityModal from '@/components/Modal'
+import ModalHelp from './components/ModalHelp.vue'
 import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
 import { useStore, initCachedData } from './store'
 
@@ -306,7 +267,7 @@ useResponsiveStyles(designConfig)
 const EVENT = 'activitycenter_dayofdesign01_post_exhibit'
 const ITEMS_PER_PAGE = 6
 // 弹框
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 // 缓存数据
 const {
@@ -726,7 +687,7 @@ async function handleItemClick(item: DesignItem): Promise<void> {
  * @returns {void}
  */
 function handleHelp(): void {
-  modalHelp.value?.openModal()
+  modalHelp.value?.open()
 }
 </script>
 
@@ -789,7 +750,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01-post-exhibit/bg.jpg');
+    background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
   }
 }
 .title {
@@ -798,7 +759,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 3px;
   width: 1060px;
   height: 241px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/title.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/title.png');
 }
 .sub-title {
   position: absolute;
@@ -806,7 +767,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 50px;
   width: 505px;
   height: 145px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/sub-title.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/sub-title.png');
 }
 .help {
   position: absolute;
@@ -814,7 +775,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 24px;
   width: 47px;
   height: 49px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/help.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/help.png');
 }
 .my-work {
   border-top-left-radius: 38px;
@@ -829,7 +790,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/rules-icon.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/rules-icon.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {
@@ -866,7 +827,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     height: 82px;
     font-size: 32px;
     color: #fff;
-    background-image: url('@/assets/images/dayofdesign01-post-exhibit/search-input.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-input.png');
 
     &::placeholder {
       color: #fff;
@@ -881,7 +842,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     height: 76px;
     background-color: #fff;
     background-size: 50px 50px;
-    background-image: url('@/assets/images/dayofdesign01-post-exhibit/search-btn.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-btn.png');
     box-shadow: 0 2px 6px rgba(108, 108, 108, 0.3);
 
     &:hover {
@@ -966,10 +927,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 188px;
   width: 128px;
   height: 128px;
-  background-image: url('@/assets/images/dayofdesign01-post-exhibit/arrow.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/arrow.png');
 
   &:hover {
-    background-image: url('@/assets/images/dayofdesign01-post-exhibit/arrow-hover.png');
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/arrow-hover.png');
   }
 
   &-left {
