@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex h-full w-full flex-col items-center justify-between py-[20px]"
+    class="flex h-full w-full flex-col items-center justify-between py-[14px]"
   >
     <div
       class="flex h-[100px] items-center self-start overflow-hidden pl-[150px]"
@@ -18,7 +18,7 @@
       <input
         v-model="bindCode"
         class="ml-[36px] mr-[10px] h-[58px] w-[530px] rounded-[29px] pl-[30px] pr-[40px] text-[32px]"
-        placeholder="点击输入好友邀请码"
+        placeholder="点击输入邀请码"
         type="text"
       />
       <!-- 绑定按钮 -->
@@ -37,8 +37,11 @@
       </button>
     </div>
     <!-- 文案 -->
-    <div class="sr-only">绑定好友邀请码获得奖励！</div>
-    <div class="bottom-text mb-[4px] mt-[14px]"></div>
+    <div class="mt-[4px] flex items-center justify-center">
+      <div class="line left"></div>
+      <div class="mx-[3px] text-[32px] text-[#e0ffdc]">绑定邀请码获得奖励!</div>
+      <div class="line right"></div>
+    </div>
   </div>
 </template>
 
@@ -75,10 +78,11 @@ function handleBind(): void {
         showToast('绑定成功')
         emit('getUserInviteInfo')
       }
-      btnLoading.value = false
     })
     .catch((error) => {
       showToast(error.message)
+    })
+    .finally(() => {
       btnLoading.value = false
     })
 }
@@ -121,12 +125,16 @@ function handleReward(): void {
     }
   }
 }
-.bottom-text {
-  width: 614px;
-  height: 30px;
+.line {
+  width: 124px;
+  height: 2px;
   background-repeat: no-repeat;
   background-size: cover;
-  background-position: center;
-  background-image: url('@/assets/images/invitation-code/bottom-text.png');
+  &.left {
+    background-image: url('@/assets/images/invitation-code/left-line.png');
+  }
+  &.right {
+    background-image: url('@/assets/images/invitation-code/right-line.png');
+  }
 }
 </style>

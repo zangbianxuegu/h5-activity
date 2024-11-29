@@ -1,5 +1,5 @@
 import { handlePostMessageToNative, getErrorMessage } from '@/utils/request'
-import type { Response, InviteInfoRes } from '@/types'
+import type { AcceptInviteRes, InviteInfoRes } from '@/types'
 /**
  * 获取邀请码信息
  * @function getInviteInfo
@@ -35,12 +35,16 @@ export function getInviteInfo(): Promise<InviteInfoRes> {
 }
 
 /**
- * 绑定好友邀请码接口
+ * 绑定邀请码接口
  * @function acceptInvite
  * @property {string} code 绑定的邀请码
- * @returns {Promise<Response>}
+ * @returns {Promise<AcceptInviteRes>}
  */
-export function acceptInvite({ code }: { code: string }): Promise<Response> {
+export function acceptInvite({
+  code,
+}: {
+  code: string
+}): Promise<AcceptInviteRes> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
       type: 'protocol',
