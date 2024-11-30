@@ -52,6 +52,12 @@
                     ]"
                   ></div>
                 </bubble>
+                <div
+                  v-if="index === 6"
+                  class="absolute bottom-[-2px] w-full scale-[0.8] text-center text-[22px] text-[#9b9b9b]"
+                >
+                  (伊甸重生)
+                </div>
               </li>
             </ul>
             <!-- 文案和人物 -->
@@ -315,64 +321,64 @@ type Config = ConfigItem[]
 interface RewardsName {
   message_boat: '传信纸船'
   resize_potion: '体型重塑'
-  activitycenter_netease_werewolf_m2: '礼物小心心'
-  activitycenter_netease_werewolf_m3: '联动表情：关心'
+  activitycenter_netease_werewolf_m2: '礼物小心心*10'
+  activitycenter_netease_werewolf_m3: '联动表情：关心*永久'
   repellant_krill: '冥龙克星'
   trail_rainbow: '彩虹尾迹'
-  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)'
+  activitycenter_netease_werewolf_m5: '联动房间场景：光遇·云野*21天'
   rainbow: '绚丽彩虹'
   heart: '爱心'
-  activitycenter_netease_werewolf_m7: '联动光崽麦克风'
+  activitycenter_netease_werewolf_m7: '联动麦克风：光遇·光崽*永久'
   CharSkyKid_Mask_Werewolf: '头狼面具'
 }
 
 // 定义奖励名称接口，将任务id映射到中文描述
 interface RewardsMap {
   activitycenter_netease_werewolf_m1: '体型重塑*3 传信纸船*3'
-  activitycenter_netease_werewolf_m2: '狼人杀奖励：礼物小心心'
-  activitycenter_netease_werewolf_m3: '联动表情：关心'
+  activitycenter_netease_werewolf_m2: '礼物小心心*10'
+  activitycenter_netease_werewolf_m3: '联动表情：关心*永久'
   activitycenter_netease_werewolf_m4: '彩虹尾迹*3 冥龙克星*3'
-  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)'
+  activitycenter_netease_werewolf_m5: '联动房间场景：光遇·云野*21天'
   activitycenter_netease_werewolf_m6: '爱心*3 绚丽彩虹*3'
-  activitycenter_netease_werewolf_m7: '狼人杀奖励：联动光崽麦克风'
+  activitycenter_netease_werewolf_m7: '联动麦克风：光遇·光崽*永久'
   activitycenter_netease_werewolf_extra: '头狼面具'
 }
 // 定义奖励文本对象，用于将奖励类型映射到中文描述
 const rewardsText: RewardsName = {
   message_boat: '传信纸船',
   resize_potion: '体型重塑',
-  activitycenter_netease_werewolf_m2: '礼物小心心',
-  activitycenter_netease_werewolf_m3: '联动表情：关心',
+  activitycenter_netease_werewolf_m2: '礼物小心心*10',
+  activitycenter_netease_werewolf_m3: '联动表情：关心*永久',
   repellant_krill: '冥龙克星',
   trail_rainbow: '彩虹尾迹',
-  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)',
+  activitycenter_netease_werewolf_m5: '联动房间场景：光遇·云野*21天',
   rainbow: '绚丽彩虹',
   heart: '爱心',
-  activitycenter_netease_werewolf_m7: '联动光崽麦克风',
+  activitycenter_netease_werewolf_m7: '联动麦克风：光遇·光崽*永久',
   CharSkyKid_Mask_Werewolf: '头狼面具',
 }
 
 // 定义奖励文本对象，用于将任务id映射到中文描述
 const rewardsMap: RewardsMap = {
   activitycenter_netease_werewolf_m1: '体型重塑*3 传信纸船*3',
-  activitycenter_netease_werewolf_m2: '狼人杀奖励：礼物小心心',
-  activitycenter_netease_werewolf_m3: '联动表情：关心',
+  activitycenter_netease_werewolf_m2: '礼物小心心*10',
+  activitycenter_netease_werewolf_m3: '联动表情：关心*永久',
   activitycenter_netease_werewolf_m4: '彩虹尾迹*3 冥龙克星*3',
-  activitycenter_netease_werewolf_m5: '联动场景：云野(21天)',
+  activitycenter_netease_werewolf_m5: '联动房间场景：光遇·云野*21天',
   activitycenter_netease_werewolf_m6: '爱心*3 绚丽彩虹*3',
-  activitycenter_netease_werewolf_m7: '狼人杀奖励：联动光崽麦克风',
+  activitycenter_netease_werewolf_m7: '联动麦克风：光遇·光崽*永久',
   activitycenter_netease_werewolf_extra: '头狼面具',
 }
 
 // 定义规则信息数组，包含各个关卡的奖励信息
 const ruleInfo = [
   { location: '晨岛神殿', reward: '体型重塑*3，传信纸船*3' },
-  { location: '云野神殿', reward: '狼人杀奖励：礼物小心心' },
-  { location: '雨林神殿', reward: '狼人杀奖励：联动表情关心' },
+  { location: '云野神殿', reward: '礼物小心心*10' },
+  { location: '雨林神殿', reward: '联动表情：关心*永久' },
   { location: '霞谷神殿', reward: '彩虹尾迹*3，冥龙克星*3' },
-  { location: '暮土神殿', reward: '狼人杀奖励：联动场景云野(21天)' },
+  { location: '暮土神殿', reward: '联动房间场景：光遇·云野*21天' },
   { location: '禁阁神殿', reward: '爱心*3，绚丽彩虹*3' },
-  { location: '暴风眼', reward: '狼人杀奖励：联动光崽麦克风' },
+  { location: '暴风眼', reward: '联动麦克风：光遇·光崽*永久' },
 ]
 
 const EVENT_NAME = 'activitycenter_netease_werewolf'

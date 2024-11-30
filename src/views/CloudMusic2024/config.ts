@@ -87,7 +87,7 @@ export function createTaskList(): TaskItem[] {
     {
       id: 5,
       taskId: 'activitycenter_cloud_music_2024_m5',
-      title: '在雨林秘密花园中用分享海螺点歌',
+      title: '在雨林秘密花园中用一起听海螺点歌',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>

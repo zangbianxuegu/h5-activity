@@ -464,6 +464,24 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/doubledan-2024-1',
+    name: 'Doubledan2024_1',
+    component: () => import('@/views/Doubledan2024_1'),
+    meta: {
+      title: '温暖冬日 翻开惊喜',
+      module: 'activitycenter_doubledan_2024_1',
+    },
+  },
+  {
+    path: '/doubledan-2024-2',
+    name: 'Doubledan2024_2',
+    component: () => import('@/views/Doubledan2024_2'),
+    meta: {
+      title: '落入奇遇茶会',
+      module: 'activitycenter_doubledan_2024_2',
+    },
+  },
+  {
     path: '/cloud-music-2024',
     name: 'CloudMusic2024',
     component: () => import('@/views/CloudMusic2024'),
@@ -488,6 +506,24 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '冥龙，在我们之中',
       module: 'activitycenter_netease_werewolf_join',
+    },
+  },
+  {
+    path: '/invitation-code',
+    name: 'InvitationCode',
+    component: () => import('@/views/InvitationCode'),
+    meta: {
+      title: '共沐温暖 不期而遇',
+      module: 'activitycenter_invitation_code',
+    },
+  },
+  {
+    path: '/pc-celebration',
+    name: 'PcCelebration',
+    component: () => import('@/views/PcCelebration'),
+    meta: {
+      title: '相遇在更广阔的天空下',
+      module: 'activitycenter_pc_celebration',
     },
   },
   {

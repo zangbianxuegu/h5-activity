@@ -237,6 +237,21 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  // pc上线庆典获取邀请信息
+  get_invite_info: {
+    400: {
+      'inactive event': '活动未开启，请稍后重试',
+    },
+  },
+  // 绑定pc上线庆典邀请码
+  accept_invite: {
+    400: {
+      'inactive event': '活动未开启，请稍后重试',
+      'invalid code': '请输入正确的邀请码',
+      'cannot bind': '账号无法绑定',
+    },
+  },
+
   get_file_picker_token: {
     400: {
       invalid_method: '参数method错误',
