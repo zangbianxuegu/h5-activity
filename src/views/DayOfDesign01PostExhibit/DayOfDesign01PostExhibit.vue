@@ -392,7 +392,7 @@ async function openSharedDetail(): Promise<void> {
   if (queryStr) {
     const detailParams: DetailParams = {
       policy_name: FILE_PICKER_POLICY_NAME,
-      design_id: qs.parse(queryStr).d_id,
+      design_id: qs.parse(queryStr).d_id as string,
     }
     await getDetail(detailParams)
   }
@@ -617,7 +617,7 @@ async function handleRecommend(): Promise<void> {
  * @returns {Promise<void>}
  */
 async function handleFavorite(dir?: string): Promise<void> {
-  if (type.value === PageType.Favorite) {
+  if (!dir && type.value === PageType.Favorite) {
     return
   }
   type.value = PageType.Favorite
