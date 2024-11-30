@@ -42,7 +42,7 @@
                   <!-- 收藏 -->
                   <div
                     v-if="isOther"
-                    @click.stop="throttleClickShare"
+                    @click.stop="throttleClickLike"
                     :class="['btn', 'like', 'cursor-pointer']"
                   >
                     <img :src="likeBtnImg" alt="" />
@@ -94,7 +94,10 @@ import ClipboardJS from 'clipboard'
 import qs from 'qs'
 import { useBaseStore } from '@/stores/base'
 import { saveImgToDeviceAlbum } from '@/utils/request'
-import { DESIGN_DETAILS_TYPE } from '@/types/activity/dayofdesign01'
+import {
+  DESIGN_DETAILS_TYPE,
+  EVENT_DAY_OF_DESIGN_01,
+} from '@/types/activity/dayofdesign01'
 import {
   deleteDesignDetails,
   reviewShareDesign,
@@ -109,13 +112,14 @@ import deleteBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-subm
 import shareBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-share.png'
 import downloadBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-download.png'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
+import { webViewStatistics } from '@/apis/base'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
  */
 const props = defineProps<{
   type: DESIGN_DETAILS_TYPE
-  event: string
+  event: EVENT_DAY_OF_DESIGN_01
   show: boolean
   worksData: {
     id: string
@@ -152,6 +156,18 @@ watch(
 const emits = defineEmits(['update:show', 'afterDelete', 'update-favorite'])
 
 const isFavorite = ref(props.worksData.isFavorite)
+
+const eventMap = new Map([
+  [
+    EVENT_DAY_OF_DESIGN_01.EXHIBIT,
+    {
+      statisticsModules: {
+        download: 'day_of_design_stage0_download',
+        share: 'day_of_design_stage0_share',
+      },
+    },
+  ],
+])
 
 // 点赞按钮
 const likeBtnImg = computed(() => {
@@ -286,8 +302,10 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 // 点击下载按钮，下载作品拼装图
 const onClickHandleBarDownload = async (): Promise<void> => {
   try {
-    // const module = 'day_of_design_download'
-    // void webViewStatistics({ module })
+    void webViewStatistics({
+      module: eventMap.get(props.event)?.statisticsModules.download as string,
+      event: EVENT_DAY_OF_DESIGN_01.ALL,
+    })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
       const res = await saveImgToDeviceAlbum(worksDecorateImgSrc)
@@ -303,8 +321,10 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const onClickHandleBarLike = async (): Promise<void> => {
   try {
-    // const module = 'day_of_design_share'
-    // void webViewStatistics({ module })
+    void webViewStatistics({
+      module: eventMap.get(props.event)?.statisticsModules.share as string,
+      event: EVENT_DAY_OF_DESIGN_01.ALL,
+    })
     if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
       await updateFavorites(
         props.worksData.id,
@@ -321,7 +341,7 @@ const onClickHandleBarLike = async (): Promise<void> => {
   }
 }
 // 后端也是1s CD
-const throttleClickShare = throttle(onClickHandleBarLike, 1000, {
+const throttleClickLike = throttle(onClickHandleBarLike, 1000, {
   trailing: false,
 })
 

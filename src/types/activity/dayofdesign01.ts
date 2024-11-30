@@ -55,6 +55,11 @@ export enum DESIGN_DETAILS_TYPE {
 export enum EVENT_DAY_OF_DESIGN_01 {
   ALL = 'activitycenter_dayofdesign01',
   EXHIBIT = 'activitycenter_dayofdesign01_post_exhibit',
+  STAGE0 = 'day_of_design_stage0',
+  STAGE1 = 'day_of_design_stage1',
+  STAGE2 = 'day_of_design_stage2',
+  STAGE3 = 'day_of_design_stage3',
+  STAGE4 = 'day_of_design_stage4',
 }
 
 /**
