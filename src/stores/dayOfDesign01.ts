@@ -14,7 +14,7 @@ export const useActivityStore = defineStore(
         favorite: false,
       },
     ])
-    // 更新活动数据
+    // 更新推荐作品
     function updateRecommendData(newEventData: DesignItem[]): void {
       recommendData.value = newEventData
     }

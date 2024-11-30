@@ -19,7 +19,10 @@
                 @click="handleHelp"
               ></div>
             </h2>
-            <button class="my-work absolute right-0 top-[60px]">
+            <button
+              class="my-work absolute right-0 top-[60px]"
+              @click="gotoRules"
+            >
               活动规则
             </button>
           </header>
@@ -28,6 +31,7 @@
           <section class="design-main m-auto">
             <!-- 操作区 -->
             <div class="mx-auto flex items-center">
+              <!-- 搜索 -->
               <div class="search relative">
                 <input
                   v-model="searchTerm"
@@ -43,38 +47,37 @@
                   <span class="sr-only">搜索</span>
                 </button>
               </div>
+              <!-- 收藏 -->
               <button
                 :class="[
-                  'nav-btn nav-btn--favorite flex items-center justify-center rounded-full bg-white',
-                  {
-                    'bg-[#d9fff5]': type === 'favorite',
-                  },
+                  'nav-btn nav-btn--favorite flex items-center justify-center rounded-full',
+                  [type === PageType.Favorite ? 'bg-[#d9fff5]' : 'bg-white'],
                 ]"
                 @click="handleFavorite()"
               >
                 <img
-                  v-show="type === 'favorite'"
+                  v-show="type === PageType.Favorite"
                   class="nav-icon transition-all"
                   src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-selected.png"
                   alt="favorite"
                 />
                 <img
-                  v-show="type !== 'favorite'"
+                  v-show="type !== PageType.Favorite"
                   class="nav-icon transition-all"
                   src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-unselected.png"
                   alt="favorite"
                 />
-                <span class="">收藏</span>
+                <span>收藏</span>
               </button>
+              <!-- 推荐 -->
               <button
                 :class="[
-                  'nav-btn nav-btn--recommend flex items-center justify-center rounded-full bg-white',
+                  'nav-btn nav-btn--recommend flex items-center justify-center rounded-full',
                   {
                     'cursor-not-allowed bg-[#d7e3f0]': isCoolDownActive,
                   },
-                  {
-                    'bg-[#d9fff5]': type === 'recommend',
-                  },
+                  !isCoolDownActive &&
+                    (type === PageType.Recommend ? 'bg-[#d9fff5]' : 'bg-white'),
                 ]"
                 :disabled="isCoolDownActive"
                 @click="handleRecommend"
@@ -210,6 +213,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import qs from 'qs'
+import { DESIGN_DETAILS_TYPE, EVENT_DAY_OF_DESIGN_01, PageType } from '@/types'
 import type {
   DesignConfig,
   ListRecommendParams,
@@ -218,14 +222,11 @@ import type {
   DesignItem,
   FavoriteData,
   DetailParams,
+  OtherDesignDetails,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
-import {
-  DESIGN_DETAILS_TYPE,
-  EVENT_DAY_OF_DESIGN_01,
-  type OtherDesignDetails,
-} from '@/types/activity/dayofdesign01'
+
 import {
   getFavorites,
   getRecommendations,
@@ -234,10 +235,16 @@ import {
 } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
-import ModalHelp from './components/ModalHelp.vue'
-import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
+// import ModalHelp from './components/ModalHelp.vue'
+// import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
+const ModalHelp = defineAsyncComponent(
+  () => import('./components/ModalHelp.vue'),
+)
+const WorksDetailModal = defineAsyncComponent(
+  () => import('../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'),
+)
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -287,7 +294,7 @@ const activityStore = useActivityStore()
 const cachedRecommend = computed(() => activityStore.recommendData)
 
 // 页面数据类型
-const type = ref<'recommend' | 'favorite' | 'search'>('favorite') // recommend、favorite、search
+const type = ref<PageType>(PageType.Favorite) // recommend、favorite、search
 // 页面显示的作品列表数据
 const list = ref<DesignItem[]>([])
 // 总页数
@@ -313,15 +320,16 @@ const isDetailVisible = ref(false)
 let curDetailId = ''
 // 左右箭头和页数的显示
 const isPrevVisible = computed(
-  () => type.value !== 'recommend' && currentPage.value > 1,
+  () => type.value !== PageType.Recommend && currentPage.value > 1,
 )
 const isNextVisible = computed(
-  () => type.value !== 'recommend' && currentPage.value < totalPage.value,
+  () =>
+    type.value !== PageType.Recommend && currentPage.value < totalPage.value,
 )
 const isPagesVisible = computed(
   () =>
-    (type.value === 'favorite' && cachedFavorite.value.totalPage > 1) ||
-    (type.value === 'search' && cachedSearch.value.totalPage > 1),
+    (type.value === PageType.Favorite && cachedFavorite.value.totalPage > 1) ||
+    (type.value === PageType.Search && cachedSearch.value.totalPage > 1),
 )
 interface Detail {
   author: string
@@ -530,6 +538,7 @@ async function getRecommendByPage(page: number): Promise<DesignItem[]> {
       // 请求接口获取新数据
       await handleCachedRecommend()
     }
+    // else 刷新页面时距离上次请求小于3s，使用缓存数据
   } else {
     Loading.show()
     // 随机延迟 100 到 300 毫秒
@@ -584,7 +593,7 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
  * @returns {Promise<void>}
  */
 async function handleRecommend(): Promise<void> {
-  type.value = 'recommend'
+  type.value = PageType.Recommend
   recommendPage++
   // 不足一页或推荐页数(1、2、3)大于 3，进行重置
   if (cachedRecommend.value.length < ITEMS_PER_PAGE || recommendPage > 3) {
@@ -608,7 +617,10 @@ async function handleRecommend(): Promise<void> {
  * @returns {Promise<void>}
  */
 async function handleFavorite(dir?: string): Promise<void> {
-  type.value = 'favorite'
+  if (type.value === PageType.Favorite) {
+    return
+  }
+  type.value = PageType.Favorite
   if (dir === 'prev') {
     currentPage.value -= 1
   } else if (dir === 'next') {
@@ -642,7 +654,7 @@ async function handleSearch(dir?: string): Promise<void> {
     showToast('请输入准确的作者名或作品编号~')
     return
   }
-  type.value = 'search'
+  type.value = PageType.Search
   if (dir === 'prev') {
     currentPage.value -= 1
   } else if (dir === 'next') {
@@ -665,7 +677,7 @@ async function handlePrev(): Promise<void> {
   if (currentPage.value <= 1) {
     return
   }
-  if (type.value === 'favorite') {
+  if (type.value === PageType.Favorite) {
     await handleFavorite('prev')
   } else {
     await handleSearch('prev')
@@ -681,7 +693,7 @@ async function handleNext(): Promise<void> {
   if (currentPage.value >= totalPage.value) {
     return
   }
-  if (type.value === 'favorite') {
+  if (type.value === PageType.Favorite) {
     await handleFavorite('next')
   } else {
     await handleSearch('next')
@@ -705,7 +717,7 @@ async function handleItemClick(item: DesignItem): Promise<void> {
       policy_name: FILE_PICKER_POLICY_NAME,
       design_id: designId,
     }
-    if (type.value === 'favorite') {
+    if (type.value === PageType.Favorite) {
       params = {
         ...params,
         favorite_time: favoriteTime,
@@ -745,7 +757,7 @@ async function getDetail(params: DetailParams): Promise<void> {
  * @returns {void}
  */
 function handleUpdateFavorites(isFavorite: boolean): void {
-  if (type.value !== 'recommend') {
+  if (type.value !== PageType.Recommend) {
     list.value = list.value.map((item) => {
       return {
         ...item,
@@ -762,6 +774,16 @@ function handleUpdateFavorites(isFavorite: boolean): void {
  */
 function handleHelp(): void {
   modalHelp.value?.open()
+}
+
+/**
+ * @function gotoRules
+ * @description 前往活动规则页面
+ * @returns {void}
+ */
+function gotoRules(): void {
+  window.location.href =
+    'https://sky.163.com/client/news/update/20241011/40240_1186029.html'
 }
 </script>
 

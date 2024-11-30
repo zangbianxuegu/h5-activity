@@ -39,6 +39,7 @@
                   <p>{{ worksData.worksIntroduce }}</p>
                 </div>
                 <div class="btn-group-bar">
+                  <!-- 收藏 -->
                   <div
                     v-if="isOther"
                     @click.stop="throttleClickShare"
@@ -46,6 +47,7 @@
                   >
                     <img :src="likeBtnImg" alt="" />
                   </div>
+                  <!-- 下载 -->
                   <div
                     v-if="isSelf"
                     @click.stop="onClickHandleBarDownload"
@@ -53,6 +55,7 @@
                   >
                     <img :src="downloadBtnIcon" alt="" />
                   </div>
+                  <!-- 分享 -->
                   <div
                     v-if="isShowShareBtn"
                     @click.stop="onClickHandleBarShare"
@@ -61,7 +64,9 @@
                   >
                     <img :src="shareBtnIcon" alt="" />
                   </div>
+                  <!-- 删除 -->
                   <div
+                    v-if="isSelf"
                     @click.stop="onClickHandleBarDelete"
                     :class="['btn', 'delete', 'cursor-pointer']"
                   >

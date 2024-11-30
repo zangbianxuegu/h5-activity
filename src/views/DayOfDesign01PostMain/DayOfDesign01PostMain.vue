@@ -54,46 +54,7 @@
         </Transition>
 
         <!-- 活动规则弹框 -->
-        <activity-modal ref="modalHelp">
-          <template #content>
-            <section
-              class="h-[640px] overflow-auto px-4"
-              aria-labelledby="activity-rules-title"
-            >
-              <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
-              <h3 class="modal-text mt-4">
-                <span class="font-semibold">活动时间：</span>
-                2024年10月26日~2024年11月15日
-              </h3>
-              <h3 class="modal-text">
-                <span class="font-semibold">活动内容：</span>
-              </h3>
-              <p class="modal-text">
-                活动期间，玩家可以使用捣蛋挖宝次数进行挖宝：
-              </p>
-              <ul class="modal-text list-inside list-decimal">
-                <li>每次挖宝均可获得10捣蛋币的奖励</li>
-                <li>
-                  挖出宝藏可获得额外捣蛋币奖励，对应奖励如
-                  <div class="grid grid-cols-2">
-                    <span>宝藏</span>
-                    <span>奖励</span>
-                    <span>糖果</span>
-                    <span class="text-[#ffcb4d]">20</span>
-                    <span>皮皮猫</span>
-                    <span class="text-[#ffcb4d]">80</span>
-                    <span>螃蟹</span>
-                    <span class="text-[#ffcb4d]">30</span>
-                    <span>冥龙</span>
-                    <span class="text-[#ffcb4d]">100</span>
-                    <span>南瓜螃蟹</span>
-                    <span class="text-[#ffcb4d]">50</span>
-                  </div>
-                </li>
-              </ul>
-            </section>
-          </template>
-        </activity-modal>
+        <ModalHelp ref="modalHelp" />
       </div>
     </div>
   </Transition>
@@ -103,7 +64,7 @@
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import ActivityModal from '@/components/Modal'
+import ModalHelp from './components/ModalHelp.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -134,7 +95,7 @@ const designConfig: DesignConfig = {
 // 缩放系数
 useResponsiveStyles(designConfig)
 // 弹框
-const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostMain'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -157,7 +118,7 @@ onMounted(async () => {
  * @returns {void}
  */
 function handleHelp(): void {
-  modalHelp.value?.openModal()
+  modalHelp.value?.open()
 }
 </script>
 

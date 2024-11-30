@@ -9,14 +9,11 @@ import type {
   DesignItem,
   FavoriteData,
   DetailParams,
+  OtherDesignDetails,
+  SelfDesignDetails,
 } from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
-
-import type {
-  OtherDesignDetails,
-  SelfDesignDetails,
-} from '@/types/activity/dayofdesign01'
 import {
   ERROR_TYPE,
   REVIEW_TEXT_ERROR_TYPE,
@@ -34,7 +31,7 @@ import Loading from '@/components/Loading'
  * @param {ListRecommendParams} params 参数
  * @property {string} event 事件名
  * @property {string} policy_name 策略名
- * @property {string} group 分组
+ * @property {string} [group] 分组（可选），第一轮投票期必填
  * @returns {Promise<ListRecommendRes>}
  */
 export function getRecommendations(
@@ -67,8 +64,8 @@ export function getRecommendations(
  * @param {ListFavoriteParams} params 参数
  * @property {string} event 事件名
  * @property {string} policy_name 策略名
- * @property {number} favorite_time 最小收藏时间
- * @property {string} group 分组
+ * @property {number} [favorite_time] 最小收藏时间（可选），请求第一页的时候不用填，秒级时间戳
+ * @property {string} [group] 分组（可选），第一轮投票期必填
  * @returns {Promise<ListFavoriteRes>}
  */
 export function getFavorites(
@@ -102,8 +99,8 @@ export function getFavorites(
  * @property {string} event 事件名
  * @property {string} policy_name 策略名
  * @property {string} search_term 搜索文本
- * @property {string} id_offset 当前页最小的作品ID
- * @property {string} group 分组
+ * @property {string} [id_offset] 当前页最小的作品ID（选填），请求第一页的时候不用填。
+ * @property {string} [group] 分组（可选），第一轮投票期必填
  * @returns {Promise<ListSearchRes>}
  */
 export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
@@ -135,7 +132,7 @@ export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
  * @property {string} policy_name 策略名
  * @property {string} [design_id] 作品 ID（可选）
  * @property {string} [favorite_time] 收藏时间（可选）
- * @returns {Promise<BaseDesignDetails | SelfDesignDetails>} 作品详情
+ * @returns {Promise<OtherDesignDetails | SelfDesignDetails>} 作品详情
  */
 export const getDesignDetails = (
   params: DetailParams,
