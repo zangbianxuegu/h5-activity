@@ -10,13 +10,16 @@
         <p :class="['text-[32px]', 'w-[320px]', 'text-white']">
           <span>{{ item.title }}</span>
           <span v-if="item.id === 3" class="text-[#ffb033]">
-            (<span>{{ item.val }}/{{ item.stages[0] }}</span
+            (<span
+              >{{ item.val > item.stages[0] ? item.stages[0] : item.val }}/{{
+                item.stages[0]
+              }}</span
             >)
           </span>
         </p>
         <bubble
           :reward="item"
-          :bubbleScale="1.85"
+          :bubbleScale="1.9"
           :bounce-class="`reward-bounce-${item.taskId}`"
         >
           <div

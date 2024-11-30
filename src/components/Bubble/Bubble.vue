@@ -1,7 +1,6 @@
 <template>
   <div class="relative" @click.capture="handleClickBubble">
     <can-reward-bubble-animation
-      v-if="reward.status === 'can'"
       :ref="reward.canRewardLottieRef"
       :id="`${reward.taskId}-${reward.id}`"
       class="reward-bubble animate__animated animate__fadeIn animate__slow pointer-events-none z-0"
@@ -77,11 +76,6 @@ const handleClickBubble = async (): Promise<void> => {
   const taskList = Array.from(bounceEleList).map(
     (bounceEle) => bounceEle.children[0],
   ) as HTMLElement[]
-  // 奖励列表
-  let rewardList = props.rewardList
-  if (!props.rewardList || props.rewardList.length === 0) {
-    rewardList = [props.reward]
-  }
   // bubble 效果
   if (taskList.length > 0) {
     if (props.reward.status === 'wait') {
@@ -89,14 +83,33 @@ const handleClickBubble = async (): Promise<void> => {
         // 元素 bounce
         animateBounce(task)
       })
-    } else if (props.reward.status === 'can' && props.isPlayAnimation) {
-      // 领奖动画
-      await Promise.all(
-        taskList.map((task, idx) => {
-          return bubbleBurst(task, rewardList[idx] as Reward)
-        }),
-      )
     }
+  }
+}
+
+/**
+ * @function 点击奖励单个或多个气泡同时炸开动画
+ * @returns {Promise<void>}
+ */
+const handleBubbleBurst = async (): Promise<void> => {
+  // 获取所有需要bounce的元素
+  const bounceEleList = document.querySelectorAll(`.${props.bounceClass}`)
+  const taskList = Array.from(bounceEleList).map(
+    (bounceEle) => bounceEle.children[0],
+  ) as HTMLElement[]
+  // 奖励列表
+  let rewardList = props.rewardList
+  if (!props.rewardList || props.rewardList.length === 0) {
+    rewardList = [props.reward]
+  }
+  // bubble 效果
+  if (taskList.length > 0 && props.isPlayAnimation) {
+    // 领奖动画
+    await Promise.all(
+      taskList.map((task, idx) => {
+        return bubbleBurst(task, rewardList[idx] as Reward)
+      }),
+    )
   }
 }
 
@@ -129,6 +142,9 @@ const handleRewardLottie = (reward: Reward): void => {
         initCanRewardLottie(reward)
       }
     })
+  } else {
+    // 如果任务状态不是 'can'，销毁相关的 Lottie 动画
+    reward.canRewardLottieRef?.value?.destroyAnimation()
   }
 }
 
@@ -147,9 +163,23 @@ const bubbleBurst = async (dom: HTMLElement, reward: Reward): Promise<void> => {
   await animateBounceEase(dom)
 }
 
-watchEffect(() => {
-  handleRewardLottie(props.reward as Reward)
-})
+watch(
+  () => props.reward.status,
+  (newVal, oldVal) => {
+    if (newVal === 'redeemed' && oldVal === 'can') {
+      void handleBubbleBurst()
+    }
+  },
+)
+
+watch(
+  () => props.reward,
+  (newVal) => {
+    if (newVal) {
+      handleRewardLottie(newVal as Reward)
+    }
+  },
+)
 </script>
 
 <style lang="scss" scoped>
