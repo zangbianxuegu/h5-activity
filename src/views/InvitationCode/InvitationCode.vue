@@ -627,7 +627,7 @@ function handleHelp(): void {
     background-size: cover;
     background-image: url('@/assets/images/invitation-code/bg.jpg');
     &.keyboardShow {
-      top: 30px;
+      top: 40px;
       transform: translate(-50%, 0);
     }
     &.keyboardHide {
