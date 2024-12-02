@@ -27,29 +27,30 @@
                   <li
                     v-for="(item, index) in accTaskList"
                     :key="index"
-                    class="acc-task-item"
-                    :class="[
-                      `acc-task-item${index + 1}`,
-                      `${item.status}`,
-                      item.status === 'redeemed' ? 'flipped' : '',
-                    ]"
+                    class="animate__animated animate__fadeIn"
+                    :class="[`card${index + 1}`]"
                     @click="handleReward(index + 1, item)"
                   >
                     <div
-                      class="acc-task-front animate__animated animate__fadeIn"
-                    ></div>
-                    <div
-                      class="acc-task-back animate__animated animate__fadeIn"
+                      class="acc-task-item"
+                      :class="[
+                        `acc-task-item${index + 1}`,
+                        `${item.status}`,
+                        item.status === 'redeemed' ? 'flipped' : '',
+                      ]"
                     >
-                      <div class="acc-task-gift">
-                        <img
-                          :src="handleSrc(item.info.name)"
-                          alt="奖品"
-                          class="h-full"
-                          v-if="item.info.name"
-                        />
+                      <div class="acc-task-front"></div>
+                      <div class="acc-task-back">
+                        <div class="acc-task-gift">
+                          <img
+                            :src="handleSrc(item.info.name)"
+                            alt="奖品"
+                            class="h-full"
+                            v-if="item.info.name"
+                          />
+                        </div>
+                        <div class="acc-task-right"></div>
                       </div>
-                      <div class="acc-task-right"></div>
                     </div>
                   </li>
                 </ul>
@@ -427,6 +428,8 @@ function handleSrc(name: string): string {
 
 .acc-task-item {
   position: relative;
+  width: 100%;
+  height: 100%;
   perspective: 1000px;
   transition: transform 0.5s linear;
   transform-style: preserve-3d;
@@ -535,8 +538,10 @@ function handleSrc(name: string): string {
 }
 
 @for $i from 1 through 10 {
-  .acc-task-item#{$i} {
+  .card#{$i} {
     grid-area: task-item#{$i};
+  }
+  .acc-task-item#{$i} {
     @if $i == 2 or $i == 10 {
       @include special-style($i);
     } @else {
