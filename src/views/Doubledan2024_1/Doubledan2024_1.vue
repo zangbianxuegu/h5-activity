@@ -433,6 +433,7 @@ function handleSrc(name: string): string {
   perspective: 1000px;
   transition: transform 0.5s linear;
   transform-style: preserve-3d;
+  -webkit-transform-style: preserve-3d;
   cursor: pointer;
   &.flipped {
     transform: rotateY(180deg);
@@ -447,6 +448,7 @@ function handleSrc(name: string): string {
   background-position: center center;
   background-repeat: no-repeat;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
 }
 
 .acc-task-front {
