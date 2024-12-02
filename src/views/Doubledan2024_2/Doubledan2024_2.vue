@@ -263,7 +263,7 @@ const accTaskList = computed(() => {
 
 // 当前日期状态
 type DateStatus = 'nostart' | 'ongoing' | 'overdue'
-function checkTodayAgainstDateRange(data: string): DateStatus {
+function checkTodayAgainstDateRange(data: string, curDate: number): DateStatus {
   const [start, end] = data.split('-').map((date) => date.split('.'))
   // 解析给定的日期范围
   const startMonth = parseInt(start[0], 10)
@@ -272,7 +272,7 @@ function checkTodayAgainstDateRange(data: string): DateStatus {
   const endDay = parseInt(end[1], 10)
 
   // 获取服务器时间
-  const today = new Date(currentTime * 1000)
+  const today = new Date(curDate)
   const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
   const currentDay = today.getDate()
   // 判断当前日期是否在范围内
@@ -306,7 +306,6 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
-    dateStatus.value = checkTodayAgainstDateRange('12.25-12.25')
   } catch (error) {
     console.error(error)
   }
@@ -374,6 +373,10 @@ function getActivityData(): void {
       }
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
+      dateStatus.value = checkTodayAgainstDateRange(
+        '12.25-12.25',
+        Number(data.current_time) * 1000,
+      )
       setRedDot()
     })
     .catch((error) => {
