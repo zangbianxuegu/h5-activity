@@ -1,8 +1,8 @@
 <template>
-  <Transition appear mode="out-in">
+  <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="hmj-contribute flex h-screen">
       <div class="hmj-contribute-main">
-        <Transition appear :name="headTransitionName" mode="out-in">
+        <Transition appear mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">绘梦节-我要投稿</div>
             <div
@@ -57,6 +57,7 @@
                     <span
                       @click="onClickCopyWorksId"
                       class="btn-copy cursor-pointer"
+                      :copy-id="worksData.id"
                       >复制</span
                     >
                   </p>
@@ -104,7 +105,6 @@
                         (event: Event) =>
                           onChangeAuthorWordCount(event, 'author')
                       "
-                      @blur="onBlurInput"
                     />
                     <span class="word-count">{{ authorWordCount }}/8</span>
                   </div>
@@ -128,7 +128,6 @@
                         (event: Event) =>
                           onChangeAuthorWordCount(event, 'worksName')
                       "
-                      @blur="onBlurInput"
                     />
                     <span class="word-count">{{ worksNameWordCount }}/8</span>
                   </div>
@@ -144,7 +143,6 @@
                       maxlength="50"
                       placeholder="请分享你的创作故事"
                       :disabled="isContributed"
-                      @blur="onBlurInput"
                     ></textarea>
                     <span class="word-count"
                       >{{ worksIntroduceWordCount }}/50</span
@@ -183,41 +181,12 @@
             <div class="cat-npc bg-contain bg-center bg-no-repeat"></div>
           </div>
         </Transition>
-        <!-- web生成拼装图的隐藏DOM -->
-        <Teleport to="body">
-          <div
-            class="ps_ignore-user-wrok-upload-container bg-contain bg-center bg-no-repeat"
-          >
-            <div class="left">
-              <img
-                id="img-container"
-                :src="worksData.worksImgSrc"
-                alt=""
-                srcset=""
-              />
-            </div>
-            <div class="right">
-              <div class="decorate-works-basic-info">
-                <p>
-                  <span>作品ID: </span>
-                  <span>{{ worksData.worksName }}</span>
-                </p>
-                <p>
-                  <span>作品名: </span>
-                  <span>{{ worksData.worksName }}</span>
-                </p>
-                <p>
-                  <span>作者名: </span>
-                  <span>{{ worksData.author }}</span>
-                </p>
-              </div>
-              <div class="decorate-works-introduce">
-                <span>作品介绍：</span>
-                <span>{{ worksData.worksIntroduce }}</span>
-              </div>
-            </div>
-          </div>
-        </Teleport>
+
+        <!-- 生成拼装图 -->
+        <decorate-works-generate
+          ref="decorateWorksGenerateRef"
+          :worksData="worksData"
+        ></decorate-works-generate>
 
         <!-- 我的作品弹窗 -->
         <works-detail-modal
@@ -237,7 +206,7 @@
 
 <script setup lang="ts">
 import { closeToast, showLoadingToast, showToast } from 'vant'
-import html2canvas from 'html2canvas'
+import DecorateWorksGenerate from './components/DecorateWorksGenerate.vue'
 import WorksDetailModal from './components/WorksDetailModal.vue'
 import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
 import UploadImg from './components/UploadImg.vue'
@@ -401,9 +370,9 @@ const contributeBtnClass = computed((): string => {
 // 复制作品id
 const onClickCopyWorksId = (): void => {
   // eslint-disable-next-line no-new
-  new ClipboardJS('#copy-works-id', {
-    text: function () {
-      return document.querySelector('#works-id')?.textContent as string
+  new ClipboardJS('.btn-copy', {
+    text: function (el: Element) {
+      return el?.getAttribute('copy-id') || ''
     },
   })
   showToast('编号已复制到剪贴板！')
@@ -416,10 +385,6 @@ const onChangeAuthorWordCount = (
 ): void => {
   const inputValue = (event.target as HTMLInputElement)?.value
   worksData.value[key] = inputValue.trim()
-}
-
-const onBlurInput = (): void => {
-  document.querySelector('body')?.focus()
 }
 
 // 下载模板
@@ -528,27 +493,19 @@ const onClickContributeWorks = async (): Promise<void> => {
   }
 }
 
+const decorateWorksGenerateRef = ref<InstanceType<
+  typeof DecorateWorksGenerate
+> | null>()
 // 生成拼装图
-const changeDomToImage = (): Promise<void> => {
-  return new Promise((resolve): void => {
-    const target = document.querySelector(
-      '.ps_ignore-user-wrok-upload-container',
-    ) as HTMLElement
-    void html2canvas(target, {
-      scale: 1, // 设置画布的缩放比例为 1
-      width: 1760, // 设置输出图像的宽度
-      height: 990, // 设置输出图像的高度
-    }).then((canvas) => {
-      canvas.toBlob((blob): void => {
-        if (blob) {
-          const url = URL.createObjectURL(blob)
-          worksData.value.worksDecorateImg = blob
-          worksData.value.worksDecorateImgSrc = url
-          resolve()
-        }
-      })
-    })
-  })
+const generateDecorateWorksImg = async (): Promise<void> => {
+  try {
+    if (decorateWorksGenerateRef.value) {
+      const { worksDecorateImg, worksDecorateImgSrc } =
+        await decorateWorksGenerateRef.value.generateDecorateWorksImg()
+      worksData.value.worksDecorateImg = worksDecorateImg
+      worksData.value.worksDecorateImgSrc = worksDecorateImgSrc
+    }
+  } catch (error) {}
 }
 
 const filePickerConfig = ref({
@@ -640,7 +597,7 @@ const confirmSubmitWork = async (): Promise<void> => {
     },
   })
 
-  await changeDomToImage()
+  await generateDecorateWorksImg()
   try {
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
@@ -708,11 +665,29 @@ const updateDesignDetails = async (): Promise<void> => {
 
 onMounted(async () => {
   await initPageData()
-  Session.set(sessionIsVisitedKey, true)
+  Session.set(sessionIsVisitedKey, false)
 })
 </script>
 
 <style lang="scss" scoped>
+.fade-in-body-enter-active {
+  transition: opacity 1s ease-out;
+}
+.fade-in-body-enter-from {
+  opacity: 0.2;
+}
+.fade-in-head-enter-active {
+  transition: opacity 1s ease-out 0.2s;
+}
+.fade-in-head-enter-from {
+  opacity: 0.2;
+}
+.fade-in-main-enter-active {
+  transition: opacity 1s ease-out 0.5s;
+}
+.fade-in-main-enter-from {
+  opacity: 0.2;
+}
 .hmj-contribute {
   position: relative;
   width: 2100px;
@@ -883,7 +858,7 @@ onMounted(async () => {
     top: 0;
     left: 0;
     height: 76px;
-    padding: 0 28px;
+    padding: 0 25px 0 12px;
     color: #fff;
     font-size: 32px;
     background-color: rgba(89, 128, 143, 0.9);
@@ -1033,104 +1008,6 @@ onMounted(async () => {
     bottom: 0;
     right: 10px;
     opacity: 0.8;
-  }
-}
-.btn-contribute-works {
-  width: 300px;
-  height: 80px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 30px;
-  color: #fff;
-  border-radius: 10px;
-  background-color: #00b0f0;
-}
-
-// 作品预览开始
-#user-work-container {
-  height: 1040px;
-  width: 80%;
-  background-color: #f4f1ea;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 70px;
-  .left {
-    width: 500px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start;
-    color: #ababab;
-    font-size: 40px;
-    .works-preview-basic-info {
-      width: 100%;
-      height: 200px;
-    }
-    .works-preview-introduce {
-      width: 100%;
-      height: calc(100% - 200px);
-      background-color: #d4d2c6;
-      border-radius: 5px;
-      padding: 30px;
-    }
-  }
-  .right {
-    flex: 1;
-    height: 100%;
-    display: flex;
-    justify-content: flex-end;
-    img {
-      width: 1200px;
-      height: 900px;
-    }
-  }
-}
-.ps_ignore-user-wrok-upload-container {
-  font-size: 10px;
-  height: 990px !important;
-  width: 1760px !important;
-  position: absolute;
-  // top: 0;
-  // left: 0;
-  top: -10000px;
-  left: -1000px;
-  background-image: url('@/assets/dayofdesign01/images/dayofdesign01-post-submit/bg-decrote-works.png');
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  .left {
-    width: 1400px;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    img {
-      width: 1200px;
-      height: 900px;
-    }
-  }
-  .right {
-    width: calc(1760px - 1200px);
-    height: 100%;
-    color: #928885;
-    .decorate-works-basic-info {
-      margin: 6.8em 0 0 7em;
-      line-height: 4.5em;
-    }
-    .decorate-works-introduce {
-      background-color: #d2cec3 60%;
-      height: 67em;
-      // border: 1px solid red;
-      padding: 1em 5em 0em 2.5em;
-      margin: 3em 5.5em 0 4.2em;
-    }
-    span {
-      font-size: 2.3em;
-      width: 100%;
-    }
   }
 }
 // 作品预览结束

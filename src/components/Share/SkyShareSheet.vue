@@ -115,8 +115,8 @@ const teleportToTargetEl = async (): Promise<void> => {
 
     const top = hoverEl.offsetTop
     const left = hoverEl.offsetLeft
-    hoverTop.value = `${top - containerHeight / 2}px`
-    hoverLeft.value = `${left - containerWidth / 2}px`
+    hoverTop.value = `${top - containerHeight / 2 + 10}px`
+    hoverLeft.value = `${left - containerWidth / 2 - 6}px`
   } else {
     hoverTop.value = `${10}px`
     hoverLeft.value = `${10}px`
@@ -140,14 +140,10 @@ onMounted(async () => {
   await teleportToTargetEl()
 })
 </script>
-
 <style scoped lang="scss">
-body {
-  background-color: aqua;
-}
 .sky-share-sheet {
   width: 1000px;
-  height: 186px;
+  height: 199px;
   position: absolute;
   top: v-bind(hoverTop);
   left: v-bind(hoverLeft);

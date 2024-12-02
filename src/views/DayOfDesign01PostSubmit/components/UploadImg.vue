@@ -44,6 +44,7 @@
           alt=""
           srcset=""
           :onerror="errorDefaultWorksImg"
+          @contextmenu.prevent
         />
       </div>
     </div>

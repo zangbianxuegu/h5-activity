@@ -5,6 +5,7 @@ import { Session } from '@/utils/storage'
 import { setErrorCustom } from './error'
 import dayjs from 'dayjs'
 import { closeToast, showLoadingToast } from 'vant'
+import { useEnvironment } from '@/composables/useEnvironment'
 
 export function postMsgToNative(msg: {
   methodId: string
@@ -407,9 +408,10 @@ export function getErrorMessage(
  * @param {string} url 在线图片的url
  * @returns {boolean} 上传是否成功的结果
  */
+const { isPC } = useEnvironment()
 export const saveImgToDeviceAlbum = (
   url: string,
-  timeoutErrorCount: number = 5000,
+  timeoutErrorCount: number = 7000,
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     showLoadingToast({
@@ -417,6 +419,12 @@ export const saveImgToDeviceAlbum = (
       forbidClick: true,
       duration: 0,
     })
+    const imageFormatRegex =
+      /\.(jpg|jpeg|png|gif|bmp|svg|webp|tiff|tif|heif|heic)$/i
+    // 优化PC保存filepicker的url
+    if (!imageFormatRegex.test(url)) {
+      url += '.jpg'
+    }
     const img = new Image()
     img.src = url
     img.onload = function () {
@@ -443,9 +451,11 @@ export const saveImgToDeviceAlbum = (
       closeToast()
       reject(new Error('下载图片失败'))
     }
-    // 超时处理
-    setTimeout(() => {
-      reject(new Error('下载图片失败'))
-    }, timeoutErrorCount)
+    if (!isPC) {
+      // 超时处理
+      setTimeout(() => {
+        reject(new Error('下载图片失败'))
+      }, timeoutErrorCount)
+    }
   })
 }
