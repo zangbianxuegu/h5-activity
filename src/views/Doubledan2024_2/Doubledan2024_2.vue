@@ -27,7 +27,7 @@
                 :key="item.id"
                 class="task-list-item relative flex w-[252px] flex-col items-center"
               >
-                <div class="task-item-tag">25日当日完成</div>
+                <div class="task-item-tag" v-if="index === 3">25日当日完成</div>
                 <div
                   class="relative"
                   :aria-label="`任务 ${index + 1}: ${item.title}`"
