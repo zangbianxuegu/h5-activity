@@ -1,7 +1,12 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="invitation-code flex h-screen">
-      <div class="invitation-code-main">
+      <div
+        :class="[
+          'invitation-code-main',
+          isKeyboardShow ? 'keyboardShow' : 'keyboardHide',
+        ]"
+      >
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -198,6 +203,7 @@ import {
   createBottomAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
+import throttle from 'lodash.throttle'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -326,11 +332,30 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 
 onMounted(() => {
   try {
+    window.addEventListener('resize', handleResize)
     initPage()
   } catch (error) {
     console.error(error)
   }
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+const originalHeight = window.innerHeight
+const isKeyboardShow = ref(false)
+
+const handleResize = throttle(() => {
+  const currentHeight = window.innerHeight
+  if (originalHeight > currentHeight) {
+    // 键盘弹出
+    isKeyboardShow.value = true
+  } else {
+    // 键盘收起
+    isKeyboardShow.value = false
+  }
+}, 200)
 
 /**
  * @function 初始化页面
@@ -590,14 +615,20 @@ function handleHelp(): void {
   &-main {
     position: absolute;
     left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
     width: 2040px;
     height: 1140px;
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/invitation-code/bg.jpg');
+    &.keyboardShow {
+      top: 0;
+      transform: translate(-50%, 0);
+    }
+    &.keyboardHide {
+      top: 50%;
+      transform: translate(-50%, -50%) scale(var(--scale-factor));
+    }
   }
 }
 .help {
