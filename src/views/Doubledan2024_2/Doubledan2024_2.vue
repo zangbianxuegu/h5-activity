@@ -368,7 +368,7 @@ function getActivityData(): void {
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       dateStatus.value = checkTodayAgainstDateRange(
-        '12.2-12.2',
+        '12.25-12.25',
         Number(data.current_time) * 1000,
       )
       setRedDot()
