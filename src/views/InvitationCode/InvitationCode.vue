@@ -165,7 +165,7 @@
             :inviteInfo="inviteInfo"
             :m1Status="m1Status"
             @reward="handleRewardM1"
-            @getUserInviteInfo="getUserInviteInfo"
+            @refresh="initPage"
           ></component>
         </ActivityTab>
       </div>
@@ -326,12 +326,21 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 
 onMounted(() => {
   try {
-    getActivityData()
-    getUserInviteInfo()
+    initPage()
   } catch (error) {
     console.error(error)
   }
 })
+
+/**
+ * @function 初始化页面
+ * @description 获取活动数据并获取用户邀请信息
+ * @returns {void}
+ */
+function initPage(): void {
+  getActivityData() // 获取活动数据
+  getUserInviteInfo() // 获取用户邀请信息
+}
 
 /**
  * @function 是否已领奖

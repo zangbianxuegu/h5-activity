@@ -49,7 +49,7 @@
 import { acceptInvite } from '@/apis/invitationCode'
 import { showToast } from 'vant'
 
-const emit = defineEmits(['reward', 'getUserInviteInfo'])
+const emit = defineEmits(['reward', 'refresh'])
 
 const props = defineProps({
   m1Status: {
@@ -76,7 +76,7 @@ function handleBind(): void {
     .then((res) => {
       if (res.code === 200) {
         showToast('绑定成功')
-        emit('getUserInviteInfo')
+        emit('refresh')
       }
     })
     .catch((error) => {
