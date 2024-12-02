@@ -343,9 +343,14 @@ onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
 })
 
+// 记录初始窗口高度
 const originalHeight = window.innerHeight
+// 键盘是否显示
 const isKeyboardShow = ref(false)
 
+/**
+ * @function 处理窗口大小变化的函数，使用节流以提高性能
+ */
 const handleResize = throttle(() => {
   const currentHeight = window.innerHeight
   if (originalHeight > currentHeight) {
@@ -622,7 +627,7 @@ function handleHelp(): void {
     background-size: cover;
     background-image: url('@/assets/images/invitation-code/bg.jpg');
     &.keyboardShow {
-      top: 0;
+      top: 30px;
       transform: translate(-50%, 0);
     }
     &.keyboardHide {
