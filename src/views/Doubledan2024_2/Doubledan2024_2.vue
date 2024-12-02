@@ -215,7 +215,6 @@ getResponsiveStylesFactor()
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-const currentTime = activityData.value.current_time
 
 // 任务排序
 const taskOrderMap = new Map(
