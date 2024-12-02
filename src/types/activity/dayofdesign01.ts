@@ -90,12 +90,6 @@ export interface ListResponse<T> {
   data: T
 }
 
-/**
- * @description 作品列表接口返回
- * @param {number} code 状态码
- * @param {string} msg 信息
- * @param {T} data 数据
- */
 export interface DesignsData {
   designs: DesignItem[]
 }
