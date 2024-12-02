@@ -31,7 +31,7 @@
                   class="task-item-tag"
                   v-if="index === 3 && item.status === TaskStatus.NOSTART"
                 >
-                  25日解锁
+                  25日当日完成
                 </div>
                 <div
                   class="relative"
@@ -151,7 +151,7 @@
                   <span class="text-[#ffcb4d]">返老还童*1</span>
                 </li>
                 <li>
-                  12月25日，在茶桌领取宴会节奶奶的礼物，即可领取
+                  12月25日当日，在茶桌领取宴会节奶奶的礼物，即可领取
                   <span class="text-[#ffcb4d]"
                     >爱丽丝围裙套装礼包试用魔法*1</span
                   >
@@ -373,7 +373,7 @@ function getActivityData(): void {
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       dateStatus.value = checkTodayAgainstDateRange(
-        '12.25-12.25',
+        '12.2-12.2',
         Number(data.current_time) * 1000,
       )
       setRedDot()
@@ -600,7 +600,7 @@ watchEffect(() => {
   position: absolute;
   top: -26px;
   z-index: 11;
-  width: 165px;
+  width: 208px;
   height: 42px;
   font-size: 30px;
   text-align: center;
