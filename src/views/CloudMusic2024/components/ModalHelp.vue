@@ -10,19 +10,23 @@
           <span class="font-semibold">活动时间：</span>
           2024年12月6日~2024年12月19日
         </h3>
-        <h3 class="modal-text">
+        <h3 class="modal-text mt-[20px]">
           <span class="font-semibold">活动内容：</span>
         </h3>
-        <p class="modal-text">每完成一个任务，可积攒一分钟的听歌进度</p>
-        <ul class="modal-text list-inside list-decimal">
+        <p class="modal-text">
+          每完成一个任务，点击已完成任务旁的领取按钮，可收取一分钟的听歌进度：
+        </p>
+        <ul class="modal-text ml-[40px] list-inside list-disc">
           <li>点评一次分享音符</li>
           <li>点赞一次分享音符</li>
           <li>放置2个分享音符</li>
           <li>和好友一起牵手听分享音符</li>
-          <li>在雨林秘密花园中使用分享海螺点歌</li>
+          <li>在雨林秘密花园中使用一起听海螺点歌</li>
         </ul>
-        <p class="modal-text">每积攒一分钟的听歌进度，可依次获取以下奖励</p>
-        <ul class="modal-text list-inside list-decimal">
+        <p class="modal-text mt-[20px]">
+          每积攒一分钟的听歌进度后，可于进度条处依次点击领取以下奖励：
+        </p>
+        <ul class="modal-text ml-[40px] list-inside list-decimal">
           <li><span class="text-[#ffcb4d]">分享音符*1</span></li>
           <li>
             在<span class="text-[#ffcb4d]"

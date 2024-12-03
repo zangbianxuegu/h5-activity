@@ -56,7 +56,8 @@
                   <audio
                     ref="music"
                     :controls="false"
-                    :autoplay="true"
+                    :autoplay="false"
+                    loop
                     src="./audio/night _lambent_light_tempaaa.mp3"
                   ></audio>
                 </figure>
@@ -87,7 +88,7 @@
                   ></div>
                   <can-reward-bubble-animation
                     :ref="item.canRewardLottieRef"
-                    :id="item.value"
+                    :id="item.taskId"
                     class="reward-bubble absolute inset-0 z-0"
                   ></can-reward-bubble-animation>
                   <div
@@ -125,19 +126,20 @@
                     :aria-label="`累计获得积分 ${index + 1}`"
                     class="acc-task-item animate__animated animate__fadeIn h-[230px]"
                   >
-                    <div
-                      :class="[
-                        'acc-task-icon animate__animated animate__fadeIn relative z-10 bg-contain bg-center bg-no-repeat',
-                        item.status,
-                        `acc-task-icon${item.id}`,
-                      ]"
-                      @click.capture="handleReward($event, index + 1, item)"
-                    ></div>
-                    <can-reward-bubble-animation
-                      :ref="item.canRewardLottieRef"
-                      :id="`${item.value}${item.id}`"
-                      class="acc-reward-bubble absolute inset-0 z-0"
-                    ></can-reward-bubble-animation>
+                    <bubble
+                      :reward="item"
+                      :bubble-scale="1.3"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'acc-task-icon animate__animated animate__fadeIn relative z-10 bg-contain bg-center bg-no-repeat',
+                          item.status,
+                          `acc-task-icon${item.id}`,
+                        ]"
+                        @click="handleReward($event, index + 1, item)"
+                      ></div>
+                    </bubble>
                     <p
                       class="mt-[10px] h-[36px] text-center text-[30px] leading-[36px] text-white"
                     >
@@ -177,6 +179,7 @@ import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/cloudMusic2024'
 import ModalHelp from './components/ModalHelp.vue'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
+import Bubble from '@/components/Bubble'
 import {
   type TaskItem,
   type Reward,
@@ -227,7 +230,7 @@ const curReward = ref<Reward>({
 
 // 任务排序
 const taskOrderMap = new Map(
-  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.value, index]),
+  [...TASK_LIST, ACC_TASK_LIST[0]].map((task, index) => [task.taskId, index]),
 )
 
 // 任务列表
@@ -261,7 +264,6 @@ const accTaskList = computed(() => {
     }
   })
 })
-const allTasks = computed(() => [...taskList.value, ...accTaskList.value])
 
 onMounted(() => {
   getActivityData()
@@ -279,7 +281,7 @@ onBeforeUnmount(() => {
 
 // 侦听任务数据变化，动态更新可领奖动画
 watchEffect(() => {
-  allTasks.value.forEach(handleTaskLottie)
+  taskList.value.forEach(handleTaskLottie)
 })
 
 /**
@@ -435,43 +437,44 @@ function getActivityData(): void {
  * @returns {void}
  */
 function handleReward(
-  event: MouseEvent,
+  $event: MouseEvent,
   rewardId: number,
   item: TaskItem,
 ): void {
-  const { value, status } = item
+  const { taskId, status } = item
   if (status === TaskStatus.REDEEMED) {
     return
   }
   if (status === TaskStatus.WAIT) {
     showToast('还未完成任务')
-    const target = event.target
-    if (target) {
+    const target = $event.target
+    if (target && target instanceof HTMLElement) {
       animateBounce(target)
     }
     return
   }
   claimMissionReward({
     event: EVENT_NAME,
-    task: value,
+    task: taskId,
     rewardId,
   })
     .then(async (res) => {
       curReward.value = res.data.rewards[0]
-      // 领奖动画
-      await bubbleBurst(event, item)
-      // 飞入进度条动画
-      if (value !== ACC_TASK_VALUE) {
+      // 进度的领奖动画用 bubble 组件实现
+      if (taskId !== ACC_TASK_VALUE) {
+        // 领奖动画
+        await bubbleBurst($event, item)
+        // 飞入进度条动画
         await handleTokenFly(item)
       }
       // 更新页面数据
       const taskIndex = eventData.value.findIndex((item) => {
-        return item.task_id === value
+        return item.task_id === taskId
       })
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
       // 更新进度任务
-      if (value !== ACC_TASK_VALUE) {
+      if (taskId !== ACC_TASK_VALUE) {
         activityData.value.event_data[EVENT_NAME][ACC_TASK_INDEX].value++
       } else {
         closeToast(true)
@@ -504,7 +507,7 @@ const bubbleBurst = async (
     reward.canRewardLottieRef.value[0].playAnimationClickBubble()
   }
   const target = event.target
-  if (target) {
+  if (target && target instanceof HTMLElement) {
     await animateBounceEase(target)
   }
 }
@@ -736,24 +739,9 @@ function preloadImage(imgArr: string[]): void {
 }
 .reward-bubble {
   position: absolute;
-  width: 180px;
-  height: 160px;
-  left: -6px;
-  top: -20px;
   & > :first-child {
     position: absolute;
-    transform: scale(1.1) !important;
-  }
-}
-.acc-reward-bubble {
-  position: absolute;
-  width: 180px;
-  height: 160px;
-  left: 38px;
-  top: 35px;
-  & > :first-child {
-    position: absolute;
-    transform: scale(1.9) !important;
+    transform: scale(1.4) !important;
   }
 }
 @keyframes spin {

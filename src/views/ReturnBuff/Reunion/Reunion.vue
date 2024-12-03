@@ -108,8 +108,10 @@
       <activity-modal ref="modalReward" class="reward-box">
         <template #content>
           <div class="h-[640px] overflow-auto px-2">
-            <p class="reward-title mt-4">恭喜你获得活动奖励</p>
-            <div class="flex items-center justify-around">
+            <p class="reward-title mt-[40px] h-[60px] leading-[60px]">
+              恭喜你获得活动奖励
+            </p>
+            <div class="flex h-[540px] items-center justify-around">
               <ul
                 :class="[
                   'reward-list mt-6 flex w-full items-center justify-around',
@@ -417,7 +419,6 @@ if (!isVisited) {
 }
 
 onMounted(() => {
-  // modalReward.value?.openModal()
   try {
     getActivityData()
   } catch (error) {

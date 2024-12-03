@@ -10,7 +10,7 @@ export const useActivityStore = defineStore(
       event_data: {
         activitycenter_cloud_music_2024: [
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_cloud_music_2024_m1',
             stages: [1],
             score: '',
@@ -50,7 +50,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 1,
+            value: 0,
             task_id: 'activitycenter_cloud_music_2024_m6',
             stages: [1, 2, 3, 4, 5],
             score: '',

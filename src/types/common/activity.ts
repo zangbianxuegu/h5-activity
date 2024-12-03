@@ -30,10 +30,12 @@ export interface Event {
   is_eggy_reward?: boolean
   is_today_sign_in?: boolean | number
   awarded_types: any[]
+  awarded_infos?: any[]
   task_names?: string[]
   ban_award_types?: any[]
   map?: number[]
   ticket?: number
+  is_werewolf_reward?: boolean
 }
 
 type SingleEventData<K extends EventName> = {
@@ -92,6 +94,7 @@ export interface DesignConfig {
 
 export interface BulletinItem {
   channel: string
+  app_channel: string
   description: string
   effective_time: string
   expired_time: string

@@ -36,12 +36,12 @@
                   <can-reward-bubble-animation
                     :ref="item.canRewardLottieRef"
                     :id="item.value"
-                    class="reward-can-dynamic-bubble"
+                    class="reward-can-dynamic-bubble z-0"
                   ></can-reward-bubble-animation>
                   <!-- 圆 -->
                   <div
                     :class="[
-                      'task-item animate__animated animate__fadeIn',
+                      'task-item animate__animated animate__fadeIn relative z-10',
                       `task-item${index + 1}`,
                       `${item.status}`,
                     ]"
@@ -101,12 +101,12 @@
                         @click.stop="handleReward($event, index + 1, item)"
                         :ref="item.canRewardLottieRef"
                         :id="`${item.value}${item.id}`"
-                        class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble"
+                        class="reward-can-dynamic-bubble acc-reward-can-dynamic-bubble z-0"
                       ></can-reward-bubble-animation>
                       <div
                         v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                         :class="[
-                          'acc-task-item animate__animated animate__fadeIn',
+                          'acc-task-item animate__animated animate__fadeIn relative z-10',
                           `acc-task-item${index + 1}`,
                           `${item.status}`,
                         ]"
@@ -144,8 +144,9 @@
                   <span class="text-[#ffcb4d]">传信纸船*1，绚丽彩虹*1</span>
                 </li>
                 <li>
-                  活动期间，完成姆明季毕业，即可领取
-                  <span class="text-[#ffcb4d]">新季节蜡烛*6</span>
+                  活动期间，完成姆明季毕业，即可在新季节领取
+                  <span class="text-[#ffcb4d]">新季节蜡烛*6</span
+                  >（奖励将在新季节开始后的一周内通过邮件发放）
                 </li>
               </ul>
             </section>
@@ -444,8 +445,13 @@ function handleReward(event: MouseEvent, rewardId: number, item: Reward): void {
       )
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
+      const toastText =
+        value === 'activitycenter_season24_sprint_m4'
+          ? '新季节通过邮件发送'
+          : '您获得了'
+
       showToast(
-        `领取成功，您获得了 ${
+        `领取成功，${toastText}${
           rewardsText[curRewards.value.name as keyof RewardsName]
         }*${curRewards.value.count}`,
       )

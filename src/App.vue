@@ -138,7 +138,7 @@ async function getBaseInfo(): Promise<void> {
   try {
     const res: UserInfo = await getUserInfo()
     const channel = res.channel
-    const appChannel = res.appChannel
+    const appChannel = res.appchannel
     const returnBuff = res.return_buff
     const gameUid = res.game_uid
     updateBaseInfoItems({ channel })
