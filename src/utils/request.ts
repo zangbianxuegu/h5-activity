@@ -18,7 +18,7 @@ export function handlePostMessageToNative({
   content,
   handleRes,
 }: PostMsgParams): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     function waitForUniSDKJSBridge(callback: () => void): void {
       if (window.UniSDKJSBridge) {
         console.log('UniSDKJSBridge 直接可用')
