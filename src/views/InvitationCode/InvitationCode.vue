@@ -203,7 +203,7 @@ import {
   createBottomAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
-import throttle from 'lodash.throttle'
+// import throttle from 'lodash.throttle'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -332,9 +332,7 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 
 onMounted(() => {
   try {
-    window.addEventListener('resize', handleResize)
-    document.addEventListener('focusin', handleFocusIn)
-    document.addEventListener('focusout', handleFocusOut)
+    window.addEventListener('resize', checkKeyboardStatus)
     initPage()
   } catch (error) {
     console.error(error)
@@ -342,9 +340,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
-  document.removeEventListener('focusin', handleFocusIn)
-  document.removeEventListener('focusout', handleFocusOut)
+  window.removeEventListener('resize', checkKeyboardStatus)
 })
 
 // 记录初始窗口高度
@@ -352,30 +348,10 @@ const originalHeight = window.innerHeight
 // 键盘是否显示
 const isKeyboardShow = ref(false)
 
-/**
- * @function 处理窗口大小变化的函数，使用节流以提高性能
- */
-const handleResize = throttle(() => {
-  setTimeout(() => {
-    const currentHeight = window.visualViewport?.height || window.innerHeight
-    isKeyboardShow.value = currentHeight < originalHeight
-  }, 100)
-}, 200)
-
-/**
- * @function 处理输入框获得焦点的函数
- * @description 当输入框获得焦点时，将键盘显示状态设置为true
- */
-const handleFocusIn = (): void => {
-  isKeyboardShow.value = true
-}
-
-/**
- * @function 处理输入框失去焦点的函数
- * @description 当输入框失去焦点时，将键盘显示状态设置为false
- */
-const handleFocusOut = (): void => {
-  isKeyboardShow.value = false
+const checkKeyboardStatus = (): void => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = currentHeight < originalHeight
+  showToast(isKeyboardShow.value ? '键盘弹起' : '键盘隐藏')
 }
 
 /**
