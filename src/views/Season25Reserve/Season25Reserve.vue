@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="season25 flex h-screen">
-      <div class="season25-main">
+    <div class="season25-reserve flex h-screen">
+      <div class="season25-reserve-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1 class="title overflow-hidden bg-contain indent-[-9999px]">
@@ -69,7 +69,7 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 // 基本信息
 const baseStore = useBaseStore()
-const channel = baseStore.baseInfo.channel
+const appchannel = baseStore.baseInfo.appChannel
 // 是否已预约
 const isReserved = ref(false)
 
@@ -111,7 +111,7 @@ onUnmounted(() => {
  * 获取预约状态
  */
 function getReserveStatus(): void {
-  getSeasonReservationStatus(channel)
+  getSeasonReservationStatus(appchannel)
     .then(() => {
       isReserved.value = true
     })
@@ -168,7 +168,7 @@ function handleHelp(): void {
 .fade-in-head-enter-from {
   opacity: 0.2;
 }
-.season25 {
+.season25-reserve {
   position: relative;
   width: 2100px;
 

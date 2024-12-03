@@ -57,12 +57,14 @@ export function openWechatMiniprogram(params: MiniProgramParams): Promise<any> {
  * @param {string} channel 渠道名称
  * @returns {Promise<Response>}
  */
-export function getSeasonReservationStatus(channel: string): Promise<Response> {
+export function getSeasonReservationStatus(
+  appChannel: string,
+): Promise<Response> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/mini_program/get_season_reservation_status',
-      content: { channel },
+      content: { app_channel: appChannel },
       handleRes: (res) => {
         if (res.code === 200) {
           resolve(res)

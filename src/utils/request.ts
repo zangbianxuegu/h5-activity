@@ -133,8 +133,8 @@ function fetchPlayerMissionData(
   {
     event,
     token,
-    channel,
-  }: { event?: EventName; token?: string; channel?: string },
+    appChannel,
+  }: { event?: EventName; token?: string; appChannel?: string },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
 ): Promise<void> {
@@ -147,7 +147,7 @@ function fetchPlayerMissionData(
         source_id: '',
         event,
         token,
-        channel,
+        app_channel: appChannel,
       },
       handleRes: (res) => {
         if (res.code === 200) {
@@ -199,11 +199,11 @@ function fetchPlayerMissionData(
 export function getPlayerMissionData({
   event,
   token,
-  channel,
+  appChannel,
 }: {
   event?: EventName
   token?: string
-  channel?: string
+  appChannel?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     const now = Date.now()
@@ -241,7 +241,7 @@ export function getPlayerMissionData({
       }
       // 存储请求时间
       Session.set('lastFetchTimeAllEvents', now.toString())
-      fetchPlayerMissionData({ event, channel }, resolve, reject).catch(
+      fetchPlayerMissionData({ event, appChannel }, resolve, reject).catch(
         (err) => {
           reject(err)
         },
