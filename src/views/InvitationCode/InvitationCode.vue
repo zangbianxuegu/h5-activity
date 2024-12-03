@@ -352,7 +352,7 @@ const isKeyboardShow = ref(false)
  * @function 处理窗口大小变化的函数，使用节流以提高性能
  */
 const handleResize = throttle(() => {
-  const currentHeight = window.innerHeight
+  const currentHeight = window.visualViewport?.height || window.innerHeight
   if (originalHeight > currentHeight) {
     // 键盘弹出
     isKeyboardShow.value = true
