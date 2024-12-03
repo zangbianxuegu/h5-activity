@@ -333,6 +333,9 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 onMounted(() => {
   try {
     window.addEventListener('resize', checkKeyboardStatus)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', checkKeyboardStatus)
+    }
     initPage()
   } catch (error) {
     console.error(error)
@@ -341,6 +344,9 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', checkKeyboardStatus)
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', checkKeyboardStatus)
+  }
 })
 
 // 记录初始窗口高度
