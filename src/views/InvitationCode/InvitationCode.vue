@@ -203,7 +203,7 @@ import {
   createBottomAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
-import throttle from 'lodash.throttle'
+// import throttle from 'lodash.throttle'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -332,7 +332,10 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 
 onMounted(() => {
   try {
-    window.addEventListener('resize', handleResize)
+    window.addEventListener('resize', checkKeyboardStatus)
+    if (window.visualViewport) {
+      window.visualViewport.addEventListener('resize', checkKeyboardStatus)
+    }
     initPage()
   } catch (error) {
     console.error(error)
@@ -340,7 +343,10 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-  window.removeEventListener('resize', handleResize)
+  window.removeEventListener('resize', checkKeyboardStatus)
+  if (window.visualViewport) {
+    window.visualViewport.removeEventListener('resize', checkKeyboardStatus)
+  }
 })
 
 // 记录初始窗口高度
@@ -348,19 +354,11 @@ const originalHeight = window.innerHeight
 // 键盘是否显示
 const isKeyboardShow = ref(false)
 
-/**
- * @function 处理窗口大小变化的函数，使用节流以提高性能
- */
-const handleResize = throttle(() => {
-  const currentHeight = window.innerHeight
-  if (originalHeight > currentHeight) {
-    // 键盘弹出
-    isKeyboardShow.value = true
-  } else {
-    // 键盘收起
-    isKeyboardShow.value = false
-  }
-}, 200)
+const checkKeyboardStatus = (): void => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = currentHeight < originalHeight
+  showToast(isKeyboardShow.value ? '键盘弹起' : '键盘隐藏')
+}
 
 /**
  * @function 初始化页面
