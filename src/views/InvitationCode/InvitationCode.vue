@@ -333,6 +333,8 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 onMounted(() => {
   try {
     window.addEventListener('resize', handleResize)
+    document.addEventListener('focusin', handleFocusIn)
+    document.addEventListener('focusout', handleFocusOut)
     initPage()
   } catch (error) {
     console.error(error)
@@ -341,6 +343,8 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('resize', handleResize)
+  document.removeEventListener('focusin', handleFocusIn)
+  document.removeEventListener('focusout', handleFocusOut)
 })
 
 // 记录初始窗口高度
@@ -352,15 +356,27 @@ const isKeyboardShow = ref(false)
  * @function 处理窗口大小变化的函数，使用节流以提高性能
  */
 const handleResize = throttle(() => {
-  const currentHeight = window.visualViewport?.height || window.innerHeight
-  if (originalHeight > currentHeight) {
-    // 键盘弹出
-    isKeyboardShow.value = true
-  } else {
-    // 键盘收起
-    isKeyboardShow.value = false
-  }
+  setTimeout(() => {
+    const currentHeight = window.visualViewport?.height || window.innerHeight
+    isKeyboardShow.value = currentHeight < originalHeight
+  }, 100)
 }, 200)
+
+/**
+ * @function 处理输入框获得焦点的函数
+ * @description 当输入框获得焦点时，将键盘显示状态设置为true
+ */
+const handleFocusIn = (): void => {
+  isKeyboardShow.value = true
+}
+
+/**
+ * @function 处理输入框失去焦点的函数
+ * @description 当输入框失去焦点时，将键盘显示状态设置为false
+ */
+const handleFocusOut = (): void => {
+  isKeyboardShow.value = false
+}
 
 /**
  * @function 初始化页面
