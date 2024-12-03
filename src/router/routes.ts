@@ -482,6 +482,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/season25-reserve',
+    name: 'Season25Reserve',
+    component: () => import('@/views/Season25Reserve'),
+    meta: {
+      title: '彩染季 期待相遇',
+      module: 'activitycenter_season25_reserve',
+    },
+  },
+  {
     path: '/cloud-music-2024',
     name: 'CloudMusic2024',
     component: () => import('@/views/CloudMusic2024'),
