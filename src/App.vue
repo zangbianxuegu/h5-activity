@@ -340,15 +340,11 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  console.log('currentChannel: ', currentChannel.value)
   getPlayerMissionData({ channel: currentChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
-      console.log('activeEvents', activeEvents)
-
       const newMenuData = generateMenuData(MENU_ITEMS, activeEvents)
-      console.log('newMenuData: ', newMenuData)
       if (!newMenuData || newMenuData.length === 0) {
         showToast('网络连接异常，请稍后重试')
         return
