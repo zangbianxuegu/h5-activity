@@ -2,10 +2,7 @@
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="invitation-code flex h-screen">
       <div
-        :class="[
-          'invitation-code-main',
-          isKeyboardShow ? 'keyboardShow' : 'keyboardHide',
-        ]"
+        :class="['invitation-code-main', { 'keyboard-show': isKeyboardShow }]"
       >
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
@@ -614,19 +611,16 @@ function handleHelp(): void {
   &-main {
     position: absolute;
     left: 50%;
+    top: 50%;
     width: 2040px;
     height: 1140px;
+    transform: translate(-50%, -50%) scale(var(--scale-factor));
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/invitation-code/bg.jpg');
-    &.keyboardShow {
-      top: 40px;
-      transform: translate(-50%, 0);
-    }
-    &.keyboardHide {
-      top: 50%;
-      transform: translate(-50%, -50%) scale(var(--scale-factor));
+    &.keyboard-show {
+      transform: translate(-50%, -50%);
     }
   }
 }
