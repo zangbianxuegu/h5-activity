@@ -66,6 +66,7 @@
                   </div>
                   <!-- 删除 -->
                   <div
+                    v-if="isSelf"
                     @click.stop="onClickHandleBarDelete"
                     :class="['btn', 'delete', 'cursor-pointer']"
                   >
