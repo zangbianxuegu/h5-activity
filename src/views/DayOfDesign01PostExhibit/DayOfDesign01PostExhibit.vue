@@ -4,14 +4,14 @@
       <div class="page-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
-            <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+            <h1 class="title overflow-hidden bg-contain bg-no-repeat">
               <p class="sr-only">执笔畅想 绘梦成真</p>
             </h1>
-            <h2 class="sub-title relative bg-contain bg-no-repeat">
+            <h2 class="sub-title bg-contain bg-no-repeat">
               <p class="sr-only">
                 活动时间
                 <time datetime="2025-01-01">1.1</time>-
-                <time datetime="2025-02-12">2.12</time>
+                <time datetime="2025-01-31">1.31</time>
               </p>
               <p class="sr-only">本期主题-国风演绎</p>
               <div
@@ -21,9 +21,9 @@
             </h2>
             <button
               class="my-work absolute right-0 top-[60px]"
-              @click="gotoRules"
+              @click="handleItemClick()"
             >
-              活动规则
+              我的作品
             </button>
           </header>
         </Transition>
@@ -196,11 +196,11 @@
         <!-- 活动规则弹框 -->
         <ModalHelp ref="modalHelp" />
 
-        <!-- 我的作品弹窗 -->
+        <!-- 作品详情弹框 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
           :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
-          :type="DESIGN_DETAILS_TYPE.OTHER"
+          :type="detailType"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
@@ -237,8 +237,6 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
-// import ModalHelp from './components/ModalHelp.vue'
-// import WorksDetailModal from '../DayOfDesign01PostSubmit/components/WorksDetailModal.vue'
 const ModalHelp = defineAsyncComponent(
   () => import('./components/ModalHelp.vue'),
 )
@@ -341,6 +339,7 @@ interface Detail {
   isFavorite: boolean
 }
 // 详情
+const detailType = ref<DESIGN_DETAILS_TYPE>(DESIGN_DETAILS_TYPE.OTHER)
 const detailData = ref<Detail>({
   id: '',
   author: '',
@@ -547,7 +546,6 @@ async function getRecommendByPage(page: number): Promise<DesignItem[]> {
     Loading.hide()
   }
   const res = cachedRecommend.value.slice(startIndex, endIndex)
-  console.log(`推荐数据第${page}页：`, res)
   return res
 }
 
@@ -565,7 +563,6 @@ async function getFavoritesByPage(page: number): Promise<DesignItem[]> {
     await handleCachedFavorite()
   }
   const res = cachedFavorite.value.designList.slice(startIndex, endIndex)
-  console.log(`收藏数据第${page}页：`, res)
   return res
 }
 
@@ -583,7 +580,6 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
     await handleCachedSearch()
   }
   const res = cachedSearch.value.designList.slice(startIndex, endIndex)
-  console.log(`搜索数据第${page}页：`, res)
   return res
 }
 
@@ -611,7 +607,7 @@ async function handleRecommend(): Promise<void> {
 }
 
 /**
- * @function getCollectionData
+ * @function handleFavorite
  * @description 获取收藏作品
  * @param {string} dir 方向
  * @returns {Promise<void>}
@@ -703,26 +699,32 @@ async function handleNext(): Promise<void> {
 /**
  * @function handleItemClick
  * @description 查看作品详情
- * @param {DesignItem} item 作品项
+ * @param {DesignItem} [item] 作品项（选填），作品列表传入
  * @returns {Promise<void>}
  */
-async function handleItemClick(item: DesignItem): Promise<void> {
-  if (!item.design_id) {
-    return
+async function handleItemClick(item?: DesignItem): Promise<void> {
+  let params: DetailParams = {
+    policy_name: FILE_PICKER_POLICY_NAME,
   }
-  curDetailId = item.design_id
-  try {
-    const { design_id: designId, favorite_time: favoriteTime } = item
-    let params: DetailParams = {
-      policy_name: FILE_PICKER_POLICY_NAME,
-      design_id: designId,
+  // 列表中作品
+  if (item) {
+    detailType.value = DESIGN_DETAILS_TYPE.OTHER
+    if (!item.design_id) {
+      return
     }
+    const { design_id: designId, favorite_time: favoriteTime } = item
+    curDetailId = designId
+    params.design_id = designId
     if (type.value === PageType.Favorite) {
       params = {
         ...params,
         favorite_time: favoriteTime,
       }
     }
+  } else {
+    detailType.value = DESIGN_DETAILS_TYPE.SELF
+  }
+  try {
     await getDetail(params)
   } catch (error) {
     const err = error as Error
@@ -774,16 +776,6 @@ function handleUpdateFavorites(isFavorite: boolean): void {
  */
 function handleHelp(): void {
   modalHelp.value?.open()
-}
-
-/**
- * @function gotoRules
- * @description 前往活动规则页面
- * @returns {void}
- */
-function gotoRules(): void {
-  window.location.href =
-    'https://sky.163.com/client/news/update/20241011/40240_1186029.html'
 }
 </script>
 

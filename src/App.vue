@@ -182,7 +182,7 @@ function handleToSprite(): void {
  * @returns {Activity[]} 返回菜单列表
  */
 function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
-  // 绘梦节活动
+  // 特定活动
   const predefinedActivities = list
     .map((activityName) =>
       arr.find((activity) => activity.activity === activityName),
@@ -207,6 +207,7 @@ function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
+  let isDayOfDesignActive = false
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -219,6 +220,9 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
             activityName === 'activity_center_notice'
               ? false
               : activityInfo.has_unclaimed_reward > 0,
+        }
+        if (activityName.includes('dayofdesign01')) {
+          isDayOfDesignActive = true
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -247,7 +251,9 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
   // 调整绘梦节活动排序
-  res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
+  if (isDayOfDesignActive) {
+    res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
+  }
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1

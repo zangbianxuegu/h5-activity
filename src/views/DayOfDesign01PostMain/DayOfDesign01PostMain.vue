@@ -4,10 +4,10 @@
       <div class="page-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
-            <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
+            <h1 class="title overflow-hidden bg-contain bg-no-repeat">
               <p class="sr-only">执笔畅想 绘梦成真</p>
             </h1>
-            <h2 class="sub-title relative bg-contain bg-no-repeat">
+            <h2 class="sub-title bg-contain bg-no-repeat">
               <p class="sr-only">
                 征集期
                 <time datetime="2025-01-01">1.1</time>-
@@ -19,8 +19,11 @@
                 @click="handleHelp"
               ></div>
             </h2>
-            <button class="my-work absolute right-0 top-[60px]">
-              我的作品
+            <button
+              class="my-work absolute right-0 top-[60px]"
+              @click="gotoRules"
+            >
+              活动规则
             </button>
           </header>
         </Transition>
@@ -119,6 +122,15 @@ onMounted(async () => {
  */
 function handleHelp(): void {
   modalHelp.value?.open()
+}
+
+/**
+ * @function gotoRules
+ * @description 前往活动规则页面
+ * @returns {void}
+ */
+function gotoRules(): void {
+  window.location.href = 'https://sky.163.com/2024/hmj/#index'
 }
 </script>
 
