@@ -349,17 +349,11 @@ const originalHeight = window.innerHeight
 const isKeyboardShow = ref(false)
 
 /**
- * @function 处理窗口大小变化的函数，使用节流以提高性能
+ * @function 处理窗口大小变化的函数，兼容安卓机防止弹出虚拟键盘后页面顶上去
  */
 const handleResize = throttle(() => {
-  const currentHeight = window.innerHeight
-  if (originalHeight > currentHeight) {
-    // 键盘弹出
-    isKeyboardShow.value = true
-  } else {
-    // 键盘收起
-    isKeyboardShow.value = false
-  }
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
 }, 200)
 
 /**

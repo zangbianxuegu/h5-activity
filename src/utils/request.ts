@@ -2,7 +2,6 @@ import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
 import { ERROR_MESSAGES } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
-import { setErrorCustom } from './error'
 
 function postMsgToNative(msg: {
   methodId: string
@@ -19,7 +18,7 @@ export function handlePostMessageToNative({
   content,
   handleRes,
 }: PostMsgParams): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     function waitForUniSDKJSBridge(callback: () => void): void {
       if (window.UniSDKJSBridge) {
         console.log('UniSDKJSBridge 直接可用')
@@ -35,7 +34,7 @@ export function handlePostMessageToNative({
         let pollCount = 0 // 轮询次数计数
         const startTime = new Date() // 记录轮询开始时间
         console.log(
-          '开始轮询检查 UniSDKJSBridge 是否挂载：',
+          '开始轮询检查 UniSDKJSBridge 是否挂载',
           startTime.toLocaleTimeString(),
         )
         const intervalId = setInterval(() => {
@@ -56,10 +55,6 @@ export function handlePostMessageToNative({
               },
             })
             resolve()
-          }
-          if (pollCount >= 20) {
-            clearInterval(intervalId)
-            reject(setErrorCustom('nativeError', 'UniSDKJSBridge mount fail!'))
           }
         }, 100)
       }
