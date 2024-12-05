@@ -67,7 +67,7 @@
                   src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-unselected.png"
                   alt="favorite"
                 />
-                <span>收藏</span>
+                <span>我的收藏</span>
               </button>
               <!-- 推荐 -->
               <button
