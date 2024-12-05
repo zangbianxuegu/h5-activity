@@ -30,12 +30,12 @@
           <li><span class="text-[#ffcb4d]">分享音符*1</span></li>
           <li>
             在<span class="text-[#ffcb4d]"
-              >凯旋手碟试用魔法、白吉它试用魔法、雏鸟之琴试用魔法、小提琴试用魔法、萨克斯试用魔法 </span
+              >凯旋手碟试用魔法、音韵吉他试用魔法、雏鸟之琴试用魔法、凯旋提琴礼包试用魔法、萨克斯试用魔法 </span
             >中随机获得一个
           </li>
           <li><span class="text-[#ffcb4d]">秋千*2 </span></li>
           <li>
-            <span class="text-[#ffcb4d]">古典音乐桌椅试用魔法*1 </span>
+            <span class="text-[#ffcb4d]">古典音乐桌椅礼包试用魔法*1 </span>
           </li>
           <li><span class="text-[#ffcb4d]">爱心*2 </span></li>
         </ul>
