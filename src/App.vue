@@ -26,7 +26,7 @@
         </div>
       </div>
     </nav>
-    <main class="flex items-center justify-center">
+    <main class="flex flex-1 items-center justify-center">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
           <component :is="Component" />
@@ -245,6 +245,20 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   res.sort((a, b) => b.startTime - a.startTime)
   // 调整2024万圣节活动排序
   res = adjustActivitySort(res, halloween2024StartTime)
+  res.push({
+    activity: 'activitycenter_season100_start',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
+  res.push({
+    activity: 'activitycenter_season101_start',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
