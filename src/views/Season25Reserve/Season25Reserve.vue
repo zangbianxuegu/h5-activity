@@ -61,6 +61,9 @@ import { useBaseStore } from '@/stores/base'
 import { openWechatMiniprogram, getSeasonReservationStatus } from '@/apis/base'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import ActivityModal from '@/components/Modal'
+import { useEnvironment } from '@/composables/useEnvironment'
+
+const { isProd } = useEnvironment()
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 const { factor } = getResponsiveStylesFactor()
@@ -69,12 +72,10 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 // 基本信息
 const baseStore = useBaseStore()
-const appchannel = baseStore.baseInfo.appChannel
+const appChannel = computed(() => baseStore.baseInfo.appChannel)
 // 是否已预约
 const isReserved = ref(false)
 
-const prodUrl = 'https://sky.h5.163.com/game/'
-const isProd = ref(window.location.href.includes(prodUrl))
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946'
 const pathDev =
@@ -111,7 +112,7 @@ onUnmounted(() => {
  * 获取预约状态
  */
 function getReserveStatus(): void {
-  getSeasonReservationStatus(appchannel)
+  getSeasonReservationStatus(appChannel.value)
     .then(() => {
       isReserved.value = true
     })
@@ -132,7 +133,6 @@ const throttledFetchData = throttle(() => {
  */
 function handleVisibilityChange(): void {
   if (document.visibilityState === 'visible') {
-    console.log('页面重新显示')
     throttledFetchData() // 使用节流
   }
 }
@@ -204,7 +204,7 @@ function handleHelp(): void {
   top: 98px;
   width: 61px;
   height: 61px;
-  background-image: url('@/assets/images/season25-reserve/help.png');
+  background-image: url('@/assets/images/season23-reserve/help.png');
 }
 .btn {
   position: absolute;
@@ -212,12 +212,12 @@ function handleHelp(): void {
   bottom: 62px;
   width: 443px;
   height: 162px;
-  background-image: url('@/assets/images/season25-reserve/btn.png');
+  background-image: url('@/assets/images/season24-reserve/btn.png');
 
   &-reserved {
     width: 445px;
     height: 164px;
-    background-image: url('@/assets/images/season25-reserve/btn-reserved.png');
+    background-image: url('@/assets/images/season24-reserve/btn-reserved.png');
   }
 }
 </style>
