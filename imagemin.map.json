@@ -1431,7 +1431,6 @@
   "src/assets/images/music-2024/task7-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/task8-redeemed.png": 1732182314050.714,
   "src/assets/images/music-2024/task5-wait.png": 1732182314050.714,
-  "src/assets/images/music-2024/title.png": 1732182314050.714,
   "src/assets/images/music-2024/task8-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/tips.png": 1732182314050.714,
   "src/assets/images/netease-werewolf-join/bg.jpg": 1732505834277.5222,
@@ -1586,5 +1585,8 @@
   "src/assets/images/common/rewards/tiny.png": 1732712210504.635,
   "src/assets/images/common/rewards/energy.png": 1732712210503.671,
   "src/assets/images/common/rewards/candles.png": 1732761414150.3633,
-  "src/assets/images/common/rewards/outfit_hat_bluebow.png": 1732775291557.9648
+  "src/assets/images/common/rewards/outfit_hat_bluebow.png": 1732775291557.9648,
+  "src/assets/images/invitation-code/left-line.png": 1733195987300.139,
+  "src/assets/images/invitation-code/right-line.png": 1733195987316.265,
+  "src/assets/images/music-2024/title.png": 1733465797521.919
 }
