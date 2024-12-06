@@ -6,5 +6,6 @@
 
 <script setup>
 const route = useRoute()
-const url = computed(() => route.meta.externalUrl)
+const jsbridge = JSON.stringify(window.UniSDKJSBridge)
+const url = computed(() => route.meta.externalUrl + '?jsbridge=' + jsbridge)
 </script>

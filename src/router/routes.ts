@@ -540,8 +540,7 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_season100_start',
       // 配置外部活动链接
       externalUrl:
-        'https://sky.163.com/client/news/update/20241011/40240_1186029.html',
-      // 'https://www.baidu.com',
+        'https://h5maker-backend-ma75.nie.netease.com/page/dev/Qufder',
     },
   },
   {
