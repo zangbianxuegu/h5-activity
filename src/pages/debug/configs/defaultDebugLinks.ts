@@ -1,22 +1,22 @@
 const defaultDebugLinks = [
   {
     linkName: 'dev https',
-    link: 'https://10.227.198.175:5173/',
+    link: 'https://10.227.199.88:5173/',
     isJumpDirectly: true,
   },
   {
     linkName: 'dev http',
-    link: 'http://10.227.198.175:5173/',
+    link: 'http://10.227.199.88:5173/',
     isJumpDirectly: true,
   },
   {
     linkName: 'preview https',
-    link: 'https://10.227.198.175:4173/',
+    link: 'https://10.227.199.88:4173/',
     isJumpDirectly: true,
   },
   {
     linkName: 'preview http',
-    link: 'http://10.227.198.175:4173/',
+    link: 'http://10.227.199.88:4173/',
     isJumpDirectly: true,
   },
   {
