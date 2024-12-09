@@ -172,6 +172,48 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  // 新版统一错误信息
+  new_common_error: {
+    400: {
+      'repeat request': '请求频繁，请稍后重试',
+      'bad request': '非法请求，请在游戏内打开',
+    },
+    500: {
+      'internal server error': '服务器异常，请稍后重试',
+    },
+  },
+
+  // 绘梦节 - 搜索
+  search_designs: {
+    400: {
+      'invalid term': '没有找到相关结果，请准确输入作者名或作品编码',
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+    500: {
+      'internal server error': '服务器错误，请稍后重试',
+    },
+  },
+
+  // 绘梦节 - 收藏
+  get_favorites: {
+    400: {
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+    500: {
+      'internal server error': '服务器错误，请稍后重试',
+    },
+  },
+
+  // 绘梦节 - 推荐
+  get_recommendations: {
+    400: {
+      'repeat request': '点得太快了，请稍后重试',
+      'bad request': '非法请求',
+    },
+  },
+
   // 狼人杀联动查询账号
   get_werewolf_info: {
     401: {
@@ -194,6 +236,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'internal server error': '服务器异常，请稍后重试',
     },
   },
+
   // pc上线庆典获取邀请信息
   get_invite_info: {
     400: {
@@ -206,6 +249,106 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'inactive event': '活动未开启，请稍后重试',
       'invalid code': '请输入正确的邀请码',
       'cannot bind': '账号无法绑定',
+    },
+  },
+
+  get_file_picker_token: {
+    400: {
+      invalid_method: '参数method错误',
+      invalid_extra_info: '参数extrainfo错误',
+      invalid_policy_name: '参数policy_name错误',
+      inactive_policy: '参数policy_name错误或配置出错',
+      'bad request': '非法请求',
+    },
+    401: {
+      unauthorized: '禁止投稿',
+    },
+  },
+
+  review_text: {
+    400: {
+      'bad request': '投稿失败',
+      'text invalid': '作品名称/作者名/作品介绍不符合要求',
+      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'description error_length': '作品名称/作者名/作品介绍不符合要求',
+      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'illegal author_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal design_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal description':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal combined_text':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+    },
+  },
+
+  upload_filepicker_result: {
+    500: {
+      'internal server error': '投稿失败',
+    },
+    409: {
+      'already exists': '作品信息已经存在，请刷新页面',
+    },
+    400: {
+      'bad request': '投稿失败',
+      'repeat request': '点得太快了，请稍后再试',
+      'text invalid': '作品名称/作者名/作品介绍不符合要求',
+      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'description error_length': '作品名称/作者名/作品介绍不符合要求',
+      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'illegal author_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal design_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal description':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal combined_text':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+    },
+    401: {
+      unauthorized: '您已被禁止投稿，请联系客服了解',
+    },
+  },
+
+  get_design_details: {
+    400: {
+      'bad request': '非法请求',
+    },
+  },
+
+  delete_player_design: {
+    400: {
+      'bad request': '非法请求',
+      'repeat request': '点得太快了，请稍后重试',
+    },
+    500: {
+      fail: '删除失败，请稍后重试',
+    },
+  },
+
+  update_favorites: {
+    500: {
+      'internal server error': '服务器错误，请稍后重试',
+    },
+    400: {
+      'bad request': '非法请求',
+      'repeat request': '点得太快了，请稍后重试',
+    },
+    403: {
+      'count limit': '收藏数量超出限制',
+    },
+    404: {
+      'not found': '抱歉，该作品刚刚被作者删除了',
+    },
+    409: {
+      'already exists': '该作品已被收藏过',
     },
   },
 }

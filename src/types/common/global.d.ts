@@ -2,6 +2,9 @@ export declare global {
   interface Window {
     UniSDKJSBridge: any
   }
+  interface wx {
+    ready: (cb: () => void) => void
+  }
 }
 export interface UseEnvironmentReturn {
   isLocal: Ref<boolean>
@@ -9,4 +12,19 @@ export interface UseEnvironmentReturn {
   isGameDev: Ref<boolean>
   isGameDev2: Ref<boolean>
   isProd: Ref<boolean>
+  isIos: boolean
+  isAndroid: boolean
+  isWb: boolean
+  isWindow: boolean
+  isMac: boolean
+  isPC: boolean
+}
+
+export interface UsePlatformReturn {
+  isIos: boolean
+  isAndroid: boolean
+  isWb: boolean
+  isWindow: boolean
+  isMac: boolean
+  isPC: boolean
 }

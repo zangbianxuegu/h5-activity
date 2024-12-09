@@ -19,11 +19,26 @@ export function useEnvironment(): UseEnvironmentReturn {
   const isGameDev2 = ref(window.location.href.includes(gameDev2Url))
   const isProd = ref(window.location.href.includes(prodUrl))
 
+  const isIos =
+    /iphone os/i.test(navigator.userAgent.toLowerCase()) ||
+    /ipad|macintosh/i.test(navigator.userAgent.toLowerCase())
+  const isAndroid = /android/i.test(navigator.userAgent.toLowerCase())
+  const isWb = /weibo/i.test(navigator.userAgent.toLowerCase())
+  const isWindow = /windows/i.test(navigator.userAgent.toLowerCase())
+  const isMac = /macintosh/i.test(navigator.userAgent.toLowerCase())
+  const isPC = isWindow || isMac
+
   return {
     isLocal,
     isGame,
     isGameDev,
     isGameDev2,
     isProd,
+    isIos,
+    isAndroid,
+    isWb,
+    isWindow,
+    isMac,
+    isPC,
   }
 }

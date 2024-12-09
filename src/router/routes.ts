@@ -535,4 +535,31 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_pc_celebration',
     },
   },
+  {
+    path: '/dayofdesign01-post-main',
+    name: 'DayOfDesign01PostMain',
+    component: () => import('@/views/DayOfDesign01PostMain'),
+    meta: {
+      title: '绘梦节',
+      module: 'activitycenter_dayofdesign01_post_main',
+    },
+  },
+  {
+    path: '/dayofdesign01-post-submit',
+    name: 'DayOfDesign01PostSubmit',
+    component: () => import('@/views/DayOfDesign01PostSubmit'),
+    meta: {
+      title: '我要投稿',
+      module: 'activitycenter_dayofdesign01_post_submit',
+    },
+  },
+  {
+    path: '/dayofdesign01-post-exhibit',
+    name: 'DayOfDesign01PostExhibit',
+    component: () => import('@/views/DayOfDesign01PostExhibit'),
+    meta: {
+      title: '活动会场',
+      module: 'activitycenter_dayofdesign01_post_exhibit',
+    },
+  },
 ]

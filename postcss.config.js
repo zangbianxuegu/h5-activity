@@ -15,6 +15,7 @@ export default {
       // vmax
       viewportUnit: 'vw',
       mediaQuery: true,
+      selectorBlackList: ['.ps_ignore-'],
     },
   },
 }

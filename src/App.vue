@@ -11,10 +11,15 @@
       </div>
       <div>
         <a
-          v-if="isGameDev || isGame"
+          v-if="isGameDev || isGame || isGameDev2"
           class="nav-debug mb-4 flex w-full justify-center py-2"
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
+        >
+        <a
+          class="nav-debug mb-4 flex w-full justify-center py-2"
+          href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html#/dayofdesign01-post-submit"
+          >sdk调试</a
         >
         <div class="nav-sprite flex">
           <!-- <a
@@ -71,7 +76,7 @@ import type {
   TokenParams,
   UserInfo,
 } from '@/types'
-import { HALLOWEEN_2024_LIST, MENU_ITEMS } from '@/constants'
+import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
@@ -82,7 +87,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGameDev2, isGame, isProd } = useEnvironment()
+const { isLocal, isGameDev, isGame, isProd, isGameDev2 } = useEnvironment()
 const jinglingUrl = isProd.value
   ? 'https://gmsdk.gameyw.netease.com/sprite/index'
   : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
@@ -171,21 +176,23 @@ function handleToSprite(): void {
 }
 
 /**
- * @description 调整2024万圣节活动
- * @param arr 菜单列表
- * @param startTime 活动开始时间
+ * @description 根据传入的活动列表调整菜单排序
+ * @param {Activity[]} arr 菜单列表
+ * @param {string[]} list 活动名称列表
+ * @returns {Activity[]} 返回菜单列表
  */
-function adjustActivitySort(arr: Activity[], startTime: number): Activity[] {
-  // 万圣节活动
-  const predefinedActivities = HALLOWEEN_2024_LIST.map((activityName) =>
-    arr.find((activity) => activity.activity === activityName),
-  ).filter((activity) => activity !== undefined) as Activity[]
-
+function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
+  // 特定活动
+  const predefinedActivities = list
+    .map((activityName) =>
+      arr.find((activity) => activity.activity === activityName),
+    )
+    .filter((activity) => activity !== undefined) as Activity[]
+  const startTime = predefinedActivities[0].startTime
   // 其余的活动
   const otherActivities = arr.filter(
-    (activity) => !HALLOWEEN_2024_LIST.includes(activity.activity),
+    (activity) => !list.includes(activity.activity),
   )
-
   // 合并
   return [
     ...otherActivities.filter(
@@ -200,7 +207,7 @@ function adjustActivitySort(arr: Activity[], startTime: number): Activity[] {
 
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
-  let halloween2024StartTime: number = 0
+  let isDayOfDesignActive = false
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -214,8 +221,8 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
               ? false
               : activityInfo.has_unclaimed_reward > 0,
         }
-        if (activityName === 'activitycenter_Halloweentask_2024') {
-          halloween2024StartTime = activity.startTime
+        if (activityName.includes('dayofdesign01')) {
+          isDayOfDesignActive = true
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -243,8 +250,10 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   )
   // 按照 startTime 排序
   res.sort((a, b) => b.startTime - a.startTime)
-  // 调整2024万圣节活动排序
-  res = adjustActivitySort(res, halloween2024StartTime)
+  // 调整绘梦节活动排序
+  if (isDayOfDesignActive) {
+    res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
+  }
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1

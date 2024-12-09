@@ -137,8 +137,10 @@ export function getJinglingToken(tokenParams: TokenParams): Promise<Response> {
 // 日志数据上报
 export function webViewStatistics({
   module,
+  event,
 }: {
   module: string
+  event?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     handlePostMessageToNative({
@@ -146,6 +148,7 @@ export function webViewStatistics({
       resource: '/account/jingling/web_view_statistics',
       content: {
         module,
+        event,
       },
       handleRes: (res) => {
         if (res.code === 200) {

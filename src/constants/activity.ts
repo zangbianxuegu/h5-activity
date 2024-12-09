@@ -31,6 +31,13 @@ export const HALLOWEEN_2024_LIST = [
   'activitycenter_Halloweenpass_2024',
 ]
 
+// 绘梦节活动
+export const DAYOFDESIGN01_LIST = [
+  'activitycenter_dayofdesign01_post_main',
+  'activitycenter_dayofdesign01_post_exhibit',
+  'activitycenter_dayofdesign01_post_submit',
+]
+
 // 菜单中字体颜色显示蓝色的活动
 export const MAIN_ACTIVITY_LIST = [
   'activity_sanrio_2024',
@@ -99,4 +106,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_music_2024',
   'activitycenter_pc_celebration',
   'activitycenter_invitation_code',
+  ...DAYOFDESIGN01_LIST,
 ]
