@@ -553,4 +553,39 @@ export const routes: RouteRecordRaw[] = [
       module: 'activitycenter_dayofdesign01_post_exhibit',
     },
   },
+  {
+    // 外部活动跳转路由固定
+    path: '/external',
+    // 和普通活动一样的路由名称
+    name: 'Season100Start',
+    // 外部活动总是使用 IframeView 页面引入
+    component: () => import('@/views/IframeView'),
+    meta: {
+      // 和普通活动一样配置标题
+      title: 'iframe 外部链接1',
+      // 和普通活动一样配置module
+      module: 'activitycenter_season100_start',
+      // 配置外部活动链接
+      externalUrl:
+        'https://h5maker-backend-ma75.nie.netease.com/page/dev/Qufder',
+    },
+  },
+  {
+    // 外部活动跳转路由固定
+    path: '/external',
+    // 和普通活动一样的路由名称
+    name: 'Season101Start',
+    // 外部活动总是使用 IframeView 页面引入
+    component: () => import('@/views/IframeView'),
+    meta: {
+      // 和普通活动一样配置标题
+      title: 'iframe 外部链接2',
+      // 和普通活动一样配置module
+      module: 'activitycenter_season101_start',
+      // 配置外部活动链接
+      externalUrl:
+        // 'https://sky.163.com/client/news/update/20241011/40240_1186029.html',
+        'https://www.baidu.com',
+    },
+  },
 ]

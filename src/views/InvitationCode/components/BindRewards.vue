@@ -20,6 +20,7 @@
         class="ml-[36px] mr-[10px] h-[58px] w-[530px] rounded-[29px] pl-[30px] pr-[40px] text-[32px]"
         placeholder="点击输入邀请码"
         type="text"
+        @focus="handleInputFocus"
       />
       <!-- 绑定按钮 -->
       <button
@@ -49,7 +50,7 @@
 import { acceptInvite } from '@/apis/invitationCode'
 import { showToast } from 'vant'
 
-const emit = defineEmits(['reward', 'getUserInviteInfo'])
+const emit = defineEmits(['reward', 'refresh'])
 
 const props = defineProps({
   m1Status: {
@@ -76,7 +77,7 @@ function handleBind(): void {
     .then((res) => {
       if (res.code === 200) {
         showToast('绑定成功')
-        emit('getUserInviteInfo')
+        emit('refresh')
       }
     })
     .catch((error) => {
@@ -100,6 +101,18 @@ function handleReward(): void {
     return
   }
   emit('reward')
+}
+
+/**
+ * @function 输入框获取焦点
+ * @returns {void}
+ */
+
+function handleInputFocus(): void {
+  document.body.style.position = 'fixed'
+  void nextTick(() => {
+    window.scrollTo(0, document.body.clientHeight)
+  })
 }
 </script>
 

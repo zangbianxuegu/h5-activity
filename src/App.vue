@@ -31,7 +31,7 @@
         </div>
       </div>
     </nav>
-    <main class="flex items-center justify-center">
+    <main class="flex flex-1 items-center justify-center">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
           <component :is="Component" />
@@ -254,6 +254,20 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   if (isDayOfDesignActive) {
     res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
   }
+  res.push({
+    activity: 'activitycenter_season100_start',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
+  res.push({
+    activity: 'activitycenter_season101_start',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
@@ -349,15 +363,11 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  console.log('currentChannel: ', currentChannel.value)
   getPlayerMissionData({ channel: currentChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
-      console.log('activeEvents', activeEvents)
-
       const newMenuData = generateMenuData(MENU_ITEMS, activeEvents)
-      console.log('newMenuData: ', newMenuData)
       if (!newMenuData || newMenuData.length === 0) {
         showToast('网络连接异常，请稍后重试')
         return
