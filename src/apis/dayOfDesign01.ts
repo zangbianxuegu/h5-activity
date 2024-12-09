@@ -14,16 +14,7 @@ import type {
 } from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
-import {
-  ERROR_TYPE,
-  REVIEW_TEXT_ERROR_TYPE,
-  reviewTextResponseMap,
-} from '@/utils/filePicker/types'
-import {
-  reviewText,
-  getFilePickerToken,
-  uploadImgToFilePicker,
-} from '@/utils/filePicker'
+import { getFilePickerToken, uploadImgToFilePicker } from '@/utils/filePicker'
 import Loading from '@/components/Loading'
 
 /**
@@ -157,8 +148,10 @@ export const getDesignDetails = (
 /**
  * 删除作品详情信息
  * @function deleteDesignDetails
- * @param {string} policyName 在线图片的url
- * @returns {boolean} 上传是否成功的结果
+ * @param {string} policyName 策略名
+ * @param {string} designId 作品id
+ * @param {string} fileUrl 在线图片的url
+ * @returns {boolean} 删除是否成功
  */
 export const deleteDesignDetails = (
   policyName: string,
@@ -268,39 +261,9 @@ export const uploadFormAndFilePickerResultToServerApi = (
         if (code === 200) {
           resolve(data)
         } else {
-          if (msg.includes(REVIEW_TEXT_ERROR_TYPE.ILLEGAL)) {
-            const illegalKey = msg.split(' ')[1]
-            reject(
-              JSON.stringify({
-                errorType: ERROR_TYPE.REVIEW_TEXT_ERROR,
-                invalidKey: illegalKey,
-                invalidReasonType: REVIEW_TEXT_ERROR_TYPE.ILLEGAL,
-                invalidReasonDefaultText: reviewTextResponseMap.get(
-                  REVIEW_TEXT_ERROR_TYPE.ILLEGAL,
-                ),
-              }),
-            )
-          } else if (
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.ERROR_LENGTH) ||
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.INVALID) ||
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.NOMATCH)
-          ) {
-            const msgToArray = msg.split(' ')
-            const invalidKey = msgToArray[0]
-            const invalidReasonType = msgToArray[1] as REVIEW_TEXT_ERROR_TYPE
-            const errorDataObject = {
-              errorType: ERROR_TYPE.REVIEW_TEXT_ERROR,
-              invalidKey,
-              invalidReasonType,
-              invalidReasonDefaultText:
-                reviewTextResponseMap.get(invalidReasonType),
-            }
-            reject(new Error(JSON.stringify(errorDataObject)))
-          } else {
-            reject(
-              new Error(getErrorMessage('upload_filepicker_result', code, msg)),
-            )
-          }
+          reject(
+            new Error(getErrorMessage('upload_filepicker_result', code, msg)),
+          )
         }
       },
     })
@@ -361,12 +324,12 @@ export const uploadWorksToServer = async (
           imgBlob,
           filePickerUrlImg,
         )
-        const uploadshareImgResult = await uploadImgToFilePicker(
+        const uploadShareImgResult = await uploadImgToFilePicker(
           tokenShareImg,
           shareImgBlob,
           filePickerUrlShareImg,
         )
-        if (uploadImgResult?.url && uploadshareImgResult?.url) {
+        if (uploadImgResult?.url && uploadShareImgResult?.url) {
           // 存储稿件最终数据至服务端,完成投稿
           const uploadDataToServerResult =
             await uploadFormAndFilePickerResultToServerApi(
@@ -374,13 +337,13 @@ export const uploadWorksToServer = async (
               policyName,
               reviewTextObj,
               uploadImgResult?.url,
-              uploadshareImgResult?.url,
+              uploadShareImgResult?.url,
             )
           if (uploadDataToServerResult) {
             return {
               ...uploadDataToServerResult,
               file_url: uploadImgResult?.url,
-              share_url: uploadshareImgResult?.url,
+              share_url: uploadShareImgResult?.url,
             }
           }
         }
@@ -390,6 +353,35 @@ export const uploadWorksToServer = async (
     console.log('uploadFormAndFilePickerResultToServerApiCommon error', e)
     throw e
   }
+}
+
+/**
+ * 检测文本信息是否合规
+ * @function reviewText
+ * @param {string} reviewObj 检查文本信息的对象
+ * @returns {boolean} 信息是否合规的结果
+ */
+export const reviewText = (
+  reviewObj: Record<string, any>,
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    void handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/review_text',
+      content: {
+        text: reviewObj,
+      },
+      handleRes: (res) => {
+        console.log('res', res)
+        const { code, msg }: { code: 200 | 400; msg: string } = res
+        if (code === 200) {
+          resolve(true)
+        } else {
+          reject(new Error(getErrorMessage('review_text', code, msg)))
+        }
+      },
+    })
+  })
 }
 
 /**

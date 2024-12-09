@@ -19,3 +19,12 @@ export interface UseEnvironmentReturn {
   isMac: boolean
   isPC: boolean
 }
+
+export interface UsePlatformReturn {
+  isIos: boolean
+  isAndroid: boolean
+  isWb: boolean
+  isWindow: boolean
+  isMac: boolean
+  isPC: boolean
+}

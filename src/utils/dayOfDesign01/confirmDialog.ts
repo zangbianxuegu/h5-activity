@@ -1,7 +1,11 @@
 import { createVNode, render } from 'vue'
 import DialogModal from '@/views/DayOfDesign01PostSubmit/components/ConfirmDialog.vue'
+import { type ConfirmIconType } from '@/types/activity/dayofdesign01'
 
-export const showConfirmDialog = (text: string): Promise<void> => {
+export const showConfirmDialog = (
+  text: string,
+  iconName?: ConfirmIconType,
+): Promise<void> => {
   const div = document.createElement('div')
   document.body.appendChild(div)
   let vnode: VNode
@@ -12,7 +16,7 @@ export const showConfirmDialog = (text: string): Promise<void> => {
   return new Promise((resolve, reject) => {
     vnode = createVNode(DialogModal, {
       text,
-      modalType: 'alert',
+      iconName,
       onConfirm() {
         closeModal()
         resolve()

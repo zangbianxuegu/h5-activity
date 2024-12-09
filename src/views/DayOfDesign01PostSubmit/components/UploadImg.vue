@@ -114,9 +114,9 @@
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import defaultWorksImg from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/works-default.png'
-import { useEnvironment } from '@/composables/useEnvironment'
 import { blobToUrl } from '@/utils/file'
 import { showToast, showLoadingToast, closeToast, showImagePreview } from 'vant'
+import { usePlatform } from '@/composables/usePlatform'
 
 /**
  * @description: 上传图片组件（包含裁剪功能）
@@ -167,7 +167,7 @@ const emits = defineEmits<{
   (e: 'reupload', value: any): void
 }>()
 
-const { isIos } = useEnvironment()
+const { isIos } = usePlatform()
 
 const updateFileData = (data: Blob): void => {
   emits('update:data', data)

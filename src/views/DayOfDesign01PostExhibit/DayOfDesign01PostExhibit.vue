@@ -199,8 +199,8 @@
         <!-- 作品详情弹框 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
-          :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
-          :type="detailType"
+          :event="EventDayOfDesign01.EXHIBIT"
+          :type="DesignDetailsType.OTHER"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
@@ -213,7 +213,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import qs from 'qs'
-import { DESIGN_DETAILS_TYPE, EVENT_DAY_OF_DESIGN_01, PageType } from '@/types'
+import { DesignDetailsType, EventDayOfDesign01, PageType } from '@/types'
 import type {
   DesignConfig,
   ListRecommendParams,
@@ -339,7 +339,7 @@ interface Detail {
   isFavorite: boolean
 }
 // 详情
-const detailType = ref<DESIGN_DETAILS_TYPE>(DESIGN_DETAILS_TYPE.OTHER)
+const detailType = ref<DesignDetailsType>(DesignDetailsType.OTHER)
 const detailData = ref<Detail>({
   id: '',
   author: '',
@@ -708,7 +708,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
   }
   // 列表中作品
   if (item) {
-    detailType.value = DESIGN_DETAILS_TYPE.OTHER
+    detailType.value = DesignDetailsType.OTHER
     if (!item.design_id) {
       return
     }
@@ -722,7 +722,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
       }
     }
   } else {
-    detailType.value = DESIGN_DETAILS_TYPE.SELF
+    detailType.value = DesignDetailsType.SELF
   }
   try {
     await getDetail(params)

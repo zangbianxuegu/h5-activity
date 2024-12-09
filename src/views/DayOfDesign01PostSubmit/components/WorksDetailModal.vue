@@ -12,18 +12,27 @@
                   alt=""
                   srcset=""
                 />
+                <div
+                  v-if="isOther"
+                  class="btn-report cursor-pointer bg-cover bg-center bg-no-repeat"
+                  @click.stop="onClickReport"
+                >
+                  <span class="sr-only"> 举报 </span>
+                </div>
               </div>
               <div class="right">
                 <div class="works-preview-basic-info">
                   <p>
                     <span>编号：</span>
-                    <span id="works-id">{{ worksData.id }}</span>
-                    <span
-                      id="copy-works-id"
-                      @click="onClickCopyWorksId"
-                      class="btn-copy cursor-pointer"
-                      >复制</span
-                    >
+                    <span id="works-id"
+                      >{{ worksData.id }}
+                      <span
+                        id="copy-works-id"
+                        @click="onClickCopyWorksId"
+                        class="btn-copy cursor-pointer"
+                        >复制</span
+                      >
+                    </span>
                   </p>
                   <p>
                     <span>作者：</span>
@@ -42,8 +51,8 @@
                   <!-- 收藏 -->
                   <div
                     v-if="isOther"
-                    @click.stop="throttleClickLike"
-                    :class="['btn', 'like', 'cursor-pointer']"
+                    @click.stop="onClickHandleBarLike"
+                    class="btn like cursor-pointer"
                   >
                     <img :src="likeBtnImg" alt="" />
                   </div>
@@ -51,7 +60,7 @@
                   <div
                     v-if="isSelf"
                     @click.stop="onClickHandleBarDownload"
-                    :class="['btn', 'down', 'cursor-pointer']"
+                    class="btn down cursor-pointer"
                   >
                     <img :src="downloadBtnIcon" alt="" />
                   </div>
@@ -59,7 +68,7 @@
                   <div
                     v-if="isShowShareBtn"
                     @click.stop="onClickHandleBarShare"
-                    :class="['btn', 'share', 'cursor-pointer']"
+                    class="btn share cursor-pointer"
                     id="WorksDetailModalShareBtn"
                   >
                     <img :src="shareBtnIcon" alt="" />
@@ -68,7 +77,7 @@
                   <div
                     v-if="isSelf"
                     @click.stop="onClickHandleBarDelete"
-                    :class="['btn', 'delete', 'cursor-pointer']"
+                    class="btn delete cursor-pointer"
                   >
                     <img :src="deleteBtnIcon" alt="" />
                   </div>
@@ -77,7 +86,9 @@
               <div
                 class="btn-close cursor-pointer bg-contain bg-center bg-no-repeat"
                 @click="onClickCloseModal"
-              ></div>
+              >
+                <span class="sr-only">关闭</span>
+              </div>
             </div>
           </div>
         </div>
@@ -90,22 +101,21 @@
 import throttle from 'lodash.throttle'
 import { showToast } from 'vant'
 import { showShare } from '@/utils/ngShare/share'
-import ClipboardJS from 'clipboard'
 import qs from 'qs'
 import { useBaseStore } from '@/stores/base'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import {
-  DESIGN_DETAILS_TYPE,
-  EVENT_DAY_OF_DESIGN_01,
+  ConfirmIconType,
+  DesignDetailsType,
+  EventDayOfDesign01,
 } from '@/types/activity/dayofdesign01'
 import {
   deleteDesignDetails,
   reviewShareDesign,
   updateFavorites,
 } from '@/apis/dayOfDesign01'
-import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
+import { NgshareChannel } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
-import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
 import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorited.png'
 import deleteBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-delete.png'
@@ -113,13 +123,15 @@ import shareBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submi
 import downloadBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-download.png'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { webViewStatistics } from '@/apis/base'
+import { useClipboard } from '@vueuse/core'
+import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
  */
 const props = defineProps<{
-  type: DESIGN_DETAILS_TYPE
-  event: EVENT_DAY_OF_DESIGN_01
+  type: DesignDetailsType
+  event: EventDayOfDesign01
   show: boolean
   worksData: {
     id: string
@@ -153,13 +165,13 @@ watch(
     }
   },
 )
-const emits = defineEmits(['update:show', 'afterDelete', 'update-favorite'])
+const emits = defineEmits(['update:show', 'after-delete', 'update-favorite'])
 
 const isFavorite = ref(props.worksData.isFavorite)
 
 const eventMap = new Map([
   [
-    EVENT_DAY_OF_DESIGN_01.EXHIBIT,
+    EventDayOfDesign01.EXHIBIT,
     {
       statisticsModules: {
         download: 'day_of_design_stage0_download',
@@ -175,11 +187,11 @@ const likeBtnImg = computed(() => {
 })
 
 const isSelf = computed(() => {
-  return props.type === DESIGN_DETAILS_TYPE.SELF
+  return props.type === DesignDetailsType.SELF
 })
 
 const isOther = computed(() => {
-  return props.type === DESIGN_DETAILS_TYPE.OTHER
+  return props.type === DesignDetailsType.OTHER
 })
 
 const worksHandleModal = ref({
@@ -243,21 +255,36 @@ const shareLinkParams = computed(() => {
   )
 })
 
-const onClickHandleBarShare = (): void => {
-  console.log(
-    `http://10.227.199.103:3000/dayofdesign01.html?${shareLinkParams.value}`,
-  )
+const onClickReport = (): void => {
+  showConfirmDialog('是否要举报这个作品？', ConfirmIconType.Report)
+    .then(async () => {
+      showToast('举报成功')
+      // try {
+      //   const res = await deleteDesignDetails(
+      //     props.worksData.id
+      //   )
+      //   if (res) {
+      //     showToast('删除成功')
+      //   }
+      // } catch (error) {
+      //   showToast('网络波动，删除失败，请稍后再试')
+      //   console.error(error)
+      // }
+    })
+    .catch(() => {})
+}
 
+const onClickHandleBarShare = (): void => {
   shareData.value.show = true
   showShare(
     { targetElByHover: '#WorksDetailModalShareBtn' },
     props.worksData.worksDecorateImgSrc
       ? []
       : [
-          NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
-          NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
-          NGSHARE_SHARE_CHANNEL.WEI_BO,
-          NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+          NgshareChannel.WECHAT_FRIEND,
+          NgshareChannel.WECHAT_FRIEND_CIRCLE,
+          NgshareChannel.WEI_BO,
+          NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
         ],
     {
       title: '绘梦节分享标题',
@@ -289,7 +316,7 @@ const onClickHandleBarDelete = async (): Promise<void> => {
         showToast('删除成功')
       }
       setTimeout(() => {
-        emits('afterDelete')
+        emits('after-delete')
         onClickCloseModal()
       }, 500)
     } catch (error) {
@@ -304,7 +331,7 @@ const onClickHandleBarDownload = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.download as string,
-      event: EVENT_DAY_OF_DESIGN_01.ALL,
+      event: EventDayOfDesign01.ALL,
     })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
@@ -319,20 +346,20 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 }
 
 // 点击收藏按钮
-const onClickHandleBarLike = async (): Promise<void> => {
+const handleLike = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.share as string,
-      event: EVENT_DAY_OF_DESIGN_01.ALL,
+      event: EventDayOfDesign01.ALL,
     })
-    if (props.type === DESIGN_DETAILS_TYPE.OTHER) {
+    if (props.type === DesignDetailsType.OTHER) {
       await updateFavorites(
         props.worksData.id,
         !isFavorite.value,
         props.event,
         props.filePickerConfig.policyName,
       )
-      showToast(!isFavorite.value ? '收藏成功' : '取消收藏成功')
+      showToast(!isFavorite.value ? '已成功添加至我的收藏' : '取消收藏成功')
       isFavorite.value = !isFavorite.value
       emits('update-favorite', isFavorite)
     }
@@ -341,17 +368,18 @@ const onClickHandleBarLike = async (): Promise<void> => {
   }
 }
 // 后端也是1s CD
-const throttleClickLike = throttle(onClickHandleBarLike, 1000, {
+const onClickHandleBarLike = throttle(handleLike, 1000, {
   trailing: false,
 })
 
-const onClickCopyWorksId = (): void => {
-  // eslint-disable-next-line no-new
-  new ClipboardJS('#copy-works-id', {
-    text: function () {
-      return document.querySelector('#works-id')?.textContent as string
-    },
-  })
+const { copy, isSupported } = useClipboard({ legacy: true })
+const onClickCopyWorksId = async (): Promise<void> => {
+  if (!isSupported.value) {
+    showToast('未授权,不支持')
+    return
+  }
+  // 执行复制操作
+  await copy(props.worksData.id)
   showToast('编号已复制到剪贴板！')
 }
 
@@ -396,10 +424,22 @@ onMounted(async () => {})
     height: 100%;
     display: flex;
     justify-content: flex-end;
+    position: relative;
     img {
       width: 1200px;
       height: 900px;
       border-radius: 40px;
+    }
+    .btn-report {
+      width: 130px;
+      height: 114px;
+      position: absolute;
+      top: 23px;
+      right: 31px;
+      background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-report.png');
+      &:hover {
+        background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-report-hover.png');
+      }
     }
   }
   .right {
@@ -415,41 +455,46 @@ onMounted(async () => {})
     color: #fff;
     .works-preview-basic-info {
       width: 100%;
-      height: 228px;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       gap: 30px;
       p {
         display: flex;
         justify-content: flex-start;
         align-items: center;
-        .btn-copy {
-          width: 100px;
-          height: 47px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          margin-left: 24px;
-          background-color: #e4f9ff;
-          box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
-          border-radius: 23px;
-          font-size: 28px;
-          font-weight: 700;
-          letter-spacing: 1px;
-          color: #5a7191;
-        }
+        line-height: 36px;
+        position: relative;
         span {
+          position: relative;
           font-size: 36px;
-          color: #5a7191;
+          color: #7c6354;
           font-family: SourceHanSansCN-Regular;
+          .btn-copy {
+            width: 100px;
+            height: 46px;
+            position: absolute;
+            top: 50%;
+            right: -100%;
+            transform: translate(-30%, -50%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #8c7669;
+            box-shadow: 0px 6px 6px 0px rgba(108, 108, 108, 0.12);
+            border-radius: 23px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: #fff;
+          }
         }
       }
     }
     .line {
       width: 480px;
       height: 2px;
-      margin: 37px 0 30px 0;
+      margin: 37px 0 25px 0;
       background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/line-dot.png');
     }
     .works-preview-introduce {
@@ -457,7 +502,7 @@ onMounted(async () => {})
       flex: 1;
       p {
         font-size: 30px;
-        color: #5a7191;
+        color: #7c6354;
         font-family: SourceHanSansCN-Regular;
         line-height: 50px;
       }
@@ -466,17 +511,18 @@ onMounted(async () => {})
       width: 100%;
       height: 128px;
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
       align-items: center;
+      gap: 57px;
       font-size: 108px;
       & > .btn {
         width: 121px;
         height: 121px;
-        background-color: rgba(90, 113, 145, 0.6);
+        background-color: rgba(90, 77, 65, 0.6);
         border-radius: 30px;
         box-sizing: border-box;
         &:hover {
-          border: 3px solid #fff;
+          border: 5px solid #fff;
         }
         &.delete img {
           padding: 24px;
@@ -486,12 +532,12 @@ onMounted(async () => {})
   }
 }
 .btn-close {
-  width: 69px;
-  height: 69px;
+  width: 49px;
+  height: 49px;
   position: absolute;
   top: 32px;
   right: 32px;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-close.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-close-works-details.png');
 }
 // 查看稿件结束
 </style>

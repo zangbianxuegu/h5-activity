@@ -191,8 +191,8 @@
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
-          :event="EVENT_DAY_OF_DESIGN_01.ALL"
-          :type="DESIGN_DETAILS_TYPE.SELF"
+          :event="EventDayOfDesign01.ALL"
+          :type="DesignDetailsType.SELF"
           :works-data="myWorksData"
           :file-picker-config="filePickerConfig"
           @after-delete="initPageData"
@@ -212,7 +212,7 @@ import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
 import UploadImg from './components/UploadImg.vue'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import {
-  DESIGN_REVIEW_STATUS,
+  DesignReviewStatus,
   type SelfDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import { blobToUrl } from '@/utils/file'
@@ -220,19 +220,18 @@ import {
   FILE_PICKER_POLICY_NAME,
   groupNameAndCodeMap,
 } from '@/constants/dayofdesign01'
-import { type ReviewTextRejectResult } from '@/utils/filePicker/types'
 import {
-  DESIGN_DETAILS_TYPE,
-  EVENT_DAY_OF_DESIGN_01,
+  DesignDetailsType,
+  EventDayOfDesign01,
 } from '@/types/activity/dayofdesign01'
 import {
   deleteDesignDetails,
   getDesignDetails,
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
-import ClipboardJS from 'clipboard'
 import { Session } from '@/utils/storage'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
+import { useClipboard } from '@vueuse/core'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -259,7 +258,7 @@ interface WorksData {
   worksName: string
   worksIntroduce: string
   id: string
-  checkStatus: DESIGN_REVIEW_STATUS | undefined
+  checkStatus: DesignReviewStatus | undefined
   worksImg?: Blob | string | null
   worksImgSrc: string
   worksDecorateImg: Blob | null
@@ -309,15 +308,15 @@ const isContributed = computed((): boolean => {
 })
 // 是否已审核通过
 const isCheckedSuccess = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.PASSED
+  return worksData.value.checkStatus === DesignReviewStatus.PASSED
 })
 // 是否审核失败
 const isCheckedFail = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.REFUSED
+  return worksData.value.checkStatus === DesignReviewStatus.REFUSED
 })
 // 是否审核中
 const isChecking = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.VERIFYING
+  return worksData.value.checkStatus === DesignReviewStatus.VERIFYING
 })
 
 // 作者名的字数统计
@@ -367,14 +366,16 @@ const contributeBtnClass = computed((): string => {
   return 'btn-contribute'
 })
 
+const { copy, isSupported } = useClipboard({ legacy: true })
+
 // 复制作品id
-const onClickCopyWorksId = (): void => {
-  // eslint-disable-next-line no-new
-  new ClipboardJS('.btn-copy', {
-    text: function (el: Element) {
-      return el?.getAttribute('copy-id') || ''
-    },
-  })
+const onClickCopyWorksId = async (): Promise<void> => {
+  if (!isSupported.value) {
+    showToast('未授权,不支持')
+    return
+  }
+  // 执行复制操作
+  await copy(worksData.value.id)
   showToast('编号已复制到剪贴板！')
 }
 
@@ -401,7 +402,7 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 }
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  window.location.href = 'https://m.163.com/'
+  window.location.href = 'https://sky.163.com/2024/hmj/#cszycy'
 }
 
 // 删除作品确认弹窗
@@ -417,8 +418,9 @@ const showConfirmDialogForReupload = (): void => {
         if (res) {
           showToast('删除成功')
         }
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           void initPageData()
+          clearTimeout(timer)
         }, 500)
       } catch (error) {
         showToast('网络波动，删除失败，请稍后再试')
@@ -588,11 +590,12 @@ const confirmSubmitWork = async (): Promise<void> => {
     duration: 0,
     onOpened: () => {
       // 协议超时未返回结果，自动关闭
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (apiTimeout) {
           stopSubmit()
           showToast('上传异常，请刷新后重试')
         }
+        clearTimeout(timer)
       }, 10 * 1000)
     },
   })
@@ -612,9 +615,9 @@ const confirmSubmitWork = async (): Promise<void> => {
         worksData.value.worksDecorateImg,
       )
       worksData.value.id = res?.design_id
-      worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
+      worksData.value.checkStatus = DesignReviewStatus.VERIFYING
       stopSubmit()
-      showToast('投稿成功')
+      showToast('作品投稿成功')
     } else {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
@@ -622,15 +625,7 @@ const confirmSubmitWork = async (): Promise<void> => {
   } catch (error: any) {
     stopSubmit()
     const { message } = error
-    if (message?.includes('errorType')) {
-      // 字段检测异常的错误处理
-      const errorObject: ReviewTextRejectResult = JSON.parse(message)
-      const { invalidKey, invalidReasonDefaultText } = errorObject
-      showToast(invalidReasonDefaultText)
-      console.log(`${invalidKey}字段检测不通过`)
-    } else {
-      showToast('上传异常，请刷新后重试')
-    }
+    showToast(message)
   }
 }
 
@@ -967,11 +962,11 @@ onMounted(async () => {
     height: 100%;
     margin-left: 20px;
     font-size: 28px;
-    color: #fff;
     background-color: transparent;
-    opacity: 0.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 1);
     &::placeholder {
-      color: #fff;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 }
@@ -998,9 +993,10 @@ onMounted(async () => {
     color: #fff;
     resize: none;
     background-color: transparent;
-    opacity: 0.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 1);
     &::placeholder {
-      color: #fff;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
   .word-count {
