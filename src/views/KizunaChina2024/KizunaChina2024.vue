@@ -82,17 +82,17 @@
                         handleReward(
                           [$event.target] as HTMLElement[],
                           item,
-                          1 + 1,
+                          index + 1,
                         )
                       "
                       :ref="item.canRewardLottieRef"
                       :id="item.taskId"
-                      class="acc-reward-can-dynamic-bubble"
+                      class="acc-reward-can-dynamic-bubble z-0"
                     ></can-reward-bubble-animation>
                     <div
                       v-if="['wait', 'can', 'redeemed'].includes(item.status)"
                       :class="[
-                        'acc-task-item animate__animated animate__fadeIn bg-contain',
+                        'acc-task-item animate__animated animate__fadeIn relative z-10 bg-contain',
                         `${item.status}${index + 1}`,
                       ]"
                     ></div>
@@ -130,25 +130,25 @@
               </h3>
               <ul class="modal-text list-inside list-decimal">
                 <li>
-                  活动期间，玩家装扮成1次中国绊爱，即可领取
+                  活动期间，装扮成中国绊爱的模样，即可领取
                   <span class="text-[#ffcb4d]"
                     >中国绊爱饺子魔法*1和中国绊爱大铁头礼包试用魔法*1</span
                   >
                 </li>
                 <li>
-                  活动期间，搭建1个晃悠悠共享空间，即可领取
+                  活动期间，使用特殊神坛为共享空间的家具戴上晃悠悠，即可领取
                   <span class="text-[#ffcb4d]"
                     >中国绊爱饺子魔法*1和中国绊爱发饰试用魔法*1</span
                   >
                 </li>
                 <li>
-                  活动期间，与大铁头进行1次互动，即可领取
+                  活动期间，与中国绊爱大铁头进行1次互动，即可领取
                   <span class="text-[#ffcb4d]"
                     >中国绊爱饺子魔法*1和中国绊爱斗篷魔法*1</span
                   >
                 </li>
                 <li>
-                  活动期间，寻找头戴晃悠悠的光之子，即可领取
+                  活动期间，寻找头戴中国绊爱发饰的光之子，即可领取
                   <span class="text-[#ffcb4d]"
                     >中国绊爱饺子魔法*1和中国绊爱发型魔法*1</span
                   >
@@ -182,11 +182,11 @@
                     >爱心*2</span
                   ><br />
                 </li>
-                <li>
+                <li v-if="accTaskValue >= 100">
                   活动期间，达成品尝1000w中国绊爱饺子进度后，玩家可以通过完成隐藏任务获取额外奖励：<br />
-                  &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱与中国绊爱合影，即可领取
+                  &nbsp;&nbsp;&nbsp;&nbsp;a.使用拾光季照相机与绊爱和中国绊爱合影，即可领取
                   <span class="text-[#ffcb4d]"
-                    >绊爱发型礼包试用魔法*1和璀璨之星魔法*1</span
+                    >中国绊爱发饰试用魔法*1和璀璨之星魔法*1</span
                   ><br />
                 </li>
               </ul>

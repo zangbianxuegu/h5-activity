@@ -451,6 +451,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '彩染季 期待相遇',
+    value: 'activitycenter_season25_reserve',
+    routeName: 'Season25Reserve',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '光遇云音 心随律动',
     value: 'activitycenter_cloud_music_2024',
     routeName: 'CloudMusic2024',

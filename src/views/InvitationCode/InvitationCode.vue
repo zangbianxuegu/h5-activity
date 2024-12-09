@@ -1,7 +1,9 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="invitation-code flex h-screen">
-      <div class="invitation-code-main">
+      <div
+        :class="['invitation-code-main', { 'keyboard-show': isKeyboardShow }]"
+      >
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -165,7 +167,7 @@
             :inviteInfo="inviteInfo"
             :m1Status="m1Status"
             @reward="handleRewardM1"
-            @getUserInviteInfo="getUserInviteInfo"
+            @refresh="initPage"
           ></component>
         </ActivityTab>
       </div>
@@ -198,6 +200,7 @@ import {
   createBottomAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
+import throttle from 'lodash.throttle'
 
 // 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
 getResponsiveStylesFactor()
@@ -326,12 +329,39 @@ const bottomAccTaskList = updateTaskList(BOTTOM_ACC_TASK_LIST, 3)
 
 onMounted(() => {
   try {
-    getActivityData()
-    getUserInviteInfo()
+    window.addEventListener('resize', handleResize)
+    initPage()
   } catch (error) {
     console.error(error)
   }
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function 处理窗口大小变化的函数，兼容安卓机防止弹出虚拟键盘后页面顶上去
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
+
+/**
+ * @function 初始化页面
+ * @description 获取活动数据并获取用户邀请信息
+ * @returns {void}
+ */
+function initPage(): void {
+  getActivityData() // 获取活动数据
+  getUserInviteInfo() // 获取用户邀请信息
+}
 
 /**
  * @function 是否已领奖
@@ -582,13 +612,16 @@ function handleHelp(): void {
     position: absolute;
     left: 50%;
     top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
     width: 2040px;
     height: 1140px;
+    transform: translate(-50%, -50%) scale(var(--scale-factor));
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/invitation-code/bg.jpg');
+    &.keyboard-show {
+      transform: translate(-50%, -50%);
+    }
   }
 }
 .help {

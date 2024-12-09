@@ -32,12 +32,12 @@ export interface Reward {
 export const REWARD_TEXT = {
   message_cloudmusic: '分享音符',
   outfit_prop_saxophone: '萨克斯试用魔法',
-  outfit_prop_violin: '小提琴试用魔法*',
+  outfit_prop_violin: '凯旋提琴礼包试用魔法*',
   outfit_prop_triumphhandpan: '凯旋手碟试用魔法',
-  outfit_prop_rhythmguitar: '白吉它试用魔法',
+  outfit_prop_rhythmguitar: '音韵吉他试用魔法',
   outfit_prop_fledglingharp: '雏鸟之琴试用魔法',
   swing: '秋千',
-  outfit_prop_cloudmusictable: '古典音乐桌椅试用魔法',
+  outfit_prop_cloudmusictable: '古典音乐桌椅礼包试用魔法',
   heart: '爱心',
 }
 

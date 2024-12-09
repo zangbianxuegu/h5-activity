@@ -130,6 +130,10 @@ function getNavImgSrc(curItem: MenuItem): string {
     '../../assets/images/common/nav-icon-day-of-design01-active.png',
     import.meta.url,
   ).href
+  const activitycenterSeason25Reserve = new URL(
+    '../../assets/images/common/nav-icon-colordyeing.png',
+    import.meta.url,
+  ).href
   const menuIconMap: Record<string, string> = {
     activity_sanrio_2024: activitySanrio2024,
     activitycenter_poster_anniversary_2024: activitycenterPosterAnniversary2024,
@@ -138,6 +142,7 @@ function getNavImgSrc(curItem: MenuItem): string {
     activitycenter_season24: activitycenterSeason24,
     activitycenter_dayofdesign01: activitycenterDayOfDesign01,
     activitycenter_dayofdesign01_active: activitycenterDayOfDesign01Active,
+    activitycenter_season25_reserve: activitycenterSeason25Reserve,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {
@@ -165,6 +170,7 @@ function getNavIconClass(curItem: MenuItem): string[] {
     activitycenter_friendship_2024: `${navIconPrefix}-friendship-2024`,
     activitycenter_season24: `${navIconPrefix}-season24`,
     activitycenter_dayofdesign01: `${navIconPrefix}-season24`,
+    activitycenter_season25_reserve: `${navIconPrefix}-season25-reserve`,
   }
   let key = curItem.value
   if (key.includes('friendship_2024')) {
@@ -294,6 +300,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &-dayofdesign {
     width: 60px;
     height: 86px;
+  }
+  &-season25-reserve {
+    width: 84px;
+    height: 94px;
   }
 }
 .nav-text {

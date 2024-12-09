@@ -1,11 +1,11 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="season23 flex h-screen">
-      <div class="season23-main">
+    <div class="season25-reserve flex h-screen">
+      <div class="season25-reserve-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <div class="header flex">
             <h1 class="title overflow-hidden bg-contain indent-[-9999px]">
-              期待在姆明季 能与你再次相遇 10.8-10.17
+              期待在彩染季 与你再次相遇 1.7-1.20
             </h1>
             <div class="help bg-contain" @click="handleHelp"></div>
           </div>
@@ -32,7 +32,7 @@
           <div class="h-[640px] overflow-auto px-4">
             <p class="modal-text mt-4">
               <span class="font-semibold">活动时间：</span
-              >2024年10月8日-2024年10月17日
+              >2025年1月7日-2025年1月20日
             </p>
             <p class="modal-text">
               <span class="font-semibold">活动内容：</span>
@@ -55,54 +55,27 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import throttle from 'lodash.throttle'
-import type { DesignConfig, MiniProgramParams } from '@/types'
+import type { MiniProgramParams } from '@/types'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import { openWechatMiniprogram, getSeasonReservationStatus } from '@/apis/base'
-import useResponsiveStyles from '@/composables/useResponsiveStyles'
+import { getResponsiveStylesFactor } from '@/utils/responsive'
 import ActivityModal from '@/components/Modal'
+import { useEnvironment } from '@/composables/useEnvironment'
 
-// 设计稿宽
-const DESIGN_WIDTH = 2560
-// 设计稿高
-const DESIGN_HEIGHT = 1200
-// 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
-// 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_MAYDAY_WIDTH = 2100 - 60
-// 设计稿主体高，同宽。
-const DESIGN_MAYDAY_HEIGHT = 1200 - 60
-// 设计稿主体内容宽
-const DESIGN_MAYDAY_CONTENT_WIDTH = DESIGN_MAYDAY_WIDTH
-// 设计稿主体内容高
-const DESIGN_MAYDAY_CONTENT_HEIGHT = DESIGN_MAYDAY_HEIGHT
-// 设计稿主体内容宽高比
-const DESIGN_MAYDAY_CONTENT_RATIO =
-  DESIGN_MAYDAY_CONTENT_WIDTH / DESIGN_MAYDAY_CONTENT_HEIGHT
+const { isProd } = useEnvironment()
 
-// 配置参数
-const designConfig: DesignConfig = {
-  designWidth: DESIGN_WIDTH,
-  designHeight: DESIGN_HEIGHT,
-  designMainWidth: DESIGN_MAYDAY_WIDTH,
-  designMainHeight: DESIGN_MAYDAY_HEIGHT,
-  designMainContentWidth: DESIGN_MAYDAY_CONTENT_WIDTH,
-  designMainContentHeight: DESIGN_MAYDAY_CONTENT_HEIGHT,
-  designMainContentRatio: DESIGN_MAYDAY_CONTENT_RATIO,
-}
-
-// 缩放系数
-const { factor } = useResponsiveStyles(designConfig)
+// 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
+const { factor } = getResponsiveStylesFactor()
 console.log('factor: ', factor.value)
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 // 基本信息
 const baseStore = useBaseStore()
-const channel = computed(() => baseStore.baseInfo.channel)
+const appChannel = computed(() => baseStore.baseInfo.appChannel)
 // 是否已预约
 const isReserved = ref(false)
 
-const prodUrl = 'https://sky.h5.163.com/game/'
-const isProd = ref(window.location.href.includes(prodUrl))
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=66b20e387389f41328a99946&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=66b20e387389f41328a99946'
 const pathDev =
@@ -117,7 +90,7 @@ const miniProgramParams: MiniProgramParams = {
   type,
 }
 
-const isVisited = Session.get('isVisitSeason24Reserve')
+const isVisited = Session.get('isVisitSeason25Reserve')
 const bodyTransitionName = ref('')
 const headTransitionName = ref('')
 if (!isVisited) {
@@ -126,7 +99,7 @@ if (!isVisited) {
 }
 
 onMounted(async () => {
-  Session.set('isVisitSeason24Reserve', true)
+  Session.set('isVisitSeason25Reserve', true)
   document.addEventListener('visibilitychange', handleVisibilityChange)
   getReserveStatus()
 })
@@ -139,7 +112,7 @@ onUnmounted(() => {
  * 获取预约状态
  */
 function getReserveStatus(): void {
-  getSeasonReservationStatus(channel.value)
+  getSeasonReservationStatus(appChannel.value)
     .then(() => {
       isReserved.value = true
     })
@@ -160,7 +133,6 @@ const throttledFetchData = throttle(() => {
  */
 function handleVisibilityChange(): void {
   if (document.visibilityState === 'visible') {
-    console.log('页面重新显示')
     throttledFetchData() // 使用节流
   }
 }
@@ -196,7 +168,7 @@ function handleHelp(): void {
 .fade-in-head-enter-from {
   opacity: 0.2;
 }
-.season23 {
+.season25-reserve {
   position: relative;
   width: 2100px;
 
@@ -210,25 +182,26 @@ function handleHelp(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/season24-reserve/bg.jpg');
+    background-image: url('@/assets/images/season25-reserve/bg.jpg');
   }
 }
 .header {
   position: relative;
   left: 444px;
   top: 96px;
-  width: 1105px;
+  width: 1081px;
 }
 .title {
   position: absolute;
-  width: 1105px;
-  height: 312px;
-  background-image: url('@/assets/images/season24-reserve/title.png');
+  width: 1081px;
+  height: 326px;
+  background-image: url('@/assets/images/season25-reserve/title.png');
+  background-repeat: no-repeat;
 }
 .help {
   position: absolute;
-  left: 995px;
-  top: 89px;
+  right: 32px;
+  top: 98px;
   width: 61px;
   height: 61px;
   background-image: url('@/assets/images/season23-reserve/help.png');

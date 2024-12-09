@@ -27,12 +27,7 @@
                 :key="item.id"
                 class="task-list-item relative flex w-[252px] flex-col items-center"
               >
-                <div
-                  class="task-item-tag"
-                  v-if="index === 3 && item.status === TaskStatus.NOSTART"
-                >
-                  25日解锁
-                </div>
+                <div class="task-item-tag" v-if="index === 3">25日当日完成</div>
                 <div
                   class="relative"
                   :aria-label="`任务 ${index + 1}: ${item.title}`"
@@ -151,7 +146,7 @@
                   <span class="text-[#ffcb4d]">返老还童*1</span>
                 </li>
                 <li>
-                  12月25日，在茶桌领取宴会节奶奶的礼物，即可领取
+                  12月25日当日，在茶桌领取宴会节奶奶的礼物，即可领取
                   <span class="text-[#ffcb4d]"
                     >爱丽丝围裙套装礼包试用魔法*1</span
                   >
@@ -172,6 +167,7 @@ import type { Event } from '@/types'
 import { Session } from '@/utils/storage'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { animateBounce, animateBounceEase } from '@/utils/utils'
+import dayjs from 'dayjs'
 import Bubble from '@/components/Bubble/Bubble.vue'
 import {
   type TaskItem,
@@ -215,7 +211,6 @@ getResponsiveStylesFactor()
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-const currentTime = activityData.value.current_time
 
 // 任务排序
 const taskOrderMap = new Map(
@@ -263,32 +258,23 @@ const accTaskList = computed(() => {
 
 // 当前日期状态
 type DateStatus = 'nostart' | 'ongoing' | 'overdue'
-function checkTodayAgainstDateRange(data: string): DateStatus {
-  const [start, end] = data.split('-').map((date) => date.split('.'))
-  // 解析给定的日期范围
-  const startMonth = parseInt(start[0], 10)
-  const startDay = parseInt(start[1], 10)
-  const endMonth = parseInt(end[0], 10)
-  const endDay = parseInt(end[1], 10)
+function checkTodayAgainstDateRange(
+  activityTime: string,
+  currentTime: number,
+): DateStatus {
+  const [startTime, endTime] = activityTime.split('-')
+  const startDate = dayjs(startTime)
+  const endDate = dayjs(endTime)
+  const currentDate = dayjs.unix(currentTime)
+  // 检查当前时间是否在活动时间段内
+  if (currentDate.isBefore(startDate)) {
+    return 'nostart'
+  }
 
-  // 获取服务器时间
-  const today = new Date(currentTime * 1000)
-  const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
-  const currentDay = today.getDate()
-  // 判断当前日期是否在范围内
-  if (
-    currentMonth < startMonth ||
-    (currentMonth === startMonth && currentDay < startDay)
-  ) {
-    return 'nostart' // 未到时间
+  if (currentDate.isAfter(endDate)) {
+    return 'overdue'
   }
-  if (
-    currentMonth > endMonth ||
-    (currentMonth === endMonth && currentDay > endDay)
-  ) {
-    return 'overdue' // 已过期
-  }
-  return 'ongoing' // 正在进行
+  return 'ongoing'
 }
 const dateStatus = ref<DateStatus>('nostart')
 
@@ -306,7 +292,6 @@ if (!isVisited) {
 onMounted(() => {
   try {
     getActivityData()
-    dateStatus.value = checkTodayAgainstDateRange('12.25-12.25')
   } catch (error) {
     console.error(error)
   }
@@ -374,6 +359,10 @@ function getActivityData(): void {
       }
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
+      dateStatus.value = checkTodayAgainstDateRange(
+        '2024.12.25 00:00:00 - 2024.12.25 23:59:59',
+        data.current_time,
+      )
       setRedDot()
     })
     .catch((error) => {
@@ -598,7 +587,7 @@ watchEffect(() => {
   position: absolute;
   top: -26px;
   z-index: 11;
-  width: 165px;
+  width: 208px;
   height: 42px;
   font-size: 30px;
   text-align: center;

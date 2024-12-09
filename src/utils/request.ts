@@ -2,7 +2,6 @@ import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
 import { ERROR_MESSAGES } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
-import { setErrorCustom } from './error'
 import dayjs from 'dayjs'
 import { closeToast, showLoadingToast } from 'vant'
 import { useEnvironment } from '@/composables/useEnvironment'
@@ -22,7 +21,7 @@ export function handlePostMessageToNative({
   content,
   handleRes,
 }: PostMsgParams): Promise<void> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     function waitForUniSDKJSBridge(callback: () => void): void {
       if (window.UniSDKJSBridge) {
         console.log('UniSDKJSBridge 直接可用')
@@ -38,7 +37,7 @@ export function handlePostMessageToNative({
         let pollCount = 0 // 轮询次数计数
         const startTime = new Date() // 记录轮询开始时间
         console.log(
-          '开始轮询检查 UniSDKJSBridge 是否挂载：',
+          '开始轮询检查 UniSDKJSBridge 是否挂载',
           startTime.toLocaleTimeString(),
         )
         const intervalId = setInterval(() => {
@@ -59,10 +58,6 @@ export function handlePostMessageToNative({
               },
             })
             resolve()
-          }
-          if (pollCount >= 20) {
-            clearInterval(intervalId)
-            reject(setErrorCustom('nativeError', 'UniSDKJSBridge mount fail!'))
           }
         }, 100)
       }
@@ -145,8 +140,8 @@ function fetchPlayerMissionData(
   {
     event,
     token,
-    channel,
-  }: { event?: EventName; token?: string; channel?: string },
+    appChannel,
+  }: { event?: EventName; token?: string; appChannel?: string },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
 ): Promise<void> {
@@ -159,7 +154,7 @@ function fetchPlayerMissionData(
         source_id: '',
         event,
         token,
-        channel,
+        app_channel: appChannel,
       },
       handleRes: (res) => {
         if (res.code === 200) {
@@ -211,11 +206,11 @@ function fetchPlayerMissionData(
 export function getPlayerMissionData({
   event,
   token,
-  channel,
+  appChannel,
 }: {
   event?: EventName
   token?: string
-  channel?: string
+  appChannel?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     const now = Date.now()
@@ -253,7 +248,7 @@ export function getPlayerMissionData({
       }
       // 存储请求时间
       Session.set('lastFetchTimeAllEvents', now.toString())
-      fetchPlayerMissionData({ event, channel }, resolve, reject).catch(
+      fetchPlayerMissionData({ event, appChannel }, resolve, reject).catch(
         (err) => {
           reject(err)
         },

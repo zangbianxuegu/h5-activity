@@ -54,6 +54,12 @@ export default defineConfig({
     assetsInlineLimit: 4096,
     sourcemap: false,
     emptyOutDir: true,
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
+    },
     rollupOptions: {
       input: {
         entry: resolve(__dirname, 'src/index.html'),
