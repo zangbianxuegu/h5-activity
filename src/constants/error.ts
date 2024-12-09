@@ -267,24 +267,53 @@ export const ERROR_MESSAGES: ErrorMessages = {
 
   review_text: {
     400: {
-      'bad request': '非法请求',
+      'bad request': '投稿失败',
+      'text invalid': '作品名称/作者名/作品介绍不符合要求',
+      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'description error_length': '作品名称/作者名/作品介绍不符合要求',
+      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'illegal author_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal design_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal description':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal combined_text':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
     },
   },
 
   upload_filepicker_result: {
     500: {
-      'internal server error': '服务器异常，请稍后重试',
+      'internal server error': '投稿失败',
     },
     409: {
-      'already exists': '作品信息已经存在',
+      'already exists': '作品信息已经存在，请刷新页面',
     },
     400: {
-      'bad request': '非法请求',
-      'repeat request': '请求频繁，请稍后重试',
+      'bad request': '投稿失败',
+      'repeat request': '点得太快了，请稍后再试',
+      'text invalid': '作品名称/作者名/作品介绍不符合要求',
+      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
+      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'description error_length': '作品名称/作者名/作品介绍不符合要求',
+      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
+      'illegal author_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal design_name':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal description':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'illegal combined_text':
+        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
     },
     401: {
-      'invalid user': '非法用户',
-      unauthorized: '禁止投稿',
+      unauthorized: '您已被禁止投稿，请联系客服了解',
     },
   },
 
@@ -297,57 +326,29 @@ export const ERROR_MESSAGES: ErrorMessages = {
   delete_player_design: {
     400: {
       'bad request': '非法请求',
-      'repeat request': '请求频繁，请稍后重试',
+      'repeat request': '点得太快了，请稍后重试',
     },
-    401: {
-      'invalid user': '非法用户',
-    },
-  },
-
-  update_design_file_url: {
     500: {
-      'internal server error': '服务器异常，请稍后重试',
-    },
-    401: {
-      'invalid user': '非法用户',
-    },
-    404: {
-      'not found': '作品不存在',
+      fail: '删除失败，请稍后重试',
     },
   },
 
   update_favorites: {
     500: {
-      'internal server error': '服务器异常，请稍后重试',
+      'internal server error': '服务器错误，请稍后重试',
     },
     400: {
       'bad request': '非法请求',
-      'repeat request': '请求频繁，请稍后重试',
-    },
-    401: {
-      'invalid user': '非法用户',
+      'repeat request': '点得太快了，请稍后重试',
     },
     403: {
       'count limit': '收藏数量超出限制',
     },
     404: {
-      'not found': '找不到对应作品',
+      'not found': '抱歉，该作品刚刚被作者删除了',
     },
     409: {
-      'already exists': '作品已收藏过',
-    },
-  },
-
-  review_share_design: {
-    400: {
-      'repeat request': '点得太快了，请稍后重试',
-      'bad request': '非法请求',
-    },
-    403: {
-      forbidden: '分享内容可能违规，请联系客服了解',
-    },
-    500: {
-      fail: '分享失败，请稍后重试',
+      'already exists': '该作品已被收藏过',
     },
   },
 }

@@ -20,7 +20,7 @@ export interface BaseDesignDetails {
  * @param {string} VERIFYING 审核中
  * @param {string} REFUSED 审核不通过
  */
-export enum DESIGN_REVIEW_STATUS {
+export enum DesignReviewStatus {
   PASSED = 'passed',
   VERIFYING = 'verifying',
   REFUSED = 'refused',
@@ -31,7 +31,7 @@ export enum DESIGN_REVIEW_STATUS {
  */
 export interface SelfDesignDetails extends BaseDesignDetails {
   design_id: string
-  review_status: DESIGN_REVIEW_STATUS
+  review_status: DesignReviewStatus
 }
 
 /**
@@ -44,15 +44,22 @@ export interface OtherDesignDetails extends BaseDesignDetails {
 /**
  * @description 作品详情组件的展示类型
  */
-export enum DESIGN_DETAILS_TYPE {
+export enum DesignDetailsType {
   SELF = 'self',
   OTHER = 'other',
 }
 
 /**
+ * @description 确认弹窗icon枚举
+ */
+export enum ConfirmIconType {
+  Report = 'report',
+}
+
+/**
  * @description 绘梦节事件名
  */
-export enum EVENT_DAY_OF_DESIGN_01 {
+export enum EventDayOfDesign01 {
   ALL = 'activitycenter_dayofdesign01',
   EXHIBIT = 'activitycenter_dayofdesign01_post_exhibit',
   STAGE0 = 'day_of_design_stage0',

@@ -401,7 +401,8 @@ export function getErrorMessage(
  * 保存前端图片至系统相册 [iOS & Android]
  * @function saveImgToDeviceAlbum
  * @param {string} url 在线图片的url
- * @returns {boolean} 上传是否成功的结果
+ * @param {string} timeoutErrorCount 移动端保存图片超时时间（PC不设置）
+ * @returns {boolean} 保存是否成功的结果
  */
 const { isPC } = useEnvironment()
 export const saveImgToDeviceAlbum = (

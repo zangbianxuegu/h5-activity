@@ -11,17 +11,14 @@
 </template>
 
 <script setup lang="ts">
-import {
-  NGSHARE_SHARE_CHANNEL,
-  NGSHARE_CONTENT_TYPE,
-} from '@/utils/ngShare/types'
+import { NgshareChannel, NgshareContentType } from '@/utils/ngShare/types'
 import { ngshareByH5 } from '@/utils/ngShare/index'
 // import { useBaseStore } from '@/stores/base'
 
 interface ShareOption {
   name: string
   icon: string
-  shareChannel: NGSHARE_SHARE_CHANNEL
+  shareChannel: NgshareChannel
 }
 
 const showShare = ref(false)
@@ -29,83 +26,63 @@ const options: ShareOption[] = [
   {
     name: '微信朋友圈',
     icon: 'wechat',
-    shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
+    shareChannel: NgshareChannel.WECHAT_FRIEND_CIRCLE,
   },
   {
     name: '微信',
     icon: 'wechat',
-    shareChannel: NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
+    shareChannel: NgshareChannel.WECHAT_FRIEND,
   },
   {
     name: '抖音',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.DOU_YIN,
+    shareChannel: NgshareChannel.DOU_YIN,
   },
   {
     name: '哔哩哔哩',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.BILIBILI,
+    shareChannel: NgshareChannel.BILIBILI,
   },
   {
     name: '微博',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.WEI_BO,
+    shareChannel: NgshareChannel.WEI_BO,
   },
   {
     name: '网易大神圈子',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+    shareChannel: NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
   },
   {
     name: '小红书',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
+    shareChannel: NgshareChannel.XIAO_HONG_SHU,
   },
   {
     name: '网易大神好友',
     icon: 'weibo',
-    shareChannel: NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+    shareChannel: NgshareChannel.DA_SHEN_FRIEND,
   },
-  // {
-  //   name: 'QQ',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ,
-  // },
-  // {
-  //   name: 'QQ空间',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.QQ_ZONE,
-  // },
-  // {
-  //   name: '快手',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
-  // },
-  // {
-  //   name: 'facebook',
-  //   icon: 'weibo',
-  //   shareChannel: NGSHARE_SHARE_CHANNEL.FACEBOOK,
-  // },
 ]
 
 // const baseStore = useBaseStore()
 
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
   const shareLinkList = [
-    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
-    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
-    NGSHARE_SHARE_CHANNEL.WEI_BO,
-    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
-    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+    NgshareChannel.WECHAT_FRIEND_CIRCLE,
+    NgshareChannel.WECHAT_FRIEND,
+    NgshareChannel.WEI_BO,
+    NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
+    NgshareChannel.DA_SHEN_FRIEND,
   ]
   const shareImgList = [
-    NGSHARE_SHARE_CHANNEL.BILIBILI,
-    NGSHARE_SHARE_CHANNEL.DOU_YIN,
-    NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
+    NgshareChannel.BILIBILI,
+    NgshareChannel.DOU_YIN,
+    NgshareChannel.XIAO_HONG_SHU,
   ]
   const contentType = shareLinkList.includes(option.shareChannel)
-    ? NGSHARE_CONTENT_TYPE.LINK
-    : NGSHARE_CONTENT_TYPE.IMAGE
+    ? NgshareContentType.LINK
+    : NgshareContentType.IMAGE
   let shareConfig = {}
   if (shareLinkList.includes(option.shareChannel)) {
     shareConfig = {

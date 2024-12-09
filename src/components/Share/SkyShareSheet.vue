@@ -32,7 +32,7 @@ import iconBilibili from '@/assets/images/common/share/icon-share-bilibili.png'
 import iconGodlikemoment from '@/assets/images/common/share/icon-share-godlikemoment.png'
 import iconXhs from '@/assets/images/common/share/icon-share-xhs.png'
 import iconDouyin from '@/assets/images/common/share/icon-share-douyin.png'
-import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
+import { NgshareChannel } from '@/utils/ngShare/types'
 import type { ShareFormatConfig } from '@/utils/ngShare/share'
 
 /**
@@ -42,8 +42,8 @@ import type { ShareFormatConfig } from '@/utils/ngShare/share'
  */
 interface ShareSheetOption {
   name: string
-  icon: string | NGSHARE_SHARE_CHANNEL
-  shareChannel: NGSHARE_SHARE_CHANNEL
+  icon: string | NgshareChannel
+  shareChannel: NgshareChannel
 }
 
 interface SkyShareSheetProps {
@@ -54,33 +54,33 @@ interface SkyShareSheetProps {
   desc?: string
   url?: string
   image?: string
-  channel?: NGSHARE_SHARE_CHANNEL
+  channel?: NgshareChannel
   onShareSuccess?: () => void
   onShareFail?: () => void
 }
 
-const defaultIcon: Record<NGSHARE_SHARE_CHANNEL, string> = {
-  [NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND]: iconWechat,
-  [NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE]: iconWechatmoment,
-  [NGSHARE_SHARE_CHANNEL.DOU_YIN]: iconDouyin,
-  [NGSHARE_SHARE_CHANNEL.WEI_BO]: iconWeibo,
-  [NGSHARE_SHARE_CHANNEL.BILIBILI]: iconBilibili,
-  [NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE]: iconGodlikemoment,
-  [NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU]: iconXhs,
-  [NGSHARE_SHARE_CHANNEL.QQ]: '',
-  [NGSHARE_SHARE_CHANNEL.QQ_ZONE]: '',
-  [NGSHARE_SHARE_CHANNEL.KUAI_SHOU]: '',
-  [NGSHARE_SHARE_CHANNEL.FACEBOOK]: '',
-  [NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND]: '',
-  [NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND]: '',
-  [NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND_CIRCLE]: '',
+const defaultIcon: Record<NgshareChannel, string> = {
+  [NgshareChannel.WECHAT_FRIEND]: iconWechat,
+  [NgshareChannel.WECHAT_FRIEND_CIRCLE]: iconWechatmoment,
+  [NgshareChannel.DOU_YIN]: iconDouyin,
+  [NgshareChannel.WEI_BO]: iconWeibo,
+  [NgshareChannel.BILIBILI]: iconBilibili,
+  [NgshareChannel.DA_SHEN_FRIEND_CIRCLE]: iconGodlikemoment,
+  [NgshareChannel.XIAO_HONG_SHU]: iconXhs,
+  [NgshareChannel.QQ]: '',
+  [NgshareChannel.QQ_ZONE]: '',
+  [NgshareChannel.KUAI_SHOU]: '',
+  [NgshareChannel.FACEBOOK]: '',
+  [NgshareChannel.DA_SHEN_FRIEND]: '',
+  [NgshareChannel.YI_XIN_FRIEND]: '',
+  [NgshareChannel.YI_XIN_FRIEND_CIRCLE]: '',
 }
 
 const props = withDefaults(defineProps<SkyShareSheetProps>(), {
   show: false,
 })
 
-const getIconImg = (icon: NGSHARE_SHARE_CHANNEL): string => {
+const getIconImg = (icon: NgshareChannel): string => {
   return defaultIcon[icon]
 }
 
@@ -90,7 +90,7 @@ const btnList = computed(() => {
       ...item,
       iconImg:
         typeof Number(item.icon) === 'number'
-          ? getIconImg(item.icon as NGSHARE_SHARE_CHANNEL)
+          ? getIconImg(item.icon as NgshareChannel)
           : item.icon,
     }
   })
