@@ -95,7 +95,7 @@ const isLoading = ref(false)
 // 基本信息
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
-const currentChannel = computed(() => baseStore.baseInfo.channel)
+const currentAppChannel = computed(() => baseStore.baseInfo.appChannel)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -340,7 +340,7 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  getPlayerMissionData({ channel: currentChannel.value })
+  getPlayerMissionData({ appChannel: currentAppChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
