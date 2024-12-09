@@ -286,9 +286,19 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  get_design_id: {
+    500: {
+      fail: '投稿失败',
+    },
+    400: {
+      'bad request': '投稿失败',
+      'repeat request': '点得太快了，请稍后再试',
+    },
+  },
+
   upload_filepicker_result: {
     500: {
-      'internal server error': '投稿失败',
+      fail: '投稿失败',
     },
     409: {
       'already exists': '作品信息已经存在，请刷新页面',

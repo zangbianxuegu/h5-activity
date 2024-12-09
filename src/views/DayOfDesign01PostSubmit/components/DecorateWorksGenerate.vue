@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="ps_ignore-container">
+    <div ref="containerRef" class="ps_ignore-container">
       <img :src="bgDecorateImg" alt="" />
       <div class="left relative">
         <img id="img-container" :src="worksData.worksImgSrc" alt="" srcset="" />
