@@ -318,7 +318,7 @@ let minFavoriteTime: undefined | number
 let minIdOffset: null | string = null
 // 为我推荐倒计时
 const countdown = ref(0)
-let timer: NodeJS.Timeout | undefined
+let countdownInterval: NodeJS.Timeout | undefined
 const isCoolDownActive = computed(() => countdown.value > 0)
 // 详情显示
 const isDetailVisible = ref(false)
@@ -382,8 +382,8 @@ onMounted(async () => {
 })
 
 onBeforeUnmount(() => {
-  if (timer) {
-    clearInterval(timer)
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
   }
 })
 
@@ -536,6 +536,8 @@ async function handleCachedSearch(): Promise<void> {
 async function getRecommendByPage(page: number): Promise<DesignItem[]> {
   const startIndex = (page - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE
+  // 当获取第 1 页数据时进行请求接口
+  // 获取 2、3 页数据时为读取缓存数据
   if (recommendPage === 1) {
     const now = Date.now()
     const lastFetchTime =
@@ -598,16 +600,24 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
 async function handleRecommend(): Promise<void> {
   type.value = PageType.Recommend
   recommendPage++
-  // 不足一页或推荐页数(1、2、3)大于 3，进行重置
+  // 需要重新请求数据/重置页数和缓存数据：
+  // - 缓存数据不足一页数量
+  // - 推荐页数大于 3，（只缓存 3 页数据）
   if (cachedRecommend.value.length < ITEMS_PER_PAGE || recommendPage > 3) {
     recommendPage = 1
-    activityStore.updateRecommendData([])
+    // 距离上一次请求超过 3s 才清空数据，例如连续 2 次刷新页面
+    const now = Date.now()
+    const lastFetchTime =
+      parseInt(Session.get('lastFetchTime-dayofdesign01-recommend')) || 0
+    if (now - lastFetchTime > 3000) {
+      activityStore.updateRecommendData([])
+    }
   }
   countdown.value = 3
-  timer = setInterval(() => {
+  countdownInterval = setInterval(() => {
     countdown.value -= 1
     if (countdown.value <= 0) {
-      clearInterval(timer)
+      clearInterval(countdownInterval)
     }
   }, 1000)
   list.value = await getRecommendByPage(recommendPage)
