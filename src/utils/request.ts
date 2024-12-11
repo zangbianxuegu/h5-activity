@@ -1,4 +1,9 @@
-import type { PostMsgParams, Response, ServeResponse, EventName } from '@/types'
+import type {
+  PostMsgToNativeParams,
+  Response,
+  ServeResponse,
+  EventName,
+} from '@/types'
 import { ERROR_MESSAGES } from '@/constants'
 import throttle from 'lodash.throttle'
 import { Session } from '@/utils/storage'
@@ -20,7 +25,7 @@ export function handlePostMessageToNative({
   resource,
   content,
   handleRes,
-}: PostMsgParams): Promise<void> {
+}: PostMsgToNativeParams): Promise<void> {
   return new Promise((resolve) => {
     function waitForUniSDKJSBridge(callback: () => void): void {
       if (window.UniSDKJSBridge) {

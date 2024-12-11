@@ -6,7 +6,7 @@
 
 <script setup>
 import { showToast } from 'vant'
-import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
+import { getDataForIframe } from '@/utils/iframe'
 const route = useRoute()
 const url = computed(() => route.meta.externalUrl)
 
@@ -16,46 +16,23 @@ window.addEventListener('message', (event) => {
   }
   if (event.data) {
     console.log('接收 postMessage event.data: ', event.data)
-    const key = event.data.key
-    switch (key) {
-      case 'getPlayerMissionData':
-        getPlayerMissionData({ event: event.data.params.event })
-          .then((res) => {
-            event.source.postMessage(
-              {
-                key,
-                res,
-              },
-              event.origin,
-            )
-          })
-          .catch((error) => {
-            showToast(error.message)
-          })
-        break
-      case 'claimMissionReward':
-        claimMissionReward({
-          event: event.data.params.event,
-          task: event.data.params.task,
-          rewardId: event.data.params.rewardId,
-        })
-          .then((res) => {
-            event.source.postMessage(
-              {
-                key,
-                res,
-              },
-              event.origin,
-            )
-          })
-          .catch((error) => {
-            showToast(error.message)
-          })
-        break
-
-      default:
-        break
-    }
+    // 示例：
+    // event.data = {
+    //   type: 'protocol',
+    //   resource: '/internal/jingling/get_player_mission_data',
+    //   content: {
+    //     source_token: '',
+    //     source_id: '',
+    //     event: 'activitycenter_double_eleven_2024_2',
+    //   },
+    // }
+    getDataForIframe(event.data)
+      .then((res) => {
+        event.source.postMessage(res, event.origin)
+      })
+      .catch((error) => {
+        showToast(error.message)
+      })
   }
 })
 </script>
