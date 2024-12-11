@@ -137,8 +137,15 @@
                       <div
                         class="pointer-events-none flex h-full w-full flex-col justify-center bg-gradient-to-b from-transparent to-[#feffff]"
                       >
-                        <h3 class="work-info-author">
-                          {{ item.author_name }}
+                        <h3
+                          class="work-info-author flex justify-center bg-no-repeat"
+                        >
+                          <div>
+                            <span
+                              class="work-info-icon bg-contain bg-no-repeat"
+                            ></span>
+                            {{ item.author_name }}
+                          </div>
                         </h3>
                         <p class="work-info-title">
                           {{ item.design_name }}
@@ -1001,6 +1008,15 @@ $font-family-bold: 'Source Han Sans CN Medium';
     height: 40px;
     line-height: 40px;
     font-size: 28px;
+  }
+
+  &-icon {
+    padding-left: 24px;
+    width: 19px;
+    height: 40px;
+    background-position: 0 4px;
+    background-size: 19px 24px;
+    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/user.png');
   }
 
   &-title {
