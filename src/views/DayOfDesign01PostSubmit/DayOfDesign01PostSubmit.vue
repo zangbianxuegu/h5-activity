@@ -185,7 +185,13 @@
         <!-- 生成拼装图 -->
         <decorate-works-generate
           ref="decorateWorksGenerateRef"
-          :worksData="worksData"
+          :worksData="{
+            id: designIdBeforeSubmit,
+            author: worksData.author,
+            worksName: worksData.worksName,
+            worksIntroduce: worksData.worksIntroduce,
+            worksImgSrc: worksData.worksImgSrc,
+          }"
         ></decorate-works-generate>
 
         <!-- 我的作品弹窗 -->
@@ -227,6 +233,7 @@ import {
 import {
   deleteDesignDetails,
   getDesignDetails,
+  getDesignId,
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
 import { Session } from '@/utils/storage'
@@ -576,6 +583,7 @@ const currentWorksPureId = computed(() => {
   return worksData.value.id.slice(1)
 })
 
+const designIdBeforeSubmit = ref('')
 const confirmSubmitWork = async (): Promise<void> => {
   let apiTimeout = true
 
@@ -600,6 +608,16 @@ const confirmSubmitWork = async (): Promise<void> => {
     },
   })
 
+  // 为分享图添加id
+  designIdBeforeSubmit.value = await getDesignId(
+    filePickerConfig.value.policyName,
+  )
+  if (!designIdBeforeSubmit.value) {
+    stopSubmit()
+    showToast('上传异常，请刷新后重试')
+    return
+  }
+  await nextTick()
   await generateDecorateWorksImg()
   try {
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {

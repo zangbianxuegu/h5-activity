@@ -385,29 +385,29 @@ export const reviewText = (
 }
 
 /**
- * 请求审核组合图
- * @function reviewShareDesign 修改组合图审核状态
- * @param {string} designId 作品id
- * @param {string} policyName 传保存原图filePicker策略名
+ * @description 生成分享图前，获取作品id
+ * @function getDesignId
+ * @param {string} policyName 策略名
+ * @returns {string} design_id
  */
-export const reviewShareDesign = (
-  designId: string,
-  policyName: string,
-): Promise<boolean> => {
+export const getDesignId = (policyName: string): Promise<string> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
-      resource: '/account/web/review_share_design',
+      resource: '/account/web/get_design_id',
       content: {
-        design_id: designId,
         policy_name: policyName,
       },
-      handleRes: (res: Response) => {
-        const { code, msg } = res
+      handleRes: (res) => {
+        const {
+          code,
+          msg,
+          data,
+        }: { code: 200 | 400; msg: string; data: { design_id: string } } = res
         if (code === 200) {
-          resolve(true)
+          resolve(data.design_id)
         } else {
-          reject(new Error(getErrorMessage('review_share_design', code, msg)))
+          reject(new Error(getErrorMessage('get_design_id', code, msg)))
         }
       },
     })

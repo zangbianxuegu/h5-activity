@@ -109,11 +109,7 @@ import {
   DesignDetailsType,
   EventDayOfDesign01,
 } from '@/types/activity/dayofdesign01'
-import {
-  deleteDesignDetails,
-  reviewShareDesign,
-  updateFavorites,
-} from '@/apis/dayOfDesign01'
+import { deleteDesignDetails, updateFavorites } from '@/apis/dayOfDesign01'
 import { NgshareChannel } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
@@ -124,7 +120,6 @@ import downloadBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-su
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { webViewStatistics } from '@/apis/base'
 import { useClipboard } from '@vueuse/core'
-import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
 
 /**
  * @param type self:自己作品详情，other:他人作品详情
@@ -213,6 +208,7 @@ const environment = useEnvironment()
 const isPC = computed(() => environment.isPC)
 
 const isShowShareBtn = ref(true)
+let isCanShareImg = true
 
 watch(
   () => props.worksData.worksDecorateImgSrc,
@@ -228,15 +224,7 @@ watch(
       }
       // 未通过时，请求审核接口更新审核状态
       img.onerror = async () => {
-        isShowShareBtn.value = false
-        const { id } = props.worksData
-        reviewShareDesign(id, FILE_PICKER_POLICY_NAME)
-          .then(() => {
-            isShowShareBtn.value = true
-          })
-          .catch(() => {
-            isShowShareBtn.value = false
-          })
+        isCanShareImg = false
       }
     }
   },
@@ -278,7 +266,7 @@ const onClickHandleBarShare = (): void => {
   shareData.value.show = true
   showShare(
     { targetElByHover: '#WorksDetailModalShareBtn' },
-    props.worksData.worksDecorateImgSrc
+    isCanShareImg
       ? []
       : [
           NgshareChannel.WECHAT_FRIEND,
