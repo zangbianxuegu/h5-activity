@@ -1359,13 +1359,10 @@
   "src/assets/images/cloud-music-2024/task-icon.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/star-white.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/title.png": 1731733115473.4358,
-  "src/assets/images/netease-werewolf/character-pass.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-can.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-redeemed.png": 1731921406976.67,
-  "src/assets/images/netease-werewolf/character-unpass.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-wait.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/modal-reward-can.png": 1731921406976.67,
-  "src/assets/images/netease-werewolf/modal-bg.png": 1731921406977.6477,
   "src/assets/images/netease-werewolf/modal-reward-redeemed.png": 1731921406977.6477,
   "src/assets/images/netease-werewolf-join/acc-task1-redeemed.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/acc-task1-wait.png": 1732193371437.6487,
@@ -1588,5 +1585,10 @@
   "src/assets/images/common/rewards/outfit_hat_bluebow.png": 1732775291557.9648,
   "src/assets/images/invitation-code/left-line.png": 1733195987300.139,
   "src/assets/images/invitation-code/right-line.png": 1733195987316.265,
-  "src/assets/images/music-2024/title.png": 1733465797521.919
+  "src/assets/images/music-2024/title.png": 1733465797521.919,
+  "src/assets/images/netease-werewolf-join/logo.png": 1733887943531.3838,
+  "src/assets/images/netease-werewolf/character-unpass.png": 1733887943531.3838,
+  "src/assets/images/netease-werewolf/character-pass.png": 1733887943531.3838,
+  "src/assets/images/netease-werewolf/logo.png": 1733887943532.3596,
+  "src/assets/images/netease-werewolf/modal-bg.png": 1733887943532.3596
 }
