@@ -16,6 +16,7 @@
               class="help cursor-pointer bg-contain"
               @click="handleHelp"
             ></div>
+            <div class="logo"></div>
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
@@ -469,6 +470,16 @@ function handleHelp(): void {
   top: 52px;
   left: 990px;
   background-image: url('@/assets/images/netease-werewolf-join/help.png');
+}
+.logo {
+  position: absolute;
+  width: 472px;
+  height: 66px;
+  top: 22px;
+  right: 26px;
+  background-image: url('@/assets/images/netease-werewolf-join/logo.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .progress-container {
   width: 1360px;

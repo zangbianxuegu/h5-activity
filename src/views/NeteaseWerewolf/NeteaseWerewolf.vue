@@ -17,6 +17,7 @@
               ]"
               @click="handleHelp"
             ></div>
+            <div class="logo"></div>
           </div>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
@@ -867,7 +868,7 @@ const toClaimMissionReward = (task: Reward, index: number): void => {
   position: relative;
   left: 45px;
   top: 69px;
-  width: 1319px;
+  width: 1970px;
 }
 .help {
   position: absolute;
@@ -882,6 +883,16 @@ const toClaimMissionReward = (task: Reward, index: number): void => {
     background-image: url('@/assets/images/netease-werewolf/help-unpass.png');
   }
 }
+.logo {
+  position: absolute;
+  width: 472px;
+  height: 66px;
+  top: -46px;
+  right: 0;
+  background-image: url('@/assets/images/netease-werewolf/logo.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
 .task-list {
   position: absolute;
   left: 68px;
@@ -895,10 +906,10 @@ const toClaimMissionReward = (task: Reward, index: number): void => {
   background-position: center;
   background-size: contain;
   &.pass {
-    right: 40px;
+    right: 24px;
     top: 136px;
-    width: 536px;
-    height: 876px;
+    width: 561px;
+    height: 895px;
     background-image: url('@/assets/images/netease-werewolf/character-pass.png');
   }
   &.unpass {
