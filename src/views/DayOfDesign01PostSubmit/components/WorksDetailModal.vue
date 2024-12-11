@@ -374,8 +374,6 @@ const onClickCopyWorksId = async (): Promise<void> => {
 const onClickCloseModal = (): void => {
   emits('update:show', false)
 }
-
-onMounted(async () => {})
 </script>
 
 <style lang="scss" scoped>

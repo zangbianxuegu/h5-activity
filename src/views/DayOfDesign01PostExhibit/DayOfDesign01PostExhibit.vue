@@ -112,12 +112,13 @@
                   class="work-item relative cursor-pointer rounded bg-white shadow-md"
                   @click="handleItemClick(item)"
                 >
-                  <template v-if="item.design_id">
+                  <template v-if="item.design_id && !item.error">
                     <!-- 作品图片 -->
                     <img
                       :src="item.raw_url"
                       :alt="item.design_name"
                       class="w-full rounded"
+                      @error="handleImageError(item)"
                     />
                     <!-- 作品 ID -->
                     <div class="work-id absolute left-0 top-0">
@@ -793,6 +794,16 @@ function handleUpdateFavorites(isFavorite: boolean): void {
  */
 function handleHelp(): void {
   modalHelp.value?.open()
+}
+
+/**
+ * @function handleImageError
+ * @description 图片加载失败处理
+ * @param {DesignItem} item 列表项
+ * @returns {void}
+ */
+function handleImageError(item: DesignItem): void {
+  item.error = true
 }
 </script>
 

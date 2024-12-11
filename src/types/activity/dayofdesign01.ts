@@ -122,6 +122,7 @@ export interface FavoriteData extends DesignsData {
  * @param {string} raw_url 图片地址
  * @param {number} [favorite_time] 收藏时间，收藏列表才会有
  * @param {boolean} favorite 是否收藏
+ * @param {boolean} error 图片加载是否失败
  */
 export interface DesignItem {
   design_id: string
@@ -130,6 +131,7 @@ export interface DesignItem {
   raw_url: string
   favorite_time?: number
   favorite: boolean
+  error: boolean
 }
 
 /**

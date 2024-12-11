@@ -12,6 +12,7 @@ export const useActivityStore = defineStore(
         design_name: '',
         raw_url: '',
         favorite: false,
+        error: false,
       },
     ])
     // 更新推荐作品
