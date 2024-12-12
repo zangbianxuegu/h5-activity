@@ -296,6 +296,12 @@ export const ERROR_MESSAGES: ErrorMessages = {
     },
   },
 
+  report: {
+    400: {
+      'bad request': '非法请求',
+    },
+  },
+
   upload_filepicker_result: {
     500: {
       fail: '投稿失败',

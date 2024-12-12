@@ -212,6 +212,7 @@
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
+          @after-report="handleAfterReport"
         ></works-detail-modal>
       </div>
     </div>
@@ -345,6 +346,7 @@ interface Detail {
   worksImgSrc: string
   worksDecorateImgSrc: string
   isFavorite: boolean
+  isReported: boolean
 }
 // 详情
 const detailType = ref<DesignDetailsType>(DesignDetailsType.OTHER)
@@ -354,6 +356,7 @@ const detailData = ref<Detail>({
   worksName: '',
   worksIntroduce: '',
   isFavorite: false,
+  isReported: false,
   worksImgSrc: '',
   worksDecorateImgSrc: '',
 })
@@ -766,6 +769,7 @@ async function getDetail(params: DetailParams): Promise<void> {
     worksImgSrc: detail.raw_url,
     worksDecorateImgSrc: detail.share_url,
     isFavorite: detail.is_favorite,
+    isReported: detail.is_reported,
   }
   isDetailVisible.value = true
 }
@@ -785,6 +789,15 @@ function handleUpdateFavorites(isFavorite: boolean): void {
       }
     })
   }
+}
+
+/**
+ * @function handleAfterReport
+ * @description 举报作品后的回调
+ * @returns {void}
+ */
+function handleAfterReport(): void {
+  detailData.value.isReported = true
 }
 
 /**

@@ -413,3 +413,37 @@ export const getDesignId = (policyName: string): Promise<string> => {
     })
   })
 }
+
+/**
+ * @description 举报接口
+ * @function report
+ * @param {string} policyName 策略名
+ * @param {string} designId 作品id
+ * @returns {boolean} 举报结果
+ */
+export const report = (
+  policyName: string,
+  designId: string,
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    void handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/report',
+      content: {
+        policy_name: policyName,
+        design_id: designId,
+      },
+      handleRes: (res) => {
+        const {
+          code,
+          msg,
+        }: { code: 200 | 400; msg: string; data: { design_id: string } } = res
+        if (code === 200) {
+          resolve(true)
+        } else {
+          reject(new Error(getErrorMessage('report', code, msg)))
+        }
+      },
+    })
+  })
+}
