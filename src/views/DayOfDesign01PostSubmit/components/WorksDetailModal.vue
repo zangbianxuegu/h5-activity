@@ -203,22 +203,18 @@ watch(
   },
 )
 
-watch(
-  () => props.worksData.isFavorite,
-  (newVal, oldVal) => {
-    if (newVal !== oldVal) {
-      isFavorite.value = newVal
-    }
-  },
-)
+const isFavorite = ref(props.worksData.isFavorite)
+
+watchEffect(() => {
+  isFavorite.value = props.worksData.isFavorite
+})
+
 const emits = defineEmits([
   'update:show',
   'after-delete',
   'update-favorite',
   'after-report',
 ])
-
-const isFavorite = ref(props.worksData.isFavorite)
 
 const eventMap = new Map([
   [

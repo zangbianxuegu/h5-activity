@@ -23,7 +23,7 @@
               class="my-work absolute right-0 top-[60px]"
               @click="gotoRules"
             >
-              活动规则
+              活动详情
             </button>
           </header>
         </Transition>

@@ -761,6 +761,12 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
  */
 async function getDetail(params: DetailParams): Promise<void> {
   const detail = (await getDesignDetails(params)) as OtherDesignDetails
+  if (!detail.design_name) {
+    if (detailType.value === DesignDetailsType.SELF) {
+      showToast('你当前还没有作品')
+      return
+    }
+  }
   detailData.value = {
     id: curDetailId,
     author: detail.author_name,
@@ -781,14 +787,13 @@ async function getDetail(params: DetailParams): Promise<void> {
  * @returns {void}
  */
 function handleUpdateFavorites(isFavorite: boolean): void {
-  if (type.value !== PageType.Recommend) {
-    list.value = list.value.map((item) => {
-      return {
-        ...item,
-        favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
-      }
-    })
-  }
+  detailData.value.isFavorite = isFavorite
+  list.value = list.value.map((item) => {
+    return {
+      ...item,
+      favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
+    }
+  })
 }
 
 /**

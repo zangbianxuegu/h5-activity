@@ -74,13 +74,6 @@ export function handlePostMessageToNative({
       )
     }
 
-    console.log(
-      `请求类型: ${type}\n请求地址: ${resource}\n请求参数:`,
-      content,
-      '\n请求时间:',
-      dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    )
-
     // 轮询等待 UniSDKJSBridge 挂载成功
     waitForUniSDKJSBridge(() => {
       const data =
