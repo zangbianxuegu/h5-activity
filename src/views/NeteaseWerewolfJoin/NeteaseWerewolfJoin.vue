@@ -155,7 +155,7 @@ const createTaskItem = (
 
 // 光之子
 const PLAYER_TASK_LIST = [
-  createTaskItem(3, 'activitycenter_werewolf_player_m3', '成功指认冥龙'),
+  createTaskItem(3, 'activitycenter_werewolf_player_m3', '成功指认冥龙之子'),
   createTaskItem(1, 'activitycenter_werewolf_player_m1', '完成一场游戏'),
   createTaskItem(
     2,
@@ -177,7 +177,7 @@ const KRILL_TASK_LIST = [
 
 // 先知
 const SPIRIT_TASK_LIST = [
-  createTaskItem(3, 'activitycenter_werewolf_spirit_m3', '成功查验到冥龙'),
+  createTaskItem(3, 'activitycenter_werewolf_spirit_m3', '成功查验到冥龙之子'),
   createTaskItem(1, 'activitycenter_werewolf_spirit_m1', '完成一场游戏'),
   createTaskItem(
     2,
