@@ -207,8 +207,8 @@
         <!-- 作品详情弹框 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
-          :event="EventDayOfDesign01.EXHIBIT"
-          :type="DesignDetailsType.OTHER"
+          :event="EventDayOfDesign01.Exhibit"
+          :type="DesignDetailsType.Other"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
@@ -349,7 +349,7 @@ interface Detail {
   isReported: boolean
 }
 // 详情
-const detailType = ref<DesignDetailsType>(DesignDetailsType.OTHER)
+const detailType = ref<DesignDetailsType>(DesignDetailsType.Other)
 const detailData = ref<Detail>({
   id: '',
   author: '',
@@ -729,7 +729,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
   }
   // 列表中作品
   if (item) {
-    detailType.value = DesignDetailsType.OTHER
+    detailType.value = DesignDetailsType.Other
     if (!item.design_id) {
       return
     }
@@ -743,7 +743,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
       }
     }
   } else {
-    detailType.value = DesignDetailsType.SELF
+    detailType.value = DesignDetailsType.Self
   }
   try {
     await getDetail(params)

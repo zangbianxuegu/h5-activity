@@ -16,14 +16,14 @@ export interface BaseDesignDetails {
 
 /**
  * @description 作品审核状态
- * @param {string} PASSED 审核通过
- * @param {string} VERIFYING 审核中
- * @param {string} REFUSED 审核不通过
+ * @param {string} Passed 审核通过
+ * @param {string} Verifying 审核中
+ * @param {string} Refused 审核不通过
  */
 export enum DesignReviewStatus {
-  PASSED = 'passed',
-  VERIFYING = 'verifying',
-  REFUSED = 'refused',
+  Passed = 'passed',
+  Verifying = 'verifying',
+  Refused = 'refused',
 }
 
 /**
@@ -46,8 +46,8 @@ export interface OtherDesignDetails extends BaseDesignDetails {
  * @description 作品详情组件的展示类型
  */
 export enum DesignDetailsType {
-  SELF = 'self',
-  OTHER = 'other',
+  Self = 'self',
+  Other = 'other',
 }
 
 /**
@@ -61,13 +61,13 @@ export enum ConfirmIconType {
  * @description 绘梦节事件名
  */
 export enum EventDayOfDesign01 {
-  ALL = 'activitycenter_dayofdesign01',
-  EXHIBIT = 'activitycenter_dayofdesign01_post_exhibit',
-  STAGE0 = 'day_of_design_stage0',
-  STAGE1 = 'day_of_design_stage1',
-  STAGE2 = 'day_of_design_stage2',
-  STAGE3 = 'day_of_design_stage3',
-  STAGE4 = 'day_of_design_stage4',
+  All = 'activitycenter_dayofdesign01',
+  Exhibit = 'activitycenter_dayofdesign01_post_exhibit',
+  Stage0 = 'day_of_design_stage0',
+  Stage1 = 'day_of_design_stage1',
+  Stage2 = 'day_of_design_stage2',
+  Stage3 = 'day_of_design_stage3',
+  Stage4 = 'day_of_design_stage4',
 }
 
 /**

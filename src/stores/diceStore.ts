@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia'
-import { TOKEN_NAME_ENUM, type DiceStore } from '@/types'
+import { TokenNameEnum, type DiceStore } from '@/types'
 
 export const useActivityStore = defineStore(
   'activitycenter_dice_store', // 须与活动事件名一致
   () => {
     // 活动数据
     const activityData = ref<DiceStore>({
-      token_info: { [TOKEN_NAME_ENUM.DICE_STORE]: 0 },
+      token_info: { [TokenNameEnum.DiceStore]: 0 },
       sprite_exchange_store: {
         store_list: [
           { remaining_amount: 3, price: 60, id: 0 },

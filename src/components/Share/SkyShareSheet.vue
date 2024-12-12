@@ -60,20 +60,20 @@ interface SkyShareSheetProps {
 }
 
 const defaultIcon: Record<NgshareChannel, string> = {
-  [NgshareChannel.WECHAT_FRIEND]: iconWechat,
-  [NgshareChannel.WECHAT_FRIEND_CIRCLE]: iconWechatmoment,
-  [NgshareChannel.DOU_YIN]: iconDouyin,
-  [NgshareChannel.WEI_BO]: iconWeibo,
-  [NgshareChannel.BILIBILI]: iconBilibili,
-  [NgshareChannel.DA_SHEN_FRIEND_CIRCLE]: iconGodlikemoment,
-  [NgshareChannel.XIAO_HONG_SHU]: iconXhs,
+  [NgshareChannel.WechatFriend]: iconWechat,
+  [NgshareChannel.WechatFriendCircle]: iconWechatmoment,
+  [NgshareChannel.DouYin]: iconDouyin,
+  [NgshareChannel.Weibo]: iconWeibo,
+  [NgshareChannel.Bilibili]: iconBilibili,
+  [NgshareChannel.DaShenFriendCircle]: iconGodlikemoment,
+  [NgshareChannel.XiaoHongShu]: iconXhs,
   [NgshareChannel.QQ]: '',
-  [NgshareChannel.QQ_ZONE]: '',
-  [NgshareChannel.KUAI_SHOU]: '',
-  [NgshareChannel.FACEBOOK]: '',
-  [NgshareChannel.DA_SHEN_FRIEND]: '',
-  [NgshareChannel.YI_XIN_FRIEND]: '',
-  [NgshareChannel.YI_XIN_FRIEND_CIRCLE]: '',
+  [NgshareChannel.QQZone]: '',
+  [NgshareChannel.KuaiShou]: '',
+  [NgshareChannel.Facebook]: '',
+  [NgshareChannel.DaShenFriend]: '',
+  [NgshareChannel.YiXinFriend]: '',
+  [NgshareChannel.YiXinFriendCircle]: '',
 }
 
 const props = withDefaults(defineProps<SkyShareSheetProps>(), {

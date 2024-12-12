@@ -197,8 +197,8 @@
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
-          :event="EventDayOfDesign01.ALL"
-          :type="DesignDetailsType.SELF"
+          :event="EventDayOfDesign01.All"
+          :type="DesignDetailsType.Self"
           :works-data="myWorksData"
           :file-picker-config="filePickerConfig"
           @after-delete="initPageData"
@@ -316,15 +316,15 @@ const isContributed = computed((): boolean => {
 })
 // 是否已审核通过
 const isCheckedSuccess = computed((): boolean => {
-  return worksData.value.checkStatus === DesignReviewStatus.PASSED
+  return worksData.value.checkStatus === DesignReviewStatus.Passed
 })
 // 是否审核失败
 const isCheckedFail = computed((): boolean => {
-  return worksData.value.checkStatus === DesignReviewStatus.REFUSED
+  return worksData.value.checkStatus === DesignReviewStatus.Refused
 })
 // 是否审核中
 const isChecking = computed((): boolean => {
-  return worksData.value.checkStatus === DesignReviewStatus.VERIFYING
+  return worksData.value.checkStatus === DesignReviewStatus.Verifying
 })
 
 // 作者名的字数统计
@@ -634,7 +634,7 @@ const confirmSubmitWork = async (): Promise<void> => {
         worksData.value.worksDecorateImg,
       )
       worksData.value.id = res?.design_id
-      worksData.value.checkStatus = DesignReviewStatus.VERIFYING
+      worksData.value.checkStatus = DesignReviewStatus.Verifying
       stopSubmit()
       showToast('作品投稿成功')
     } else {

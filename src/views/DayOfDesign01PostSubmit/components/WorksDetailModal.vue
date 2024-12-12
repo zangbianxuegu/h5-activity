@@ -222,7 +222,7 @@ const isFavorite = ref(props.worksData.isFavorite)
 
 const eventMap = new Map([
   [
-    EventDayOfDesign01.EXHIBIT,
+    EventDayOfDesign01.Exhibit,
     {
       statisticsModules: {
         download: 'day_of_design_stage0_download',
@@ -238,11 +238,11 @@ const likeBtnImg = computed(() => {
 })
 
 const isSelf = computed(() => {
-  return props.type === DesignDetailsType.SELF
+  return props.type === DesignDetailsType.Self
 })
 
 const isOther = computed(() => {
-  return props.type === DesignDetailsType.OTHER
+  return props.type === DesignDetailsType.Other
 })
 
 const worksHandleModal = ref({
@@ -322,10 +322,10 @@ const onClickHandleBarShare = (): void => {
     isCanShareImg
       ? []
       : [
-          NgshareChannel.WECHAT_FRIEND,
-          NgshareChannel.WECHAT_FRIEND_CIRCLE,
-          NgshareChannel.WEI_BO,
-          NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
+          NgshareChannel.WechatFriend,
+          NgshareChannel.WechatFriendCircle,
+          NgshareChannel.Weibo,
+          NgshareChannel.DaShenFriendCircle,
         ],
     {
       title: SHARE_INFO.title,
@@ -371,7 +371,7 @@ const onClickHandleBarDownload = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.download as string,
-      event: EventDayOfDesign01.ALL,
+      event: EventDayOfDesign01.All,
     })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
@@ -390,9 +390,9 @@ const handleLike = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.share as string,
-      event: EventDayOfDesign01.ALL,
+      event: EventDayOfDesign01.All,
     })
-    if (props.type === DesignDetailsType.OTHER) {
+    if (props.type === DesignDetailsType.Other) {
       await updateFavorites(
         props.worksData.id,
         !isFavorite.value,

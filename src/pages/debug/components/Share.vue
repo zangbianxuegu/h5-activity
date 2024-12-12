@@ -26,42 +26,42 @@ const options: ShareOption[] = [
   {
     name: '微信朋友圈',
     icon: 'wechat',
-    shareChannel: NgshareChannel.WECHAT_FRIEND_CIRCLE,
+    shareChannel: NgshareChannel.WechatFriendCircle,
   },
   {
     name: '微信',
     icon: 'wechat',
-    shareChannel: NgshareChannel.WECHAT_FRIEND,
+    shareChannel: NgshareChannel.WechatFriend,
   },
   {
     name: '抖音',
     icon: 'weibo',
-    shareChannel: NgshareChannel.DOU_YIN,
+    shareChannel: NgshareChannel.DouYin,
   },
   {
     name: '哔哩哔哩',
     icon: 'weibo',
-    shareChannel: NgshareChannel.BILIBILI,
+    shareChannel: NgshareChannel.Bilibili,
   },
   {
     name: '微博',
     icon: 'weibo',
-    shareChannel: NgshareChannel.WEI_BO,
+    shareChannel: NgshareChannel.Weibo,
   },
   {
     name: '网易大神圈子',
     icon: 'weibo',
-    shareChannel: NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
+    shareChannel: NgshareChannel.DaShenFriendCircle,
   },
   {
     name: '小红书',
     icon: 'weibo',
-    shareChannel: NgshareChannel.XIAO_HONG_SHU,
+    shareChannel: NgshareChannel.XiaoHongShu,
   },
   {
     name: '网易大神好友',
     icon: 'weibo',
-    shareChannel: NgshareChannel.DA_SHEN_FRIEND,
+    shareChannel: NgshareChannel.DaShenFriend,
   },
 ]
 
@@ -69,20 +69,20 @@ const options: ShareOption[] = [
 
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
   const shareLinkList = [
-    NgshareChannel.WECHAT_FRIEND_CIRCLE,
-    NgshareChannel.WECHAT_FRIEND,
-    NgshareChannel.WEI_BO,
-    NgshareChannel.DA_SHEN_FRIEND_CIRCLE,
-    NgshareChannel.DA_SHEN_FRIEND,
+    NgshareChannel.WechatFriendCircle,
+    NgshareChannel.WechatFriend,
+    NgshareChannel.Weibo,
+    NgshareChannel.DaShenFriendCircle,
+    NgshareChannel.DaShenFriend,
   ]
   const shareImgList = [
-    NgshareChannel.BILIBILI,
-    NgshareChannel.DOU_YIN,
-    NgshareChannel.XIAO_HONG_SHU,
+    NgshareChannel.Bilibili,
+    NgshareChannel.DouYin,
+    NgshareChannel.XiaoHongShu,
   ]
   const contentType = shareLinkList.includes(option.shareChannel)
-    ? NgshareContentType.LINK
-    : NgshareContentType.IMAGE
+    ? NgshareContentType.Link
+    : NgshareContentType.Image
   let shareConfig = {}
   if (shareLinkList.includes(option.shareChannel)) {
     shareConfig = {

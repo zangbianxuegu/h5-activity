@@ -81,7 +81,7 @@ export const ngshareByH5 = async (
   callback?: (respJSONString: string) => void,
 ): Promise<void> => {
   let contentTypeConfig: NgshareShareLinkConfig | NgshareShareImageConfig
-  if (contentType === NgshareContentType.LINK) {
+  if (contentType === NgshareContentType.Link) {
     const { text, title, u3dshareThumb, link, desc } = configForType
     contentTypeConfig = {
       text,
@@ -91,7 +91,7 @@ export const ngshareByH5 = async (
       u3dshareThumb, // 分享缩略图地址(安卓必传)
       shareThumb: u3dshareThumb, // 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
     }
-  } else if (contentType === NgshareContentType.IMAGE) {
+  } else if (contentType === NgshareContentType.Image) {
     const { text, title, image } = configForType
     contentTypeConfig = {
       text,
