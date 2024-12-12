@@ -39,7 +39,7 @@ const defaultDebugLinks = [
     link: 'https://sky.h5.163.com/game/index.html',
     isJumpDirectly: true,
   },
-  { linkName: 'cc dev', link: 'https://10.227.199.103:5173/' },
+  { linkName: 'cc dev', link: 'http://10.227.198.124:5173/' },
 ]
 
 export default defaultDebugLinks

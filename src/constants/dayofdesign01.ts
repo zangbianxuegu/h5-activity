@@ -11,3 +11,19 @@ export const groupNameAndCodeMap = new Map([
   ['Y', '遇'],
   ['M', '梦'],
 ])
+
+export const SHARE_INFO = {
+  title: '绘梦节标题',
+  text: '绘梦节副标题',
+  desc: '绘梦节描述',
+}
+
+export const getShareH5PageUrl = (): string => {
+  const href = window.location.href
+  // 正式环境
+  if (href.includes('https://sky.h5.163.com/game/index.html')) {
+    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5/dayofdesign01.html?'
+  }
+  // game_dev2
+  return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?'
+}

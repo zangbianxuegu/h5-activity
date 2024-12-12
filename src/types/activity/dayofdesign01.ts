@@ -39,6 +39,7 @@ export interface SelfDesignDetails extends BaseDesignDetails {
  */
 export interface OtherDesignDetails extends BaseDesignDetails {
   is_favorite: boolean
+  is_reported: boolean
 }
 
 /**
