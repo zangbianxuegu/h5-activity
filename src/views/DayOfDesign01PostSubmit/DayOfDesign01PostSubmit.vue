@@ -224,6 +224,7 @@ import {
 import { blobToUrl } from '@/utils/file'
 import {
   FILE_PICKER_POLICY_NAME,
+  FILE_PICKER_POLICY_NAME_SHARE_IMG,
   groupNameAndCodeMap,
 } from '@/constants/dayofdesign01'
 import {
@@ -520,7 +521,7 @@ const generateDecorateWorksImg = async (): Promise<void> => {
 const filePickerConfig = ref({
   token: '',
   policyName: FILE_PICKER_POLICY_NAME,
-  shareImgPolicyName: FILE_PICKER_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_POLICY_NAME_SHARE_IMG,
   filePickerUrl: '',
   currentUoloadFileUrl: '',
 })
