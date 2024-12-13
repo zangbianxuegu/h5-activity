@@ -50,12 +50,16 @@
                   <div :class="['task-item-bg', `${item.status}`]"></div>
                 </div>
                 <p
-                  class="leading-tight', mt-[46px] w-[300px] whitespace-pre-line text-wrap text-center text-[30px]"
-                  :class="{
-                    'text-white': item.status === 'wait',
-                    'text-[#ffeea9]': item.status === 'can',
-                    'text-[#bebebe]': item.status === 'redeemed',
-                  }"
+                  class="leading-tight',w-[300px] whitespace-pre-line text-wrap text-center text-[30px]"
+                  :class="[
+                    `${
+                      item.status === 'can'
+                        ? 'mt-[47px] text-[#ffeea9]'
+                        : item.status === 'redeemed'
+                          ? 'mt-[4px] text-[#7f98a9]'
+                          : 'mt-[47px] text-white'
+                    }`,
+                  ]"
                 >
                   {{ item.title }}
                 </p>
