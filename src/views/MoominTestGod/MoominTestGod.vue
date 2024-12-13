@@ -38,9 +38,9 @@ const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransitions()
 
 const pathProd =
-  'https://fn.ds.163.com/c/wxaurl/?appId=wx53eacbe0d8a7a95a&cv=dashen&pageId=PromoteTransPage&path=%2Fpages%2Fsem%2Findex&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
+  '/pages/sem/index?game=ma75&cv=dashen&pageId=PromoteTransPage&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
 const pathDev =
-  'https://fn.ds.163.com/c/wxaurl/?appId=wx53eacbe0d8a7a95a&cv=dashen&pageId=PromoteTransPage&path=%2Fpages%2Fsem%2Findex&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
+  '/pages/sem/index?game=ma75&cv=dashen&pageId=PromoteTransPage&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
 // 正式版：0，测试版：1，体验版：2
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev
