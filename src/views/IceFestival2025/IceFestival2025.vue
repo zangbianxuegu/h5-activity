@@ -341,7 +341,7 @@ function handleReward(
     rewardId,
   })
     .then(async (res) => {
-      curRewards.value = res.data.rewards
+      curRewards.value = res.data.rewards[0]
       if (taskId !== ACC_TASK_VALUE) {
         // 领奖动画
         await bubbleBurst(event, item)
