@@ -213,6 +213,7 @@ function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   let isDayOfDesignActive = false
+  let isMoominTestGod = false
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -228,6 +229,9 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
         }
         if (activityName.includes('dayofdesign01')) {
           isDayOfDesignActive = true
+        }
+        if (activityName.includes('moomin_test_god')) {
+          isMoominTestGod = true
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -258,6 +262,13 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   // 调整绘梦节活动排序
   if (isDayOfDesignActive) {
     res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
+  }
+  // 调整姆明谷身份测试活动排序
+  if (isMoominTestGod) {
+    const index = res.findIndex(
+      (event) => event.activity === 'activitycenter_moomin_test_god',
+    )
+    res.push(res.splice(index, 1)[0])
   }
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
