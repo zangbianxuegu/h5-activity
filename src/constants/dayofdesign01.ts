@@ -24,6 +24,6 @@ export const getShareH5PageUrl = (): string => {
   if (href.includes('https://sky.h5.163.com/game/index.html')) {
     return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5/dayofdesign01.html?'
   }
-  // game_dev2
+  // game_dev
   return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?'
 }

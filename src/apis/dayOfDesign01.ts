@@ -231,6 +231,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
   reviewObj: Record<string, any>,
   fileUrl: string,
   shareImgUrl: string,
+  testUUID?: string,
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     if (FilePickerUploadResultCode !== 200) {
@@ -246,6 +247,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
         file_url: fileUrl,
         share_url: shareImgUrl,
         result_string: '',
+        uuid: testUUID,
       },
       handleRes: (res) => {
         console.log('res', res)
@@ -278,6 +280,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
  * @param shareImgPolicyName 分享图策略名
  * @param reviewTextObj 检查文本的对象
  * @param imgBlob 上传的图片
+ * @param testUUID QA测试id（仅作测试用）
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadWorksToServer = async (
@@ -286,6 +289,7 @@ export const uploadWorksToServer = async (
   reviewTextObj: Record<string, any>,
   imgBlob: Blob,
   shareImgBlob: Blob,
+  testUUID?: string,
 ): Promise<Record<string, any> | undefined> => {
   try {
     const md5Result: string = await new Promise((resolve) => {
@@ -313,10 +317,14 @@ export const uploadWorksToServer = async (
     if (reviewTextResult) {
       // 获取filepicker token
       const { token: tokenImg, url: filePickerUrlImg } =
-        await getFilePickerToken(policyName, md5Result)
+        await getFilePickerToken(policyName, md5Result, testUUID)
       // 获取filepicker token
       const { token: tokenShareImg, url: filePickerUrlShareImg } =
-        await getFilePickerToken(shareImgPolicyName, md5ResultShareImg)
+        await getFilePickerToken(
+          shareImgPolicyName,
+          md5ResultShareImg,
+          testUUID,
+        )
       if (tokenImg && tokenShareImg) {
         // 上传稿件至filepicker
         const uploadImgResult = await uploadImgToFilePicker(
@@ -338,6 +346,7 @@ export const uploadWorksToServer = async (
               reviewTextObj,
               uploadImgResult?.url,
               uploadShareImgResult?.url,
+              testUUID,
             )
           if (uploadDataToServerResult) {
             return {
@@ -390,13 +399,17 @@ export const reviewText = (
  * @param {string} policyName 策略名
  * @returns {string} design_id
  */
-export const getDesignId = (policyName: string): Promise<string> => {
+export const getDesignId = (
+  policyName: string,
+  testUUID?: string,
+): Promise<string> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_design_id',
       content: {
         policy_name: policyName,
+        uuid: testUUID,
       },
       handleRes: (res) => {
         const {
