@@ -59,6 +59,9 @@ export function handlePostMessageToNative({
             })
             resolve()
           }
+          if (pollCount > 100) {
+            clearInterval(intervalId)
+          }
         }, 100)
       }
     }
@@ -73,13 +76,6 @@ export function handlePostMessageToNative({
         dayjs().format('YYYY-MM-DD HH:mm:ss'),
       )
     }
-
-    console.log(
-      `请求类型: ${type}\n请求地址: ${resource}\n请求参数:`,
-      content,
-      '\n请求时间:',
-      dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    )
 
     // 轮询等待 UniSDKJSBridge 挂载成功
     waitForUniSDKJSBridge(() => {

@@ -46,7 +46,6 @@ export default defineConfig({
   },
   server: {
     hmr: true,
-    https: false,
     port: 5173,
   },
   build: {

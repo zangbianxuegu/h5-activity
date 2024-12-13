@@ -536,6 +536,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/moomin-test-god',
+    name: 'MoominTestGod',
+    component: () => import('@/views/MoominTestGod'),
+    meta: {
+      title: '姆明谷的身份大揭秘',
+      module: 'activitycenter_moomin_test_god',
+    },
+  },
+  {
     path: '/dayofdesign01-post-main',
     name: 'DayOfDesign01PostMain',
     component: () => import('@/views/DayOfDesign01PostMain'),

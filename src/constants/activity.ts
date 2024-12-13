@@ -105,6 +105,7 @@ export const ACTIVITY_LIST = [
   'activitycenter_cloud_music_2024',
   'activitycenter_music_2024',
   'activitycenter_pc_celebration',
+  'activitycenter_moomin_test_god',
   'activitycenter_invitation_code',
   ...DAYOFDESIGN01_LIST,
 ]

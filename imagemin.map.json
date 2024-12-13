@@ -1619,10 +1619,9 @@
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/refresh.png": 1733712379444.8335,
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/rules-icon.png": 1733712379444.8335,
   "src/assets/images/dayofdesign01/dayofdesign01-post-main/bg.jpg": 1733712379444.8335,
-  "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-input.png": 1733712379445.6897,
   "src/assets/images/dayofdesign01/dayofdesign01-post-main/color-palette.png": 1733712379445.6897,
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-btn.png": 1733712379444.8335,
-  "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/sub-title.png": 1733712379445.8086,
+  "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/sub-title.png": 1733991947256.8982,
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/user.png": 1733712379445.8086,
   "src/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-content.png": 1733712379445.8086,
   "src/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-btn-works-detail-default-hover.png": 1733712379445.8086,
@@ -1665,5 +1664,8 @@
   "src/assets/images/dayofdesign01/dayofdesign01-post-submit/line-dot.png": 1733712379446.7837,
   "src/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-decorate-img.png": 1733712379447.7607,
   "src/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-bilibili.png": 1733712379445.8086,
-  "src/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-view-detail.png": 1733712379446.7837
+  "src/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-view-detail.png": 1733712379446.7837,
+  "src/assets/images/moomin-test-god/btn.png": 1733995088231.1025,
+  "src/assets/images/moomin-test-god/bg.jpg": 1733995088231.1025,
+  "src/assets/images/moomin-test-god/logo.png": 1733995088231.1025
 }
