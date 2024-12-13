@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="page flex h-screen">
-      <div class="page-main">
+      <div :class="['page-main', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
             <h1 class="title overflow-hidden bg-contain bg-no-repeat">
@@ -208,7 +208,7 @@
         <works-detail-modal
           v-model:show="isDetailVisible"
           :event="EventDayOfDesign01.Exhibit"
-          :type="DesignDetailsType.Other"
+          :type="detailType"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
@@ -246,6 +246,7 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
+import throttle from 'lodash.throttle'
 const ModalHelp = defineAsyncComponent(
   () => import('./components/ModalHelp.vue'),
 )
@@ -381,6 +382,7 @@ if (!isVisited) {
 
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
+  window.addEventListener('resize', handleResize)
   await handleRecommend()
   await openSharedDetail()
 })
@@ -390,6 +392,24 @@ onBeforeUnmount(() => {
     clearInterval(countdownInterval)
   }
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function handleResize
+ * @description 处理窗口大小变化
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
 
 /**
  * @function openSharedDetail
@@ -885,6 +905,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+
+    &.keyboard-show {
+      transform: translate(-50%, -50%);
+    }
   }
 }
 .title {
@@ -999,14 +1023,6 @@ $font-family-bold: 'Source Han Sans CN Medium';
   font-size: 34px;
   color: $font-color;
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
-  // &:hover {
-  //   border: 3px solid #809bab;
-  // }
-
-  &:active {
-    border: 0;
-    background-color: #d4fff8;
-  }
 }
 .nav-icon {
   width: 50px;
@@ -1056,7 +1072,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
     padding-left: 24px;
     width: 19px;
     height: 40px;
-    background-position: 0 4px;
+    background-position: 0 3px;
     background-size: 19px 24px;
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/user.png');
   }
