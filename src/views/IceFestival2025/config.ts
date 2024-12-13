@@ -59,7 +59,7 @@ export function createAccTaskList(): TaskItem[] {
   return [
     {
       id: 1,
-      taskId: 'activitycenter_ice_building_like',
+      taskId: ACC_TASK_VALUE,
       title: '1天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
@@ -69,7 +69,7 @@ export function createAccTaskList(): TaskItem[] {
     },
     {
       id: 2,
-      taskId: 'activitycenter_ice_building_like',
+      taskId: ACC_TASK_VALUE,
       title: '3天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
@@ -79,7 +79,7 @@ export function createAccTaskList(): TaskItem[] {
     },
     {
       id: 3,
-      taskId: 'activitycenter_ice_building_like',
+      taskId: ACC_TASK_VALUE,
       title: '5天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<

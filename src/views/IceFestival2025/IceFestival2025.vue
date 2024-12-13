@@ -523,10 +523,15 @@ const bubbleBurst = async (
       background-image: url('@/assets/images/icefestival2025/task#{$i}-redeemed.png');
     }
     &.can {
-      background-size: 240px 240px;
       background-image: url('@/assets/images/icefestival2025/task#{$i}-icon.png');
     }
   }
+}
+.task-icon1.can {
+  background-size: 85px 134px;
+}
+.task-icon2.can {
+  background-size: 76px 64px;
 }
 .acctask-container {
   position: absolute;
