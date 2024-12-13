@@ -214,7 +214,7 @@
 import { closeToast, showLoadingToast, showToast } from 'vant'
 import DecorateWorksGenerate from './components/DecorateWorksGenerate.vue'
 import WorksDetailModal from './components/WorksDetailModal.vue'
-import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
+import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 import UploadImg from './components/UploadImg.vue'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import {

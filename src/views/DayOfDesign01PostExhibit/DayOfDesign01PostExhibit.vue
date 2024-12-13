@@ -37,7 +37,7 @@
                   v-model="searchTerm"
                   type="text"
                   placeholder="输入作者名或作品编号"
-                  class="search-input rounded-full bg-transparent bg-contain bg-no-repeat"
+                  class="search-input absolute rounded-full"
                   @keyup.enter="handleSearch()"
                 />
                 <button
@@ -952,16 +952,19 @@ $font-family-bold: 'Source Han Sans CN Medium';
   }
 }
 .search {
-  width: 902px;
-  height: 82px;
+  width: 900px;
+  height: 80px;
 
   &-input {
+    left: 0;
+    top: 0;
     padding-left: 40px;
-    width: 902px;
-    height: 82px;
+    width: 900px;
+    height: 80px;
     font-size: 32px;
     color: #fff;
-    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-input.png');
+    background-color: #86b2b3;
+    box-shadow: inset 0px 0px 2px 0px rgba(87, 103, 125, 0.5);
 
     &::placeholder {
       color: #fff;
@@ -970,8 +973,8 @@ $font-family-bold: 'Source Han Sans CN Medium';
   }
 
   &-btn {
-    top: 3px;
-    right: 5px;
+    top: 2px;
+    right: 2px;
     width: 140px;
     height: 76px;
     background-color: #fff;

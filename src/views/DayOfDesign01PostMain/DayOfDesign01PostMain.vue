@@ -67,7 +67,7 @@
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import ModalHelp from './components/ModalHelp.vue'
+import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560

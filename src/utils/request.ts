@@ -59,6 +59,9 @@ export function handlePostMessageToNative({
             })
             resolve()
           }
+          if (pollCount > 100) {
+            clearInterval(intervalId)
+          }
         }, 100)
       }
     }
