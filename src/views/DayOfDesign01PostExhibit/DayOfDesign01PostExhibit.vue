@@ -762,7 +762,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
 async function getDetail(params: DetailParams): Promise<void> {
   const detail = (await getDesignDetails(params)) as OtherDesignDetails
   if (!detail.design_name) {
-    if (detailType.value === DesignDetailsType.SELF) {
+    if (detailType.value === DesignDetailsType.Self) {
       showToast('你当前还没有作品')
       return
     }
