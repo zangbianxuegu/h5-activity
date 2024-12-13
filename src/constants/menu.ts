@@ -465,6 +465,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '姆明谷的 身份大揭秘',
+    value: 'activitycenter_moomin_test_god',
+    routeName: 'MoominTestGod',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '共沐温暖 不期而遇',
     value: 'activitycenter_invitation_code',
     routeName: 'InvitationCode',
