@@ -1,7 +1,9 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="hmj-contribute flex h-screen">
+      <!-- 一键上传（测试） -->
       <div class="hmj-contribute-main">
+        <test-upload-auto></test-upload-auto>
         <Transition appear mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">绘梦节-我要投稿</div>
@@ -240,6 +242,8 @@ import {
 import { Session } from '@/utils/storage'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { useClipboard } from '@vueuse/core'
+
+import TestUploadAuto from './components/TestUploadAuto.vue'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
