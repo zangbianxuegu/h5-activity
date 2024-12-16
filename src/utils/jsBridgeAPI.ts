@@ -72,6 +72,7 @@ function parseResponse(respJSONString: string): ServeResponse {
 
 /**
  * JSBridge调用函数
+ * 最直接的JSBridge调用接口，封装了UniSDKJSBridge的检查，若UniSDKJSBridge可用，直接postMsgToNative，否则等待UniSDKJSBridge可用
  * @param msg
  */
 export function postMsgToNative(msg: any): void {
@@ -91,6 +92,7 @@ export function postMsgToNative(msg: any): void {
 
 /**
  * 协议发送函数
+ * web与game通信的接口，返回一个Promise对象；若请求成功，则会缓存此次请求的结果；取消回调，使用.then/.catch获取服务端返回
  */
 export function handlePostMessageToNative({
   type,
@@ -138,6 +140,7 @@ export function handlePostMessageToNative({
 
 /**
  * 有缓存能力的协议发送函数
+ * 使用getPostIdentifier生成协议请求的标识符，如果该标识在wait时间内（默认3500ms）有过请求，则返回缓存数据，否则正常请求
  */
 export function handlePostMessageToNativeCache(
   { type, resource, content }: PostMsgParams,

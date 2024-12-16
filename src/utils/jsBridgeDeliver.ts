@@ -5,6 +5,7 @@ import {
 } from './jsBridgeAPI'
 import { getPlayerMissionData, claimMissionReward } from './request'
 
+/** 父页面向子页面返回数据 */
 function postMessage2c(event: MessageEvent, message: any): void {
   const key = event.data.key.replace('c2s', 's2c')
   event.source?.postMessage(
@@ -18,6 +19,17 @@ function postMessage2c(event: MessageEvent, message: any): void {
   console.log(message)
 }
 
+/**
+ * 子页面向父页面post的数据格式为:
+ * {
+      key：string, 调用的接口
+      content: any, 传入的参数
+      [optional: string]: any, 可选参数，如handlePostMessageToNativeCache有wait参数
+    },
+ *
+ * @param event
+ * @returns
+ */
 function listener(event: MessageEvent): void {
   if (event.origin !== 'https://h5maker-backend-ma75.nie.netease.com') {
     return
