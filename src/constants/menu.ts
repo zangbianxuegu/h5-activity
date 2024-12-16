@@ -444,6 +444,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '创造！冰雪 大世界！',
+    value: 'activitycenter_icefestival2025',
+    routeName: 'Icefestival2025',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '曲意畅想 谱写乐章',
     value: 'activitycenter_music_2024',
     routeName: 'Music2024',
