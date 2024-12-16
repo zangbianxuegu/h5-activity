@@ -92,7 +92,6 @@
                   </div>
                   <!-- 下载 -->
                   <div
-                    v-if="isSelf"
                     @click.stop="onClickHandleBarDownload"
                     class="btn down cursor-pointer"
                   >

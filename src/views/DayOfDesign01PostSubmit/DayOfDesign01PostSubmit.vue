@@ -613,18 +613,18 @@ const confirmSubmitWork = async (): Promise<void> => {
     },
   })
 
-  // 为分享图添加id
-  designIdBeforeSubmit.value = await getDesignId(
-    filePickerConfig.value.policyName,
-  )
-  if (!designIdBeforeSubmit.value) {
-    stopSubmit()
-    showToast('上传异常，请刷新后重试')
-    return
-  }
-  await nextTick()
-  await generateDecorateWorksImg()
   try {
+    // 为分享图添加id
+    designIdBeforeSubmit.value = await getDesignId(
+      filePickerConfig.value.policyName,
+    )
+    if (!designIdBeforeSubmit.value) {
+      stopSubmit()
+      showToast('上传异常，请刷新后重试')
+      return
+    }
+    await nextTick()
+    await generateDecorateWorksImg()
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
         filePickerConfig.value.policyName,
