@@ -127,24 +127,26 @@
                   <span class="text-[#ffcb4d]">璀璨之星*2</span>
                 </li>
                 <li>
-                  <span class="text-[#ffcb4d]">累计1天</span>
-                  给他人的活动共享空间点赞，即可赢取
+                  <span class="text-[#ffcb4d]">累计1天</span
+                  >给他人的活动共享空间点赞，即可赢取
                   <span class="text-[#ffcb4d]">共享空间*2</span>
                 </li>
                 <li>
-                  <span class="text-[#ffcb4d]">累计3天</span>
-                  给他人的活动共享空间点赞，即可赢取
+                  <span class="text-[#ffcb4d]">累计3天</span
+                  >给他人的活动共享空间点赞，即可赢取
                   <span class="text-[#ffcb4d]">元气满满*2</span>
                 </li>
                 <li>
-                  <span class="text-[#ffcb4d]">累计5天</span>
-                  给他人的活动共享空间点赞，即可赢取
-                  <span class="text-[#ffcb4d]">彩虹尾迹*2</span>
+                  <span class="text-[#ffcb4d]">累计5天</span
+                  >给他人的活动共享空间点赞，即可赢取<span
+                    class="text-[#ffcb4d]"
+                    >彩虹尾迹*2</span
+                  >
                 </li>
                 <li>
-                  自己的活动共享空间作品
-                  <span class="text-[#ffcb4d]">获得任意一个点赞</span>，
-                  即可赢取
+                  自己的活动共享空间作品<span class="text-[#ffcb4d]"
+                    >获得任意一个点赞</span
+                  >， 即可赢取
                   <span class="text-[#ffcb4d]">爱心*1</span>
                 </li>
               </ul>
@@ -177,7 +179,7 @@ import {
 } from './config'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import { useTransitions } from './composables/useTransition'
-import { useActivityStore } from '@/stores/iceFestival2025'
+import { useActivityStore } from '@/stores/icefestival2025'
 import CanRewardBubbleAnimation from '@/components/CanRewardBubbleAnimation'
 import Bubble from '@/components/Bubble/Bubble.vue'
 const curRewards: Ref<Reward> = ref({

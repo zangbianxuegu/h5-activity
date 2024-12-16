@@ -1,3 +1,3 @@
-import IceFestival2025 from './IceFestival2025.vue'
+import Icefestival2025 from './Icefestival2025.vue'
 
-export default IceFestival2025
+export default Icefestival2025

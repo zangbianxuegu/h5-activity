@@ -474,8 +474,8 @@ export const routes: RouteRecordRaw[] = [
   },
   {
     path: '/icefestival2025',
-    name: 'IceFestival2025',
-    component: () => import('@/views/IceFestival2025'),
+    name: 'Icefestival2025',
+    component: () => import('@/views/Icefestival2025'),
     meta: {
       title: '创造！冰雪大世界！',
       module: 'activitycenter_icefestival2025',

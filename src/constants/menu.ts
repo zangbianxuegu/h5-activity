@@ -446,7 +446,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     label: '创造！冰雪 大世界！',
     value: 'activitycenter_icefestival2025',
-    routeName: 'IceFestival2025',
+    routeName: 'Icefestival2025',
     isNew: false,
     hasUnclaimedReward: false,
   },
