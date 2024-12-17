@@ -16,6 +16,7 @@
               class="help cursor-pointer bg-contain"
               @click="handleHelp"
             ></div>
+            <div class="logo"></div>
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
@@ -154,7 +155,7 @@ const createTaskItem = (
 
 // 光之子
 const PLAYER_TASK_LIST = [
-  createTaskItem(3, 'activitycenter_werewolf_player_m3', '成功指认冥龙'),
+  createTaskItem(3, 'activitycenter_werewolf_player_m3', '成功指认冥龙之子'),
   createTaskItem(1, 'activitycenter_werewolf_player_m1', '完成一场游戏'),
   createTaskItem(
     2,
@@ -176,7 +177,7 @@ const KRILL_TASK_LIST = [
 
 // 先知
 const SPIRIT_TASK_LIST = [
-  createTaskItem(3, 'activitycenter_werewolf_spirit_m3', '成功查验到冥龙'),
+  createTaskItem(3, 'activitycenter_werewolf_spirit_m3', '成功查验到冥龙之子'),
   createTaskItem(1, 'activitycenter_werewolf_spirit_m1', '完成一场游戏'),
   createTaskItem(
     2,
@@ -469,6 +470,16 @@ function handleHelp(): void {
   top: 52px;
   left: 990px;
   background-image: url('@/assets/images/netease-werewolf-join/help.png');
+}
+.logo {
+  position: absolute;
+  width: 472px;
+  height: 66px;
+  top: 22px;
+  right: 26px;
+  background-image: url('@/assets/images/netease-werewolf-join/logo.png');
+  background-repeat: no-repeat;
+  background-size: cover;
 }
 .progress-container {
   width: 1360px;

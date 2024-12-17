@@ -1359,13 +1359,10 @@
   "src/assets/images/cloud-music-2024/task-icon.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/star-white.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/title.png": 1731733115473.4358,
-  "src/assets/images/netease-werewolf/character-pass.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-can.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-redeemed.png": 1731921406976.67,
-  "src/assets/images/netease-werewolf/character-unpass.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-wait.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/modal-reward-can.png": 1731921406976.67,
-  "src/assets/images/netease-werewolf/modal-bg.png": 1731921406977.6477,
   "src/assets/images/netease-werewolf/modal-reward-redeemed.png": 1731921406977.6477,
   "src/assets/images/netease-werewolf-join/acc-task1-redeemed.png": 1732193371437.6487,
   "src/assets/images/netease-werewolf-join/acc-task1-wait.png": 1732193371437.6487,
@@ -1689,5 +1686,10 @@
   "src/assets/images/icefestival2025/task2-redeemed.png": 1734321773598.6328,
   "src/assets/images/icefestival2025/title.png": 1734321773599.608,
   "src/assets/images/icefestival2025/acc-task1-icon.png": 1734321773598.6328,
-  "src/assets/images/icefestival2025/acc-task1-redeemed.png": 1734321773598.6328
+  "src/assets/images/icefestival2025/acc-task1-redeemed.png": 1734321773598.6328,
+  "src/assets/images/netease-werewolf/character-pass.png": 1734404254167.0781,
+  "src/assets/images/netease-werewolf-join/logo.png": 1734404254167.0781,
+  "src/assets/images/netease-werewolf/logo.png": 1734404254167.0781,
+  "src/assets/images/netease-werewolf/character-unpass.png": 1734404254167.0781,
+  "src/assets/images/netease-werewolf/modal-bg.png": 1734404254168.0544
 }
