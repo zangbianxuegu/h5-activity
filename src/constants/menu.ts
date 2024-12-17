@@ -478,11 +478,4 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
-  {
-    label: 'iframe 外部链接2',
-    value: 'activitycenter_season101_start',
-    routeName: 'Season101Start',
-    isNew: false,
-    hasUnclaimedReward: false,
-  },
 ]

@@ -261,13 +261,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     isNew: false,
     hasUnclaimedReward: false,
   })
-  res.push({
-    activity: 'activitycenter_season101_start',
-    startTime: 0,
-    endTime: 0,
-    isNew: false,
-    hasUnclaimedReward: false,
-  })
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1

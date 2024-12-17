@@ -4,10 +4,20 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { startListener, stopListener } from '@/utils/jsBridgeDeliver'
+import { useEnvironment } from '@/composables/useEnvironment'
+
+const { isProd } = useEnvironment()
 const route = useRoute()
-const url = computed(() => route.meta.externalUrl)
+const externalUid = computed(() => route.meta.externalUid as string)
+const url = ref('')
+
+if (isProd.value) {
+  url.value = `https://sky.h5.163.com/page/${externalUid.value}.html`
+} else {
+  url.value = `https://h5maker-backend-ma75.nie.netease.com/page/dev/${externalUid.value}`
+}
 
 onMounted(() => {
   startListener()
