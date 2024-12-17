@@ -37,7 +37,7 @@
             <!-- 收藏图标 -->
             <img
               v-if="item.favorite"
-              class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
+              class="absolute right-[14px] top-[12px] h-[36px] w-[42px] bg-contain"
               src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-work.png"
               alt="已收藏"
             />

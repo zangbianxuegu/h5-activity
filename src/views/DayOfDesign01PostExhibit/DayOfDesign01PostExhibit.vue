@@ -1,6 +1,8 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page flex h-screen">
+    <div
+      class="page relative flex h-screen w-screen items-center justify-center bg-cover bg-center"
+    >
       <div :class="['page-main', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
@@ -805,24 +807,13 @@ $font-family-bold: 'Source Han Sans CN Medium';
   position: absolute;
 }
 .page {
-  position: relative;
-  width: 2100px;
+  padding-left: 460px;
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/bg-new.jpg');
 
   &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    width: 2040px;
-    height: 1140px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
-
-    &.keyboard-show {
-      transform: translate(-50%, -50%);
-    }
+    width: 2100px;
+    height: 1200px;
+    transform: scale(var(--scale-factor));
   }
 }
 .title {

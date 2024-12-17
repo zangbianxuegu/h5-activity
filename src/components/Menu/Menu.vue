@@ -1,36 +1,32 @@
 <template>
-  <div>
-    <div v-for="item in computedMenuData" :key="item.label">
-      <div
-        :class="[
-          'nav-item flex flex-row items-center text-center',
-          'hover:cursor-pointer',
-          {
-            'nav-item-main': isMainNavItem(item),
-            'nav-item--active': isMenuItemActive(item),
-            'nav-item-main--active':
-              isMenuItemActive(item) && isMainNavItem(item),
-            'nav-item--new': item.isNew && !item.hasUnclaimedReward,
-            'nav-item--reward': item.hasUnclaimedReward,
-          },
-        ]"
-        @click="handleNav(item)"
-      >
-        <div class="icon-container">
-          <img
-            class="nav-icon"
-            :class="getNavIconClass(item)"
-            :src="getNavImgSrc(item)"
-            alt="star"
-          />
-        </div>
-        <span
-          v-html="item.label.replace(' ', '<br/>')"
-          class="nav-text text-left"
-          :class="getNavTextClass(item)"
-        ></span>
-      </div>
+  <div
+    v-for="item in computedMenuData"
+    :key="item.label"
+    :class="[
+      'nav-item relative flex flex-row items-center bg-center bg-no-repeat text-center',
+      'hover:cursor-pointer',
+      `nav-item--${item.value}`,
+      {
+        'nav-item-main': isMainNavItem(item),
+        'nav-item--active': isMenuItemActive(item),
+        'nav-item-main--active': isMenuItemActive(item) && isMainNavItem(item),
+        'nav-item--new': item.isNew && !item.hasUnclaimedReward,
+        'nav-item--reward': item.hasUnclaimedReward,
+      },
+    ]"
+    @click="handleNav(item)"
+  >
+    <div
+      v-show="isMenuItemActive(item)"
+      class="active-star absolute bg-contain bg-no-repeat"
+    >
+      <span class="sr-only">active star</span>
     </div>
+    <span
+      v-html="item.label.replace(' ', '<br/>')"
+      class="nav-text text-center"
+      :class="getNavTextClass(item)"
+    ></span>
   </div>
 </template>
 
@@ -96,95 +92,6 @@ function handleNav(curItem: MenuItem): void {
   })
 }
 
-// 菜单导航 icon
-function getNavImgSrc(curItem: MenuItem): string {
-  const defaultIcon = new URL(
-    '../../assets/images/common/nav-icon.png',
-    import.meta.url,
-  ).href
-  const activitySanrio2024 = new URL(
-    '../../assets/images/common/nav-icon-sanrio.png',
-    import.meta.url,
-  ).href
-  const activitycenterPosterAnniversary2024 = new URL(
-    '../../assets/images/common/nav-icon-cake.png',
-    import.meta.url,
-  ).href
-  const activitycenterAnniversaryVisit2024 = new URL(
-    '../../assets/images/common/nav-icon-small-cake.png',
-    import.meta.url,
-  ).href
-  const activitycenterFriendship2024 = new URL(
-    '../../assets/images/common/nav-icon-sunflower.png',
-    import.meta.url,
-  ).href
-  const activitycenterSeason24 = new URL(
-    '../../assets/images/common/nav-icon-moomin.png',
-    import.meta.url,
-  ).href
-  const activitycenterDayOfDesign01 = new URL(
-    '../../assets/images/common/nav-icon-day-of-design01.png',
-    import.meta.url,
-  ).href
-  const activitycenterDayOfDesign01Active = new URL(
-    '../../assets/images/common/nav-icon-day-of-design01-active.png',
-    import.meta.url,
-  ).href
-  const activitycenterSeason25Reserve = new URL(
-    '../../assets/images/common/nav-icon-colordyeing.png',
-    import.meta.url,
-  ).href
-  const menuIconMap: Record<string, string> = {
-    activity_sanrio_2024: activitySanrio2024,
-    activitycenter_poster_anniversary_2024: activitycenterPosterAnniversary2024,
-    activitycenter_anniversary_visit_2024: activitycenterAnniversaryVisit2024,
-    activitycenter_friendship_2024: activitycenterFriendship2024,
-    activitycenter_season24: activitycenterSeason24,
-    activitycenter_dayofdesign01: activitycenterDayOfDesign01,
-    activitycenter_dayofdesign01_active: activitycenterDayOfDesign01Active,
-    activitycenter_season25_reserve: activitycenterSeason25Reserve,
-  }
-  let key = curItem.value
-  if (key.includes('friendship_2024')) {
-    key = 'activitycenter_friendship_2024'
-  }
-  if (key.includes('activitycenter_season24')) {
-    key = 'activitycenter_season24'
-  }
-  if (key.includes('activitycenter_dayofdesign01')) {
-    if (isMenuItemActive(curItem)) {
-      key = 'activitycenter_dayofdesign01_active'
-    } else {
-      key = 'activitycenter_dayofdesign01'
-    }
-  }
-  return menuIconMap[key] || defaultIcon
-}
-
-function getNavIconClass(curItem: MenuItem): string[] {
-  const navIconPrefix = 'nav-icon'
-  const menuIconMap: Record<string, string> = {
-    activity_sanrio_2024: `${navIconPrefix}-sanrio`,
-    activitycenter_poster_anniversary_2024: `${navIconPrefix}-poster-anniversary-2024`,
-    activitycenter_anniversary_visit_2024: `${navIconPrefix}-anniversary-visit-2024`,
-    activitycenter_friendship_2024: `${navIconPrefix}-friendship-2024`,
-    activitycenter_season24: `${navIconPrefix}-season24`,
-    activitycenter_dayofdesign01: `${navIconPrefix}-season24`,
-    activitycenter_season25_reserve: `${navIconPrefix}-season25-reserve`,
-  }
-  let key = curItem.value
-  if (key.includes('friendship_2024')) {
-    key = 'activitycenter_friendship_2024'
-  }
-  if (key.includes('activitycenter_season24')) {
-    key = 'activitycenter_season24'
-  }
-  if (key.includes('activitycenter_dayofdesign01')) {
-    key = 'activitycenter_dayofdesign01'
-  }
-  return menuIconMap[key] ? [menuIconMap[key]] : []
-}
-
 function getNavTextClass(curItem: MenuItem): string[] {
   const navTextPrefix = 'nav-text'
   const menuTextMap: Record<string, string> = {
@@ -198,28 +105,44 @@ function getNavTextClass(curItem: MenuItem): string[] {
 
 <style scoped>
 .nav-item {
-  position: relative;
-  width: 460px;
-  height: 200px;
-  /* font-size: 16px; px-to-viewport-ignore */
+  margin: 35px 0 35px 20px;
+  border: 8px solid transparent;
+  border-radius: 35px;
+  width: 323px;
+  height: 159px;
   font-size: 40px;
-  /* font-size: max(40px, 1rem); */
   color: rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 35px;
+    pointer-events: none;
+  }
 
   &--active {
-    color: #fff7b0;
+    color: #fffedb;
     font-weight: 500;
-    text-shadow: 0 0 6px;
-    background-image: url('@/assets/images/common/nav-bg.png');
-    background-size: cover;
-    background-repeat: no-repeat;
+    text-shadow:
+      0 0 8px rgba(255, 235, 125, 0.27),
+      0 0 4px rgba(255, 235, 125, 0.27);
+
+    &::before {
+      background: none;
+    }
   }
 
   &--new {
     &::after {
       position: absolute;
-      right: 60px;
-      top: 60px;
+      right: -30px;
+      top: -20px;
       display: block;
       content: '';
       width: 20px;
@@ -233,8 +156,8 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--reward {
     &::after {
       position: absolute;
-      right: 40px;
-      top: 40px;
+      right: -40px;
+      top: -30px;
       display: block;
       content: '';
       width: 42px;
@@ -243,14 +166,30 @@ function getNavTextClass(curItem: MenuItem): string[] {
       background-size: contain;
     }
   }
-
-  &-main {
-    color: #3b8395;
-
-    &--active {
-      color: #66e8ff;
-    }
+  /* 在此处添加不同活动的菜单背景图 */
+  /* 绘梦节-主页面 */
+  &--activitycenter_dayofdesign01_post_main {
+    background-size: 307px 143px;
+    background-position: center;
+    background-image: url('@/assets/images/common/menu/dayofdesign01-main.png');
   }
+  /* 绘梦节-活动会场 */
+  &--activitycenter_dayofdesign01_post_exhibit {
+    background-size: 307px 143px;
+    background-position: center;
+    background-image: url('@/assets/images/common/menu/dayofdesign01-exhibit.png');
+  }
+}
+.active-star {
+  left: -101px;
+  top: 2px;
+  width: 207px;
+  height: 138px;
+  background-image: url('@/assets/images/common/menu/active-star.png');
+}
+.nav-text {
+  margin-left: 110px;
+  width: 200px;
 }
 @keyframes pulse {
   0% {
@@ -264,61 +203,6 @@ function getNavTextClass(curItem: MenuItem): string[] {
   100% {
     opacity: 1;
     transform: scale(1);
-  }
-}
-.icon-container {
-  width: 150px;
-  height: 100%;
-  overflow: hidden;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-.nav-icon {
-  width: 49px;
-  height: 52px;
-  &-sanrio {
-    width: 94px;
-    height: 82px;
-  }
-  &-poster-anniversary-2024 {
-    width: 91px;
-    height: 70px;
-  }
-  &-anniversary-visit-2024 {
-    width: 84px;
-    height: 67px;
-  }
-  &-friendship-2024 {
-    width: 73px;
-    height: 89px;
-  }
-  &-season24 {
-    width: 74px;
-    height: 85px;
-  }
-  &-dayofdesign {
-    width: 60px;
-    height: 86px;
-  }
-  &-season25-reserve {
-    width: 84px;
-    height: 94px;
-  }
-}
-.nav-text {
-  width: 200px;
-
-  &-sanrio {
-    width: 300px;
-  }
-
-  &-tournament1 {
-    width: 240px;
-  }
-
-  &-halloweentreasure {
-    width: 260px;
   }
 }
 </style>

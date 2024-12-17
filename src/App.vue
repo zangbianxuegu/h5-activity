@@ -1,10 +1,10 @@
 <template>
-  <div class="page flex min-h-screen bg-cover bg-center bg-no-repeat">
+  <div class="page relative min-h-screen bg-cover bg-center bg-no-repeat">
     <van-overlay :show="isLoading" class="flex items-center justify-center">
       <van-loading />
     </van-overlay>
     <nav
-      class="nav flex h-screen w-[460px] shrink-0 flex-col justify-between py-4"
+      class="nav absolute left-0 top-0 z-10 flex h-screen shrink-0 flex-col justify-between py-4"
     >
       <div class="menu overflow-y-scroll">
         <Menu></Menu>
@@ -16,27 +16,9 @@
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
         >
-        <a
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html#/dayofdesign01-post-submit"
-          >sdk调试</a
-        >
-        <a
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          href="http://10.227.198.124:5175/#/dayofdesign01-post-submit"
-          >cc本地调试</a
-        >
-        <div class="nav-sprite flex">
-          <!-- <a
-            class="nav-sprite-text"
-            :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
-            >前往精灵>></a
-          > -->
-          <div class="nav-sprite-text" @click="handleToSprite">前往精灵>></div>
-        </div>
       </div>
     </nav>
-    <main class="flex items-center justify-center">
+    <main class="h-screen w-screen">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
           <component :is="Component" />
@@ -74,17 +56,11 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
-import type {
-  MenuItem,
-  Activity,
-  ActivityTime,
-  TokenParams,
-  UserInfo,
-} from '@/types'
+import type { MenuItem, Activity, ActivityTime, UserInfo } from '@/types'
 import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
 import { getPlayerMissionData } from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
-import { getUserInfo, getJinglingToken } from '@/apis/base'
+import { getUserInfo } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
@@ -92,10 +68,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGame, isProd, isGameDev2 } = useEnvironment()
-const jinglingUrl = isProd.value
-  ? 'https://gmsdk.gameyw.netease.com/sprite/index'
-  : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
+const { isLocal, isGameDev, isGame, isGameDev2 } = useEnvironment()
 
 const route = useRoute()
 const router = useRouter()
@@ -134,15 +107,6 @@ onMounted(async () => {
   }
 })
 
-let tokenParams: TokenParams = {
-  game_uid: '',
-  uid: '',
-  map: '',
-  return_buff: '',
-  os: '',
-  source: 'normal',
-}
-
 // 获取基本信息
 async function getBaseInfo(): Promise<void> {
   try {
@@ -155,29 +119,9 @@ async function getBaseInfo(): Promise<void> {
     updateBaseInfoItems({ appChannel })
     updateBaseInfoItems({ returnBuff })
     updateBaseInfoItems({ gameUid })
-    tokenParams = {
-      ...tokenParams,
-      game_uid: res.game_uid,
-      uid: res.uid,
-      map: res.map,
-      return_buff: res.return_buff,
-      os: res.os,
-    }
   } catch (error) {
     showToast((error as Error).message)
   }
-}
-
-// 前往精灵
-function handleToSprite(): void {
-  getJinglingToken(tokenParams)
-    .then((res) => {
-      const val = res.data.token
-      window.location.href = `${jinglingUrl}?token=${val}`
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
 }
 
 /**
@@ -441,24 +385,26 @@ function getAllEvents(): void {
   height: 100%;
   background-image: url('@/assets/images/common/bg.jpg');
 }
-.nav-sprite {
-  width: 443px;
-  height: 107px;
-  line-height: 107px;
-  background-image: url('@/assets/images/common/nav-sprite.png');
-  background-size: contain;
-  background-position: center;
-  font-size: 36px;
-  color: rgba(255, 255, 255, 0.6);
-
-  &-text {
-    padding-left: 140px;
-    width: 100%;
-    height: 100%;
-  }
+.nav {
+  width: 600px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
 }
 .nav-debug {
   font-size: 40px;
   color: rgba(255, 255, 255, 0.6);
+}
+.menu {
+  position: relative;
+  padding-left: 60px;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 60px;
+    width: 3px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+  }
 }
 </style>
