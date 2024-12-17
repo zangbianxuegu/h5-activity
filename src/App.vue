@@ -21,6 +21,11 @@
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html#/dayofdesign01-post-submit"
           >sdk调试</a
         >
+        <a
+          class="nav-debug mb-4 flex w-full justify-center py-2"
+          href="http://10.227.198.124:5175/#/dayofdesign01-post-submit"
+          >cc本地调试</a
+        >
         <div class="nav-sprite flex">
           <!-- <a
             class="nav-sprite-text"
@@ -100,7 +105,7 @@ const isLoading = ref(false)
 // 基本信息
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
-const currentChannel = computed(() => baseStore.baseInfo.channel)
+const currentAppChannel = computed(() => baseStore.baseInfo.appChannel)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -208,6 +213,7 @@ function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   let isDayOfDesignActive = false
+  let isMoominTestGod = false
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -223,6 +229,9 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
         }
         if (activityName.includes('dayofdesign01')) {
           isDayOfDesignActive = true
+        }
+        if (activityName.includes('moomin_test_god')) {
+          isMoominTestGod = true
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -268,6 +277,13 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     isNew: false,
     hasUnclaimedReward: false,
   })
+  // 调整姆明谷身份测试活动排序
+  if (isMoominTestGod) {
+    const index = res.findIndex(
+      (event) => event.activity === 'activitycenter_moomin_test_god',
+    )
+    res.push(res.splice(index, 1)[0])
+  }
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
@@ -363,7 +379,7 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  getPlayerMissionData({ channel: currentChannel.value })
+  getPlayerMissionData({ appChannel: currentAppChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)

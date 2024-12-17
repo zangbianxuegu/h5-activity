@@ -46,7 +46,17 @@
         "singleline": { "max": 5 },
         "multiline": { "max": 5 }
       }
-    ] // vue template模板元素第一行最多5个属性
-    // 其它的规则可以去eslint查看，根据自己需要进行添加
+    ], // vue template模板元素第一行最多5个属性
+    "@typescript-eslint/naming-convention": [
+      "error",
+      {
+        "selector": "enum",
+        "format": ["PascalCase"]
+      },
+      {
+        "selector": "enumMember",
+        "format": ["PascalCase"]
+      }
+    ]
   }
 }

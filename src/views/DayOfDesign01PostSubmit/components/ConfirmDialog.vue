@@ -23,8 +23,21 @@
           关闭
         </div>
       </div>
-      <div class="modal-content flex flex-1 items-center justify-center">
-        {{ props.text }}
+      <div
+        class="modal-content flex flex-1 flex-col items-center justify-center"
+      >
+        <span>
+          {{ props.text }}
+        </span>
+        <img
+          v-if="iconName"
+          class="icon"
+          :class="[ConfirmIconType.Report]"
+          :style="targetIconStyle"
+          :src="targetIcon"
+          alt=""
+          srcset=""
+        />
       </div>
       <div class="modal-footer flex items-center justify-center">
         <div class="footer_btn cursor-pointer" @click="closeModal">
@@ -37,10 +50,17 @@
 </template>
 
 <script setup lang="ts">
-import { animateCSS } from '@/utils/utils'
+import { animateCSS, calculatePxToViewport } from '@/utils/utils'
+import iconReport from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-report-confirm-modal.png'
+import { ConfirmIconType } from '@/types/activity/dayofdesign01'
 
+/**
+ * @param {string} text 提示内容
+ * @param {string} iconName icon名称，对应着在此页面引入的图片资源
+ */
 const props = defineProps<{
   text: string
+  iconName?: ConfirmIconType
 }>()
 
 const isOpen = ref(false)
@@ -71,6 +91,37 @@ const closeModal = (): void => {
     emit('close')
   })
 }
+
+/**
+ * @description 图片资源映射表
+ * @param {string} width icon宽度，单位px，会自动转化为自适应单位
+ * @param {string} height icon高度，单位px，会自动转化为自适应单位
+ */
+const iconMap = new Map([
+  [
+    ConfirmIconType.Report,
+    {
+      icon: iconReport,
+      width: 168,
+      height: 150,
+    },
+  ],
+])
+const targetIcon = computed(() => {
+  return props.iconName ? iconMap.get(props.iconName)?.icon : ''
+})
+const targetIconStyle = computed(() => {
+  return props.iconName
+    ? {
+        width: calculatePxToViewport(
+          iconMap.get(props.iconName)?.width as number,
+        ),
+        height: calculatePxToViewport(
+          iconMap.get(props.iconName)?.height as number,
+        ),
+      }
+    : {}
+})
 
 onMounted(() => {
   void animateCSS(modalRef.value, 'animate__fadeInUp', undefined, 'faster')
@@ -112,6 +163,9 @@ onMounted(() => {
 .modal-content {
   font-size: 40px;
   color: #454545;
+  .icon {
+    margin-top: 40px;
+  }
 }
 .modal-footer {
   width: 100%;

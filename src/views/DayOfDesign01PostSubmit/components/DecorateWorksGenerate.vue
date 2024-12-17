@@ -1,6 +1,6 @@
 <template>
   <Teleport to="body">
-    <div class="ps_ignore-generate-decorate-works-img-container">
+    <div ref="containerRef" class="ps_ignore-container">
       <img :src="bgDecorateImg" alt="" />
       <div class="left relative">
         <img id="img-container" :src="worksData.worksImgSrc" alt="" srcset="" />
@@ -41,15 +41,14 @@ defineProps<{
   }
 }>()
 
+const containerRef = ref<HTMLElement | null>(null)
 // 生成拼装图
 const generateDecorateWorksImg = (): Promise<{
   worksDecorateImg: Blob
   worksDecorateImgSrc: string
 }> => {
   return new Promise((resolve): void => {
-    const target = document.querySelector(
-      '.ps_ignore-generate-decorate-works-img-container',
-    ) as HTMLElement
+    const target = containerRef.value as HTMLElement
     void html2canvas(target, {
       scale: 1, // 设置画布的缩放比例为 1
       width: 1830, // 设置输出图像的宽度
@@ -74,7 +73,7 @@ defineExpose({ generateDecorateWorksImg })
 </script>
 
 <style scoped lang="scss">
-.ps_ignore-generate-decorate-works-img-container {
+.ps_ignore-container {
   height: 960px !important;
   width: 1830px !important;
   position: absolute;

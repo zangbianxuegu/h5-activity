@@ -1,133 +1,114 @@
 /**
  * @description ngshare分享的渠道枚举
- * @param WEI_BO 微博
+ * @param Weibo 微博
  * @param WE_CHAT 微信
  * @param QQ 腾讯QQ
- * @param BILIBILI 哔哩哔哩
- * @param DOU_YIN 抖音
- * @param FACEBOOK Facebook
- * @param DA_SHEN 网易大神
+ * @param Bilibili 哔哩哔哩
+ * @param DouYin 抖音
+ * @param Facebook Facebook
+ * @param DaShen 网易大神
  */
 
-export enum ANDROID_INSTALLED_PACKAGE {
-  WEI_BO = 'com.sina.weibo',
-  WECHAT = 'com.tencent.mm',
+export enum AndroidInstalledPackage {
+  Weibo = 'com.sina.weibo',
+  Wechat = 'com.tencent.mm',
   QQ = 'com.tencent.mobileqq',
-  BILIBILI = 'tv.danmaku.bili',
-  DOU_YIN = 'com.ss.android.ugc.aweme',
-  FACEBOOK = 'com.facebook.katana',
-  DA_SHEN = 'com.netease.gl',
-  KUAI_SHOU = 'com.smile.gifmaker',
-  XIAO_HONG_SHU = 'com.xingin.xhs',
+  Bilibili = 'tv.danmaku.bili',
+  DouYin = 'com.ss.android.ugc.aweme',
+  Facebook = 'com.facebook.katana',
+  DaShen = 'com.netease.gl',
+  KuaiShou = 'com.smile.gifmaker',
+  XiaoHongShu = 'com.xingin.xhs',
 }
 
-export enum IOS_INSTALLED_PACKAGE {
-  WEI_BO = 'sinaweibo://',
-  WECHAT = 'weixin://',
+export enum IosInstalledPackage {
+  Weibo = 'sinaweibo://',
+  Wechat = 'weixin://',
   QQ = 'mqq://',
-  BILIBILI = 'bilibili://',
-  DOU_YIN = 'snssdk1128://',
-  FACEBOOK = 'fb://',
-  DA_SHEN = 'neteasegl://',
-  KUAI_SHOU = 'gifshow://',
-  XIAO_HONG_SHU = 'xhsdiscover://',
+  Bilibili = 'bilibili://',
+  DouYin = 'snssdk1128://',
+  Facebook = 'fb://',
+  DaShen = 'neteasegl://',
+  KuaiShou = 'gifshow://',
+  XiaoHongShu = 'xhsdiscover://',
 }
 
 /**
  * @description ngshare分享的渠道类型
- * @param WEI_BO 微博
- * @param WECHAT_FRIEND 微信好友
- * @param WECHAT_FRIEND_CIRCLE 微信朋友圈
+ * @param Weibo 微博
+ * @param WechatFriend 微信好友
+ * @param WechatFriendCircle 微信朋友圈
  * @param QQ QQ好友
- * @param QQ_ZONE QQ空间
- * @param BILIBILI 哔哩哔哩
- * @param DOU_YIN 抖音
- * @param KUAI_SHOU 快手
- * @param FACEBOOK Facebook
- * @param DA_SHEN_FRIEND 网易大神好友
- * @param DA_SHEN_FRIEND_CIRCLE 网易大神圈子分享
- * @param YI_XIN_FRIEND 易信好友
- * @param YI_XIN_FRIEND_CIRCLE 易信朋友圈
+ * @param QQZone QQ空间
+ * @param Bilibili 哔哩哔哩
+ * @param DouYin 抖音
+ * @param KuaiShou 快手
+ * @param Facebook Facebook
+ * @param DaShenFriend 网易大神好友
+ * @param DaShenFriendCircle 网易大神圈子分享
+ * @param YiXinFriend 易信好友
+ * @param YiXinFriendCircle 易信朋友圈
  */
-export enum NGSHARE_SHARE_CHANNEL {
-  WEI_BO = '100',
-  WECHAT_FRIEND = '101',
-  WECHAT_FRIEND_CIRCLE = '102',
+export enum NgshareChannel {
+  Weibo = '100',
+  WechatFriend = '101',
+  WechatFriendCircle = '102',
   QQ = '105',
-  QQ_ZONE = '106',
-  BILIBILI = '309',
-  DOU_YIN = '302',
-  KUAI_SHOU = '303',
-  XIAO_HONG_SHU = '313',
-  FACEBOOK = '108',
-  DA_SHEN_FRIEND = '125',
-  DA_SHEN_FRIEND_CIRCLE = '124',
-  YI_XIN_FRIEND = '103',
-  YI_XIN_FRIEND_CIRCLE = '104',
-}
-
-/**
- * @description sky支持的ngshare分享的渠道类型
- * @param WEI_BO 微博
- * @param WECHAT_FRIEND 微信好友
- * @param WECHAT_FRIEND_CIRCLE 微信朋友圈
- * @param BILIBILI 哔哩哔哩
- * @param DOU_YIN 抖音
- * @param DA_SHEN_FRIEND_CIRCLE 网易大神圈子分享
- */
-export enum SKY_SUPPORT_SHARE_CHANNEL {
-  WEI_BO = NGSHARE_SHARE_CHANNEL.WEI_BO,
-  WECHAT_FRIEND = NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
-  WECHAT_FRIEND_CIRCLE = NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
-  BILIBILI = NGSHARE_SHARE_CHANNEL.BILIBILI,
-  DOU_YIN = NGSHARE_SHARE_CHANNEL.DOU_YIN,
-  XIAO_HONG_SHU = NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
-  DA_SHEN_FRIEND_CIRCLE = NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+  QQZone = '106',
+  Bilibili = '309',
+  DouYin = '302',
+  KuaiShou = '303',
+  XiaoHongShu = '313',
+  Facebook = '108',
+  DaShenFriend = '125',
+  DaShenFriendCircle = '124',
+  YiXinFriend = '103',
+  YiXinFriendCircle = '104',
 }
 
 /**
  * @description ngshare分享的平台
- * @param WECHAT 微信
- * @param WEI_BO 微博
+ * @param Wechat 微信
+ * @param Weibo 微博
  * @param QQ 腾讯QQ
- * @param BILIBILI 哔哩哔哩
- * @param DOU_YIN 抖音
- * @param DA_SHEN 网易大神
- * @param KUAI_SHOU 快手
- * @param YI_XIN 易信
+ * @param Bilibili 哔哩哔哩
+ * @param DouYin 抖音
+ * @param DaShen 网易大神
+ * @param KuaiShou 快手
+ * @param YiXin 易信
  */
-export enum NGSHARE_PLATFORM {
-  WECHAT = 'Weixin',
-  WEI_BO = 'Weibo',
+export enum NgsharePlatform {
+  Wechat = 'Weixin',
+  Weibo = 'Weibo',
   QQ = 'QQ',
-  BILIBILI = 'bilibili',
-  DOU_YIN = 'Douyin',
-  DA_SHEN = 'Godlike',
-  KUAI_SHOU = 'Kuaishou',
-  YI_XIN = 'Yixin',
-  XIAO_HONG_SHU = 'Xiaohongshu',
+  Bilibili = 'bilibili',
+  DouYin = 'Douyin',
+  DaShen = 'Godlike',
+  KuaiShou = 'Kuaishou',
+  YiXin = 'Yixin',
+  XiaoHongShu = 'Xiaohongshu',
 }
 
 /**
  * @description ngshare分享内容信息类型
- * @param IMAGE 图片
- * @param LINK 链接
- * @param VIDEO 视频
- * @param TEXT 文本
- * @param INVITE 邀请信息
- * @param AUDIO 音频
+ * @param Image 图片
+ * @param Link 链接
+ * @param Video 视频
+ * @param Text 文本
+ * @param Invite 邀请信息
+ * @param Audio 音频
  * @param GIF 动图
- * @param ATTENTION 关注
+ * @param Attention 关注
  */
-export enum NGSHARE_CONTENT_TYPE {
-  IMAGE = 'TYPE_IMAGE',
-  LINK = 'TYPE_LINK',
-  VIDEO = 'TYPE_VIDEO',
-  TEXT = 'TYPE_TEXT_ONLY',
-  INVITE = 'TYPE_INVITE',
-  AUDIO = 'TYPE_AUDIO',
+export enum NgshareContentType {
+  Image = 'TYPE_IMAGE',
+  Link = 'TYPE_LINK',
+  Video = 'TYPE_VIDEO',
+  Text = 'TYPE_TEXT_ONLY',
+  Invite = 'TYPE_INVITE',
+  Audio = 'TYPE_AUDIO',
   GIF = 'TYPE_GIF',
-  ATTENTION = 'TYPE_ATTENTION',
+  Attention = 'TYPE_ATTENTION',
 }
 
 /**
@@ -166,173 +147,173 @@ export interface NgshareShareImageConfig {
 
 export const installedPackageList = [
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.WEI_BO,
-    iosPackage: IOS_INSTALLED_PACKAGE.WEI_BO,
+    androidPackage: AndroidInstalledPackage.Weibo,
+    iosPackage: IosInstalledPackage.Weibo,
     name: '微博',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.WECHAT,
-    iosPackage: IOS_INSTALLED_PACKAGE.WECHAT,
+    androidPackage: AndroidInstalledPackage.Wechat,
+    iosPackage: IosInstalledPackage.Wechat,
     name: '微信',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.QQ,
-    iosPackage: IOS_INSTALLED_PACKAGE.QQ,
+    androidPackage: AndroidInstalledPackage.QQ,
+    iosPackage: IosInstalledPackage.QQ,
     name: 'QQ',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.BILIBILI,
-    iosPackage: IOS_INSTALLED_PACKAGE.BILIBILI,
+    androidPackage: AndroidInstalledPackage.Bilibili,
+    iosPackage: IosInstalledPackage.Bilibili,
     name: '哔哩哔哩',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.DOU_YIN,
-    iosPackage: IOS_INSTALLED_PACKAGE.DOU_YIN,
+    androidPackage: AndroidInstalledPackage.DouYin,
+    iosPackage: IosInstalledPackage.DouYin,
     name: '抖音',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.KUAI_SHOU,
-    iosPackage: IOS_INSTALLED_PACKAGE.KUAI_SHOU,
+    androidPackage: AndroidInstalledPackage.KuaiShou,
+    iosPackage: IosInstalledPackage.KuaiShou,
     name: '快手',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.FACEBOOK,
-    iosPackage: IOS_INSTALLED_PACKAGE.FACEBOOK,
+    androidPackage: AndroidInstalledPackage.Facebook,
+    iosPackage: IosInstalledPackage.Facebook,
     name: 'Facebook',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.DA_SHEN,
-    iosPackage: IOS_INSTALLED_PACKAGE.DA_SHEN,
+    androidPackage: AndroidInstalledPackage.DaShen,
+    iosPackage: IosInstalledPackage.DaShen,
     name: '网易大神',
   },
   {
-    androidPackage: ANDROID_INSTALLED_PACKAGE.XIAO_HONG_SHU,
-    iosPackage: IOS_INSTALLED_PACKAGE.XIAO_HONG_SHU,
+    androidPackage: AndroidInstalledPackage.XiaoHongShu,
+    iosPackage: IosInstalledPackage.XiaoHongShu,
     name: '小红书',
   },
 ]
 
 export interface ShareChannelMapInfo {
-  platform: NGSHARE_PLATFORM | ''
-  androidInstalledPackage: ANDROID_INSTALLED_PACKAGE | ''
-  iosInstalledPackage: IOS_INSTALLED_PACKAGE | ''
+  platform: NgsharePlatform | ''
+  androidInstalledPackage: AndroidInstalledPackage | ''
+  iosInstalledPackage: IosInstalledPackage | ''
 }
 
 /**
  * @description ngshare分享渠道和平台的映射关系
  */
 export const ngshareShareChannelMap = new Map<
-  NGSHARE_SHARE_CHANNEL,
+  NgshareChannel,
   ShareChannelMapInfo
 >([
   [
-    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND,
+    NgshareChannel.WechatFriend,
     {
-      platform: NGSHARE_PLATFORM.WECHAT,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.WECHAT,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.WECHAT,
+      platform: NgsharePlatform.Wechat,
+      androidInstalledPackage: AndroidInstalledPackage.Wechat,
+      iosInstalledPackage: IosInstalledPackage.Wechat,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE,
+    NgshareChannel.WechatFriendCircle,
     {
-      platform: NGSHARE_PLATFORM.WECHAT,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.WECHAT,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.WECHAT,
+      platform: NgsharePlatform.Wechat,
+      androidInstalledPackage: AndroidInstalledPackage.Wechat,
+      iosInstalledPackage: IosInstalledPackage.Wechat,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.WEI_BO,
+    NgshareChannel.Weibo,
     {
-      platform: NGSHARE_PLATFORM.WEI_BO,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.WEI_BO,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.WEI_BO,
+      platform: NgsharePlatform.Weibo,
+      androidInstalledPackage: AndroidInstalledPackage.Weibo,
+      iosInstalledPackage: IosInstalledPackage.Weibo,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.QQ,
+    NgshareChannel.QQ,
     {
-      platform: NGSHARE_PLATFORM.QQ,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.QQ,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.QQ,
+      platform: NgsharePlatform.QQ,
+      androidInstalledPackage: AndroidInstalledPackage.QQ,
+      iosInstalledPackage: IosInstalledPackage.QQ,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.QQ_ZONE,
+    NgshareChannel.QQZone,
     {
-      platform: NGSHARE_PLATFORM.QQ,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.QQ,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.QQ,
+      platform: NgsharePlatform.QQ,
+      androidInstalledPackage: AndroidInstalledPackage.QQ,
+      iosInstalledPackage: IosInstalledPackage.QQ,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.BILIBILI,
+    NgshareChannel.Bilibili,
     {
-      platform: NGSHARE_PLATFORM.BILIBILI,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.BILIBILI,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.BILIBILI,
+      platform: NgsharePlatform.Bilibili,
+      androidInstalledPackage: AndroidInstalledPackage.Bilibili,
+      iosInstalledPackage: IosInstalledPackage.Bilibili,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.DOU_YIN,
+    NgshareChannel.DouYin,
     {
-      platform: NGSHARE_PLATFORM.DOU_YIN,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.DOU_YIN,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.DOU_YIN,
+      platform: NgsharePlatform.DouYin,
+      androidInstalledPackage: AndroidInstalledPackage.DouYin,
+      iosInstalledPackage: IosInstalledPackage.DouYin,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU,
+    NgshareChannel.XiaoHongShu,
     {
-      platform: NGSHARE_PLATFORM.XIAO_HONG_SHU,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.XIAO_HONG_SHU,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.XIAO_HONG_SHU,
+      platform: NgsharePlatform.XiaoHongShu,
+      androidInstalledPackage: AndroidInstalledPackage.XiaoHongShu,
+      iosInstalledPackage: IosInstalledPackage.XiaoHongShu,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.FACEBOOK,
+    NgshareChannel.Facebook,
     {
       platform: '', // 文档没有给值
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.FACEBOOK,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.FACEBOOK,
+      androidInstalledPackage: AndroidInstalledPackage.Facebook,
+      iosInstalledPackage: IosInstalledPackage.Facebook,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND,
+    NgshareChannel.DaShenFriend,
     {
-      platform: NGSHARE_PLATFORM.DA_SHEN,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.DA_SHEN,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.DA_SHEN,
+      platform: NgsharePlatform.DaShen,
+      androidInstalledPackage: AndroidInstalledPackage.DaShen,
+      iosInstalledPackage: IosInstalledPackage.DaShen,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE,
+    NgshareChannel.DaShenFriendCircle,
     {
-      platform: NGSHARE_PLATFORM.DA_SHEN,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.DA_SHEN,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.DA_SHEN,
+      platform: NgsharePlatform.DaShen,
+      androidInstalledPackage: AndroidInstalledPackage.DaShen,
+      iosInstalledPackage: IosInstalledPackage.DaShen,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.KUAI_SHOU,
+    NgshareChannel.KuaiShou,
     {
-      platform: NGSHARE_PLATFORM.KUAI_SHOU,
-      androidInstalledPackage: ANDROID_INSTALLED_PACKAGE.KUAI_SHOU,
-      iosInstalledPackage: IOS_INSTALLED_PACKAGE.KUAI_SHOU,
+      platform: NgsharePlatform.KuaiShou,
+      androidInstalledPackage: AndroidInstalledPackage.KuaiShou,
+      iosInstalledPackage: IosInstalledPackage.KuaiShou,
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND,
+    NgshareChannel.YiXinFriend,
     {
-      platform: NGSHARE_PLATFORM.YI_XIN,
+      platform: NgsharePlatform.YiXin,
       androidInstalledPackage: '', // 文档没有给值
       iosInstalledPackage: '', // 文档没有给值
     },
   ],
   [
-    NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND_CIRCLE,
+    NgshareChannel.YiXinFriendCircle,
     {
-      platform: NGSHARE_PLATFORM.YI_XIN,
+      platform: NgsharePlatform.YiXin,
       androidInstalledPackage: '', // 文档没有给值
       iosInstalledPackage: '', // 文档没有给值
     },

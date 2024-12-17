@@ -171,7 +171,7 @@ import {
   type StoreItem,
   type DesignConfig,
   type EventName,
-  TOKEN_NAME_ENUM,
+  TokenNameEnum,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import ActivityModal from '@/components/Modal'
@@ -320,7 +320,7 @@ function getActivityData(): void {
 }
 
 const targetNum = computed(() => {
-  return activityDataStore.value.token_info[TOKEN_NAME_ENUM.DICE_STORE]
+  return activityDataStore.value.token_info[TokenNameEnum.DiceStore]
 })
 // const updateStoreToken = (value: number): void => {
 //   targetNum.value = value
@@ -467,7 +467,7 @@ function handleConfirm(): void {
     remainingAmount: curItem.value.remaining_amount,
     storeCurrencyCount:
       curItem.value.id < 6
-        ? activityDataStore.value.token_info[TOKEN_NAME_ENUM.DICE_STORE]
+        ? activityDataStore.value.token_info[TokenNameEnum.DiceStore]
         : -1,
     storeEvent: EVENT_NAME,
   })
@@ -518,7 +518,7 @@ function handleConfirm(): void {
       // 更新活动数据
       const result = res.data
       if (curItem.value.id < 6) {
-        activityDataStore.value.token_info[TOKEN_NAME_ENUM.DICE_STORE] =
+        activityDataStore.value.token_info[TokenNameEnum.DiceStore] =
           result.token_count
       }
       const storeList =

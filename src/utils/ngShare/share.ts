@@ -1,7 +1,7 @@
 import { createVNode, render } from 'vue'
 import Share from '@/components/Share'
 import type {
-  NGSHARE_SHARE_CHANNEL,
+  NgshareChannel,
   NgshareShareImageConfig,
   NgshareShareLinkConfig,
 } from './types'
@@ -12,7 +12,7 @@ export interface ShareFormatConfig {
 
 export const showShare = (
   shareFormatConfig: ShareFormatConfig,
-  shareChannel: NGSHARE_SHARE_CHANNEL[] | [] = [],
+  shareChannel: NgshareChannel[] | [] = [],
   shareLinkConfig: NgshareShareLinkConfig,
   shareImageConfig: NgshareShareImageConfig,
 ): void => {

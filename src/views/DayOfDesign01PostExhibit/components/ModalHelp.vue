@@ -1,7 +1,7 @@
 <template>
   <activity-modal
     ref="modalHelp"
-    modal-class="w-[1000px] h-[640px]"
+    modal-class="w-[1140px] h-[830px]"
     :background-image="modalImage"
     :overlay-opacity="70"
   >
@@ -14,49 +14,72 @@
       </h2>
     </template>
     <template #title>
-      <h2 class="modal-title overflow-hidden bg-contain bg-center">
+      <h2 class="modal-title mb-[20px] overflow-hidden bg-contain bg-center">
         <span class="sr-only">提示</span>
       </h2>
     </template>
     <template #content>
       <section
         aria-labelledby="activity-rules-title"
-        class="h-[460px] overflow-y-scroll px-[30px]"
+        class="h-[620px] overflow-y-scroll px-[80px]"
       >
         <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
         <h3 class="modal-text">
-          <span class="font-semibold">活动时间：</span>
-          2024年12月6日~2024年12月19日
+          <span class="font-semibold">【征集期】</span>
         </h3>
-        <h3 class="modal-text">
+        <h3 class="modal-text mt-[10px]">
+          <span class="font-semibold">活动时间：</span>2025年1月1日 ~ 1月31日
+        </h3>
+        <h3 class="modal-text mt-[10px]">
           <span class="font-semibold">活动内容：</span>
         </h3>
         <p class="modal-text">
-          每完成一个任务，点击已完成任务旁的领取按钮，可收取一分钟的听歌进度：
+          1、活动期间，请使用<span class="text-[#d57518]"
+            >我要投稿-下载模板</span
+          >中的模板，并根据本期主题：<span class="text-[#d57518]">国风演绎</span
+          >进行<span class="text-[#d57518]">发型</span>和<span
+            class="text-[#d57518]"
+            >斗篷</span
+          >部位的设计和绘制。依照尺寸要求上传作品后，审核通过即视为投稿成功；
         </p>
-        <ul class="modal-text list-inside list-decimal">
-          <li>点评一次分享音符</li>
-          <li>点赞一次分享音符</li>
-          <li>放置2个分享音符</li>
-          <li>和好友一起牵手听分享音符</li>
-          <li>在雨林秘密花园中使用分享海螺点歌</li>
-        </ul>
         <p class="modal-text">
-          每积攒一分钟的听歌进度后，可于进度条处依次点击领取以下奖励：
+          2、投递稿件时，作品将随机自动进入四个分组的其中之一，<span
+            class="text-[#d57518]"
+            >分组无法修改</span
+          >，仅用于投票，不代表分类等其他信息标签；
         </p>
-        <ul class="modal-text list-inside list-decimal">
-          <li><span class="text-[#ffcb4d]">分享音符*1</span></li>
-          <li>
-            在<span class="text-[#ffcb4d]"
-              >凯旋手碟试用魔法、白吉它试用魔法、雏鸟之琴试用魔法、小提琴试用魔法、萨克斯试用魔法 </span
-            >中随机获得一个
-          </li>
-          <li><span class="text-[#ffcb4d]">秋千*2 </span></li>
-          <li>
-            <span class="text-[#ffcb4d]">古典音乐桌椅试用魔法*1 </span>
-          </li>
-          <li><span class="text-[#ffcb4d]">爱心*2 </span></li>
-        </ul>
+        <p class="modal-text">
+          3、稿件投递通常在<span class="text-[#d57518]">48小时</span
+          >内审核完毕，如遇节假日可能会有所顺延，如果您对审核结果存在疑问，请联系客服；
+        </p>
+        <p class="modal-text">
+          4、每个账号可投递<span class="text-[#d57518]">一份稿件</span
+          >参与比赛，投稿作品与<span class="text-[#d57518]"
+            >游戏账号一对一绑定</span
+          >，如果您对已投稿的作品不满意，可以删除原作品后上传新作品。请勿在征集期临近结束时进行删除重传，避免审核期限超过最终上传期限；
+        </p>
+        <p class="modal-text">
+          5、请在保证作品的原创性的同时，务必<span class="text-[#d57518]"
+            >保留您的绘制过程</span
+          >，以便出现争议时作为申诉证明。切勿使用联动IP、AICG或他人作品进行投稿，一经发现作品将被<span
+            class="text-[#d57518]"
+            >下架并取消参赛资格</span
+          >。参赛作品须为《光·遇》相关，参赛者投稿作品即视为<span
+            class="text-[#d57518]"
+            >接受本次活动的所有规则</span
+          >；
+        </p>
+        <p class="modal-text">
+          6、请勿投递与活动无关的稿件内容，一经发现我们将对灌水账号进行<span
+            class="text-[#d57518]"
+            >禁止上传</span
+          >的处罚限制；
+        </p>
+        <p class="modal-text">
+          7、更多活动细则，请前往<span class="text-[#d57518]"
+            >绘梦节-活动详情</span
+          >查看完整活动信息。
+        </p>
       </section>
     </template>
   </activity-modal>
@@ -67,7 +90,7 @@ import ActivityModal from '@/components/Modal'
 
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalImage = new URL(
-  '@/assets/images/dayofdesign01/common/modal-bg.png',
+  '@/assets/images/dayofdesign01/common/modal-bg-large.png',
   import.meta.url,
 ).href
 

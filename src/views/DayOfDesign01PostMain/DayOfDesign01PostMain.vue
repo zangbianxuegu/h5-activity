@@ -23,7 +23,7 @@
               class="my-work absolute right-0 top-[60px]"
               @click="gotoRules"
             >
-              活动规则
+              活动详情
             </button>
           </header>
         </Transition>
@@ -67,7 +67,7 @@
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import ModalHelp from './components/ModalHelp.vue'
+import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560

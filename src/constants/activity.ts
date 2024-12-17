@@ -94,7 +94,9 @@ export const ACTIVITY_LIST = [
   'activitycenter_season24_sprint',
   'activitycenter_double_eleven_2024_1',
   'activitycenter_double_eleven_2024_2',
+  'activitycenter_icefestival2025',
   'activitycenter_kizuna_china_2024',
+  'activitycenter_season25_reserve',
   'activitycenter_doubledan_2024_1',
   'activitycenter_netease_werewolf',
   'activitycenter_netease_werewolf_join',
@@ -104,6 +106,7 @@ export const ACTIVITY_LIST = [
   'activitycenter_cloud_music_2024',
   'activitycenter_music_2024',
   'activitycenter_pc_celebration',
+  'activitycenter_moomin_test_god',
   'activitycenter_invitation_code',
   ...DAYOFDESIGN01_LIST,
 ]

@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="page flex h-screen">
-      <div class="page-main">
+      <div :class="['page-main', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
             <h1 class="title overflow-hidden bg-contain bg-no-repeat">
@@ -37,7 +37,7 @@
                   v-model="searchTerm"
                   type="text"
                   placeholder="输入作者名或作品编号"
-                  class="search-input rounded-full bg-transparent bg-contain bg-no-repeat"
+                  class="search-input absolute rounded-full"
                   @keyup.enter="handleSearch()"
                 />
                 <button
@@ -91,105 +91,18 @@
               </button>
             </div>
             <!-- 主体内容 -->
-            <div class="relative h-[760px]">
-              <!-- 左箭头 -->
-              <Transition name="fade">
-                <button
-                  type="button"
-                  v-show="isPrevVisible"
-                  class="arrow arrow-left absolute cursor-pointer bg-contain bg-no-repeat"
-                  aria-label="上一页"
-                  @click="handlePrev()"
-                >
-                  <span class="sr-only">上一页</span>
-                </button>
-              </Transition>
-              <!-- 作品列表 -->
-              <ul v-if="list" class="work-list flex w-full flex-wrap">
-                <li
-                  v-for="item in list"
-                  :key="item.design_id"
-                  class="work-item relative cursor-pointer rounded bg-white shadow-md"
-                  @click="handleItemClick(item)"
-                >
-                  <template v-if="item.design_id">
-                    <!-- 作品图片 -->
-                    <img
-                      :src="item.raw_url"
-                      :alt="item.design_name"
-                      class="w-full rounded"
-                    />
-                    <!-- 作品 ID -->
-                    <div class="work-id absolute left-0 top-0">
-                      {{ item.design_id }}
-                    </div>
-                    <!-- 收藏图标 -->
-                    <img
-                      v-if="item.favorite"
-                      class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
-                      src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-work.png"
-                      alt="已收藏"
-                    />
-                    <!-- 底部信息 -->
-                    <div
-                      class="work-info absolute inset-x-0 bottom-0 text-center"
-                    >
-                      <div
-                        class="pointer-events-none flex h-full w-full flex-col justify-center bg-gradient-to-b from-transparent to-[#feffff]"
-                      >
-                        <h3 class="work-info-author">
-                          {{ item.author_name }}
-                        </h3>
-                        <p class="work-info-title">
-                          {{ item.design_name }}
-                        </p>
-                      </div>
-                    </div>
-                  </template>
-                  <!-- 数据不存在 -->
-                  <div
-                    v-else
-                    class="flex h-full w-full flex-col items-center justify-center"
-                  >
-                    <img
-                      src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/no-exist.jpg"
-                      alt="作品已删除"
-                      class="h-[201px] w-[135px]"
-                    />
-                    <p class="mt-[10px] text-[28px] text-[#b8b8b8]">
-                      作品已删除
-                    </p>
-                  </div>
-                </li>
-              </ul>
-              <div
-                v-else
-                class="flex h-[800px] w-[1400px] items-center justify-center"
-              >
-                暂无作品
-              </div>
-              <!-- 右箭头 -->
-              <Transition name="fade">
-                <button
-                  type="button"
-                  v-show="isNextVisible"
-                  class="arrow arrow-right absolute cursor-pointer bg-contain bg-no-repeat"
-                  aria-label="下一页"
-                  @click="handleNext"
-                >
-                  <span class="sr-only">下一页</span>
-                </button>
-              </Transition>
-            </div>
-            <!-- 分页 -->
-            <Transition name="fade">
-              <div
-                v-if="isPagesVisible"
-                class="pagination flex items-center justify-center"
-              >
-                <p>{{ currentPage }}/{{ totalPage }}</p>
-              </div>
-            </Transition>
+            <DesignList
+              :list="list"
+              :is-prev-visible="isPrevVisible"
+              :is-next-visible="isNextVisible"
+              :is-pages-visible="isPagesVisible"
+              :current-page="currentPage"
+              :total-page="totalPage"
+              @on-click="handleItemClick"
+              @on-prev="handlePrev"
+              @on-next="handleNext"
+              @on-image-error="handleImageError"
+            />
           </section>
         </Transition>
 
@@ -199,11 +112,12 @@
         <!-- 作品详情弹框 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
-          :event="EVENT_DAY_OF_DESIGN_01.EXHIBIT"
+          :event="EventDayOfDesign01.Exhibit"
           :type="detailType"
           :works-data="detailData"
           :file-picker-config="filePickerConfig"
           @update-favorite="handleUpdateFavorites"
+          @after-report="handleAfterReport"
         ></works-detail-modal>
       </div>
     </div>
@@ -213,7 +127,7 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import qs from 'qs'
-import { DESIGN_DETAILS_TYPE, EVENT_DAY_OF_DESIGN_01, PageType } from '@/types'
+import { DesignDetailsType, EventDayOfDesign01, PageType } from '@/types'
 import type {
   DesignConfig,
   ListRecommendParams,
@@ -237,6 +151,8 @@ import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import Loading from '@/components/Loading'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
+import throttle from 'lodash.throttle'
+import DesignList from './components/DesignList.vue'
 const ModalHelp = defineAsyncComponent(
   () => import('./components/ModalHelp.vue'),
 )
@@ -311,7 +227,7 @@ let minFavoriteTime: undefined | number
 let minIdOffset: null | string = null
 // 为我推荐倒计时
 const countdown = ref(0)
-let timer: NodeJS.Timeout | undefined
+let countdownInterval: NodeJS.Timeout | undefined
 const isCoolDownActive = computed(() => countdown.value > 0)
 // 详情显示
 const isDetailVisible = ref(false)
@@ -337,15 +253,17 @@ interface Detail {
   worksImgSrc: string
   worksDecorateImgSrc: string
   isFavorite: boolean
+  isReported: boolean
 }
 // 详情
-const detailType = ref<DESIGN_DETAILS_TYPE>(DESIGN_DETAILS_TYPE.OTHER)
+const detailType = ref<DesignDetailsType>(DesignDetailsType.Other)
 const detailData = ref<Detail>({
   id: '',
   author: '',
   worksName: '',
   worksIntroduce: '',
   isFavorite: false,
+  isReported: false,
   worksImgSrc: '',
   worksDecorateImgSrc: '',
 })
@@ -370,15 +288,34 @@ if (!isVisited) {
 
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
+  window.addEventListener('resize', handleResize)
   await handleRecommend()
   await openSharedDetail()
 })
 
 onBeforeUnmount(() => {
-  if (timer) {
-    clearInterval(timer)
+  if (countdownInterval) {
+    clearInterval(countdownInterval)
   }
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function handleResize
+ * @description 处理窗口大小变化
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
 
 /**
  * @function openSharedDetail
@@ -529,6 +466,8 @@ async function handleCachedSearch(): Promise<void> {
 async function getRecommendByPage(page: number): Promise<DesignItem[]> {
   const startIndex = (page - 1) * ITEMS_PER_PAGE
   const endIndex = startIndex + ITEMS_PER_PAGE
+  // 当获取第 1 页数据时进行请求接口
+  // 获取 2、3 页数据时为读取缓存数据
   if (recommendPage === 1) {
     const now = Date.now()
     const lastFetchTime =
@@ -591,16 +530,24 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
 async function handleRecommend(): Promise<void> {
   type.value = PageType.Recommend
   recommendPage++
-  // 不足一页或推荐页数(1、2、3)大于 3，进行重置
+  // 需要重新请求数据/重置页数和缓存数据：
+  // - 缓存数据不足一页数量
+  // - 推荐页数大于 3，（只缓存 3 页数据）
   if (cachedRecommend.value.length < ITEMS_PER_PAGE || recommendPage > 3) {
     recommendPage = 1
-    activityStore.updateRecommendData([])
+    // 距离上一次请求超过 3s 才清空数据，例如连续 2 次刷新页面
+    const now = Date.now()
+    const lastFetchTime =
+      parseInt(Session.get('lastFetchTime-dayofdesign01-recommend')) || 0
+    if (now - lastFetchTime > 3000) {
+      activityStore.updateRecommendData([])
+    }
   }
   countdown.value = 3
-  timer = setInterval(() => {
+  countdownInterval = setInterval(() => {
     countdown.value -= 1
     if (countdown.value <= 0) {
-      clearInterval(timer)
+      clearInterval(countdownInterval)
     }
   }, 1000)
   list.value = await getRecommendByPage(recommendPage)
@@ -708,7 +655,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
   }
   // 列表中作品
   if (item) {
-    detailType.value = DESIGN_DETAILS_TYPE.OTHER
+    detailType.value = DesignDetailsType.Other
     if (!item.design_id) {
       return
     }
@@ -722,7 +669,7 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
       }
     }
   } else {
-    detailType.value = DESIGN_DETAILS_TYPE.SELF
+    detailType.value = DesignDetailsType.Self
   }
   try {
     await getDetail(params)
@@ -740,6 +687,12 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
  */
 async function getDetail(params: DetailParams): Promise<void> {
   const detail = (await getDesignDetails(params)) as OtherDesignDetails
+  if (!detail.design_name) {
+    if (detailType.value === DesignDetailsType.Self) {
+      showToast('你当前还没有作品')
+      return
+    }
+  }
   detailData.value = {
     id: curDetailId,
     author: detail.author_name,
@@ -748,6 +701,7 @@ async function getDetail(params: DetailParams): Promise<void> {
     worksImgSrc: detail.raw_url,
     worksDecorateImgSrc: detail.share_url,
     isFavorite: detail.is_favorite,
+    isReported: detail.is_reported,
   }
   isDetailVisible.value = true
 }
@@ -759,14 +713,30 @@ async function getDetail(params: DetailParams): Promise<void> {
  * @returns {void}
  */
 function handleUpdateFavorites(isFavorite: boolean): void {
-  if (type.value !== PageType.Recommend) {
-    list.value = list.value.map((item) => {
-      return {
-        ...item,
-        favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
-      }
-    })
-  }
+  detailData.value.isFavorite = isFavorite
+  list.value = list.value.map((item) => {
+    return {
+      ...item,
+      favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
+    }
+  })
+  // fix: 当作品数据不足 18 条时，服务端会重复数据返回 18 个
+  const newRecommendData = cachedRecommend.value.map((item) => {
+    return {
+      ...item,
+      favorite: item.design_id === curDetailId ? isFavorite : item.favorite,
+    }
+  })
+  activityStore.updateRecommendData(newRecommendData)
+}
+
+/**
+ * @function handleAfterReport
+ * @description 举报作品后的回调
+ * @returns {void}
+ */
+function handleAfterReport(): void {
+  detailData.value.isReported = true
 }
 
 /**
@@ -776,6 +746,16 @@ function handleUpdateFavorites(isFavorite: boolean): void {
  */
 function handleHelp(): void {
   modalHelp.value?.open()
+}
+
+/**
+ * @function handleImageError
+ * @description 图片加载失败处理
+ * @param {DesignItem} item 列表项
+ * @returns {void}
+ */
+function handleImageError(item: DesignItem): void {
+  item.error = true
 }
 </script>
 
@@ -839,6 +819,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+
+    &.keyboard-show {
+      transform: translate(-50%, -50%);
+    }
   }
 }
 .title {
@@ -906,16 +890,19 @@ $font-family-bold: 'Source Han Sans CN Medium';
   }
 }
 .search {
-  width: 902px;
-  height: 82px;
+  width: 900px;
+  height: 80px;
 
   &-input {
+    left: 0;
+    top: 0;
     padding-left: 40px;
-    width: 902px;
-    height: 82px;
+    width: 900px;
+    height: 80px;
     font-size: 32px;
     color: #fff;
-    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/search-input.png');
+    background-color: #86b2b3;
+    box-shadow: inset 0px 0px 2px 0px rgba(87, 103, 125, 0.5);
 
     &::placeholder {
       color: #fff;
@@ -924,8 +911,8 @@ $font-family-bold: 'Source Han Sans CN Medium';
   }
 
   &-btn {
-    top: 3px;
-    right: 5px;
+    top: 2px;
+    right: 2px;
     width: 140px;
     height: 76px;
     background-color: #fff;
@@ -950,89 +937,9 @@ $font-family-bold: 'Source Han Sans CN Medium';
   font-size: 34px;
   color: $font-color;
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
-  // &:hover {
-  //   border: 3px solid #809bab;
-  // }
-
-  &:active {
-    border: 0;
-    background-color: #d4fff8;
-  }
 }
 .nav-icon {
   width: 50px;
   height: 50px;
-}
-.work-list {
-  margin-top: 30px;
-}
-.work-item {
-  margin: 0 20px 20px 0;
-  border: 2px solid $bg-color;
-  border-radius: 20px;
-  width: 480px;
-  height: 360px;
-  box-shadow:
-    2.3px 3.3px 21px 8px rgba(255, 255, 255, 0.2),
-    6.8px 7.8px 16px 0 rgba(77, 77, 77, 0.2);
-  overflow: hidden;
-
-  &:nth-of-type(3n) {
-    margin-right: 0;
-  }
-}
-.work-id {
-  padding: 0 15px;
-  height: 35px;
-  line-height: 35px;
-  font-size: 28px;
-  color: $font-color;
-  background-color: $bg-color;
-  border-bottom-right-radius: 22px;
-}
-.work-info {
-  width: 100%;
-  height: 100px;
-  color: $font-color;
-  background-color: $bg-color;
-  box-shadow: 0 -2px 6px 2px rgba(90, 113, 145, 0.06);
-
-  &-author {
-    height: 40px;
-    line-height: 40px;
-    font-size: 28px;
-  }
-
-  &-title {
-    height: 44px;
-    line-height: 44px;
-    font-size: 32px;
-    font-weight: 500;
-    font-family: $font-family-bold;
-  }
-}
-.arrow {
-  top: 188px;
-  width: 128px;
-  height: 128px;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/arrow.png');
-
-  &:hover {
-    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/arrow-hover.png');
-  }
-
-  &-left {
-    left: -208px;
-  }
-
-  &-right {
-    right: -208px;
-    transform: rotate(180deg);
-  }
-}
-.pagination {
-  font-size: 32px;
-  font-weight: $font-family-bold;
-  color: $font-color;
 }
 </style>
