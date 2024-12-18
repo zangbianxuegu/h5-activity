@@ -146,7 +146,7 @@ const listenUploadImgChange = (): void => {
 }
 
 const checkWorkInfoValid = (): Promise<boolean> => {
-  showToast('作品信息检查中...')
+  showToast('作品信息检查中......')
   // const { author, workName, workIntroduce } = workInfo.value
   return new Promise((resolve) => {
     setTimeout(() => {

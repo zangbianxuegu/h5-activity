@@ -48,7 +48,7 @@
               </div>
               <div class="right" v-if="isExitsDesign">
                 <div class="works-preview-basic-info">
-                  <p>
+                  <p v-if="worksData.id">
                     <span>编号：</span>
                     <span id="works-id"
                       >{{ worksData.id }}
@@ -220,8 +220,8 @@ const eventMap = new Map([
     EventDayOfDesign01.Exhibit,
     {
       statisticsModules: {
-        download: 'day_of_design_stage0_download',
-        share: 'day_of_design_stage0_share',
+        download: 'day_of_design_download',
+        share: 'day_of_design_share',
       },
     },
   ],
@@ -290,6 +290,10 @@ const shareLinkParams = computed(() => {
   )
 })
 
+const getShareText = (designName: string): string => {
+  return `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`
+}
+
 const onClickReport = (): void => {
   showConfirmDialog('是否要举报这个作品？', ConfirmIconType.Report)
     .then(async () => {
@@ -323,10 +327,10 @@ const onClickHandleBarShare = (): void => {
           NgshareChannel.DaShenFriendCircle,
         ],
     {
-      title: SHARE_INFO.title,
-      text: SHARE_INFO.text,
+      title: '《光·遇》绘梦节',
+      text: getShareText(props.worksData.worksName),
       link: `${getShareH5PageUrl()}${shareLinkParams.value}`,
-      desc: SHARE_INFO.desc,
+      desc: getShareText(props.worksData.worksName),
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
     },
