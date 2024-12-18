@@ -150,9 +150,10 @@ import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { webViewStatistics } from '@/apis/base'
 import { useClipboard } from '@vueuse/core'
 import {
+  eventMap,
+  type EventMapConfig,
   FILE_PICKER_POLICY_NAME,
   getShareH5PageUrl,
-  SHARE_INFO,
 } from '@/constants/dayofdesign01'
 
 /**
@@ -176,7 +177,7 @@ const props = defineProps<{
     policyName: string
     filePickerUrl: string
   }
-  statisticsEvent?: EventDayOfDesign01
+  avtivityEvent?: EventDayOfDesign01 // 活动阶段事件
 }>()
 
 const isExitsDesign = ref(true)
@@ -217,21 +218,9 @@ const emits = defineEmits([
 ])
 
 // 没有传默认投稿期传值
-const statisticsEvent: ComputedRef<EventDayOfDesign01> = computed(
-  () => props.statisticsEvent || EventDayOfDesign01.Exhibit,
+const avtivityEvent: ComputedRef<EventDayOfDesign01> = computed(
+  () => props.avtivityEvent || EventDayOfDesign01.Exhibit,
 )
-
-const eventMap = new Map([
-  [
-    EventDayOfDesign01.Exhibit,
-    {
-      statisticsModules: {
-        download: 'day_of_design_download',
-        share: 'day_of_design_share',
-      },
-    },
-  ],
-])
 
 // 点赞按钮
 const likeBtnImg = computed(() => {
@@ -296,10 +285,6 @@ const shareLinkParams = computed(() => {
   )
 })
 
-const getShareText = (designName: string): string => {
-  return `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`
-}
-
 const onClickReport = (): void => {
   showConfirmDialog('是否要举报这个作品？', ConfirmIconType.Report)
     .then(async () => {
@@ -320,7 +305,18 @@ const onClickReport = (): void => {
     })
 }
 
+const currentEvent = eventMap.get(avtivityEvent.value) as EventMapConfig
+
+// 在点击分享渠道前触发
+const beforeClickShareChannel = (): void => {
+  void webViewStatistics({
+    module: currentEvent.statisticsModules.share,
+    event: avtivityEvent.value,
+  })
+}
+
 const onClickHandleBarShare = (): void => {
+  const shareInfo = currentEvent.shareInfo
   shareData.value.show = true
   showShare(
     { targetElByHover: '#WorksDetailModalShareBtn' },
@@ -333,18 +329,19 @@ const onClickHandleBarShare = (): void => {
           NgshareChannel.DaShenFriendCircle,
         ],
     {
-      title: '《光·遇》绘梦节',
-      text: getShareText(props.worksData.worksName),
+      title: shareInfo.getTitle(),
+      text: shareInfo.getText(props.worksData.worksName),
+      desc: shareInfo.getDesc(props.worksData.worksName),
       link: `${getShareH5PageUrl()}${shareLinkParams.value}`,
-      desc: getShareText(props.worksData.worksName),
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
     },
     {
-      title: SHARE_INFO.title,
-      text: SHARE_INFO.text,
+      title: shareInfo.getTitle(),
+      text: currentEvent.shareInfo.getText(props.worksData.worksName),
       image: props.worksData.worksDecorateImgSrc || '',
     },
+    beforeClickShareChannel,
   )
 }
 
@@ -375,9 +372,8 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 const onClickHandleBarDownload = async (): Promise<void> => {
   try {
     void webViewStatistics({
-      module: eventMap.get(statisticsEvent.value)?.statisticsModules
-        .download as string,
-      event: statisticsEvent.value,
+      module: currentEvent.statisticsModules.download,
+      event: avtivityEvent.value,
     })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
@@ -394,11 +390,6 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const handleLike = async (): Promise<void> => {
   try {
-    void webViewStatistics({
-      module: eventMap.get(statisticsEvent.value)?.statisticsModules
-        .share as string,
-      event: statisticsEvent.value,
-    })
     if (props.type === DesignDetailsType.Other) {
       await updateFavorites(
         props.worksData.id,
