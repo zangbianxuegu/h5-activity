@@ -176,6 +176,7 @@ const props = defineProps<{
     policyName: string
     filePickerUrl: string
   }
+  statisticsEvent?: string
 }>()
 
 const isExitsDesign = ref(true)
@@ -214,6 +215,11 @@ const emits = defineEmits([
   'update-favorite',
   'after-report',
 ])
+
+// 没有传默认投稿期传值
+const statisticsEvent = computed(
+  () => props.statisticsEvent || EventDayOfDesign01.Exhibit,
+)
 
 const eventMap = new Map([
   [
@@ -370,7 +376,7 @@ const onClickHandleBarDownload = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.download as string,
-      event: EventDayOfDesign01.All,
+      event: statisticsEvent.value,
     })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
@@ -389,7 +395,7 @@ const handleLike = async (): Promise<void> => {
   try {
     void webViewStatistics({
       module: eventMap.get(props.event)?.statisticsModules.share as string,
-      event: EventDayOfDesign01.All,
+      event: statisticsEvent.value,
     })
     if (props.type === DesignDetailsType.Other) {
       await updateFavorites(
