@@ -176,7 +176,7 @@ const props = defineProps<{
     policyName: string
     filePickerUrl: string
   }
-  statisticsEvent?: string
+  statisticsEvent?: EventDayOfDesign01
 }>()
 
 const isExitsDesign = ref(true)
@@ -217,7 +217,7 @@ const emits = defineEmits([
 ])
 
 // 没有传默认投稿期传值
-const statisticsEvent = computed(
+const statisticsEvent: ComputedRef<EventDayOfDesign01> = computed(
   () => props.statisticsEvent || EventDayOfDesign01.Exhibit,
 )
 
@@ -375,7 +375,8 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 const onClickHandleBarDownload = async (): Promise<void> => {
   try {
     void webViewStatistics({
-      module: eventMap.get(props.event)?.statisticsModules.download as string,
+      module: eventMap.get(statisticsEvent.value)?.statisticsModules
+        .download as string,
       event: statisticsEvent.value,
     })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
@@ -394,7 +395,8 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 const handleLike = async (): Promise<void> => {
   try {
     void webViewStatistics({
-      module: eventMap.get(props.event)?.statisticsModules.share as string,
+      module: eventMap.get(statisticsEvent.value)?.statisticsModules
+        .share as string,
       event: statisticsEvent.value,
     })
     if (props.type === DesignDetailsType.Other) {
