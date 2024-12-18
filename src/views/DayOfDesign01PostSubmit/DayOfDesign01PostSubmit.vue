@@ -28,7 +28,7 @@
                     :max-size="10 * 1024 * 1024"
                     :min-size="100 * 1024"
                     :reupload="false"
-                    :preview-full-image="true"
+                    :preview-full-image="false"
                     :show-delete-btn="false"
                   ></upload-img>
                   <div class="works-operate-btn-container">
@@ -367,7 +367,7 @@ const contributeBtnText = computed((): string => {
   if (!isContributed.value) {
     return '立即投稿'
   } else if (isChecking.value) {
-    return '审核中...'
+    return '审核中......'
   }
   return '重新投稿'
 })
@@ -600,7 +600,7 @@ const confirmSubmitWork = async (): Promise<void> => {
   }
 
   showLoadingToast({
-    message: '正在投稿...',
+    message: '正在投稿......',
     forbidClick: true,
     duration: 0,
     onOpened: () => {

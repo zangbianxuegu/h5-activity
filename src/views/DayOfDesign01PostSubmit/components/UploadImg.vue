@@ -269,7 +269,7 @@ const listenUploadImgChange = (): void => {
 
         if (props.cropper) {
           showLoadingToast({
-            message: '准备裁剪中...',
+            message: '准备裁剪中......',
             forbidClick: true,
             duration: 0,
           })

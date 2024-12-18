@@ -407,7 +407,7 @@ export const saveImgToDeviceAlbum = (
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     showLoadingToast({
-      message: '下载中...',
+      message: '下载中......',
       forbidClick: true,
       duration: 0,
     })

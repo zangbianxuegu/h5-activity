@@ -254,14 +254,10 @@ export const ERROR_MESSAGES: ErrorMessages = {
 
   get_file_picker_token: {
     400: {
-      invalid_method: '参数method错误',
-      invalid_extra_info: '参数extrainfo错误',
-      invalid_policy_name: '参数policy_name错误',
-      inactive_policy: '参数policy_name错误或配置出错',
-      'bad request': '非法请求',
+      'bad request': '投稿失败',
     },
     401: {
-      unauthorized: '禁止投稿',
+      unauthorized: '您已被禁止投稿，请联系客服了解',
     },
   },
 
@@ -283,6 +279,9 @@ export const ERROR_MESSAGES: ErrorMessages = {
         '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
       'illegal combined_text':
         '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+    },
+    401: {
+      unauthorized: '您已被禁止投稿，请联系客服了解',
     },
   },
 
