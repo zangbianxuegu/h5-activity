@@ -396,7 +396,7 @@ const handleLike = async (): Promise<void> => {
       )
       showToast(!isFavorite.value ? '已成功添加至我的收藏' : '取消收藏成功')
       isFavorite.value = !isFavorite.value
-      emits('update-favorite', isFavorite)
+      emits('update-favorite', isFavorite.value)
     }
   } catch (error: any) {
     showToast(error?.message as string)
