@@ -244,6 +244,7 @@ import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { useClipboard } from '@vueuse/core'
 
 import TestUploadAuto from './components/TestUploadAuto.vue'
+import { useBaseStore } from '@/stores/base'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -559,6 +560,7 @@ const onClickViewMyWorks = async (): Promise<void> => {
 }
 
 const initPageData = async (): Promise<void> => {
+  console.log('initPageData')
   await updateDesignDetails()
 }
 
@@ -607,9 +609,10 @@ const confirmSubmitWork = async (): Promise<void> => {
         if (apiTimeout) {
           stopSubmit()
           showToast('上传异常，请刷新后重试')
+          console.log('上传异常，请刷新后重试：超时异常')
         }
         clearTimeout(timer)
-      }, 10 * 1000)
+      }, 20 * 1000)
     },
   })
 
@@ -621,6 +624,7 @@ const confirmSubmitWork = async (): Promise<void> => {
     if (!designIdBeforeSubmit.value) {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：向服务端获取作品id取值异常')
       return
     }
     await nextTick()
@@ -644,6 +648,7 @@ const confirmSubmitWork = async (): Promise<void> => {
     } else {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：图片上传后取值异常')
     }
   } catch (error: any) {
     stopSubmit()
@@ -681,7 +686,13 @@ const updateDesignDetails = async (): Promise<void> => {
   } catch (error) {}
 }
 
+const baseStore = useBaseStore()
+const currentChannel = baseStore.baseInfo.channel
+const currentAppChannel = baseStore.baseInfo.appChannel
 onMounted(async () => {
+  console.log('currentChannel', currentChannel)
+  console.log('currentAppChannel', currentAppChannel)
+
   await initPageData()
   Session.set(sessionIsVisitedKey, false)
 })

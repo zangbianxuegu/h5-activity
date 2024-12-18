@@ -16,14 +16,16 @@
           <span>请按模板上传小于10MB，尺寸为1200×900px的图片</span>
         </div>
         <!-- 隐藏触发上传稿件的元素 -->
-        <input
-          ref="imageUploadsInputDomRef"
-          type="file"
-          id="image_uploads_cut_test"
-          name="image_uploads"
-          :accept="accept"
-          v-show="false"
-        />
+        <form ref="formRef">
+          <input
+            ref="imageUploadsInputDomRef"
+            type="file"
+            id="image_uploads_cut_test"
+            name="image_uploads"
+            :accept="accept"
+            v-show="false"
+          />
+        </form>
       </div>
       <div
         v-show="data"
@@ -189,6 +191,7 @@ watch(
 )
 
 // 作品上传相关
+const formRef = ref()
 const imageUploadsInputDomRef = ref()
 const onClickGoToUploadWorks = (): void => {
   if (!props.data) {
@@ -234,7 +237,6 @@ watch(
     }
   },
 )
-
 // 添加上传作品的监听
 const listenUploadImgChange = (): void => {
   imageUploadsInputDomRef.value.addEventListener(
@@ -253,11 +255,13 @@ const listenUploadImgChange = (): void => {
         // 检查文件类型
         if (!allowedTypes.includes(file.type)) {
           showToast('上传失败，只能上传png和jpg')
+          formRef.value.reset()
           return
         }
         // 检查文件大小
         if (props.maxSize && file.size > maxSizeLimit) {
           showToast('您选择的图片大小超过10MB，无法上传')
+          formRef.value.reset()
           return
         } else if (props.minSize && file.size < minSizeLimit) {
           showToast('您选择的图片过小，可能会影响展示效果')
@@ -283,6 +287,7 @@ const listenUploadImgChange = (): void => {
                 showToast(
                   '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
                 )
+                formRef.value.reset()
               } else {
                 cropperData.value.isShow = true
                 cropperData.value.preCropperImgUrl = readFileResult

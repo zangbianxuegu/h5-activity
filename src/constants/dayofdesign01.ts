@@ -13,9 +13,9 @@ export const groupNameAndCodeMap = new Map([
 ])
 
 export const SHARE_INFO = {
-  title: '绘梦节标题',
-  text: '绘梦节副标题',
-  desc: '绘梦节描述',
+  title: '《光·遇》绘梦节标题',
+  text: '《光·遇》绘梦节文本',
+  desc: '《光·遇》绘梦节描述', // 微博用到这个
 }
 
 export const getShareH5PageUrl = (): string => {

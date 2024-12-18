@@ -46,7 +46,7 @@
                   已举报
                 </div>
               </div>
-              <div class="right">
+              <div class="right" v-if="isExitsDesign">
                 <div class="works-preview-basic-info">
                   <p>
                     <span>编号：</span>
@@ -251,7 +251,7 @@ const shareData = ref({
 const baseStore = useBaseStore()
 const getLogoUrl = (): string => {
   return ['netease', 'app_store'].includes(baseStore.baseInfo.channel)
-    ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
+    ? 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
     : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
 }
 
@@ -456,7 +456,7 @@ const onClickCloseModal = (): void => {
     flex: 1;
     height: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     position: relative;
     .img-container {
       width: 1200px;

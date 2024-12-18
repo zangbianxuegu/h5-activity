@@ -129,12 +129,15 @@ export const getDesignDetails = (
   params: DetailParams,
 ): Promise<OtherDesignDetails | SelfDesignDetails> => {
   return new Promise((resolve, reject) => {
+    console.log('before getDesignDetails')
+
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_design_details',
       content: params,
       handleRes: (res: Response) => {
         const { code, msg, data } = res
+        console.log('after getDesignDetails')
         if (code === 200) {
           resolve(data)
         } else {
