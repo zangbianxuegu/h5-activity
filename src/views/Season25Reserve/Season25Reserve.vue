@@ -79,7 +79,7 @@ const isReserved = ref(false)
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=67596cca93d2053a0757a54e&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=67596cca93d2053a0757a54e'
 const pathDev =
-  '/pages/game/index?cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=675c0ac1af32530ebdf8b8b0&utm_medium=gmc&utm_source=kf&wsSubGameInfoId=675c0ac1af32530ebdf8b8b0'
+  '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=675c0ac1af32530ebdf8b8b0&utm_medium=gmc&utm_source=kf.ma75&wsSubGameInfoId=675c0ac1af32530ebdf8b8b0'
 // 正式版：0，测试版：1，体验版：2
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev
