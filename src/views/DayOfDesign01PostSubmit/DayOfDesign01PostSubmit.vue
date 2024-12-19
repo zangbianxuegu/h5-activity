@@ -52,7 +52,7 @@
                   >
                     <span class="group-value">【{{ worksGroupName }}组】</span>
                     <span class="id-value">
-                      ID:&ensp;<span id="works-id">{{
+                      编号:&ensp;<span id="works-id">{{
                         currentWorksPureId
                       }}</span>
                     </span>
@@ -138,6 +138,7 @@
                   >
                     <div class="field-textarea-bg"></div>
                     <textarea
+                      ref="worksIntroduceRef"
                       v-model="worksData.worksIntroduce"
                       name="worksIntroduce"
                       id="worksIntroduce"
@@ -145,6 +146,7 @@
                       maxlength="50"
                       placeholder="请分享你的创作故事"
                       :disabled="isContributed"
+                      @blur="onBlurWorksIntroduce"
                     ></textarea>
                     <span class="word-count"
                       >{{ worksIntroduceWordCount }}/50</span
@@ -310,6 +312,23 @@ watch(
     }
   },
 )
+
+const worksIntroduceRef = ref<HTMLTextAreaElement | null>()
+const addEventListenerToWorksIntroduceRef = (): void => {
+  worksIntroduceRef.value?.addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+      showToast('当前文本框不支持输入该内容')
+      event.preventDefault() // 阻止换行
+    }
+  })
+}
+const onBlurWorksIntroduce = (): void => {
+  // 禁止用户输入换行符
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.replaceAll(
+    /(\r\n|\n|\r|\t)/g,
+    '',
+  )
+}
 
 // 是否已上传作品（只显示，不一定上传）
 const isUploaded = computed((): boolean => {
@@ -692,9 +711,27 @@ const currentAppChannel = baseStore.baseInfo.appChannel
 onMounted(async () => {
   console.log('currentChannel', currentChannel)
   console.log('currentAppChannel', currentAppChannel)
+  addEventListenerToWorksIntroduceRef()
 
   await initPageData()
   Session.set(sessionIsVisitedKey, false)
+
+  // worksData.value = {
+  //   id: 'X123123',
+  //   author: '11',
+  //   worksName: '11',
+  //   worksIntroduce:
+  //     '111111111111111111111111111111111111111111111111111111111111111111111111111111',
+  //   worksImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   worksDecorateImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   checkStatus: DesignReviewStatus.Passed,
+  //   worksDecorateImg: null,
+  // }
+  // designIdBeforeSubmit.value = worksData.value.id
+  // await nextTick()
+  // await generateDecorateWorksImg()
 })
 </script>
 
@@ -1031,6 +1068,24 @@ onMounted(async () => {
     color: rgba(255, 255, 255, 1);
     &::placeholder {
       color: rgba(255, 255, 255, 0.6);
+    }
+    /* 自定义滚动条样式 */
+    &::-webkit-scrollbar {
+      width: 12px; /* 滚动条的宽度 */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; /* 滚动条轨道的背景色 */
+      border-radius: 10px; /* 轨道的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888; /* 滚动条的颜色 */
+      border-radius: 10px; /* 滚动条的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555; /* 鼠标悬停时滚动条的颜色 */
     }
   }
   .word-count {
