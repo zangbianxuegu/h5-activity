@@ -79,7 +79,6 @@
                   !isCoolDownActive &&
                     (type === PageType.Recommend ? 'bg-[#d9fff5]' : 'bg-white'),
                 ]"
-                :disabled="isCoolDownActive"
                 @click="handleRecommend"
               >
                 <img
@@ -528,6 +527,10 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
  */
 async function handleRecommend(): Promise<void> {
   type.value = PageType.Recommend
+  // disable 可点、切换 Tab
+  if (isCoolDownActive.value) {
+    return
+  }
   recommendPage++
   // 需要重新请求数据/重置页数和缓存数据：
   // - 缓存数据不足一页数量
