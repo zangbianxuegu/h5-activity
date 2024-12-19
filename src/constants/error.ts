@@ -189,7 +189,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
   // 绘梦节 - 搜索
   search_designs: {
     400: {
-      'invalid term': '没有找到相关结果，请准确输入作者名或作品编码',
+      'invalid term': '该内容无法使用，请重新输入',
       'repeat request': '点得太快了，请稍后重试',
       'bad request': '非法请求',
     },
@@ -274,10 +274,10 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'design_name nomatch': '作品名称不符合要求',
       'description error_length': '作品介绍不符合要求',
       'description nomatch': '作品介绍不符合要求',
-      'illegal author_name': '您输入的作者名无法使用',
-      'illegal design_name': '您输入的作品名称无法使用',
-      'illegal description': '您输入的作品介绍无法使用',
-      'illegal combined_text': '您输入的文字无法使用',
+      'illegal author_name': '您输入的作者名无法使用，请重新输入',
+      'illegal design_name': '您输入的作品名称无法使用，请重新输入',
+      'illegal description': '您输入的作品介绍无法使用，请重新输入',
+      'illegal combined_text': '您输入的文字无法使用，请重新输入',
     },
     401: {
       unauthorized: '您已被禁止投稿，请联系客服了解',
@@ -317,10 +317,10 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'design_name nomatch': '作品名称不符合要求',
       'description error_length': '作品介绍不符合要求',
       'description nomatch': '作品介绍不符合要求',
-      'illegal author_name': '您输入的作者名无法使用',
-      'illegal design_name': '您输入的作品名称无法使用',
-      'illegal description': '您输入的作品介绍无法使用',
-      'illegal combined_text': '您输入的文字无法使用',
+      'illegal author_name': '您输入的作者名无法使用，请重新输入',
+      'illegal design_name': '您输入的作品名称无法使用，请重新输入',
+      'illegal description': '您输入的作品介绍无法使用，请重新输入',
+      'illegal combined_text': '您输入的文字无法使用，请重新输入',
     },
     401: {
       unauthorized: '您已被禁止投稿，请联系客服了解',
