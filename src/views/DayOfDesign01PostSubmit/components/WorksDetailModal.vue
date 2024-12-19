@@ -210,12 +210,12 @@ watchEffect(() => {
   isFavorite.value = props.worksData.isFavorite
 })
 
-const emits = defineEmits([
-  'update:show',
-  'after-delete',
-  'update-favorite',
-  'after-report',
-])
+const emits = defineEmits<{
+  'update:show': [show: boolean]
+  'after-delete': []
+  'update-favorite': [isFavorite: boolean]
+  'after-report': []
+}>()
 
 // 没有传默认投稿期传值
 const avtivityEvent: ComputedRef<EventDayOfDesign01> = computed(

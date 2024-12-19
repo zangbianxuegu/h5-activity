@@ -136,7 +136,6 @@ import type {
   DesignItem,
   FavoriteData,
   DetailParams,
-  OtherDesignDetails,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
@@ -686,13 +685,19 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
  * @returns {Promise<void>}
  */
 async function getDetail(params: DetailParams): Promise<void> {
-  const detail = (await getDesignDetails(params)) as OtherDesignDetails
-  if (!detail.design_name) {
-    if (detailType.value === DesignDetailsType.Self) {
-      showToast('你当前还没有作品')
+  const detail = await getDesignDetails(params)
+  if (detailType.value === DesignDetailsType.Self) {
+    // 返回了空对象或者审核不通过
+    if (
+      !detail.design_name ||
+      ('review_status' in detail && detail.review_status !== 'passed')
+    ) {
+      showToast('暂时没有已发布的作品')
       return
     }
   }
+  const isFavorite = 'is_favorite' in detail ? detail.is_favorite : false
+  const isReported = 'is_reported' in detail ? detail.is_reported : false
   detailData.value = {
     id: curDetailId,
     author: detail.author_name,
@@ -700,8 +705,8 @@ async function getDetail(params: DetailParams): Promise<void> {
     worksIntroduce: detail.description,
     worksImgSrc: detail.raw_url,
     worksDecorateImgSrc: detail.share_url,
-    isFavorite: detail.is_favorite,
-    isReported: detail.is_reported,
+    isFavorite,
+    isReported,
   }
   isDetailVisible.value = true
 }
