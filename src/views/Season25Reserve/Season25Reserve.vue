@@ -140,19 +140,14 @@ function handleVisibilityChange(): void {
 /**
  * 点击“约定相见”，前往小程序预约新季节
  */
-function handleToReserve(): void {
+async function handleToReserve(): Promise<void> {
   if (isReserved.value) {
     return
   }
-  getSeasonReservationStatus(appChannel.value)
-    .then(() => {
-      openWechatMiniprogram(miniProgramParams).catch((error) => {
-        showToast(error.message)
-      })
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+  await getSeasonReservationStatus(appChannel.value)
+  await openWechatMiniprogram(miniProgramParams).catch((error) => {
+    showToast(error.message)
+  })
 }
 
 // 显示帮助

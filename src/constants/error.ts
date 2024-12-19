@@ -117,7 +117,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
       not_reserved: '未预约',
     },
     400: {
-      fail: '预约失败',
+      fail: '活动数据异常',
     },
   },
 
