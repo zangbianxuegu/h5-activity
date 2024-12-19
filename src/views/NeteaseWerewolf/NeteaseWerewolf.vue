@@ -238,7 +238,7 @@
       <!-- 引导弹窗 -->
       <bind-modal
         ref="modalGuide"
-        title="如何查看狼人杀的角色编号？"
+        title="如何查看狼人杀角色编号？"
         @close="closeModalGuide"
       >
         <template #content>
