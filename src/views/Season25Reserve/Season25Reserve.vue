@@ -113,8 +113,8 @@ onUnmounted(() => {
  */
 function getReserveStatus(): void {
   getSeasonReservationStatus(appChannel.value)
-    .then(() => {
-      isReserved.value = true
+    .then((res) => {
+      isReserved.value = res.code === 200
     })
     .catch((error) => {
       showToast(error.message)
@@ -144,9 +144,15 @@ function handleToReserve(): void {
   if (isReserved.value) {
     return
   }
-  openWechatMiniprogram(miniProgramParams).catch((error) => {
-    showToast(error.message)
-  })
+  getSeasonReservationStatus(appChannel.value)
+    .then(() => {
+      openWechatMiniprogram(miniProgramParams).catch((error) => {
+        showToast(error.message)
+      })
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 // 显示帮助

@@ -116,6 +116,9 @@ export const ERROR_MESSAGES: ErrorMessages = {
     404: {
       not_reserved: '未预约',
     },
+    400: {
+      fail: '预约失败',
+    },
   },
 
   // 获取走格子数据
