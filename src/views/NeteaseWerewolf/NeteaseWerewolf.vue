@@ -163,7 +163,7 @@
             style="border-bottom: 1px solid #83b7e4"
             @click="handleShowGuide"
           >
-            如何查看角色编号?
+            如何查看狼人杀角色编号?
           </div>
           <div class="ml-[40px] mt-[60px] text-[40px] text-[#929292]">
             <div>请确认角色昵称：</div>
@@ -238,12 +238,12 @@
       <!-- 引导弹窗 -->
       <bind-modal
         ref="modalGuide"
-        title="如何查看角色编号？"
+        title="如何查看狼人杀的角色编号？"
         @close="closeModalGuide"
       >
         <template #content>
           <div class="mt-[100px] text-[39px] text-[#929292]">
-            <div class="mb-[22px]">1.打开游戏界面</div>
+            <div class="mb-[22px]">1.打开《狼人杀》的游戏界面</div>
             <div class="mb-[38px]">
               2.点击左上角头像进入个人资料界面，点击角色编号复制
             </div>
