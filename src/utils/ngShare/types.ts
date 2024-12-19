@@ -338,3 +338,13 @@ export interface NgshareCheckChannelIsExistToNativeConfig {
     nativeCallback: (respJSONString: string) => void
   }
 }
+
+// 渠道分享平台的排序（不可改，要改需要跟后台配置同步）
+export const sharePlatformCodeOrder = [
+  'wechat',
+  'douyin',
+  'bilibili',
+  'weibo',
+  'dashen',
+  'xiaohongshu',
+]

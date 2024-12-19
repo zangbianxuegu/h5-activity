@@ -82,7 +82,11 @@ import type {
   UserInfo,
 } from '@/types'
 import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
-import { getPlayerMissionData } from '@/utils/request'
+import {
+  CommonConfig,
+  getCommonConfig,
+  getPlayerMissionData,
+} from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo, getJinglingToken } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
@@ -143,6 +147,14 @@ let tokenParams: TokenParams = {
   source: 'normal',
 }
 
+const getShareConfig = async (appChannel: string): Promise<void> => {
+  const shareConfig: any = await getCommonConfig(
+    CommonConfig.EnableDayOfDesignShare,
+  )
+  const sharePlatformCode = shareConfig[appChannel] as string
+  updateBaseInfoItems({ sharePlatformCode })
+}
+
 // 获取基本信息
 async function getBaseInfo(): Promise<void> {
   try {
@@ -163,6 +175,7 @@ async function getBaseInfo(): Promise<void> {
       return_buff: res.return_buff,
       os: res.os,
     }
+    await getShareConfig(appChannel)
   } catch (error) {
     showToast((error as Error).message)
   }

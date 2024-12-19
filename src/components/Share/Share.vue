@@ -18,6 +18,7 @@ import type {
 import { ngshareByH5 } from '@/utils/ngShare/index'
 import SkyShareSheet from './SkyShareSheet.vue'
 import type { ShareFormatConfig } from '@/utils/ngShare/share'
+import { useEnvironment } from '@/composables/useEnvironment'
 
 /**
  * @prop shareChannel 分享渠道，传[]默认分享所有渠道
@@ -91,19 +92,28 @@ const shareChannel = computed(() => {
   }
 })
 
+const environment = useEnvironment()
+const isIos = computed(() => environment.isIos)
+
 const onSelectChannel = async (option: ShareOption): Promise<void> => {
   props.beforeClickShareChannel()
   const shareLinkList = [
     NgshareChannel.WechatFriendCircle,
     NgshareChannel.WechatFriend,
-    NgshareChannel.Weibo,
     NgshareChannel.DaShenFriendCircle,
   ]
   const shareImgList = [
+    NgshareChannel.Weibo,
     NgshareChannel.Bilibili,
     NgshareChannel.DouYin,
     NgshareChannel.XiaoHongShu,
   ]
+  // ios分享链接
+  if (isIos.value) {
+    shareImgList.push(NgshareChannel.Weibo)
+  } else {
+    shareLinkList.push(NgshareChannel.Weibo)
+  }
   const contentType = shareLinkList.includes(option.shareChannel)
     ? NgshareContentType.Link
     : NgshareContentType.Image

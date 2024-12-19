@@ -99,7 +99,11 @@
                   </div>
                   <!-- 分享 -->
                   <div
-                    v-if="!isPC"
+                    v-if="
+                      !isPC &&
+                      isShowShareBtnAfterGetChannel &&
+                      isShowShareBtnByChannel
+                    "
                     @click.stop="onClickHandleBarShare"
                     class="btn share cursor-pointer"
                     id="WorksDetailModalShareBtn"
@@ -139,7 +143,7 @@ import {
   report,
   updateFavorites,
 } from '@/apis/dayOfDesign01'
-import { NgshareChannel } from '@/utils/ngShare/types'
+import { NgshareChannel, sharePlatformCodeOrder } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
 import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorited.png'
@@ -313,19 +317,52 @@ const beforeClickShareChannel = (): void => {
   })
 }
 
+const isShowShareBtnAfterGetChannel = ref(false)
+let sharePlatformCode = ''
+const sharePlatform: NgshareChannel[] = []
+// 根据渠道包获取分享可显示的分享平台
+const getShareChannel = (): any => {
+  function isOpen(codeValue: string): boolean {
+    return codeValue === '1'
+  }
+
+  const codeArr = sharePlatformCode.split('')
+  sharePlatformCodeOrder.forEach((channel, index) => {
+    if (channel === 'wechat') {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.WechatFriend)
+        sharePlatform.push(NgshareChannel.WechatFriendCircle)
+      }
+    } else if (channel === 'douyin') {
+      if (isOpen(codeArr[index]) && isCanShareImg) {
+        sharePlatform.push(NgshareChannel.DouYin)
+      }
+    } else if (channel === 'bilibili' && isCanShareImg) {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.Bilibili)
+      }
+    } else if (channel === 'weibo') {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.Weibo)
+      }
+    } else if (channel === 'dashen') {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.DaShenFriendCircle)
+      }
+    } else if (channel === 'xiaohongshu' && isCanShareImg) {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.XiaoHongShu)
+      }
+    }
+  })
+  isShowShareBtnAfterGetChannel.value = true
+}
 const onClickHandleBarShare = (): void => {
   const shareInfo = currentEvent.shareInfo
   shareData.value.show = true
   showShare(
     { targetElByHover: '#WorksDetailModalShareBtn' },
-    isCanShareImg
-      ? []
-      : [
-          NgshareChannel.WechatFriend,
-          NgshareChannel.WechatFriendCircle,
-          NgshareChannel.Weibo,
-          NgshareChannel.DaShenFriendCircle,
-        ],
+    sharePlatform,
     {
       title: shareInfo.getTitle(),
       text: shareInfo.getText(props.worksData.worksName),
@@ -422,6 +459,26 @@ const onClickCopyWorksId = async (): Promise<void> => {
 const onClickCloseModal = (): void => {
   emits('update:show', false)
 }
+
+const isShowShareBtnByChannel = ref(true)
+
+// 异步获取分享渠道的code
+const getSharePlatformCode = (): Promise<string> => {
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      if (baseStore.baseInfo.sharePlatformCode) {
+        clearInterval(timer)
+        resolve(baseStore.baseInfo.sharePlatformCode)
+      }
+    }, 500)
+  })
+}
+
+onMounted(async () => {
+  sharePlatformCode = await getSharePlatformCode()
+  isShowShareBtnByChannel.value = sharePlatformCode !== '000000'
+  getShareChannel()
+})
 </script>
 
 <style lang="scss" scoped>
