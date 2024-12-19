@@ -33,7 +33,7 @@
 
                 <!-- 举报按钮和标识 -->
                 <div
-                  v-if="isOther && !worksData.isReported"
+                  v-if="isOther && !worksData.isReported && isExitsDesign"
                   class="btn-report cursor-pointer bg-cover bg-center bg-no-repeat"
                   @click.stop="onClickReport"
                 >
@@ -245,9 +245,7 @@ const shareData = ref({
 
 const baseStore = useBaseStore()
 const getLogoUrl = (): string => {
-  return ['netease', 'app_store'].includes(baseStore.baseInfo.channel)
-    ? 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
-    : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
+  return 'https://ma75.gsf.netease.com/sky_logo.png'
 }
 
 const environment = useEnvironment()
@@ -555,11 +553,14 @@ const onClickCloseModal = (): void => {
     .works-preview-introduce {
       width: 100%;
       flex: 1;
+      overflow: hidden;
       p {
         font-size: 30px;
         color: #7c6354;
         font-family: SourceHanSansCN-Regular;
         line-height: 50px;
+        word-wrap: break-word; /* 适用于较旧的浏览器 */
+        overflow-wrap: break-word;
       }
     }
     .btn-group-bar {
