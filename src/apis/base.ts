@@ -66,16 +66,17 @@ export function getSeasonReservationStatus(
       resource: '/account/mini_program/get_season_reservation_status',
       content: { app_channel: appChannel },
       handleRes: (res) => {
-        if (res.code === 200 || res.code === 404) {
+        if (res.code === 200 || res.code === 400) {
           resolve(res)
-        } else {
-          const errorMessage = getErrorMessage(
-            'get_season_reservation_status',
-            res.code,
-            res.msg,
-          )
-          reject(new Error(errorMessage))
         }
+        // else {
+        //   const errorMessage = getErrorMessage(
+        //     'get_season_reservation_status',
+        //     res.code,
+        //     res.msg,
+        //   )
+        //   reject(new Error(errorMessage))
+        // }
       },
     }).catch((err) => {
       console.log(err)

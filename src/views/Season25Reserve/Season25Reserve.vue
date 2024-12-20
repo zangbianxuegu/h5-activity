@@ -75,6 +75,8 @@ const baseStore = useBaseStore()
 const appChannel = computed(() => baseStore.baseInfo.appChannel)
 // 是否已预约
 const isReserved = ref(false)
+// 是否活动结束
+const isFinished = ref(false)
 
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=67596cca93d2053a0757a54e&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=67596cca93d2053a0757a54e'
@@ -115,6 +117,7 @@ function getReserveStatus(): void {
   getSeasonReservationStatus(appChannel.value)
     .then((res) => {
       isReserved.value = res.code === 200
+      isFinished.value = res.code === 400
     })
     .catch((error) => {
       showToast(error.message)
@@ -144,8 +147,11 @@ async function handleToReserve(): Promise<void> {
   if (isReserved.value) {
     return
   }
-  await getSeasonReservationStatus(appChannel.value)
-  await openWechatMiniprogram(miniProgramParams).catch((error) => {
+  if (isFinished.value) {
+    showToast('活动数据异常')
+    return
+  }
+  openWechatMiniprogram(miniProgramParams).catch((error) => {
     showToast(error.message)
   })
 }
