@@ -68,14 +68,15 @@ export function getSeasonReservationStatus(
       handleRes: (res) => {
         if (res.code === 200 || res.code === 404) {
           resolve(res)
-        } else {
-          const errorMessage = getErrorMessage(
-            'get_season_reservation_status',
-            res.code,
-            res.msg,
-          )
-          reject(new Error(errorMessage))
         }
+        // else {
+        //   const errorMessage = getErrorMessage(
+        //     'get_season_reservation_status',
+        //     res.code,
+        //     res.msg,
+        //   )
+        //   reject(new Error(errorMessage))
+        // }
       },
     }).catch((err) => {
       console.log(err)
