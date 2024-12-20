@@ -591,7 +591,7 @@ async function handleSearch(dir?: string): Promise<void> {
     return
   }
   const authorPattern = /^[0-9A-Za-z\u4e00-\u9fa5]{1,8}$/
-  const workIdPattern = /^[XGYM]\d{8,}$/
+  const workIdPattern = /^[XGYMxgym]\d{8,}$/
   if (
     !authorPattern.test(searchTerm.value) &&
     !workIdPattern.test(searchTerm.value)
@@ -697,6 +697,10 @@ async function getDetail(params: DetailParams): Promise<void> {
     ) {
       showToast('暂时没有已发布的作品')
       return
+    }
+    // 打开自己作品，当前作品 ID 为 detail.design_id
+    if ('design_id' in detail) {
+      curDetailId = detail.design_id
     }
   }
   const isFavorite = 'is_favorite' in detail ? detail.is_favorite : false
