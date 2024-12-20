@@ -133,6 +133,7 @@ onMounted(async () => {
   try {
     await getBaseInfo()
     getAllEvents()
+    await getShareConfig(baseStore.baseInfo.appChannel)
   } catch (error) {
     // console.error(error)
   }
@@ -148,11 +149,16 @@ let tokenParams: TokenParams = {
 }
 
 const getShareConfig = async (appChannel: string): Promise<void> => {
-  const shareConfig: any = await getCommonConfig(
-    CommonConfig.EnableDayOfDesignShare,
-  )
-  const sharePlatformCode = shareConfig[appChannel] as string
-  updateBaseInfoItems({ sharePlatformCode })
+  try {
+    const shareConfig: any = await getCommonConfig(
+      CommonConfig.EnableDayOfDesignShare,
+    )
+    // "111111"
+    const sharePlatformCode = shareConfig[appChannel] as string
+    updateBaseInfoItems({ sharePlatformCode })
+  } catch (error) {
+    throw new Error('getShareConfig error')
+  }
 }
 
 // 获取基本信息
@@ -175,7 +181,6 @@ async function getBaseInfo(): Promise<void> {
       return_buff: res.return_buff,
       os: res.os,
     }
-    await getShareConfig(appChannel)
   } catch (error) {
     showToast((error as Error).message)
   }

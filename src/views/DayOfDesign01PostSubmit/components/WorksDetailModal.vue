@@ -320,14 +320,24 @@ const beforeClickShareChannel = (): void => {
 const isShowShareBtnAfterGetChannel = ref(false)
 let sharePlatformCode = ''
 const sharePlatform: NgshareChannel[] = []
-
+let updateSharePlatformCodetimer: NodeJS.Timeout | string | number | undefined
 // 异步获取分享渠道的code
 const getSharePlatformCode = (): Promise<string> => {
+  let intervalCount = 6
   return new Promise((resolve) => {
-    const timer = setInterval(() => {
-      if (baseStore.baseInfo.sharePlatformCode) {
-        clearInterval(timer)
-        resolve(baseStore.baseInfo.sharePlatformCode)
+    updateSharePlatformCodetimer = setInterval(() => {
+      intervalCount--
+      // 如果配置接口请求不到，导致更新不了配置，默认全分享平台打开
+      if (intervalCount === 0) {
+        updateSharePlatformCodetimer &&
+          clearInterval(updateSharePlatformCodetimer)
+        resolve(baseStore.baseInfo.sharePlatformCode || '111111')
+      } else {
+        if (baseStore.baseInfo.sharePlatformCode) {
+          updateSharePlatformCodetimer &&
+            clearInterval(updateSharePlatformCodetimer)
+          resolve(baseStore.baseInfo.sharePlatformCode)
+        }
       }
     }, 500)
   })
@@ -481,6 +491,12 @@ const isShowShareBtnByChannel = ref(true)
 
 onMounted(async () => {
   await getShareChannel()
+})
+
+onBeforeUnmount(() => {
+  if (updateSharePlatformCodetimer) {
+    clearInterval(updateSharePlatformCodetimer)
+  }
 })
 </script>
 
