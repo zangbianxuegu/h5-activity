@@ -833,7 +833,8 @@ $font-family-bold: 'Source Han Sans CN Medium';
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
 
     &.keyboard-show {
-      transform: translate(-50%, -50%);
+      top: 30px;
+      transform: translate(-50%, 0);
     }
   }
 }

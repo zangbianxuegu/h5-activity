@@ -2,7 +2,9 @@
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="hmj-contribute flex h-screen">
       <!-- 一键上传（测试） -->
-      <div class="hmj-contribute-main">
+      <div
+        :class="['hmj-contribute-main', { 'keyboard-show': isKeyboardShow }]"
+      >
         <test-upload-auto></test-upload-auto>
         <Transition appear mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
@@ -216,6 +218,7 @@
 
 <script setup lang="ts">
 import { closeToast, showLoadingToast, showToast } from 'vant'
+import throttle from 'lodash.throttle'
 import DecorateWorksGenerate from './components/DecorateWorksGenerate.vue'
 import WorksDetailModal from './components/WorksDetailModal.vue'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
@@ -709,6 +712,7 @@ const baseStore = useBaseStore()
 const currentChannel = baseStore.baseInfo.channel
 const currentAppChannel = baseStore.baseInfo.appChannel
 onMounted(async () => {
+  window.addEventListener('resize', handleResize)
   console.log('currentChannel', currentChannel)
   console.log('currentAppChannel', currentAppChannel)
   addEventListenerToWorksIntroduceRef()
@@ -733,6 +737,24 @@ onMounted(async () => {
   // await nextTick()
   // await generateDecorateWorksImg()
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function handleResize
+ * @description 处理窗口大小变化
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
 </script>
 
 <style lang="scss" scoped>
@@ -771,6 +793,11 @@ onMounted(async () => {
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+
+    &.keyboard-show {
+      top: -220px;
+      transform: translate(-50%, 0);
+    }
   }
 }
 .title {
