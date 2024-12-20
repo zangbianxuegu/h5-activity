@@ -103,7 +103,6 @@ const onSelectChannel = async (option: ShareOption): Promise<void> => {
     NgshareChannel.DaShenFriendCircle,
   ]
   const shareImgList = [
-    NgshareChannel.Weibo,
     NgshareChannel.Bilibili,
     NgshareChannel.DouYin,
     NgshareChannel.XiaoHongShu,

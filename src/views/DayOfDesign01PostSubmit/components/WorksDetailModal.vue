@@ -254,6 +254,7 @@ const getLogoUrl = (): string => {
 
 const environment = useEnvironment()
 const isPC = computed(() => environment.isPC)
+const isIos = computed(() => environment.isIos)
 
 let isCanShareImg = true
 
@@ -370,7 +371,11 @@ const getShareChannel = async (): Promise<void> => {
       }
     } else if (channel === 'weibo') {
       if (isOpen(codeArr[index])) {
-        sharePlatform.push(NgshareChannel.Weibo)
+        if (!isIos.value) {
+          sharePlatform.push(NgshareChannel.Weibo)
+        } else {
+          isCanShareImg && sharePlatform.push(NgshareChannel.Weibo)
+        }
       }
     } else if (channel === 'dashen') {
       if (isOpen(codeArr[index])) {
