@@ -254,6 +254,7 @@ const getLogoUrl = (): string => {
 
 const environment = useEnvironment()
 const isPC = computed(() => environment.isPC)
+const isIos = computed(() => environment.isIos)
 
 let isCanShareImg = true
 
@@ -320,14 +321,24 @@ const beforeClickShareChannel = (): void => {
 const isShowShareBtnAfterGetChannel = ref(false)
 let sharePlatformCode = ''
 const sharePlatform: NgshareChannel[] = []
-
+let updateSharePlatformCodetimer: NodeJS.Timeout | string | number | undefined
 // 异步获取分享渠道的code
 const getSharePlatformCode = (): Promise<string> => {
+  let intervalCount = 6
   return new Promise((resolve) => {
-    const timer = setInterval(() => {
-      if (baseStore.baseInfo.sharePlatformCode) {
-        clearInterval(timer)
-        resolve(baseStore.baseInfo.sharePlatformCode)
+    updateSharePlatformCodetimer = setInterval(() => {
+      intervalCount--
+      // 如果配置接口请求不到，导致更新不了配置，默认全分享平台打开
+      if (intervalCount === 0) {
+        updateSharePlatformCodetimer &&
+          clearInterval(updateSharePlatformCodetimer)
+        resolve(baseStore.baseInfo.sharePlatformCode || '111111')
+      } else {
+        if (baseStore.baseInfo.sharePlatformCode) {
+          updateSharePlatformCodetimer &&
+            clearInterval(updateSharePlatformCodetimer)
+          resolve(baseStore.baseInfo.sharePlatformCode)
+        }
       }
     }, 500)
   })
@@ -360,7 +371,11 @@ const getShareChannel = async (): Promise<void> => {
       }
     } else if (channel === 'weibo') {
       if (isOpen(codeArr[index])) {
-        sharePlatform.push(NgshareChannel.Weibo)
+        if (!isIos.value) {
+          sharePlatform.push(NgshareChannel.Weibo)
+        } else {
+          isCanShareImg && sharePlatform.push(NgshareChannel.Weibo)
+        }
       }
     } else if (channel === 'dashen') {
       if (isOpen(codeArr[index])) {
@@ -481,6 +496,12 @@ const isShowShareBtnByChannel = ref(true)
 
 onMounted(async () => {
   await getShareChannel()
+})
+
+onBeforeUnmount(() => {
+  if (updateSharePlatformCodetimer) {
+    clearInterval(updateSharePlatformCodetimer)
+  }
 })
 </script>
 

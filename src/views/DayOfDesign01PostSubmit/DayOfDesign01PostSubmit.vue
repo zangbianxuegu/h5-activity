@@ -249,7 +249,6 @@ import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { useClipboard } from '@vueuse/core'
 
 import TestUploadAuto from './components/TestUploadAuto.vue'
-import { useBaseStore } from '@/stores/base'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -320,10 +319,23 @@ const worksIntroduceRef = ref<HTMLTextAreaElement | null>()
 const addEventListenerToWorksIntroduceRef = (): void => {
   worksIntroduceRef.value?.addEventListener('keypress', function (event) {
     if (event.key === 'Enter') {
-      showToast('当前文本框不支持输入该内容')
+      showToast('当前文本框不支持换行')
       event.preventDefault() // 阻止换行
     }
   })
+}
+/**
+ * @description 检测作品介绍
+ * @returns {boolean} 是否通过
+ */
+const checkworksIntroduce = (): boolean => {
+  const reg =
+    /^[A-Za-z0-9\u4e00-\u9fa5，。！？""''；：、【】《》…—～'"()[\]{}<>.,!?;:''""@#$%^&*_+=`~|\\-]/g
+  const testRes = reg.test(worksData.value.worksIntroduce)
+  if (!testRes) {
+    showToast('创作故事不支持输入特殊字符，请重新输入')
+  }
+  return testRes
 }
 const onBlurWorksIntroduce = (): void => {
   // 禁止用户输入换行符
@@ -331,6 +343,7 @@ const onBlurWorksIntroduce = (): void => {
     /(\r\n|\n|\r|\t)/g,
     '',
   )
+  checkworksIntroduce()
 }
 
 // 是否已上传作品（只显示，不一定上传）
@@ -515,6 +528,11 @@ const onClickContributeWorks = async (): Promise<void> => {
         fieldTips.find((item) => item.param === verifyError)
           ?.verifyErrorTip as string,
       )
+      return
+    }
+
+    // 检测作品介绍是否合规
+    if (!checkworksIntroduce()) {
       return
     }
 
@@ -707,14 +725,8 @@ const updateDesignDetails = async (): Promise<void> => {
     }
   } catch (error) {}
 }
-
-const baseStore = useBaseStore()
-const currentChannel = baseStore.baseInfo.channel
-const currentAppChannel = baseStore.baseInfo.appChannel
 onMounted(async () => {
   window.addEventListener('resize', handleResize)
-  console.log('currentChannel', currentChannel)
-  console.log('currentAppChannel', currentAppChannel)
   addEventListenerToWorksIntroduceRef()
 
   await initPageData()

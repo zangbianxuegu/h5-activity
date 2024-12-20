@@ -472,7 +472,7 @@ export const getCommonConfig = (name: string): Promise<boolean> => {
         if (res.code === 200) {
           resolve(res.data)
         } else {
-          console.log('res.msg', res.msg)
+          reject(res.msg)
         }
       },
     }).catch((err) => {

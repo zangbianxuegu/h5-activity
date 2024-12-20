@@ -117,7 +117,7 @@ function getReserveStatus(): void {
   getSeasonReservationStatus(appChannel.value)
     .then((res) => {
       isReserved.value = res.code === 200
-      isFinished.value = res.code === 404
+      isFinished.value = res.code === 400
     })
     .catch((error) => {
       showToast(error.message)
