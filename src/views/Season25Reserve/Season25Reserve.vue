@@ -118,9 +118,6 @@ function getReserveStatus(): void {
     .then((res) => {
       isReserved.value = res.code === 200
       isFinished.value = res.code === 404
-      if (isFinished.value) {
-        showToast('活动数据异常')
-      }
     })
     .catch((error) => {
       showToast(error.message)
@@ -147,7 +144,11 @@ function handleVisibilityChange(): void {
  * 点击“约定相见”，前往小程序预约新季节
  */
 async function handleToReserve(): Promise<void> {
-  if (isReserved.value || isFinished.value) {
+  if (isReserved.value) {
+    return
+  }
+  if (isFinished.value) {
+    showToast('活动数据异常')
     return
   }
   openWechatMiniprogram(miniProgramParams).catch((error) => {
