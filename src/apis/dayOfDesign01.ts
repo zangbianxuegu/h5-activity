@@ -230,6 +230,7 @@ export const updateFavorites = (
  */
 export const uploadFormAndFilePickerResultToServerApi = (
   FilePickerUploadResultCode: 200,
+  designId: string,
   policyName: string,
   reviewObj: Record<string, any>,
   fileUrl: string,
@@ -246,6 +247,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
       content: {
         result_code: FilePickerUploadResultCode,
         policy_name: policyName,
+        design_id: designId,
         text: reviewObj,
         file_url: fileUrl,
         share_url: shareImgUrl,
@@ -278,6 +280,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
 /**
  * @description 上传稿件至filepicker并完成投稿（需要检查文本）
  * @function uploadWorksToServer
+ * @param designID 作品id
  * @param filePickerUrl filePicker的上传地址
  * @param policyName 策略名
  * @param shareImgPolicyName 分享图策略名
@@ -287,6 +290,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadWorksToServer = async (
+  designId: string,
   policyName: string,
   shareImgPolicyName: string,
   reviewTextObj: Record<string, any>,
@@ -345,6 +349,7 @@ export const uploadWorksToServer = async (
           const uploadDataToServerResult =
             await uploadFormAndFilePickerResultToServerApi(
               200,
+              designId,
               policyName,
               reviewTextObj,
               uploadImgResult?.url,

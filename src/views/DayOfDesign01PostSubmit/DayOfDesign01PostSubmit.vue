@@ -329,8 +329,9 @@ const addEventListenerToWorksIntroduceRef = (): void => {
  * @returns {boolean} 是否通过
  */
 const checkworksIntroduce = (): boolean => {
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.trim()
   const reg =
-    /^[A-Za-z0-9\u4e00-\u9fa5，。！？""''；：、【】《》…—～'"()[\]{}<>.,!?;:''""@#$%^&*_+=`~|\\-]/g
+    /^[A-Za-z0-9\u4e00-\u9fa5，。！？""''；：、【】《》…—～'"()[\]{}<>.,!?;:''""”“@#$%^&*_+=`~|/\\-\s]+$/g
   const testRes = reg.test(worksData.value.worksIntroduce)
   if (!testRes) {
     showToast('创作故事不支持输入特殊字符，请重新输入')
@@ -671,6 +672,7 @@ const confirmSubmitWork = async (): Promise<void> => {
     await generateDecorateWorksImg()
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
+        designIdBeforeSubmit.value,
         filePickerConfig.value.policyName,
         filePickerConfig.value.shareImgPolicyName,
         getReviewTextServerRequestFormat(
