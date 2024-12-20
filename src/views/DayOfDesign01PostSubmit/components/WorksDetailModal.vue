@@ -320,8 +320,25 @@ const beforeClickShareChannel = (): void => {
 const isShowShareBtnAfterGetChannel = ref(false)
 let sharePlatformCode = ''
 const sharePlatform: NgshareChannel[] = []
+
+// 异步获取分享渠道的code
+const getSharePlatformCode = (): Promise<string> => {
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      if (baseStore.baseInfo.sharePlatformCode) {
+        clearInterval(timer)
+        resolve(baseStore.baseInfo.sharePlatformCode)
+      }
+    }, 500)
+  })
+}
+
 // 根据渠道包获取分享可显示的分享平台
-const getShareChannel = (): any => {
+const getShareChannel = async (): Promise<void> => {
+  sharePlatformCode = await getSharePlatformCode()
+  isShowShareBtnByChannel.value = sharePlatformCode !== '000000'
+
+  // 开启的分享平台(1开启，0关闭)
   function isOpen(codeValue: string): boolean {
     return codeValue === '1'
   }
@@ -462,22 +479,8 @@ const onClickCloseModal = (): void => {
 
 const isShowShareBtnByChannel = ref(true)
 
-// 异步获取分享渠道的code
-const getSharePlatformCode = (): Promise<string> => {
-  return new Promise((resolve) => {
-    const timer = setInterval(() => {
-      if (baseStore.baseInfo.sharePlatformCode) {
-        clearInterval(timer)
-        resolve(baseStore.baseInfo.sharePlatformCode)
-      }
-    }, 500)
-  })
-}
-
 onMounted(async () => {
-  sharePlatformCode = await getSharePlatformCode()
-  isShowShareBtnByChannel.value = sharePlatformCode !== '000000'
-  getShareChannel()
+  await getShareChannel()
 })
 </script>
 
