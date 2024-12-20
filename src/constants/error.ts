@@ -116,6 +116,9 @@ export const ERROR_MESSAGES: ErrorMessages = {
     404: {
       not_reserved: '未预约',
     },
+    400: {
+      fail: '活动数据异常',
+    },
   },
 
   // 获取走格子数据
@@ -186,7 +189,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
   // 绘梦节 - 搜索
   search_designs: {
     400: {
-      'invalid term': '没有找到相关结果，请准确输入作者名或作品编码',
+      'invalid term': '该内容无法使用，请重新输入',
       'repeat request': '点得太快了，请稍后重试',
       'bad request': '非法请求',
     },
@@ -265,20 +268,16 @@ export const ERROR_MESSAGES: ErrorMessages = {
     400: {
       'bad request': '投稿失败',
       'text invalid': '作品名称/作者名/作品介绍不符合要求',
-      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
-      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
-      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'description error_length': '作品名称/作者名/作品介绍不符合要求',
-      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'illegal author_name':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal design_name':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal description':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal combined_text':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'author_name error_length': '作者名不符合要求',
+      'author_name nomatch': '作者名不符合要求',
+      'design_name error_length': '作品名称不符合要求',
+      'design_name nomatch': '作品名称不符合要求',
+      'description error_length': '作品介绍不符合要求',
+      'description nomatch': '作品介绍不符合要求',
+      'illegal author_name': '您输入的作者名无法使用，请重新输入',
+      'illegal design_name': '您输入的作品名称无法使用，请重新输入',
+      'illegal description': '您输入的作品介绍无法使用，请重新输入',
+      'illegal combined_text': '您输入的文字无法使用，请重新输入',
     },
     401: {
       unauthorized: '您已被禁止投稿，请联系客服了解',
@@ -312,20 +311,16 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'bad request': '投稿失败',
       'repeat request': '点得太快了，请稍后再试',
       'text invalid': '作品名称/作者名/作品介绍不符合要求',
-      'author_name error_length': '作品名称/作者名/作品介绍不符合要求',
-      'author_name nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'design_name error_length': '作品名称/作者名/作品介绍不符合要求',
-      'design_name nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'description error_length': '作品名称/作者名/作品介绍不符合要求',
-      'description nomatch': '作品名称/作者名/作品介绍不符合要求',
-      'illegal author_name':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal design_name':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal description':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
-      'illegal combined_text':
-        '您输入的文字/作品名称/作者名/作品介绍包含敏感字符',
+      'author_name error_length': '作者名不符合要求',
+      'author_name nomatch': '作者名不符合要求',
+      'design_name error_length': '作品名称不符合要求',
+      'design_name nomatch': '作品名称不符合要求',
+      'description error_length': '作品介绍不符合要求',
+      'description nomatch': '作品介绍不符合要求',
+      'illegal author_name': '您输入的作者名无法使用，请重新输入',
+      'illegal design_name': '您输入的作品名称无法使用，请重新输入',
+      'illegal description': '您输入的作品介绍无法使用，请重新输入',
+      'illegal combined_text': '您输入的文字无法使用，请重新输入',
     },
     401: {
       unauthorized: '您已被禁止投稿，请联系客服了解',
