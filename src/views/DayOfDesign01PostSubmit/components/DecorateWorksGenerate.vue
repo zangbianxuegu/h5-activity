@@ -15,7 +15,7 @@
             <span>{{ worksData.author }}</span>
           </p>
           <p>
-            <span>名称：</span>
+            <span>作品：</span>
             <span>{{ worksData.worksName }}</span>
           </p>
         </div>
