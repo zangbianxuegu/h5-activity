@@ -1,6 +1,9 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="page flex h-screen">
+      <van-overlay :show="isLoading" class="flex items-center justify-center">
+        <van-loading />
+      </van-overlay>
       <div :class="['page-main', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
@@ -146,7 +149,6 @@ import {
   getDesignDetails,
 } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import Loading from '@/components/Loading'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
 import throttle from 'lodash.throttle'
@@ -205,6 +207,7 @@ const {
 const activityStore = useActivityStore()
 const cachedRecommend = computed(() => activityStore.recommendData)
 
+const isLoading = ref(false)
 // 页面数据类型
 const type = ref<PageType>(PageType.Favorite) // recommend、favorite、search
 // 页面显示的作品列表数据
@@ -343,15 +346,17 @@ async function handleCachedRecommend(): Promise<void> {
     policy_name: FILE_PICKER_POLICY_NAME,
   }
   try {
+    isLoading.value = true
     const data: DesignItem[] = await getRecommendations(params)
     // 更新全局缓存数据
     activityStore.updateRecommendData(data)
     const now = Date.now()
     Session.set('lastFetchTime-dayofdesign01-recommend', now.toString())
-    console.log('cachedRecommend: ', cachedRecommend.value)
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -373,8 +378,8 @@ async function handleCachedFavorite(): Promise<void> {
     }
   }
   try {
+    isLoading.value = true
     const data: FavoriteData = await getFavorites(params)
-    console.log('接口返回收藏数据: ', data)
     // 处理收藏数据，加入字段 favorite，是否收藏，用于取消收藏展示
     const designs = data.designs.map((design) => ({
       ...design,
@@ -408,6 +413,8 @@ async function handleCachedFavorite(): Promise<void> {
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -430,8 +437,8 @@ async function handleCachedSearch(): Promise<void> {
     }
   }
   try {
+    isLoading.value = true
     const data: FavoriteData = await searchDesigns(params)
-    console.log('接口返回搜索数据: ', data)
     const designs = data.designs
     if (designs.length === 0) {
       showToast('没有找到相关结果')
@@ -452,6 +459,8 @@ async function handleCachedSearch(): Promise<void> {
   } catch (error) {
     const err = error as Error
     showToast(err.message || '搜索作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -476,11 +485,11 @@ async function getRecommendByPage(page: number): Promise<DesignItem[]> {
     }
     // else 刷新页面时距离上次请求小于3s，使用缓存数据
   } else {
-    Loading.show()
+    isLoading.value = true
     // 随机延迟 100 到 300 毫秒
     const delay = Math.floor(Math.random() * 200) + 100
     await new Promise((resolve) => setTimeout(resolve, delay))
-    Loading.hide()
+    isLoading.value = false
   }
   const res = cachedRecommend.value.slice(startIndex, endIndex)
   return res

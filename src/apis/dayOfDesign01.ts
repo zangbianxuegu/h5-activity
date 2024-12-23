@@ -15,7 +15,6 @@ import type {
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
 import { getFilePickerToken, uploadImgToFilePicker } from '@/utils/filePicker'
-import Loading from '@/components/Loading'
 
 /**
  * 作品列表 - 推荐
@@ -29,13 +28,11 @@ export function getRecommendations(
   params: ListRecommendParams,
 ): Promise<DesignItem[]> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_recommendations',
       content: params,
       handleRes: (res: ListRecommendRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -63,13 +60,11 @@ export function getFavorites(
   params: ListFavoriteParams,
 ): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_favorites',
       content: params,
       handleRes: (res: ListFavoriteRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -96,13 +91,11 @@ export function getFavorites(
  */
 export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/search_designs',
       content: params,
       handleRes: (res: ListSearchRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
