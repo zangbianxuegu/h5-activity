@@ -120,7 +120,7 @@ const teleportToTargetEl = async (): Promise<void> => {
 
     // 92和38为小角的宽高
     hoverTop.value = `${top - containerHeight - parseFloat(calculatePxToViewport(38))}px`
-    hoverLeft.value = `${left + containerWidth / 2 - parseFloat(calculatePxToViewport(92))}px`
+    hoverLeft.value = `${left - containerWidth + parseFloat(calculatePxToViewport(92)) + hoverEl.clientWidth / 2}px`
   } else {
     hoverTop.value = `${10}px`
     hoverLeft.value = `${10}px`
@@ -154,7 +154,7 @@ onMounted(async () => {
   display: flex;
   justify-self: center;
   align-items: center;
-  gap: 100px;
+  gap: 60px;
   padding: 20px;
   border-radius: 20px;
   background-color: rgba(90, 113, 145, 0.9);
