@@ -111,7 +111,7 @@ export function createTaskList(): Reward[] {
       value: 'activitycenter_music_2024_m7',
       title: '落日竞技场\n“胜利”',
       status: TaskStatus.WAIT,
-      date: '12.17-12.19',
+      date: '12.17-12.20',
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
       >,

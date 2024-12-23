@@ -8,7 +8,7 @@
               曲意畅想 谱写乐章
               <p>
                 <time datetime="2024-12-6">12.6</time>-
-                <time datetime="2024-12-19">12.19</time>
+                <time datetime="2024-12-20">12.20</time>
               </p>
             </div>
             <div
@@ -95,7 +95,7 @@
               <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
               <h3 class="modal-text">
                 <span class="font-semibold">活动时间：</span>
-                2024年12月6日~2024年12月19日
+                2024年12月6日~2024年12月20日
               </h3>
               <h3 class="modal-text">
                 <span class="font-semibold">活动内容：</span>
@@ -126,7 +126,7 @@
                   <span class="text-[#ffcb4d]">长大成人*1</span>
                 </li>
                 <li>
-                  12.17~12.19，在落日竞技场的舞台上录制一段胜利主题演奏的演奏，即可领取
+                  12.17~12.20，在落日竞技场的舞台上录制一段胜利主题演奏的演奏，即可领取
                   <span class="text-[#ffcb4d]">彩虹尾迹*1</span>
                 </li>
                 <li>
@@ -177,7 +177,7 @@ const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
-const currentTime = activityData.value.current_time
+const currentTime = computed(() => activityData.value.current_time)
 
 // 任务排序
 const taskOrderMap = new Map(
@@ -252,7 +252,7 @@ function checkTodayAgainstDateRange(data: string): DateStatus {
   const endDay = parseInt(end[1], 10)
 
   // 获取服务器时间
-  const today = new Date(currentTime * 1000)
+  const today = new Date(currentTime.value * 1000)
   const currentMonth = today.getMonth() + 1 // 月份从0开始计数，需要加1
   const currentDay = today.getDate()
   // 判断当前日期是否在范围内

@@ -1358,7 +1358,6 @@
   "src/assets/images/cloud-music-2024/star-gray.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/task-icon.png": 1731733115472.4385,
   "src/assets/images/cloud-music-2024/star-white.png": 1731733115472.4385,
-  "src/assets/images/cloud-music-2024/title.png": 1731733115473.4358,
   "src/assets/images/netease-werewolf/extra-reward-can.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-redeemed.png": 1731921406976.67,
   "src/assets/images/netease-werewolf/extra-reward-wait.png": 1731921406976.67,
@@ -1428,7 +1427,6 @@
   "src/assets/images/music-2024/task7-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/task8-redeemed.png": 1732182314050.714,
   "src/assets/images/music-2024/task5-wait.png": 1732182314050.714,
-  "src/assets/images/music-2024/title.png": 1732182314050.714,
   "src/assets/images/music-2024/task8-wait.png": 1732182314050.714,
   "src/assets/images/music-2024/tips.png": 1732182314050.714,
   "src/assets/images/netease-werewolf-join/bg.jpg": 1732505834277.5222,
@@ -1587,8 +1585,6 @@
   "src/assets/images/season25-reserve/bg.jpg": 1731738408174.7932,
   "src/assets/images/season25-reserve/title.png": 1731738408174.7932,
   "src/assets/images/common/nav-icon-colordyeing.png": 1731738408174.7932,
-  "src/assets/images/invitation-code/left-line.png": 1733195987300.139,
-  "src/assets/images/invitation-code/right-line.png": 1733195987316.265,
   "src/assets/images/common/nav-icon-day-of-design01-active.png": 1733712379442.8813,
   "src/assets/images/common/share/bg-share-bar.png": 1733712379442.8813,
   "src/assets/images/common/nav-icon-day-of-design01.png": 1733712379443.8584,
@@ -1691,5 +1687,8 @@
   "src/assets/images/netease-werewolf-join/logo.png": 1734404254167.0781,
   "src/assets/images/netease-werewolf/logo.png": 1734404254167.0781,
   "src/assets/images/netease-werewolf/character-unpass.png": 1734404254167.0781,
-  "src/assets/images/netease-werewolf/modal-bg.png": 1734404254168.0544
+  "src/assets/images/netease-werewolf/modal-bg.png": 1734404254168.0544,
+  "src/assets/images/invitation-code/left-line.png": 1733195987300.139,
+  "src/assets/images/invitation-code/right-line.png": 1733195987316.265,
+  "src/assets/images/music-2024/title.png": 1733465797521.919
 }
