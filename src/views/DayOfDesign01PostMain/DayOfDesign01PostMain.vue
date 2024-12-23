@@ -23,7 +23,7 @@
               class="my-work absolute right-0 top-[60px]"
               @click="gotoRules"
             >
-              活动详情
+              活动详情>>
             </button>
           </header>
         </Transition>
@@ -130,7 +130,7 @@ function handleHelp(): void {
  * @returns {void}
  */
 function gotoRules(): void {
-  window.location.href = 'https://sky.163.com/2024/hmj/#index'
+  window.location.href = 'https://test.nie.163.com/test_html/sky/m/2024/hmj/'
 }
 </script>
 
@@ -204,10 +204,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
 }
 .sub-title {
   position: absolute;
-  left: 180px;
+  left: 220px;
   top: 170px;
-  width: 766px;
-  height: 109px;
+  width: 720px;
+  height: 108px;
   background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/sub-title.png');
 }
 .help {
@@ -219,19 +219,15 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/help.png');
 }
 .my-work {
+  text-align: center;
   border-top-left-radius: 38px;
   border-bottom-left-radius: 38px;
-  padding-left: 80px;
   width: 240px;
   height: 76px;
   line-height: 76px;
   font-size: 34px;
   color: $font-color;
   background-color: #eaf5f2;
-  background-position: 32px 14px;
-  background-size: 50px 50px;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {

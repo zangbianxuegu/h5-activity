@@ -451,7 +451,8 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 }
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  window.location.href = 'https://sky.163.com/2024/hmj/#cszycy'
+  window.location.href =
+    'https://test.nie.163.com/test_html/sky/m/2024/hmj/#cszycy'
 }
 
 // 删除作品确认弹窗

@@ -884,7 +884,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/rules-icon.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {
