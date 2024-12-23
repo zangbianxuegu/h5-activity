@@ -277,7 +277,7 @@ watch(
 const shareLinkParams = computed(() => {
   return encodeURIComponent(
     qs.stringify({
-      ch: baseStore.baseInfo.channel,
+      ch: baseStore.baseInfo.appChannel,
       d_id: props.worksData.id,
       d_name: props.worksData.worksName,
       d_author: props.worksData.author,
