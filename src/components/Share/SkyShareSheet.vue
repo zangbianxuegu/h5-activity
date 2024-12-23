@@ -34,6 +34,7 @@ import iconXhs from '@/assets/images/common/share/icon-share-xhs.png'
 import iconDouyin from '@/assets/images/common/share/icon-share-douyin.png'
 import { NgshareChannel } from '@/utils/ngShare/types'
 import type { ShareFormatConfig } from '@/utils/ngShare/share'
+import { calculatePxToViewport } from '@/utils/utils'
 
 /**
  * @description 分享选项
@@ -113,10 +114,13 @@ const teleportToTargetEl = async (): Promise<void> => {
     const containerWidth = shareSheetContainerRef.value?.offsetWidth || 0
     const containerHeight = shareSheetContainerRef.value?.offsetHeight || 0
 
-    const top = hoverEl.offsetTop
-    const left = hoverEl.offsetLeft
-    hoverTop.value = `${top - containerHeight / 2 + 10}px`
-    hoverLeft.value = `${left - containerWidth / 2 - 6}px`
+    const rect = hoverEl.getBoundingClientRect()
+    const top = rect.top
+    const left = rect.left
+
+    // 92和38为小角的宽高
+    hoverTop.value = `${top - containerHeight - parseFloat(calculatePxToViewport(38))}px`
+    hoverLeft.value = `${left + containerWidth / 2 - parseFloat(calculatePxToViewport(92))}px`
   } else {
     hoverTop.value = `${10}px`
     hoverLeft.value = `${10}px`
@@ -142,17 +146,21 @@ onMounted(async () => {
 </script>
 <style scoped lang="scss">
 .sky-share-sheet {
-  width: 1000px;
-  height: 199px;
+  min-width: 238px;
+  height: 161px;
   position: absolute;
   top: v-bind(hoverTop);
   left: v-bind(hoverLeft);
   display: flex;
   justify-self: center;
   align-items: center;
-  padding: 0 20px 30px 20px;
+  gap: 100px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgba(90, 113, 145, 0.9);
+  box-shadow: 0px 6px 8px 0px rgba(108, 108, 108, 0.6);
+  border: solid 2px rgba(255, 255, 255, 0.3);
   z-index: 999;
-  background-image: url('@/assets/images/common/share/bg-share-bar.png');
   & > div {
     flex: 1;
     height: 100%;
@@ -164,7 +172,20 @@ onMounted(async () => {
       height: 88px;
     }
   }
+  &::after {
+    content: '';
+    width: 92px;
+    height: 38px;
+    position: absolute;
+    bottom: 1px;
+    right: 0;
+    transform: translate(-50%, 100%);
+    background-position: center;
+    background-size: 100% 100%;
+    background-image: url('@/assets/images/common/share/bg-share-bar-corn.png');
+  }
 }
+
 .sky-share-sheet-overlay {
   background-color: transparent;
 }

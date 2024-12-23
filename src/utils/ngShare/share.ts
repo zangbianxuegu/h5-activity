@@ -23,7 +23,7 @@ export const showShare = (
   shareChannel: NgshareChannel[] | [] = [],
   shareLinkConfig: NgshareShareLinkConfig,
   shareImageConfig: NgshareShareImageConfig,
-  beforeClickShareChannel: () => void,
+  beforeClickShareChannel?: () => void,
 ): void => {
   const div = document.createElement('div')
   document.body.appendChild(div)
