@@ -206,6 +206,7 @@ const {
 // 刷新页面会获取推荐作品，为避免触发接口 CD，进行全局状态管理并持久化、而非简单缓存
 const activityStore = useActivityStore()
 const cachedRecommend = computed(() => activityStore.recommendData)
+let cachedList: DesignItem[] = []
 
 const isLoading = ref(false)
 // 页面数据类型
@@ -538,6 +539,7 @@ async function handleRecommend(): Promise<void> {
   type.value = PageType.Recommend
   // disable 可点、切换 Tab
   if (isCoolDownActive.value) {
+    list.value = cachedList
     return
   }
   recommendPage++
@@ -562,6 +564,7 @@ async function handleRecommend(): Promise<void> {
     }
   }, 1000)
   list.value = await getRecommendByPage(recommendPage)
+  cachedList = list.value
 }
 
 /**
