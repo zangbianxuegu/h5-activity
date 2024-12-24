@@ -146,6 +146,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
 
 .work-list {
   margin-top: 30px;
+  overflow: hidden;
 }
 .work-item {
   margin: 0 20px 20px 0;
