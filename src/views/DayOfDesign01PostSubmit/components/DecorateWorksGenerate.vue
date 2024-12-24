@@ -124,7 +124,6 @@ defineExpose({ generateDecorateWorksImg })
       align-items: flex-start;
       gap: 30px;
       margin-bottom: 36px;
-      overflow: hidden;
       p {
         font-size: 36px;
         line-height: 36px;
@@ -140,6 +139,7 @@ defineExpose({ generateDecorateWorksImg })
         line-height: 50px;
         word-wrap: break-word; /* 适用于较旧的浏览器 */
         overflow-wrap: break-word;
+        white-space: pre-wrap;
       }
     }
   }

@@ -437,11 +437,11 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 
 // 点击下载按钮，下载作品拼装图
 const onClickHandleBarDownload = async (): Promise<void> => {
+  void webViewStatistics({
+    module: currentEvent.statisticsModules.download,
+    event: avtivityEvent.value,
+  })
   try {
-    void webViewStatistics({
-      module: currentEvent.statisticsModules.download,
-      event: avtivityEvent.value,
-    })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
       const res = await saveImgToDeviceAlbum(worksDecorateImgSrc)
@@ -642,6 +642,7 @@ onBeforeUnmount(() => {
         line-height: 50px;
         word-wrap: break-word; /* 适用于较旧的浏览器 */
         overflow-wrap: break-word;
+        white-space: pre-wrap;
       }
     }
     .btn-group-bar {
