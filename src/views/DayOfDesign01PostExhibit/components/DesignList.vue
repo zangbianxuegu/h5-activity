@@ -41,6 +41,12 @@
               src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-work.png"
               alt="已收藏"
             />
+            <img
+              v-else
+              class="absolute right-[10px] top-[5px] h-[50px] w-[50px] bg-contain"
+              src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/favorite-unselected.png"
+              alt="未收藏"
+            />
             <!-- 底部信息 -->
             <div class="work-info absolute inset-x-0 bottom-0 text-center">
               <div
