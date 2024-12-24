@@ -332,10 +332,10 @@ const checkworksIntroduce = (): boolean => {
   worksData.value.worksIntroduce = worksData.value.worksIntroduce.trim()
   if (worksData.value.worksIntroduce.length === 0) return false
   const reg =
-    /^[A-Za-z0-9\u4e00-\u9fa5\x20，。‘’”“！？；：、…￥【】（）《》—～()[\]{}<>.,!?;:"'@#$%^&*_+=`~|/\\-]{1,50}$/g
+    /^[A-Za-z0-9\u4e00-\u9fa5\x20，。‘’”“！？；：、…￥【】（）《》—～()[\]{}<>.,!?;:@#$%^&*_+=`~|/-]{1,50}$/g
   const testRes = reg.test(worksData.value.worksIntroduce)
   if (!testRes) {
-    showToast('创作故事不支持输入特殊字符，请重新输入')
+    showToast('创作故事不支持输入特殊字符（如\'"\\等），请重新输入')
   }
   return testRes
 }
