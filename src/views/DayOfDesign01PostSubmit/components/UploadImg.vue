@@ -13,7 +13,7 @@
         >
           <div class="icon-upload bg-contain bg-center bg-no-repeat"></div>
           <span>上传作品</span>
-          <span>请按模板上传小于10MB，尺寸为1200×900px的图片</span>
+          <span>请按模板上传小于10兆，尺寸为1200×900像素的图片</span>
         </div>
         <!-- 隐藏触发上传稿件的元素 -->
         <form ref="formRef">
@@ -66,7 +66,7 @@
               <div
                 class="flex flex-1 items-center justify-center text-[#e4f9ff]"
               >
-                裁剪 1200px*900px 尺寸
+                裁剪 1200像素*900像素 尺寸
               </div>
               <div
                 @click="onClickFinishCropper"
@@ -260,7 +260,7 @@ const listenUploadImgChange = (): void => {
         }
         // 检查文件大小
         if (props.maxSize && file.size > maxSizeLimit) {
-          showToast('您选择的图片大小超过10MB，无法上传')
+          showToast('您选择的图片大小超过10兆，无法上传')
           formRef.value.reset()
           return
         } else if (props.minSize && file.size < minSizeLimit) {
