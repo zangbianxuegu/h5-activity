@@ -1,32 +1,35 @@
 <template>
-  <div
-    v-for="item in computedMenuData"
-    :key="item.label"
-    :class="[
-      'nav-item relative flex flex-row items-center bg-center bg-no-repeat text-center',
-      'hover:cursor-pointer',
-      `nav-item--${item.value}`,
-      {
-        'nav-item-main': isMainNavItem(item),
-        'nav-item--active': isMenuItemActive(item),
-        'nav-item-main--active': isMenuItemActive(item) && isMainNavItem(item),
-        'nav-item--new': item.isNew && !item.hasUnclaimedReward,
-        'nav-item--reward': item.hasUnclaimedReward,
-      },
-    ]"
-    @click="handleNav(item)"
-  >
+  <div class="nav-list">
     <div
-      v-show="isMenuItemActive(item)"
-      class="active-star absolute bg-contain bg-no-repeat"
+      v-for="item in computedMenuData"
+      :key="item.label"
+      :class="[
+        'nav-item relative flex flex-row items-center bg-center bg-no-repeat text-center',
+        'hover:cursor-pointer',
+        `nav-item--${item.value.substring(15)}`,
+        {
+          'nav-item-main': isMainNavItem(item),
+          'nav-item--active': isMenuItemActive(item),
+          'nav-item-main--active':
+            isMenuItemActive(item) && isMainNavItem(item),
+          'nav-item--new': item.isNew && !item.hasUnclaimedReward,
+          'nav-item--reward': item.hasUnclaimedReward,
+        },
+      ]"
+      @click="handleNav(item)"
     >
-      <span class="sr-only">active star</span>
+      <div
+        v-show="isMenuItemActive(item)"
+        class="active-star absolute bg-contain bg-no-repeat"
+      >
+        <span class="sr-only">active star</span>
+      </div>
+      <span
+        v-html="item.label.replace(' ', '<br/>')"
+        class="nav-text text-center"
+        :class="getNavTextClass(item)"
+      ></span>
     </div>
-    <span
-      v-html="item.label.replace(' ', '<br/>')"
-      class="nav-text text-center"
-      :class="getNavTextClass(item)"
-    ></span>
   </div>
 </template>
 
@@ -104,6 +107,9 @@ function getNavTextClass(curItem: MenuItem): string[] {
 </script>
 
 <style scoped>
+.nav-list {
+  border-left: 3px solid rgba(255, 255, 255, 0.2);
+}
 .nav-item {
   margin: 35px 0 35px 20px;
   border: 8px solid transparent;
@@ -112,6 +118,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   height: 159px;
   font-size: 40px;
   color: rgba(255, 255, 255, 0.6);
+  background-size: 307px 143px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 
   &::before {
@@ -166,17 +173,16 @@ function getNavTextClass(curItem: MenuItem): string[] {
       background-size: contain;
     }
   }
-  /* 在此处添加不同活动的菜单背景图 */
+  /* 
+    在此处添加不同活动的菜单背景图
+    命名为活动事件名，例如 activitycenter_dayofdesign01_post_main，取：dayofdesign01_post_main
+  */
   /* 绘梦节-主页面 */
-  &--activitycenter_dayofdesign01_post_main {
-    background-size: 307px 143px;
-    background-position: center;
+  &--dayofdesign01_post_main {
     background-image: url('@/assets/images/common/menu/dayofdesign01-main.png');
   }
   /* 绘梦节-活动会场 */
-  &--activitycenter_dayofdesign01_post_exhibit {
-    background-size: 307px 143px;
-    background-position: center;
+  &--dayofdesign01_post_exhibit {
     background-image: url('@/assets/images/common/menu/dayofdesign01-exhibit.png');
   }
 }

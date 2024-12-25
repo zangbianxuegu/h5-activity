@@ -410,15 +410,5 @@ function getAllEvents(): void {
 .menu {
   position: relative;
   padding-left: 60px;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 60px;
-    width: 3px;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.2);
-  }
 }
 </style>
