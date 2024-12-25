@@ -110,9 +110,6 @@
           </section>
         </Transition>
 
-        <!-- 活动规则弹框 -->
-        <ModalHelp ref="modalHelp" />
-
         <!-- 作品详情弹框 -->
         <works-detail-modal
           v-model:show="isDetailVisible"
@@ -124,6 +121,9 @@
           @after-report="handleAfterReport"
         ></works-detail-modal>
       </div>
+
+      <!-- 活动规则弹框 -->
+      <ModalHelp ref="modalHelp" />
     </div>
   </Transition>
 </template>
