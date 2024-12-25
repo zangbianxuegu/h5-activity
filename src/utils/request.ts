@@ -412,7 +412,7 @@ export const saveImgToDeviceAlbum = (
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     showLoadingToast({
-      message: '下载中...',
+      message: '下载中......',
       forbidClick: true,
       duration: 0,
     })
@@ -454,5 +454,35 @@ export const saveImgToDeviceAlbum = (
         reject(new Error('下载图片失败'))
       }, timeoutErrorCount)
     }
+  })
+}
+
+export enum CommonConfig {
+  EnableDayOfDesignShare = 'enable_day_of_design_share',
+}
+
+/**
+ * 获取公共配置（公共协议）
+ * @function getCommonConfig
+ */
+export const getCommonConfig = (name: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/get_config',
+      content: {
+        name,
+      },
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res.data)
+        } else {
+          reject(res.msg)
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
   })
 }

@@ -75,11 +75,13 @@ const baseStore = useBaseStore()
 const appChannel = computed(() => baseStore.baseInfo.appChannel)
 // 是否已预约
 const isReserved = ref(false)
+// 是否活动结束
+const isFinished = ref(false)
 
 const pathProd =
   '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=5cb546a0d5456870b97d9424&type=67596cca93d2053a0757a54e&utm_campaign=skybanner&utm_medium=banner&utm_source=gameyy.ma75&wsSubGameInfoId=67596cca93d2053a0757a54e'
 const pathDev =
-  '/pages/game/index?cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=675c0ac1af32530ebdf8b8b0&utm_medium=gmc&utm_source=kf&wsSubGameInfoId=675c0ac1af32530ebdf8b8b0'
+  '/pages/game/index?game=ma75&cv=dashen&pageId=RewardDetailPage&squareId=60963fb3e9db025984063ad7&type=675c0ac1af32530ebdf8b8b0&utm_medium=gmc&utm_source=kf.ma75&wsSubGameInfoId=675c0ac1af32530ebdf8b8b0'
 // 正式版：0，测试版：1，体验版：2
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev
@@ -113,8 +115,9 @@ onUnmounted(() => {
  */
 function getReserveStatus(): void {
   getSeasonReservationStatus(appChannel.value)
-    .then(() => {
-      isReserved.value = true
+    .then((res) => {
+      isReserved.value = res.code === 200
+      isFinished.value = res.code === 400
     })
     .catch((error) => {
       showToast(error.message)
@@ -140,8 +143,12 @@ function handleVisibilityChange(): void {
 /**
  * 点击“约定相见”，前往小程序预约新季节
  */
-function handleToReserve(): void {
+async function handleToReserve(): Promise<void> {
   if (isReserved.value) {
+    return
+  }
+  if (isFinished.value) {
+    showToast('活动数据异常')
     return
   }
   openWechatMiniprogram(miniProgramParams).catch((error) => {

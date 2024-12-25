@@ -1,7 +1,6 @@
 <template>
   <Teleport to="body">
     <div ref="containerRef" class="ps_ignore-container">
-      <img :src="bgDecorateImg" alt="" />
       <div class="left relative">
         <img id="img-container" :src="worksData.worksImgSrc" alt="" srcset="" />
       </div>
@@ -16,7 +15,7 @@
             <span>{{ worksData.author }}</span>
           </p>
           <p>
-            <span>名称：</span>
+            <span>作品：</span>
             <span>{{ worksData.worksName }}</span>
           </p>
         </div>
@@ -30,7 +29,6 @@
 
 <script setup lang="ts">
 import html2canvas from 'html2canvas'
-import bgDecorateImg from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/bg-decorate-img.png'
 defineProps<{
   worksData: {
     id: string
@@ -115,8 +113,10 @@ defineExpose({ generateDecorateWorksImg })
     align-items: flex-start;
     padding: 33px 12px 2px 60px;
     color: #7d7774;
+    overflow: hidden;
     z-index: 10;
     .decorate-works-basic-info {
+      width: 100%;
       height: 166px;
       display: flex;
       flex-direction: column;
@@ -130,11 +130,16 @@ defineExpose({ generateDecorateWorksImg })
       }
     }
     .decorate-works-introduce {
+      width: 100%;
       flex: 1;
       margin-top: 36px;
+      overflow: hidden;
       p {
         font-size: 30px;
         line-height: 50px;
+        word-wrap: break-word; /* 适用于较旧的浏览器 */
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
       }
     }
   }

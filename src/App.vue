@@ -58,7 +58,11 @@ import { showToast } from 'vant'
 import Menu from '@/components/Menu'
 import type { MenuItem, Activity, ActivityTime, UserInfo } from '@/types'
 import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
-import { getPlayerMissionData } from '@/utils/request'
+import {
+  CommonConfig,
+  getCommonConfig,
+  getPlayerMissionData,
+} from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
 import { getUserInfo } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
@@ -102,10 +106,24 @@ onMounted(async () => {
   try {
     await getBaseInfo()
     getAllEvents()
+    await getShareConfig(baseStore.baseInfo.appChannel)
   } catch (error) {
     // console.error(error)
   }
 })
+
+const getShareConfig = async (appChannel: string): Promise<void> => {
+  try {
+    const shareConfig: any = await getCommonConfig(
+      CommonConfig.EnableDayOfDesignShare,
+    )
+    // "111111"
+    const sharePlatformCode = shareConfig[appChannel] as string
+    updateBaseInfoItems({ sharePlatformCode })
+  } catch (error) {
+    throw new Error('getShareConfig error')
+  }
+}
 
 // 获取基本信息
 async function getBaseInfo(): Promise<void> {

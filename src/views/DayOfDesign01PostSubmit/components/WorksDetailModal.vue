@@ -33,7 +33,7 @@
 
                 <!-- 举报按钮和标识 -->
                 <div
-                  v-if="isOther && !worksData.isReported"
+                  v-if="isOther && !worksData.isReported && isExitsDesign"
                   class="btn-report cursor-pointer bg-cover bg-center bg-no-repeat"
                   @click.stop="onClickReport"
                 >
@@ -46,9 +46,9 @@
                   已举报
                 </div>
               </div>
-              <div class="right">
+              <div class="right" v-if="isExitsDesign">
                 <div class="works-preview-basic-info">
-                  <p>
+                  <p v-if="worksData.id">
                     <span>编号：</span>
                     <span id="works-id"
                       >{{ worksData.id }}
@@ -99,7 +99,11 @@
                   </div>
                   <!-- 分享 -->
                   <div
-                    v-if="!isPC"
+                    v-if="
+                      !isPC &&
+                      isShowShareBtnAfterGetChannel &&
+                      isShowShareBtnByChannel
+                    "
                     @click.stop="onClickHandleBarShare"
                     class="btn share cursor-pointer"
                     id="WorksDetailModalShareBtn"
@@ -139,7 +143,7 @@ import {
   report,
   updateFavorites,
 } from '@/apis/dayOfDesign01'
-import { NgshareChannel } from '@/utils/ngShare/types'
+import { NgshareChannel, sharePlatformCodeOrder } from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
 import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorited.png'
@@ -150,9 +154,10 @@ import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { webViewStatistics } from '@/apis/base'
 import { useClipboard } from '@vueuse/core'
 import {
+  eventMap,
+  type EventMapConfig,
   FILE_PICKER_POLICY_NAME,
   getShareH5PageUrl,
-  SHARE_INFO,
 } from '@/constants/dayofdesign01'
 
 /**
@@ -176,6 +181,7 @@ const props = defineProps<{
     policyName: string
     filePickerUrl: string
   }
+  avtivityEvent?: EventDayOfDesign01 // 活动阶段事件
 }>()
 
 const isExitsDesign = ref(true)
@@ -208,24 +214,17 @@ watchEffect(() => {
   isFavorite.value = props.worksData.isFavorite
 })
 
-const emits = defineEmits([
-  'update:show',
-  'after-delete',
-  'update-favorite',
-  'after-report',
-])
+const emits = defineEmits<{
+  'update:show': [show: boolean]
+  'after-delete': []
+  'update-favorite': [isFavorite: boolean]
+  'after-report': []
+}>()
 
-const eventMap = new Map([
-  [
-    EventDayOfDesign01.Exhibit,
-    {
-      statisticsModules: {
-        download: 'day_of_design_stage0_download',
-        share: 'day_of_design_stage0_share',
-      },
-    },
-  ],
-])
+// 没有传默认投稿期传值
+const avtivityEvent: ComputedRef<EventDayOfDesign01> = computed(
+  () => props.avtivityEvent || EventDayOfDesign01.Exhibit,
+)
 
 // 点赞按钮
 const likeBtnImg = computed(() => {
@@ -250,13 +249,12 @@ const shareData = ref({
 
 const baseStore = useBaseStore()
 const getLogoUrl = (): string => {
-  return ['netease', 'app_store'].includes(baseStore.baseInfo.channel)
-    ? 'https://webinput.nie.netease.com/img/sky/icon.png/128'
-    : 'https://sky.res.netease.com/m/zt/20230707161622/img/logo_b01c9a2.png'
+  return 'https://ma75.gsf.netease.com/sky_logo.png'
 }
 
 const environment = useEnvironment()
 const isPC = computed(() => environment.isPC)
+const isIos = computed(() => environment.isIos)
 
 let isCanShareImg = true
 
@@ -279,7 +277,7 @@ watch(
 const shareLinkParams = computed(() => {
   return encodeURIComponent(
     qs.stringify({
-      ch: baseStore.baseInfo.channel,
+      ch: baseStore.baseInfo.appChannel,
       d_id: props.worksData.id,
       d_name: props.worksData.worksName,
       d_author: props.worksData.author,
@@ -310,31 +308,107 @@ const onClickReport = (): void => {
     })
 }
 
+const currentEvent = eventMap.get(avtivityEvent.value) as EventMapConfig
+
+// 在点击分享渠道前触发
+const beforeClickShareChannel = (): void => {
+  void webViewStatistics({
+    module: currentEvent.statisticsModules.share,
+    event: avtivityEvent.value,
+  })
+}
+
+const isShowShareBtnAfterGetChannel = ref(false)
+let sharePlatformCode = ''
+const sharePlatform: NgshareChannel[] = []
+let updateSharePlatformCodetimer: NodeJS.Timeout | string | number | undefined
+// 异步获取分享渠道的code
+const getSharePlatformCode = (): Promise<string> => {
+  let intervalCount = 6
+  return new Promise((resolve) => {
+    updateSharePlatformCodetimer = setInterval(() => {
+      intervalCount--
+      // 如果配置接口请求不到，导致更新不了配置，默认全分享平台打开
+      if (intervalCount === 0) {
+        updateSharePlatformCodetimer &&
+          clearInterval(updateSharePlatformCodetimer)
+        resolve(baseStore.baseInfo.sharePlatformCode || '111111')
+      } else {
+        if (baseStore.baseInfo.sharePlatformCode) {
+          updateSharePlatformCodetimer &&
+            clearInterval(updateSharePlatformCodetimer)
+          resolve(baseStore.baseInfo.sharePlatformCode)
+        }
+      }
+    }, 500)
+  })
+}
+
+// 根据渠道包获取分享可显示的分享平台
+const getShareChannel = async (): Promise<void> => {
+  sharePlatformCode = await getSharePlatformCode()
+  isShowShareBtnByChannel.value = sharePlatformCode !== '000000'
+
+  // 开启的分享平台(1开启，0关闭)
+  function isOpen(codeValue: string): boolean {
+    return codeValue === '1'
+  }
+
+  const codeArr = sharePlatformCode.split('')
+  sharePlatformCodeOrder.forEach((channel, index) => {
+    if (channel === 'wechat') {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.WechatFriend)
+        sharePlatform.push(NgshareChannel.WechatFriendCircle)
+      }
+    } else if (channel === 'douyin') {
+      if (isOpen(codeArr[index]) && isCanShareImg) {
+        sharePlatform.push(NgshareChannel.DouYin)
+      }
+    } else if (channel === 'bilibili' && isCanShareImg) {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.Bilibili)
+      }
+    } else if (channel === 'weibo') {
+      if (isOpen(codeArr[index])) {
+        if (!isIos.value) {
+          sharePlatform.push(NgshareChannel.Weibo)
+        } else {
+          isCanShareImg && sharePlatform.push(NgshareChannel.Weibo)
+        }
+      }
+    } else if (channel === 'dashen') {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.DaShenFriendCircle)
+      }
+    } else if (channel === 'xiaohongshu' && isCanShareImg) {
+      if (isOpen(codeArr[index])) {
+        sharePlatform.push(NgshareChannel.XiaoHongShu)
+      }
+    }
+  })
+  isShowShareBtnAfterGetChannel.value = true
+}
 const onClickHandleBarShare = (): void => {
+  const shareInfo = currentEvent.shareInfo
   shareData.value.show = true
   showShare(
     { targetElByHover: '#WorksDetailModalShareBtn' },
-    isCanShareImg
-      ? []
-      : [
-          NgshareChannel.WechatFriend,
-          NgshareChannel.WechatFriendCircle,
-          NgshareChannel.Weibo,
-          NgshareChannel.DaShenFriendCircle,
-        ],
+    sharePlatform,
     {
-      title: SHARE_INFO.title,
-      text: SHARE_INFO.text,
+      title: shareInfo.getTitle(),
+      text: shareInfo.getText(props.worksData.worksName),
+      desc: shareInfo.getDesc(props.worksData.worksName),
       link: `${getShareH5PageUrl()}${shareLinkParams.value}`,
-      desc: SHARE_INFO.desc,
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
     },
     {
-      title: SHARE_INFO.title,
-      text: SHARE_INFO.text,
+      title: shareInfo.getTitle(),
+      text: currentEvent.shareInfo.getText(props.worksData.worksName),
       image: props.worksData.worksDecorateImgSrc || '',
     },
+    beforeClickShareChannel,
   )
 }
 
@@ -363,11 +437,11 @@ const onClickHandleBarDelete = async (): Promise<void> => {
 
 // 点击下载按钮，下载作品拼装图
 const onClickHandleBarDownload = async (): Promise<void> => {
+  void webViewStatistics({
+    module: currentEvent.statisticsModules.download,
+    event: avtivityEvent.value,
+  })
   try {
-    void webViewStatistics({
-      module: eventMap.get(props.event)?.statisticsModules.download as string,
-      event: EventDayOfDesign01.All,
-    })
     const worksDecorateImgSrc = props.worksData.worksDecorateImgSrc
     if (worksDecorateImgSrc) {
       const res = await saveImgToDeviceAlbum(worksDecorateImgSrc)
@@ -383,10 +457,6 @@ const onClickHandleBarDownload = async (): Promise<void> => {
 // 点击收藏按钮
 const handleLike = async (): Promise<void> => {
   try {
-    void webViewStatistics({
-      module: eventMap.get(props.event)?.statisticsModules.share as string,
-      event: EventDayOfDesign01.All,
-    })
     if (props.type === DesignDetailsType.Other) {
       await updateFavorites(
         props.worksData.id,
@@ -396,7 +466,7 @@ const handleLike = async (): Promise<void> => {
       )
       showToast(!isFavorite.value ? '已成功添加至我的收藏' : '取消收藏成功')
       isFavorite.value = !isFavorite.value
-      emits('update-favorite', isFavorite)
+      emits('update-favorite', isFavorite.value)
     }
   } catch (error: any) {
     showToast(error?.message as string)
@@ -421,6 +491,18 @@ const onClickCopyWorksId = async (): Promise<void> => {
 const onClickCloseModal = (): void => {
   emits('update:show', false)
 }
+
+const isShowShareBtnByChannel = ref(true)
+
+onMounted(async () => {
+  await getShareChannel()
+})
+
+onBeforeUnmount(() => {
+  if (updateSharePlatformCodetimer) {
+    clearInterval(updateSharePlatformCodetimer)
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -457,7 +539,7 @@ const onClickCloseModal = (): void => {
     flex: 1;
     height: 100%;
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     position: relative;
     .img-container {
       width: 1200px;
@@ -553,11 +635,15 @@ const onClickCloseModal = (): void => {
     .works-preview-introduce {
       width: 100%;
       flex: 1;
+      overflow: hidden;
       p {
         font-size: 30px;
         color: #7c6354;
         font-family: SourceHanSansCN-Regular;
         line-height: 50px;
+        word-wrap: break-word; /* 适用于较旧的浏览器 */
+        overflow-wrap: break-word;
+        white-space: pre-wrap;
       }
     }
     .btn-group-bar {

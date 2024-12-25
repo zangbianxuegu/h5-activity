@@ -19,8 +19,11 @@
                 @click="handleHelp"
               ></div>
             </h2>
-            <button class="my-work absolute" @click="gotoRules">
-              活动详情
+            <button
+              class="my-work absolute right-0 top-[60px]"
+              @click="gotoRules"
+            >
+              活动详情>>
             </button>
           </header>
         </Transition>
@@ -127,7 +130,8 @@ function handleHelp(): void {
  * @returns {void}
  */
 function gotoRules(): void {
-  window.location.href = 'https://sky.163.com/2024/hmj/#index'
+  window.location.href =
+    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
 }
 </script>
 
@@ -207,17 +211,12 @@ $font-family-bold: 'Source Han Sans CN Medium';
   top: 100px;
   border-top-left-radius: 38px;
   border-bottom-left-radius: 38px;
-  padding-left: 80px;
   width: 240px;
   height: 76px;
   line-height: 76px;
   font-size: 34px;
   color: $font-color;
   background-color: #eaf5f2;
-  background-position: 32px 14px;
-  background-size: 50px 50px;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {

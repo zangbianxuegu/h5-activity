@@ -2,7 +2,9 @@
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="hmj-contribute flex h-screen">
       <!-- 一键上传（测试） -->
-      <div class="hmj-contribute-main">
+      <div
+        :class="['hmj-contribute-main', { 'keyboard-show': isKeyboardShow }]"
+      >
         <test-upload-auto></test-upload-auto>
         <Transition appear mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
@@ -28,7 +30,7 @@
                     :max-size="10 * 1024 * 1024"
                     :min-size="100 * 1024"
                     :reupload="false"
-                    :preview-full-image="true"
+                    :preview-full-image="false"
                     :show-delete-btn="false"
                   ></upload-img>
                   <div class="works-operate-btn-container">
@@ -52,7 +54,7 @@
                   >
                     <span class="group-value">【{{ worksGroupName }}组】</span>
                     <span class="id-value">
-                      ID:&ensp;<span id="works-id">{{
+                      编号:&ensp;<span id="works-id">{{
                         currentWorksPureId
                       }}</span>
                     </span>
@@ -138,6 +140,7 @@
                   >
                     <div class="field-textarea-bg"></div>
                     <textarea
+                      ref="worksIntroduceRef"
                       v-model="worksData.worksIntroduce"
                       name="worksIntroduce"
                       id="worksIntroduce"
@@ -145,6 +148,7 @@
                       maxlength="50"
                       placeholder="请分享你的创作故事"
                       :disabled="isContributed"
+                      @blur="onBlurWorksIntroduce"
                     ></textarea>
                     <span class="word-count"
                       >{{ worksIntroduceWordCount }}/50</span
@@ -214,6 +218,7 @@
 
 <script setup lang="ts">
 import { closeToast, showLoadingToast, showToast } from 'vant'
+import throttle from 'lodash.throttle'
 import DecorateWorksGenerate from './components/DecorateWorksGenerate.vue'
 import WorksDetailModal from './components/WorksDetailModal.vue'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
@@ -310,6 +315,39 @@ watch(
   },
 )
 
+const worksIntroduceRef = ref<HTMLTextAreaElement | null>()
+const addEventListenerToWorksIntroduceRef = (): void => {
+  worksIntroduceRef.value?.addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+      showToast('当前文本框不支持换行')
+      event.preventDefault() // 阻止换行
+    }
+  })
+}
+/**
+ * @description 检测作品介绍
+ * @returns {boolean} 是否通过
+ */
+const checkworksIntroduce = (): boolean => {
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.trim()
+  if (worksData.value.worksIntroduce.length === 0) return false
+  const reg =
+    /^[A-Za-z0-9\u4e00-\u9fa5\x20，。‘’”“！？；：、…￥【】（）《》—～()[\]{}<>.,!?;:@#$%^&*_+=`~|/-]{1,50}$/g
+  const testRes = reg.test(worksData.value.worksIntroduce)
+  if (!testRes) {
+    showToast('创作故事不支持输入特殊字符（如\'"\\等），请重新输入')
+  }
+  return testRes
+}
+const onBlurWorksIntroduce = (): void => {
+  // 禁止用户输入换行符
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.replaceAll(
+    /(\r\n|\n|\r|\t)/g,
+    '',
+  )
+  checkworksIntroduce()
+}
+
 // 是否已上传作品（只显示，不一定上传）
 const isUploaded = computed((): boolean => {
   return !!worksData.value.worksImgSrc
@@ -366,7 +404,7 @@ const contributeBtnText = computed((): string => {
   if (!isContributed.value) {
     return '立即投稿'
   } else if (isChecking.value) {
-    return '审核中...'
+    return '审核中......'
   }
   return '重新投稿'
 })
@@ -414,7 +452,8 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 }
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  window.location.href = 'https://sky.163.com/2024/hmj/#cszycy'
+  window.location.href =
+    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
 }
 
 // 删除作品确认弹窗
@@ -495,6 +534,11 @@ const onClickContributeWorks = async (): Promise<void> => {
       return
     }
 
+    // 检测作品介绍是否合规
+    if (!checkworksIntroduce()) {
+      return
+    }
+
     void showConfirmDialog('是否确认投稿？').then(() => {
       void confirmSubmitWork()
     })
@@ -559,6 +603,7 @@ const onClickViewMyWorks = async (): Promise<void> => {
 }
 
 const initPageData = async (): Promise<void> => {
+  console.log('initPageData')
   await updateDesignDetails()
 }
 
@@ -598,7 +643,7 @@ const confirmSubmitWork = async (): Promise<void> => {
   }
 
   showLoadingToast({
-    message: '正在投稿...',
+    message: '正在投稿......',
     forbidClick: true,
     duration: 0,
     onOpened: () => {
@@ -607,9 +652,10 @@ const confirmSubmitWork = async (): Promise<void> => {
         if (apiTimeout) {
           stopSubmit()
           showToast('上传异常，请刷新后重试')
+          console.log('上传异常，请刷新后重试：超时异常')
         }
         clearTimeout(timer)
-      }, 10 * 1000)
+      }, 20 * 1000)
     },
   })
 
@@ -621,12 +667,14 @@ const confirmSubmitWork = async (): Promise<void> => {
     if (!designIdBeforeSubmit.value) {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：向服务端获取作品id取值异常')
       return
     }
     await nextTick()
     await generateDecorateWorksImg()
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
+        designIdBeforeSubmit.value,
         filePickerConfig.value.policyName,
         filePickerConfig.value.shareImgPolicyName,
         getReviewTextServerRequestFormat(
@@ -644,6 +692,7 @@ const confirmSubmitWork = async (): Promise<void> => {
     } else {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：图片上传后取值异常')
     }
   } catch (error: any) {
     stopSubmit()
@@ -680,11 +729,48 @@ const updateDesignDetails = async (): Promise<void> => {
     }
   } catch (error) {}
 }
-
 onMounted(async () => {
+  window.addEventListener('resize', handleResize)
+  addEventListenerToWorksIntroduceRef()
+
   await initPageData()
   Session.set(sessionIsVisitedKey, false)
+
+  // worksData.value = {
+  //   id: 'X123123',
+  //   author: '11',
+  //   worksName: '11',
+  //   worksIntroduce:
+  //     '111111111111111111111111111111111111111111111111111111111111111111111111111111',
+  //   worksImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   worksDecorateImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   checkStatus: DesignReviewStatus.Passed,
+  //   worksDecorateImg: null,
+  // }
+  // designIdBeforeSubmit.value = worksData.value.id
+  // await nextTick()
+  // await generateDecorateWorksImg()
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function handleResize
+ * @description 处理窗口大小变化
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
 </script>
 
 <style lang="scss" scoped>
@@ -723,6 +809,11 @@ onMounted(async () => {
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+
+    &.keyboard-show {
+      top: -220px;
+      transform: translate(-50%, 0);
+    }
   }
 }
 .title {
@@ -1020,6 +1111,24 @@ onMounted(async () => {
     color: rgba(255, 255, 255, 1);
     &::placeholder {
       color: rgba(255, 255, 255, 0.6);
+    }
+    /* 自定义滚动条样式 */
+    &::-webkit-scrollbar {
+      width: 12px; /* 滚动条的宽度 */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; /* 滚动条轨道的背景色 */
+      border-radius: 10px; /* 轨道的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888; /* 滚动条的颜色 */
+      border-radius: 10px; /* 滚动条的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555; /* 鼠标悬停时滚动条的颜色 */
     }
   }
   .word-count {

@@ -11,6 +11,7 @@ export const useBaseStore = defineStore('base', () => {
     token: '',
     returnBuff: 'true',
     gameUid: '',
+    sharePlatformCode: '',
   })
 
   function updateBaseInfo(newBaseInfo: BaseInfo): void {

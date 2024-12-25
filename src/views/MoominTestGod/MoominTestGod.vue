@@ -40,7 +40,7 @@ const { bodyTransitionName, headTransitionName, mainTransitionName } =
 const pathProd =
   '/pages/sem/index?game=ma75&cv=dashen&pageId=PromoteTransPage&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
 const pathDev =
-  '/pages/sem/index?game=ma75&cv=dashen&pageId=PromoteTransPage&semId=e93cd402db3f4ae9a536cb1d116ff26a&type=link&utm_campaign=mumingceshi1227&utm_medium=banner&utm_source=gameyy.ma75'
+  '/pages/sem/index?game=ma75&cv=dashen&pageId=PromoteTransPage&semId=684ceb793dfc4dbb873b2e38f2a26658&type=link&utm_medium=banner&utm_source=gameyy.ma75'
 // 正式版：0，测试版：1，体验版：2
 const type = isProd.value ? 0 : 1
 const path = isProd.value ? pathProd : pathDev

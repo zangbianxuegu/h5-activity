@@ -101,6 +101,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
     activity_sanrio_2024: `${navTextPrefix}-sanrio`,
     activitycenter_tournament_of_triumph_1: `${navTextPrefix}-tournament1`,
     activitycenter_Halloweentreasure_2024: `${navTextPrefix}-halloweentreasure`,
+    activitycenter_icefestival2025: `${navTextPrefix}-icefestival2025`,
   }
   return menuTextMap[curItem.value] ? [menuTextMap[curItem.value]] : []
 }

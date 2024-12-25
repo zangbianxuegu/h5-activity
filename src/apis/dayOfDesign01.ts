@@ -15,7 +15,6 @@ import type {
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
 import { getFilePickerToken, uploadImgToFilePicker } from '@/utils/filePicker'
-import Loading from '@/components/Loading'
 
 /**
  * 作品列表 - 推荐
@@ -29,13 +28,11 @@ export function getRecommendations(
   params: ListRecommendParams,
 ): Promise<DesignItem[]> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_recommendations',
       content: params,
       handleRes: (res: ListRecommendRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -63,13 +60,11 @@ export function getFavorites(
   params: ListFavoriteParams,
 ): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_favorites',
       content: params,
       handleRes: (res: ListFavoriteRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -96,13 +91,11 @@ export function getFavorites(
  */
 export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/search_designs',
       content: params,
       handleRes: (res: ListSearchRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -129,12 +122,15 @@ export const getDesignDetails = (
   params: DetailParams,
 ): Promise<OtherDesignDetails | SelfDesignDetails> => {
   return new Promise((resolve, reject) => {
+    console.log('before getDesignDetails')
+
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_design_details',
       content: params,
       handleRes: (res: Response) => {
         const { code, msg, data } = res
+        console.log('after getDesignDetails')
         if (code === 200) {
           resolve(data)
         } else {
@@ -227,6 +223,7 @@ export const updateFavorites = (
  */
 export const uploadFormAndFilePickerResultToServerApi = (
   FilePickerUploadResultCode: 200,
+  designId: string,
   policyName: string,
   reviewObj: Record<string, any>,
   fileUrl: string,
@@ -243,6 +240,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
       content: {
         result_code: FilePickerUploadResultCode,
         policy_name: policyName,
+        design_id: designId,
         text: reviewObj,
         file_url: fileUrl,
         share_url: shareImgUrl,
@@ -275,6 +273,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
 /**
  * @description 上传稿件至filepicker并完成投稿（需要检查文本）
  * @function uploadWorksToServer
+ * @param designID 作品id
  * @param filePickerUrl filePicker的上传地址
  * @param policyName 策略名
  * @param shareImgPolicyName 分享图策略名
@@ -284,6 +283,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadWorksToServer = async (
+  designId: string,
   policyName: string,
   shareImgPolicyName: string,
   reviewTextObj: Record<string, any>,
@@ -342,6 +342,7 @@ export const uploadWorksToServer = async (
           const uploadDataToServerResult =
             await uploadFormAndFilePickerResultToServerApi(
               200,
+              designId,
               policyName,
               reviewTextObj,
               uploadImgResult?.url,

@@ -3,6 +3,9 @@
     <div
       class="page relative flex h-screen w-screen items-center justify-center bg-cover bg-center"
     >
+      <van-overlay :show="isLoading" class="flex items-center justify-center">
+        <van-loading />
+      </van-overlay>
       <div :class="['page-main', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
@@ -81,7 +84,6 @@
                   !isCoolDownActive &&
                     (type === PageType.Recommend ? 'bg-[#d9fff5]' : 'bg-white'),
                 ]"
-                :disabled="isCoolDownActive"
                 @click="handleRecommend"
               >
                 <img
@@ -138,7 +140,6 @@ import type {
   DesignItem,
   FavoriteData,
   DetailParams,
-  OtherDesignDetails,
 } from '@/types'
 import { Session } from '@/utils/storage'
 import { FILE_PICKER_POLICY_NAME } from '@/constants/dayofdesign01'
@@ -150,7 +151,6 @@ import {
   getDesignDetails,
 } from '@/apis/dayOfDesign01'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import Loading from '@/components/Loading'
 import { useActivityStore } from '@/stores/dayOfDesign01'
 import { useStore, initCachedData } from './store'
 import throttle from 'lodash.throttle'
@@ -208,7 +208,9 @@ const {
 // 刷新页面会获取推荐作品，为避免触发接口 CD，进行全局状态管理并持久化、而非简单缓存
 const activityStore = useActivityStore()
 const cachedRecommend = computed(() => activityStore.recommendData)
+let cachedList: DesignItem[] = []
 
+const isLoading = ref(false)
 // 页面数据类型
 const type = ref<PageType>(PageType.Favorite) // recommend、favorite、search
 // 页面显示的作品列表数据
@@ -347,15 +349,17 @@ async function handleCachedRecommend(): Promise<void> {
     policy_name: FILE_PICKER_POLICY_NAME,
   }
   try {
+    isLoading.value = true
     const data: DesignItem[] = await getRecommendations(params)
     // 更新全局缓存数据
     activityStore.updateRecommendData(data)
     const now = Date.now()
     Session.set('lastFetchTime-dayofdesign01-recommend', now.toString())
-    console.log('cachedRecommend: ', cachedRecommend.value)
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -377,8 +381,8 @@ async function handleCachedFavorite(): Promise<void> {
     }
   }
   try {
+    isLoading.value = true
     const data: FavoriteData = await getFavorites(params)
-    console.log('接口返回收藏数据: ', data)
     // 处理收藏数据，加入字段 favorite，是否收藏，用于取消收藏展示
     const designs = data.designs.map((design) => ({
       ...design,
@@ -412,6 +416,8 @@ async function handleCachedFavorite(): Promise<void> {
   } catch (error) {
     const err = error as Error
     showToast(err.message || '获取收藏作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -434,8 +440,8 @@ async function handleCachedSearch(): Promise<void> {
     }
   }
   try {
+    isLoading.value = true
     const data: FavoriteData = await searchDesigns(params)
-    console.log('接口返回搜索数据: ', data)
     const designs = data.designs
     if (designs.length === 0) {
       showToast('没有找到相关结果')
@@ -456,6 +462,8 @@ async function handleCachedSearch(): Promise<void> {
   } catch (error) {
     const err = error as Error
     showToast(err.message || '搜索作品失败')
+  } finally {
+    isLoading.value = false
   }
 }
 
@@ -480,11 +488,11 @@ async function getRecommendByPage(page: number): Promise<DesignItem[]> {
     }
     // else 刷新页面时距离上次请求小于3s，使用缓存数据
   } else {
-    Loading.show()
+    isLoading.value = true
     // 随机延迟 100 到 300 毫秒
     const delay = Math.floor(Math.random() * 200) + 100
     await new Promise((resolve) => setTimeout(resolve, delay))
-    Loading.hide()
+    isLoading.value = false
   }
   const res = cachedRecommend.value.slice(startIndex, endIndex)
   return res
@@ -531,6 +539,11 @@ async function getSearchByPage(page: number): Promise<DesignItem[]> {
  */
 async function handleRecommend(): Promise<void> {
   type.value = PageType.Recommend
+  // disable 可点、切换 Tab
+  if (isCoolDownActive.value) {
+    list.value = cachedList
+    return
+  }
   recommendPage++
   // 需要重新请求数据/重置页数和缓存数据：
   // - 缓存数据不足一页数量
@@ -553,6 +566,7 @@ async function handleRecommend(): Promise<void> {
     }
   }, 1000)
   list.value = await getRecommendByPage(recommendPage)
+  cachedList = list.value
 }
 
 /**
@@ -591,7 +605,7 @@ async function handleSearch(dir?: string): Promise<void> {
     return
   }
   const authorPattern = /^[0-9A-Za-z\u4e00-\u9fa5]{1,8}$/
-  const workIdPattern = /^[XGYM]\d{8,}$/
+  const workIdPattern = /^[XGYMxgym]\d{8,}$/
   if (
     !authorPattern.test(searchTerm.value) &&
     !workIdPattern.test(searchTerm.value)
@@ -688,13 +702,23 @@ async function handleItemClick(item?: DesignItem): Promise<void> {
  * @returns {Promise<void>}
  */
 async function getDetail(params: DetailParams): Promise<void> {
-  const detail = (await getDesignDetails(params)) as OtherDesignDetails
-  if (!detail.design_name) {
-    if (detailType.value === DesignDetailsType.Self) {
-      showToast('你当前还没有作品')
+  const detail = await getDesignDetails(params)
+  if (detailType.value === DesignDetailsType.Self) {
+    // 返回了空对象或者审核不通过
+    if (
+      !detail.design_name ||
+      ('review_status' in detail && detail.review_status !== 'passed')
+    ) {
+      showToast('暂时没有已发布的作品')
       return
     }
+    // 打开自己作品，当前作品 ID 为 detail.design_id
+    if ('design_id' in detail) {
+      curDetailId = detail.design_id
+    }
   }
+  const isFavorite = 'is_favorite' in detail ? detail.is_favorite : false
+  const isReported = 'is_reported' in detail ? detail.is_reported : false
   detailData.value = {
     id: curDetailId,
     author: detail.author_name,
@@ -702,8 +726,8 @@ async function getDetail(params: DetailParams): Promise<void> {
     worksIntroduce: detail.description,
     worksImgSrc: detail.raw_url,
     worksDecorateImgSrc: detail.share_url,
-    isFavorite: detail.is_favorite,
-    isReported: detail.is_reported,
+    isFavorite,
+    isReported,
   }
   isDetailVisible.value = true
 }
@@ -814,6 +838,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
     width: 2100px;
     height: 1200px;
     transform: scale(var(--scale-factor));
+
+    &.keyboard-show {
+      transform: scale(1);
+    }
   }
 }
 .title {
@@ -853,7 +881,7 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-position: 32px 14px;
   background-size: 50px 50px;
   background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/rules-icon.png');
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {

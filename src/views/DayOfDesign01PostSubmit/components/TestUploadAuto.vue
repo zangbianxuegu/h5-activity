@@ -93,8 +93,8 @@ const getReviewTextServerRequestFormat = (
 const fetchImg = (): Promise<Blob> => {
   return new Promise((resolve) => {
     // 请求图片的 URL
-    const imageUrl =
-      'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960'
+    const imageUrl = 'http://10.227.198.124:7897/images/hmj-test-design.png'
+    // 'http://gips2.baidu.com/it/u=195724436,3554684702&fm=3028&app=3028&f=JPEG&fmt=auto?w=1280&h=960'
     fetch(imageUrl)
       .then((response) => {
         // 检查请求是否成功
@@ -149,8 +149,12 @@ const isFinishedUpload = computed(() => {
 
 const upload = async (testUUID: string, imgBlob: Blob): Promise<void> => {
   try {
-    await getDesignId(filePickerConfig.value.policyName, testUUID)
+    const designId = await getDesignId(
+      filePickerConfig.value.policyName,
+      testUUID,
+    )
     const res = await uploadWorksToServer(
+      designId,
       filePickerConfig.value.policyName,
       filePickerConfig.value.shareImgPolicyName,
       getReviewTextServerRequestFormat(
