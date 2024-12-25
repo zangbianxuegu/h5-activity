@@ -19,6 +19,9 @@ export type ServeResponse = Response | null
 export interface PostMsgParams {
   type: string
   resource?: string
-  content?: any
+  content?: Record<string, any>
+}
+
+export interface PostMsgToNativeParams extends PostMsgParams {
   handleRes: (data: any) => void
 }

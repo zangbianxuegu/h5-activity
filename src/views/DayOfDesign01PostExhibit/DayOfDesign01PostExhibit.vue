@@ -1,6 +1,8 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page flex h-screen">
+    <div
+      class="page relative flex h-screen w-screen items-center justify-center bg-cover bg-center"
+    >
       <van-overlay :show="isLoading" class="flex items-center justify-center">
         <van-loading />
       </van-overlay>
@@ -829,24 +831,16 @@ $font-family-bold: 'Source Han Sans CN Medium';
   position: absolute;
 }
 .page {
-  position: relative;
-  width: 2100px;
+  padding-left: 460px;
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/bg-new.jpg');
 
   &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    width: 2040px;
-    height: 1140px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+    width: 2100px;
+    height: 1200px;
+    transform: scale(var(--scale-factor));
 
     &.keyboard-show {
-      top: 30px;
-      transform: translate(-50%, 0);
+      transform: scale(1);
     }
   }
 }
