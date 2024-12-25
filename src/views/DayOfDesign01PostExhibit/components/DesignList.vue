@@ -64,11 +64,18 @@
               </div>
             </div>
           </template>
-          <!-- 数据不存在 -->
+          <!-- 数据不存在：filepicker 审核不通过或者作者已删除 -->
           <div
             v-else
             class="flex h-full w-full flex-col items-center justify-center"
           >
+            <!-- 作品 ID：filepicker 审核不通过时 -->
+            <div
+              v-if="item.error && item.design_id"
+              class="work-id absolute left-0 top-0"
+            >
+              {{ item.design_id }}
+            </div>
             <img
               src="@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/no-exist.jpg"
               alt="作品已删除"
