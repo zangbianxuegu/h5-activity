@@ -426,6 +426,7 @@ const onClickCloseModal = (): void => {
 <style lang="scss" scoped>
 // 查看稿件开始
 .works-detail-overlay {
+  z-index: 10;
   .wrapper {
     width: 100%;
     height: 100%;
