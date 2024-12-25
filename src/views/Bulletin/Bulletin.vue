@@ -1,5 +1,7 @@
 <template>
-  <div class="bulletin flex h-screen flex-col items-center justify-center">
+  <div
+    class="bulletin relative flex h-screen w-screen items-center justify-center"
+  >
     <div class="bulletin-wrapper">
       <div class="flex">
         <!-- 轮播图 -->
@@ -323,8 +325,7 @@ function handleItemClick(
 
 <style scoped>
 .bulletin {
-  width: 2100px;
-  /* overflow: hidden; */
+  padding-left: 460px;
 }
 .swipe {
   overflow: hidden;
