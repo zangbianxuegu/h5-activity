@@ -1,8 +1,8 @@
 import { type UseEnvironmentReturn } from '@/types'
 
 export function useEnvironment(): UseEnvironmentReturn {
-  const localUrl = '10.227.198.175:5173'
-  const localUrlCc = '10.227.199.103:5173'
+  const localUrl = '10.227.199.88:5173'
+  const localUrlCc = '10.227.198.124'
   const gameUrl =
     'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html'
   const gameDevUrl =

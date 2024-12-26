@@ -1,10 +1,10 @@
 <template>
-  <div class="page flex min-h-screen bg-cover bg-center bg-no-repeat">
+  <div class="page relative min-h-screen bg-cover bg-center bg-no-repeat">
     <van-overlay :show="isLoading" class="flex items-center justify-center">
       <van-loading />
     </van-overlay>
     <nav
-      class="nav flex h-screen w-[460px] shrink-0 flex-col justify-between py-4"
+      class="nav absolute left-0 top-0 z-10 flex h-screen shrink-0 flex-col justify-between py-4"
     >
       <div class="menu overflow-y-scroll">
         <Menu></Menu>
@@ -16,22 +16,9 @@
           href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/pages/debug/index.html"
           >前往调试</a
         >
-        <a
-          class="nav-debug mb-4 flex w-full justify-center py-2"
-          href="https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev2/index.html#/dayofdesign01-post-submit"
-          >sdk调试</a
-        >
-        <div class="nav-sprite flex">
-          <!-- <a
-            class="nav-sprite-text"
-            :href="`https://dev.gmsdk.gameyw.netease.com/sprite/index?token=${token}`"
-            >前往精灵>></a
-          > -->
-          <div class="nav-sprite-text" @click="handleToSprite">前往精灵>></div>
-        </div>
       </div>
     </nav>
-    <main class="flex flex-1 items-center justify-center">
+    <main class="h-screen w-screen">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
           <component :is="Component" />
@@ -69,17 +56,15 @@
 <script setup lang="ts">
 import { showToast } from 'vant'
 import Menu from '@/components/Menu'
-import type {
-  MenuItem,
-  Activity,
-  ActivityTime,
-  TokenParams,
-  UserInfo,
-} from '@/types'
+import type { MenuItem, Activity, ActivityTime, UserInfo } from '@/types'
 import { DAYOFDESIGN01_LIST, MENU_ITEMS } from '@/constants'
-import { getPlayerMissionData } from '@/utils/request'
+import {
+  CommonConfig,
+  getCommonConfig,
+  getPlayerMissionData,
+} from '@/utils/request'
 import { numberToBinaryArray } from '@/utils/utils'
-import { getUserInfo, getJinglingToken } from '@/apis/base'
+import { getUserInfo } from '@/apis/base'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/activity'
@@ -87,10 +72,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { getErrorCustom, isErrorCustom } from './utils/error'
 import { useEnvironment } from '@/composables/useEnvironment'
 
-const { isLocal, isGameDev, isGame, isProd, isGameDev2 } = useEnvironment()
-const jinglingUrl = isProd.value
-  ? 'https://gmsdk.gameyw.netease.com/sprite/index'
-  : 'https://dev.gmsdk.gameyw.netease.com/sprite/index'
+const { isLocal, isGameDev, isGame, isGameDev2 } = useEnvironment()
 
 const route = useRoute()
 const router = useRouter()
@@ -100,7 +82,7 @@ const isLoading = ref(false)
 // 基本信息
 const baseStore = useBaseStore()
 const { updateBaseInfoItems } = baseStore
-const currentChannel = computed(() => baseStore.baseInfo.channel)
+const currentAppChannel = computed(() => baseStore.baseInfo.appChannel)
 
 // 菜单数据
 const menuStore = useMenuStore()
@@ -124,18 +106,23 @@ onMounted(async () => {
   try {
     await getBaseInfo()
     getAllEvents()
+    await getShareConfig(baseStore.baseInfo.appChannel)
   } catch (error) {
     // console.error(error)
   }
 })
 
-let tokenParams: TokenParams = {
-  game_uid: '',
-  uid: '',
-  map: '',
-  return_buff: '',
-  os: '',
-  source: 'normal',
+const getShareConfig = async (appChannel: string): Promise<void> => {
+  try {
+    const shareConfig: any = await getCommonConfig(
+      CommonConfig.EnableDayOfDesignShare,
+    )
+    // "111111"
+    const sharePlatformCode = shareConfig[appChannel] as string
+    updateBaseInfoItems({ sharePlatformCode })
+  } catch (error) {
+    throw new Error('getShareConfig error')
+  }
 }
 
 // 获取基本信息
@@ -150,29 +137,9 @@ async function getBaseInfo(): Promise<void> {
     updateBaseInfoItems({ appChannel })
     updateBaseInfoItems({ returnBuff })
     updateBaseInfoItems({ gameUid })
-    tokenParams = {
-      ...tokenParams,
-      game_uid: res.game_uid,
-      uid: res.uid,
-      map: res.map,
-      return_buff: res.return_buff,
-      os: res.os,
-    }
   } catch (error) {
     showToast((error as Error).message)
   }
-}
-
-// 前往精灵
-function handleToSprite(): void {
-  getJinglingToken(tokenParams)
-    .then((res) => {
-      const val = res.data.token
-      window.location.href = `${jinglingUrl}?token=${val}`
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
 }
 
 /**
@@ -208,6 +175,7 @@ function adjustActivitySort(arr: Activity[], list: string[]): Activity[] {
 // 抽取有效的活动信息
 function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   let isDayOfDesignActive = false
+  let isMoominTestGod = false
   let res = Object.entries(activitiesResponse).reduce<Activity[]>(
     (activeEvents, [activityName, activityInfo]) => {
       if (activityInfo.active === 1) {
@@ -223,6 +191,9 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
         }
         if (activityName.includes('dayofdesign01')) {
           isDayOfDesignActive = true
+        }
+        if (activityName.includes('moomin_test_god')) {
+          isMoominTestGod = true
         }
         // 回流菜单数据处理
         if (activityName === 'return_buff') {
@@ -261,6 +232,13 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     isNew: false,
     hasUnclaimedReward: false,
   })
+  // 调整姆明谷身份测试活动排序
+  if (isMoominTestGod) {
+    const index = res.findIndex(
+      (event) => event.activity === 'activitycenter_moomin_test_god',
+    )
+    res.push(res.splice(index, 1)[0])
+  }
   // 最后调整回流、小光快报的位置
   return res.sort((a, b) => {
     if (a.activity === 'return_buff') return -1
@@ -356,7 +334,7 @@ function hasMenuItem(menuData: MenuItem[], to: any): boolean {
 // 获取所有活动信息
 function getAllEvents(): void {
   isLoading.value = true
-  getPlayerMissionData({ channel: currentChannel.value })
+  getPlayerMissionData({ appChannel: currentAppChannel.value })
     .then((res) => {
       isLoading.value = false
       const activeEvents = extractActiveEvents(res.data.event_data)
@@ -432,24 +410,16 @@ function getAllEvents(): void {
   height: 100%;
   background-image: url('@/assets/images/common/bg.jpg');
 }
-.nav-sprite {
-  width: 443px;
-  height: 107px;
-  line-height: 107px;
-  background-image: url('@/assets/images/common/nav-sprite.png');
-  background-size: contain;
-  background-position: center;
-  font-size: 36px;
-  color: rgba(255, 255, 255, 0.6);
-
-  &-text {
-    padding-left: 140px;
-    width: 100%;
-    height: 100%;
-  }
+.nav {
+  width: 600px;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0));
 }
 .nav-debug {
   font-size: 40px;
   color: rgba(255, 255, 255, 0.6);
+}
+.menu {
+  position: relative;
+  padding-left: 60px;
 }
 </style>

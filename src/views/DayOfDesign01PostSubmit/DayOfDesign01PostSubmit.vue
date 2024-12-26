@@ -1,7 +1,11 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
     <div class="hmj-contribute flex h-screen">
-      <div class="hmj-contribute-main">
+      <!-- 一键上传（测试） -->
+      <div
+        :class="['hmj-contribute-main', { 'keyboard-show': isKeyboardShow }]"
+      >
+        <test-upload-auto></test-upload-auto>
         <Transition appear mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">绘梦节-我要投稿</div>
@@ -26,7 +30,7 @@
                     :max-size="10 * 1024 * 1024"
                     :min-size="100 * 1024"
                     :reupload="false"
-                    :preview-full-image="true"
+                    :preview-full-image="false"
                     :show-delete-btn="false"
                   ></upload-img>
                   <div class="works-operate-btn-container">
@@ -50,7 +54,7 @@
                   >
                     <span class="group-value">【{{ worksGroupName }}组】</span>
                     <span class="id-value">
-                      ID:&ensp;<span id="works-id">{{
+                      编号:&ensp;<span id="works-id">{{
                         currentWorksPureId
                       }}</span>
                     </span>
@@ -136,6 +140,7 @@
                   >
                     <div class="field-textarea-bg"></div>
                     <textarea
+                      ref="worksIntroduceRef"
                       v-model="worksData.worksIntroduce"
                       name="worksIntroduce"
                       id="worksIntroduce"
@@ -143,6 +148,7 @@
                       maxlength="50"
                       placeholder="请分享你的创作故事"
                       :disabled="isContributed"
+                      @blur="onBlurWorksIntroduce"
                     ></textarea>
                     <span class="word-count"
                       >{{ worksIntroduceWordCount }}/50</span
@@ -185,14 +191,20 @@
         <!-- 生成拼装图 -->
         <decorate-works-generate
           ref="decorateWorksGenerateRef"
-          :worksData="worksData"
+          :worksData="{
+            id: designIdBeforeSubmit,
+            author: worksData.author,
+            worksName: worksData.worksName,
+            worksIntroduce: worksData.worksIntroduce,
+            worksImgSrc: worksData.worksImgSrc,
+          }"
         ></decorate-works-generate>
 
         <!-- 我的作品弹窗 -->
         <works-detail-modal
           v-model:show="isShowMyWorksModal"
-          :event="EVENT_DAY_OF_DESIGN_01.ALL"
-          :type="DESIGN_DETAILS_TYPE.SELF"
+          :event="EventDayOfDesign01.All"
+          :type="DesignDetailsType.Self"
           :works-data="myWorksData"
           :file-picker-config="filePickerConfig"
           @after-delete="initPageData"
@@ -206,33 +218,37 @@
 
 <script setup lang="ts">
 import { closeToast, showLoadingToast, showToast } from 'vant'
+import throttle from 'lodash.throttle'
 import DecorateWorksGenerate from './components/DecorateWorksGenerate.vue'
 import WorksDetailModal from './components/WorksDetailModal.vue'
-import ModalHelp from '@/views/DiceMap/components/ModalHelp.vue'
+import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 import UploadImg from './components/UploadImg.vue'
 import { saveImgToDeviceAlbum } from '@/utils/request'
 import {
-  DESIGN_REVIEW_STATUS,
+  DesignReviewStatus,
   type SelfDesignDetails,
 } from '@/types/activity/dayofdesign01'
 import { blobToUrl } from '@/utils/file'
 import {
   FILE_PICKER_POLICY_NAME,
+  FILE_PICKER_POLICY_NAME_SHARE_IMG,
   groupNameAndCodeMap,
 } from '@/constants/dayofdesign01'
-import { type ReviewTextRejectResult } from '@/utils/filePicker/types'
 import {
-  DESIGN_DETAILS_TYPE,
-  EVENT_DAY_OF_DESIGN_01,
+  DesignDetailsType,
+  EventDayOfDesign01,
 } from '@/types/activity/dayofdesign01'
 import {
   deleteDesignDetails,
   getDesignDetails,
+  getDesignId,
   uploadWorksToServer,
 } from '@/apis/dayOfDesign01'
-import ClipboardJS from 'clipboard'
 import { Session } from '@/utils/storage'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
+import { useClipboard } from '@vueuse/core'
+
+import TestUploadAuto from './components/TestUploadAuto.vue'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -259,7 +275,7 @@ interface WorksData {
   worksName: string
   worksIntroduce: string
   id: string
-  checkStatus: DESIGN_REVIEW_STATUS | undefined
+  checkStatus: DesignReviewStatus | undefined
   worksImg?: Blob | string | null
   worksImgSrc: string
   worksDecorateImg: Blob | null
@@ -299,6 +315,39 @@ watch(
   },
 )
 
+const worksIntroduceRef = ref<HTMLTextAreaElement | null>()
+const addEventListenerToWorksIntroduceRef = (): void => {
+  worksIntroduceRef.value?.addEventListener('keypress', function (event) {
+    if (event.key === 'Enter') {
+      showToast('当前文本框不支持换行')
+      event.preventDefault() // 阻止换行
+    }
+  })
+}
+/**
+ * @description 检测作品介绍
+ * @returns {boolean} 是否通过
+ */
+const checkworksIntroduce = (): boolean => {
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.trim()
+  if (worksData.value.worksIntroduce.length === 0) return false
+  const reg =
+    /^[A-Za-z0-9\u4e00-\u9fa5\x20，。‘’”“！？；：、…￥【】（）《》—～()[\]{}<>.,!?;:@#$%^&*_+=`~|/-]{1,50}$/g
+  const testRes = reg.test(worksData.value.worksIntroduce)
+  if (!testRes) {
+    showToast('创作故事不支持输入特殊字符（如\'"\\等），请重新输入')
+  }
+  return testRes
+}
+const onBlurWorksIntroduce = (): void => {
+  // 禁止用户输入换行符
+  worksData.value.worksIntroduce = worksData.value.worksIntroduce.replaceAll(
+    /(\r\n|\n|\r|\t)/g,
+    '',
+  )
+  checkworksIntroduce()
+}
+
 // 是否已上传作品（只显示，不一定上传）
 const isUploaded = computed((): boolean => {
   return !!worksData.value.worksImgSrc
@@ -309,15 +358,15 @@ const isContributed = computed((): boolean => {
 })
 // 是否已审核通过
 const isCheckedSuccess = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.PASSED
+  return worksData.value.checkStatus === DesignReviewStatus.Passed
 })
 // 是否审核失败
 const isCheckedFail = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.REFUSED
+  return worksData.value.checkStatus === DesignReviewStatus.Refused
 })
 // 是否审核中
 const isChecking = computed((): boolean => {
-  return worksData.value.checkStatus === DESIGN_REVIEW_STATUS.VERIFYING
+  return worksData.value.checkStatus === DesignReviewStatus.Verifying
 })
 
 // 作者名的字数统计
@@ -355,7 +404,7 @@ const contributeBtnText = computed((): string => {
   if (!isContributed.value) {
     return '立即投稿'
   } else if (isChecking.value) {
-    return '审核中...'
+    return '审核中......'
   }
   return '重新投稿'
 })
@@ -367,14 +416,16 @@ const contributeBtnClass = computed((): string => {
   return 'btn-contribute'
 })
 
+const { copy, isSupported } = useClipboard({ legacy: true })
+
 // 复制作品id
-const onClickCopyWorksId = (): void => {
-  // eslint-disable-next-line no-new
-  new ClipboardJS('.btn-copy', {
-    text: function (el: Element) {
-      return el?.getAttribute('copy-id') || ''
-    },
-  })
+const onClickCopyWorksId = async (): Promise<void> => {
+  if (!isSupported.value) {
+    showToast('未授权,不支持')
+    return
+  }
+  // 执行复制操作
+  await copy(worksData.value.id)
   showToast('编号已复制到剪贴板！')
 }
 
@@ -401,7 +452,8 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 }
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  window.location.href = 'https://m.163.com/'
+  window.location.href =
+    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
 }
 
 // 删除作品确认弹窗
@@ -417,8 +469,9 @@ const showConfirmDialogForReupload = (): void => {
         if (res) {
           showToast('删除成功')
         }
-        setTimeout(() => {
+        const timer = setTimeout(() => {
           void initPageData()
+          clearTimeout(timer)
         }, 500)
       } catch (error) {
         showToast('网络波动，删除失败，请稍后再试')
@@ -481,6 +534,11 @@ const onClickContributeWorks = async (): Promise<void> => {
       return
     }
 
+    // 检测作品介绍是否合规
+    if (!checkworksIntroduce()) {
+      return
+    }
+
     void showConfirmDialog('是否确认投稿？').then(() => {
       void confirmSubmitWork()
     })
@@ -511,7 +569,7 @@ const generateDecorateWorksImg = async (): Promise<void> => {
 const filePickerConfig = ref({
   token: '',
   policyName: FILE_PICKER_POLICY_NAME,
-  shareImgPolicyName: FILE_PICKER_POLICY_NAME,
+  shareImgPolicyName: FILE_PICKER_POLICY_NAME_SHARE_IMG,
   filePickerUrl: '',
   currentUoloadFileUrl: '',
 })
@@ -545,6 +603,7 @@ const onClickViewMyWorks = async (): Promise<void> => {
 }
 
 const initPageData = async (): Promise<void> => {
+  console.log('initPageData')
   await updateDesignDetails()
 }
 
@@ -574,6 +633,7 @@ const currentWorksPureId = computed(() => {
   return worksData.value.id.slice(1)
 })
 
+const designIdBeforeSubmit = ref('')
 const confirmSubmitWork = async (): Promise<void> => {
   let apiTimeout = true
 
@@ -583,24 +643,38 @@ const confirmSubmitWork = async (): Promise<void> => {
   }
 
   showLoadingToast({
-    message: '正在投稿...',
+    message: '正在投稿......',
     forbidClick: true,
     duration: 0,
     onOpened: () => {
       // 协议超时未返回结果，自动关闭
-      setTimeout(() => {
+      const timer = setTimeout(() => {
         if (apiTimeout) {
           stopSubmit()
           showToast('上传异常，请刷新后重试')
+          console.log('上传异常，请刷新后重试：超时异常')
         }
-      }, 10 * 1000)
+        clearTimeout(timer)
+      }, 20 * 1000)
     },
   })
 
-  await generateDecorateWorksImg()
   try {
+    // 为分享图添加id
+    designIdBeforeSubmit.value = await getDesignId(
+      filePickerConfig.value.policyName,
+    )
+    if (!designIdBeforeSubmit.value) {
+      stopSubmit()
+      showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：向服务端获取作品id取值异常')
+      return
+    }
+    await nextTick()
+    await generateDecorateWorksImg()
     if (worksData.value.worksImg && worksData.value.worksDecorateImg) {
       const res = await uploadWorksToServer(
+        designIdBeforeSubmit.value,
         filePickerConfig.value.policyName,
         filePickerConfig.value.shareImgPolicyName,
         getReviewTextServerRequestFormat(
@@ -612,25 +686,18 @@ const confirmSubmitWork = async (): Promise<void> => {
         worksData.value.worksDecorateImg,
       )
       worksData.value.id = res?.design_id
-      worksData.value.checkStatus = DESIGN_REVIEW_STATUS.VERIFYING
+      worksData.value.checkStatus = DesignReviewStatus.Verifying
       stopSubmit()
-      showToast('投稿成功')
+      showToast('作品投稿成功')
     } else {
       stopSubmit()
       showToast('上传异常，请刷新后重试')
+      console.log('上传异常，请刷新后重试：图片上传后取值异常')
     }
   } catch (error: any) {
     stopSubmit()
     const { message } = error
-    if (message?.includes('errorType')) {
-      // 字段检测异常的错误处理
-      const errorObject: ReviewTextRejectResult = JSON.parse(message)
-      const { invalidKey, invalidReasonDefaultText } = errorObject
-      showToast(invalidReasonDefaultText)
-      console.log(`${invalidKey}字段检测不通过`)
-    } else {
-      showToast('上传异常，请刷新后重试')
-    }
+    showToast(message)
   }
 }
 
@@ -662,11 +729,48 @@ const updateDesignDetails = async (): Promise<void> => {
     }
   } catch (error) {}
 }
-
 onMounted(async () => {
+  window.addEventListener('resize', handleResize)
+  addEventListenerToWorksIntroduceRef()
+
   await initPageData()
   Session.set(sessionIsVisitedKey, false)
+
+  // worksData.value = {
+  //   id: 'X123123',
+  //   author: '11',
+  //   worksName: '11',
+  //   worksIntroduce:
+  //     '111111111111111111111111111111111111111111111111111111111111111111111111111111',
+  //   worksImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   worksDecorateImgSrc:
+  //     'https://ma75-huimeng.fp.ps.netease.com/file/67629597c0fb607491510f534RwmV9Es06',
+  //   checkStatus: DesignReviewStatus.Passed,
+  //   worksDecorateImg: null,
+  // }
+  // designIdBeforeSubmit.value = worksData.value.id
+  // await nextTick()
+  // await generateDecorateWorksImg()
 })
+
+onUnmounted(() => {
+  window.removeEventListener('resize', handleResize)
+})
+
+// 记录初始窗口高度
+const originalHeight = window.innerHeight
+// 键盘是否显示
+const isKeyboardShow = ref(false)
+
+/**
+ * @function handleResize
+ * @description 处理窗口大小变化
+ */
+const handleResize = throttle(() => {
+  const currentHeight = window.visualViewport?.height || window.innerHeight
+  isKeyboardShow.value = originalHeight > currentHeight
+}, 200)
 </script>
 
 <style lang="scss" scoped>
@@ -705,6 +809,11 @@ onMounted(async () => {
     background-position: center;
     background-size: cover;
     background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+
+    &.keyboard-show {
+      top: -220px;
+      transform: translate(-50%, 0);
+    }
   }
 }
 .title {
@@ -967,11 +1076,11 @@ onMounted(async () => {
     height: 100%;
     margin-left: 20px;
     font-size: 28px;
-    color: #fff;
     background-color: transparent;
-    opacity: 0.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 1);
     &::placeholder {
-      color: #fff;
+      color: rgba(255, 255, 255, 0.6);
     }
   }
 }
@@ -998,9 +1107,28 @@ onMounted(async () => {
     color: #fff;
     resize: none;
     background-color: transparent;
-    opacity: 0.6;
+    opacity: 0.9;
+    color: rgba(255, 255, 255, 1);
     &::placeholder {
-      color: #fff;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    /* 自定义滚动条样式 */
+    &::-webkit-scrollbar {
+      width: 12px; /* 滚动条的宽度 */
+    }
+
+    &::-webkit-scrollbar-track {
+      background: #f1f1f1; /* 滚动条轨道的背景色 */
+      border-radius: 10px; /* 轨道的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: #888; /* 滚动条的颜色 */
+      border-radius: 10px; /* 滚动条的圆角 */
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: #555; /* 鼠标悬停时滚动条的颜色 */
     }
   }
   .word-count {

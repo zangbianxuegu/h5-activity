@@ -13,17 +13,19 @@
         >
           <div class="icon-upload bg-contain bg-center bg-no-repeat"></div>
           <span>上传作品</span>
-          <span>请按模板上传小于10MB，尺寸为1200×900px的图片</span>
+          <span>请按模板上传小于10兆，尺寸为1200×900像素的图片</span>
         </div>
         <!-- 隐藏触发上传稿件的元素 -->
-        <input
-          ref="imageUploadsInputDomRef"
-          type="file"
-          id="image_uploads_cut_test"
-          name="image_uploads"
-          :accept="accept"
-          v-show="false"
-        />
+        <form ref="formRef">
+          <input
+            ref="imageUploadsInputDomRef"
+            type="file"
+            id="image_uploads_cut_test"
+            name="image_uploads"
+            :accept="accept"
+            v-show="false"
+          />
+        </form>
       </div>
       <div
         v-show="data"
@@ -64,7 +66,7 @@
               <div
                 class="flex flex-1 items-center justify-center text-[#e4f9ff]"
               >
-                裁剪 1200px*900px 尺寸
+                裁剪 1200像素*900像素 尺寸
               </div>
               <div
                 @click="onClickFinishCropper"
@@ -114,9 +116,9 @@
 import 'cropperjs/dist/cropper.css'
 import Cropper from 'cropperjs'
 import defaultWorksImg from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/works-default.png'
-import { useEnvironment } from '@/composables/useEnvironment'
 import { blobToUrl } from '@/utils/file'
 import { showToast, showLoadingToast, closeToast, showImagePreview } from 'vant'
+import { usePlatform } from '@/composables/usePlatform'
 
 /**
  * @description: 上传图片组件（包含裁剪功能）
@@ -167,7 +169,7 @@ const emits = defineEmits<{
   (e: 'reupload', value: any): void
 }>()
 
-const { isIos } = useEnvironment()
+const { isIos } = usePlatform()
 
 const updateFileData = (data: Blob): void => {
   emits('update:data', data)
@@ -189,6 +191,7 @@ watch(
 )
 
 // 作品上传相关
+const formRef = ref()
 const imageUploadsInputDomRef = ref()
 const onClickGoToUploadWorks = (): void => {
   if (!props.data) {
@@ -234,7 +237,6 @@ watch(
     }
   },
 )
-
 // 添加上传作品的监听
 const listenUploadImgChange = (): void => {
   imageUploadsInputDomRef.value.addEventListener(
@@ -253,11 +255,13 @@ const listenUploadImgChange = (): void => {
         // 检查文件类型
         if (!allowedTypes.includes(file.type)) {
           showToast('上传失败，只能上传png和jpg')
+          formRef.value.reset()
           return
         }
         // 检查文件大小
         if (props.maxSize && file.size > maxSizeLimit) {
-          showToast('您选择的图片大小超过10MB，无法上传')
+          showToast('您选择的图片大小超过10兆，无法上传')
+          formRef.value.reset()
           return
         } else if (props.minSize && file.size < minSizeLimit) {
           showToast('您选择的图片过小，可能会影响展示效果')
@@ -265,7 +269,7 @@ const listenUploadImgChange = (): void => {
 
         if (props.cropper) {
           showLoadingToast({
-            message: '准备裁剪中...',
+            message: '准备裁剪中......',
             forbidClick: true,
             duration: 0,
           })
@@ -283,6 +287,7 @@ const listenUploadImgChange = (): void => {
                 showToast(
                   '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
                 )
+                formRef.value.reset()
               } else {
                 cropperData.value.isShow = true
                 cropperData.value.preCropperImgUrl = readFileResult

@@ -1,7 +1,7 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page flex h-screen">
-      <div class="page-main">
+    <div class="page relative h-screen w-screen bg-cover bg-center">
+      <div class="h-full w-full">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
             <h1 class="title overflow-hidden bg-contain bg-no-repeat">
@@ -23,7 +23,7 @@
               class="my-work absolute right-0 top-[60px]"
               @click="gotoRules"
             >
-              活动规则
+              活动详情>>
             </button>
           </header>
         </Transition>
@@ -67,7 +67,7 @@
 import type { DesignConfig } from '@/types'
 import { Session } from '@/utils/storage'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
-import ModalHelp from './components/ModalHelp.vue'
+import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -75,9 +75,9 @@ const DESIGN_WIDTH = 2560
 const DESIGN_HEIGHT = 1200
 // 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
 // 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_MAYDAY_WIDTH = 2100 - 60
+const DESIGN_MAYDAY_WIDTH = 2100
 // 设计稿主体高，同宽。
-const DESIGN_MAYDAY_HEIGHT = 1200 - 60
+const DESIGN_MAYDAY_HEIGHT = 1200
 // 设计稿主体内容宽
 const DESIGN_MAYDAY_CONTENT_WIDTH = DESIGN_MAYDAY_WIDTH
 // 设计稿主体内容高
@@ -130,7 +130,8 @@ function handleHelp(): void {
  * @returns {void}
  */
 function gotoRules(): void {
-  window.location.href = 'https://sky.163.com/2024/hmj/#index'
+  window.location.href =
+    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
 }
 </script>
 
@@ -178,36 +179,23 @@ $font-family-bold: 'Source Han Sans CN Medium';
   position: absolute;
 }
 .page {
-  position: relative;
-  width: 2100px;
-
-  &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    width: 2040px;
-    height: 1140px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/bg.jpg');
-  }
+  padding-left: 460px;
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/bg-new.jpg');
 }
 .title {
   position: absolute;
   left: 180px;
-  top: 3px;
+  top: 53px;
   width: 1060px;
   height: 241px;
   background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/title.png');
 }
 .sub-title {
   position: absolute;
-  left: 180px;
-  top: 170px;
-  width: 766px;
-  height: 109px;
+  left: 220px;
+  top: 220px;
+  width: 720px;
+  height: 108px;
   background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/sub-title.png');
 }
 .help {
@@ -219,19 +207,16 @@ $font-family-bold: 'Source Han Sans CN Medium';
   background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-exhibit/help.png');
 }
 .my-work {
+  right: 0;
+  top: 100px;
   border-top-left-radius: 38px;
   border-bottom-left-radius: 38px;
-  padding-left: 80px;
   width: 240px;
   height: 76px;
   line-height: 76px;
   font-size: 34px;
   color: $font-color;
   background-color: #eaf5f2;
-  background-position: 32px 14px;
-  background-size: 50px 50px;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-post-main/color-palette.png');
   box-shadow: 0 6px 6px rgba(108, 108, 108, 0.12);
 
   &::before {

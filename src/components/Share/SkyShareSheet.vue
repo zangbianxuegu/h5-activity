@@ -32,8 +32,9 @@ import iconBilibili from '@/assets/images/common/share/icon-share-bilibili.png'
 import iconGodlikemoment from '@/assets/images/common/share/icon-share-godlikemoment.png'
 import iconXhs from '@/assets/images/common/share/icon-share-xhs.png'
 import iconDouyin from '@/assets/images/common/share/icon-share-douyin.png'
-import { NGSHARE_SHARE_CHANNEL } from '@/utils/ngShare/types'
+import { NgshareChannel } from '@/utils/ngShare/types'
 import type { ShareFormatConfig } from '@/utils/ngShare/share'
+import { calculatePxToViewport } from '@/utils/utils'
 
 /**
  * @description 分享选项
@@ -42,8 +43,8 @@ import type { ShareFormatConfig } from '@/utils/ngShare/share'
  */
 interface ShareSheetOption {
   name: string
-  icon: string | NGSHARE_SHARE_CHANNEL
-  shareChannel: NGSHARE_SHARE_CHANNEL
+  icon: string | NgshareChannel
+  shareChannel: NgshareChannel
 }
 
 interface SkyShareSheetProps {
@@ -54,33 +55,33 @@ interface SkyShareSheetProps {
   desc?: string
   url?: string
   image?: string
-  channel?: NGSHARE_SHARE_CHANNEL
+  channel?: NgshareChannel
   onShareSuccess?: () => void
   onShareFail?: () => void
 }
 
-const defaultIcon: Record<NGSHARE_SHARE_CHANNEL, string> = {
-  [NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND]: iconWechat,
-  [NGSHARE_SHARE_CHANNEL.WECHAT_FRIEND_CIRCLE]: iconWechatmoment,
-  [NGSHARE_SHARE_CHANNEL.DOU_YIN]: iconDouyin,
-  [NGSHARE_SHARE_CHANNEL.WEI_BO]: iconWeibo,
-  [NGSHARE_SHARE_CHANNEL.BILIBILI]: iconBilibili,
-  [NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND_CIRCLE]: iconGodlikemoment,
-  [NGSHARE_SHARE_CHANNEL.XIAO_HONG_SHU]: iconXhs,
-  [NGSHARE_SHARE_CHANNEL.QQ]: '',
-  [NGSHARE_SHARE_CHANNEL.QQ_ZONE]: '',
-  [NGSHARE_SHARE_CHANNEL.KUAI_SHOU]: '',
-  [NGSHARE_SHARE_CHANNEL.FACEBOOK]: '',
-  [NGSHARE_SHARE_CHANNEL.DA_SHEN_FRIEND]: '',
-  [NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND]: '',
-  [NGSHARE_SHARE_CHANNEL.YI_XIN_FRIEND_CIRCLE]: '',
+const defaultIcon: Record<NgshareChannel, string> = {
+  [NgshareChannel.WechatFriend]: iconWechat,
+  [NgshareChannel.WechatFriendCircle]: iconWechatmoment,
+  [NgshareChannel.DouYin]: iconDouyin,
+  [NgshareChannel.Weibo]: iconWeibo,
+  [NgshareChannel.Bilibili]: iconBilibili,
+  [NgshareChannel.DaShenFriendCircle]: iconGodlikemoment,
+  [NgshareChannel.XiaoHongShu]: iconXhs,
+  [NgshareChannel.QQ]: '',
+  [NgshareChannel.QQZone]: '',
+  [NgshareChannel.KuaiShou]: '',
+  [NgshareChannel.Facebook]: '',
+  [NgshareChannel.DaShenFriend]: '',
+  [NgshareChannel.YiXinFriend]: '',
+  [NgshareChannel.YiXinFriendCircle]: '',
 }
 
 const props = withDefaults(defineProps<SkyShareSheetProps>(), {
   show: false,
 })
 
-const getIconImg = (icon: NGSHARE_SHARE_CHANNEL): string => {
+const getIconImg = (icon: NgshareChannel): string => {
   return defaultIcon[icon]
 }
 
@@ -90,7 +91,7 @@ const btnList = computed(() => {
       ...item,
       iconImg:
         typeof Number(item.icon) === 'number'
-          ? getIconImg(item.icon as NGSHARE_SHARE_CHANNEL)
+          ? getIconImg(item.icon as NgshareChannel)
           : item.icon,
     }
   })
@@ -113,10 +114,13 @@ const teleportToTargetEl = async (): Promise<void> => {
     const containerWidth = shareSheetContainerRef.value?.offsetWidth || 0
     const containerHeight = shareSheetContainerRef.value?.offsetHeight || 0
 
-    const top = hoverEl.offsetTop
-    const left = hoverEl.offsetLeft
-    hoverTop.value = `${top - containerHeight / 2 + 10}px`
-    hoverLeft.value = `${left - containerWidth / 2 - 6}px`
+    const rect = hoverEl.getBoundingClientRect()
+    const top = rect.top
+    const left = rect.left
+
+    // 92和38为小角的宽高
+    hoverTop.value = `${top - containerHeight - parseFloat(calculatePxToViewport(38))}px`
+    hoverLeft.value = `${left - containerWidth + parseFloat(calculatePxToViewport(92)) + hoverEl.clientWidth / 2}px`
   } else {
     hoverTop.value = `${10}px`
     hoverLeft.value = `${10}px`
@@ -142,17 +146,21 @@ onMounted(async () => {
 </script>
 <style scoped lang="scss">
 .sky-share-sheet {
-  width: 1000px;
-  height: 199px;
+  min-width: 238px;
+  height: 161px;
   position: absolute;
   top: v-bind(hoverTop);
   left: v-bind(hoverLeft);
   display: flex;
   justify-self: center;
   align-items: center;
-  padding: 0 20px 30px 20px;
+  gap: 60px;
+  padding: 20px;
+  border-radius: 20px;
+  background-color: rgba(90, 113, 145, 0.9);
+  box-shadow: 0px 6px 8px 0px rgba(108, 108, 108, 0.6);
+  border: solid 2px rgba(255, 255, 255, 0.3);
   z-index: 999;
-  background-image: url('@/assets/images/common/share/bg-share-bar.png');
   & > div {
     flex: 1;
     height: 100%;
@@ -164,7 +172,20 @@ onMounted(async () => {
       height: 88px;
     }
   }
+  &::after {
+    content: '';
+    width: 92px;
+    height: 38px;
+    position: absolute;
+    bottom: 1px;
+    right: 0;
+    transform: translate(-50%, 100%);
+    background-position: center;
+    background-size: 100% 100%;
+    background-image: url('@/assets/images/common/share/bg-share-bar-corn.png');
+  }
 }
+
 .sky-share-sheet-overlay {
   background-color: transparent;
 }

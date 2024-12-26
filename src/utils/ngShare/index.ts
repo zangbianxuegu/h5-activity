@@ -1,8 +1,8 @@
 import { showToast } from 'vant'
 import type {
-  ANDROID_INSTALLED_PACKAGE,
-  IOS_INSTALLED_PACKAGE,
-  NGSHARE_SHARE_CHANNEL,
+  AndroidInstalledPackage,
+  IosInstalledPackage,
+  NgshareChannel,
   NgshareCheckChannelIsExistToNativeConfig,
   NgshareShareImageConfig,
   NgshareShareLinkConfig,
@@ -10,16 +10,16 @@ import type {
 import {
   installedPackageList,
   ngshareShareChannelMap,
-  NGSHARE_CONTENT_TYPE,
+  NgshareContentType,
 } from './types'
-import { useEnvironment } from '@/composables/useEnvironment'
+import { usePlatform } from '@/composables/usePlatform'
 
-const { isAndroid, isIos } = useEnvironment()
+const { isAndroid, isIos } = usePlatform()
 
 export function ngshareCheckChannelIsExist(
   installedPackage:
-    | ANDROID_INSTALLED_PACKAGE
-    | IOS_INSTALLED_PACKAGE
+    | AndroidInstalledPackage
+    | IosInstalledPackage
     | undefined
     | '',
 ): Promise<{
@@ -65,22 +65,23 @@ export function ngshareCheckChannelIsExist(
     }
 
     window.UniSDKJSBridge.postMsgToNative(config)
-    setTimeout(() => {
+    const timer = setTimeout(() => {
       if (!isSuccessNativeCallback) {
         reject(new Error('检查渠道失败'))
       }
+      clearTimeout(timer)
     }, 2000)
   })
 }
 
 export const ngshareByH5 = async (
-  contentType: NGSHARE_CONTENT_TYPE,
-  shareChannel: NGSHARE_SHARE_CHANNEL,
+  contentType: NgshareContentType,
+  shareChannel: NgshareChannel,
   configForType: Record<string, any>,
   callback?: (respJSONString: string) => void,
 ): Promise<void> => {
   let contentTypeConfig: NgshareShareLinkConfig | NgshareShareImageConfig
-  if (contentType === NGSHARE_CONTENT_TYPE.LINK) {
+  if (contentType === NgshareContentType.Link) {
     const { text, title, u3dshareThumb, link, desc } = configForType
     contentTypeConfig = {
       text,
@@ -90,7 +91,7 @@ export const ngshareByH5 = async (
       u3dshareThumb, // 分享缩略图地址(安卓必传)
       shareThumb: u3dshareThumb, // 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
     }
-  } else if (contentType === NGSHARE_CONTENT_TYPE.IMAGE) {
+  } else if (contentType === NgshareContentType.Image) {
     const { text, title, image } = configForType
     contentTypeConfig = {
       text,

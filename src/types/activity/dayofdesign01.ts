@@ -16,14 +16,14 @@ export interface BaseDesignDetails {
 
 /**
  * @description 作品审核状态
- * @param {string} PASSED 审核通过
- * @param {string} VERIFYING 审核中
- * @param {string} REFUSED 审核不通过
+ * @param {string} Passed 审核通过
+ * @param {string} Verifying 审核中
+ * @param {string} Refused 审核不通过
  */
-export enum DESIGN_REVIEW_STATUS {
-  PASSED = 'passed',
-  VERIFYING = 'verifying',
-  REFUSED = 'refused',
+export enum DesignReviewStatus {
+  Passed = 'passed',
+  Verifying = 'verifying',
+  Refused = 'refused',
 }
 
 /**
@@ -31,7 +31,7 @@ export enum DESIGN_REVIEW_STATUS {
  */
 export interface SelfDesignDetails extends BaseDesignDetails {
   design_id: string
-  review_status: DESIGN_REVIEW_STATUS
+  review_status: DesignReviewStatus
 }
 
 /**
@@ -39,27 +39,35 @@ export interface SelfDesignDetails extends BaseDesignDetails {
  */
 export interface OtherDesignDetails extends BaseDesignDetails {
   is_favorite: boolean
+  is_reported: boolean
 }
 
 /**
  * @description 作品详情组件的展示类型
  */
-export enum DESIGN_DETAILS_TYPE {
-  SELF = 'self',
-  OTHER = 'other',
+export enum DesignDetailsType {
+  Self = 'self',
+  Other = 'other',
+}
+
+/**
+ * @description 确认弹窗icon枚举
+ */
+export enum ConfirmIconType {
+  Report = 'report',
 }
 
 /**
  * @description 绘梦节事件名
  */
-export enum EVENT_DAY_OF_DESIGN_01 {
-  ALL = 'activitycenter_dayofdesign01',
-  EXHIBIT = 'activitycenter_dayofdesign01_post_exhibit',
-  STAGE0 = 'day_of_design_stage0',
-  STAGE1 = 'day_of_design_stage1',
-  STAGE2 = 'day_of_design_stage2',
-  STAGE3 = 'day_of_design_stage3',
-  STAGE4 = 'day_of_design_stage4',
+export enum EventDayOfDesign01 {
+  All = 'activitycenter_dayofdesign01',
+  Exhibit = 'activitycenter_dayofdesign01_post_exhibit',
+  Stage0 = 'day_of_design_stage0',
+  Stage1 = 'day_of_design_stage1',
+  Stage2 = 'day_of_design_stage2',
+  Stage3 = 'day_of_design_stage3',
+  Stage4 = 'day_of_design_stage4',
 }
 
 /**
@@ -115,6 +123,7 @@ export interface FavoriteData extends DesignsData {
  * @param {string} raw_url 图片地址
  * @param {number} [favorite_time] 收藏时间，收藏列表才会有
  * @param {boolean} favorite 是否收藏
+ * @param {boolean} error 图片加载是否失败
  */
 export interface DesignItem {
   design_id: string
@@ -123,6 +132,7 @@ export interface DesignItem {
   raw_url: string
   favorite_time?: number
   favorite: boolean
+  error: boolean
 }
 
 /**

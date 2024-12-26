@@ -27,11 +27,11 @@ export interface FriendshipStore2024 {
   sprite_exchange_store: SpriteExchangeStore
 }
 
-export enum TOKEN_NAME_ENUM {
-  DICE_STORE = 'heytea_token',
+export enum TokenNameEnum {
+  DiceStore = 'heytea_token',
 }
 export interface BaseStore {
-  token_info: Record<TOKEN_NAME_ENUM, number>
+  token_info: Record<TokenNameEnum, number>
   sprite_exchange_store: SpriteExchangeStore
 }
 

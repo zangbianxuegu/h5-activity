@@ -14,17 +14,7 @@ import type {
 } from '@/types'
 import { getErrorMessage, handlePostMessageToNative } from '@/utils/request'
 import CryptoJS from 'crypto-js'
-import {
-  ERROR_TYPE,
-  REVIEW_TEXT_ERROR_TYPE,
-  reviewTextResponseMap,
-} from '@/utils/filePicker/types'
-import {
-  reviewText,
-  getFilePickerToken,
-  uploadImgToFilePicker,
-} from '@/utils/filePicker'
-import Loading from '@/components/Loading'
+import { getFilePickerToken, uploadImgToFilePicker } from '@/utils/filePicker'
 
 /**
  * 作品列表 - 推荐
@@ -38,13 +28,11 @@ export function getRecommendations(
   params: ListRecommendParams,
 ): Promise<DesignItem[]> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_recommendations',
       content: params,
       handleRes: (res: ListRecommendRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -72,13 +60,11 @@ export function getFavorites(
   params: ListFavoriteParams,
 ): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_favorites',
       content: params,
       handleRes: (res: ListFavoriteRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -105,13 +91,11 @@ export function getFavorites(
  */
 export function searchDesigns(params: ListSearchParams): Promise<FavoriteData> {
   return new Promise((resolve, reject) => {
-    Loading.show()
     handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/search_designs',
       content: params,
       handleRes: (res: ListSearchRes) => {
-        Loading.hide()
         const { code, data, msg } = res
         if (code === 200) {
           resolve(data)
@@ -138,12 +122,15 @@ export const getDesignDetails = (
   params: DetailParams,
 ): Promise<OtherDesignDetails | SelfDesignDetails> => {
   return new Promise((resolve, reject) => {
+    console.log('before getDesignDetails')
+
     void handlePostMessageToNative({
       type: 'protocol',
       resource: '/account/web/get_design_details',
       content: params,
       handleRes: (res: Response) => {
         const { code, msg, data } = res
+        console.log('after getDesignDetails')
         if (code === 200) {
           resolve(data)
         } else {
@@ -157,8 +144,10 @@ export const getDesignDetails = (
 /**
  * 删除作品详情信息
  * @function deleteDesignDetails
- * @param {string} policyName 在线图片的url
- * @returns {boolean} 上传是否成功的结果
+ * @param {string} policyName 策略名
+ * @param {string} designId 作品id
+ * @param {string} fileUrl 在线图片的url
+ * @returns {boolean} 删除是否成功
  */
 export const deleteDesignDetails = (
   policyName: string,
@@ -234,10 +223,12 @@ export const updateFavorites = (
  */
 export const uploadFormAndFilePickerResultToServerApi = (
   FilePickerUploadResultCode: 200,
+  designId: string,
   policyName: string,
   reviewObj: Record<string, any>,
   fileUrl: string,
   shareImgUrl: string,
+  testUUID?: string,
 ): Promise<Record<string, any>> => {
   return new Promise((resolve, reject) => {
     if (FilePickerUploadResultCode !== 200) {
@@ -249,10 +240,12 @@ export const uploadFormAndFilePickerResultToServerApi = (
       content: {
         result_code: FilePickerUploadResultCode,
         policy_name: policyName,
+        design_id: designId,
         text: reviewObj,
         file_url: fileUrl,
         share_url: shareImgUrl,
         result_string: '',
+        uuid: testUUID,
       },
       handleRes: (res) => {
         console.log('res', res)
@@ -268,39 +261,9 @@ export const uploadFormAndFilePickerResultToServerApi = (
         if (code === 200) {
           resolve(data)
         } else {
-          if (msg.includes(REVIEW_TEXT_ERROR_TYPE.ILLEGAL)) {
-            const illegalKey = msg.split(' ')[1]
-            reject(
-              JSON.stringify({
-                errorType: ERROR_TYPE.REVIEW_TEXT_ERROR,
-                invalidKey: illegalKey,
-                invalidReasonType: REVIEW_TEXT_ERROR_TYPE.ILLEGAL,
-                invalidReasonDefaultText: reviewTextResponseMap.get(
-                  REVIEW_TEXT_ERROR_TYPE.ILLEGAL,
-                ),
-              }),
-            )
-          } else if (
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.ERROR_LENGTH) ||
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.INVALID) ||
-            msg.includes(REVIEW_TEXT_ERROR_TYPE.NOMATCH)
-          ) {
-            const msgToArray = msg.split(' ')
-            const invalidKey = msgToArray[0]
-            const invalidReasonType = msgToArray[1] as REVIEW_TEXT_ERROR_TYPE
-            const errorDataObject = {
-              errorType: ERROR_TYPE.REVIEW_TEXT_ERROR,
-              invalidKey,
-              invalidReasonType,
-              invalidReasonDefaultText:
-                reviewTextResponseMap.get(invalidReasonType),
-            }
-            reject(new Error(JSON.stringify(errorDataObject)))
-          } else {
-            reject(
-              new Error(getErrorMessage('upload_filepicker_result', code, msg)),
-            )
-          }
+          reject(
+            new Error(getErrorMessage('upload_filepicker_result', code, msg)),
+          )
         }
       },
     })
@@ -310,19 +273,23 @@ export const uploadFormAndFilePickerResultToServerApi = (
 /**
  * @description 上传稿件至filepicker并完成投稿（需要检查文本）
  * @function uploadWorksToServer
+ * @param designID 作品id
  * @param filePickerUrl filePicker的上传地址
  * @param policyName 策略名
  * @param shareImgPolicyName 分享图策略名
  * @param reviewTextObj 检查文本的对象
  * @param imgBlob 上传的图片
+ * @param testUUID QA测试id（仅作测试用）
  * @returns 返回后端的响应，eg:{"design_id":xxx}
  */
 export const uploadWorksToServer = async (
+  designId: string,
   policyName: string,
   shareImgPolicyName: string,
   reviewTextObj: Record<string, any>,
   imgBlob: Blob,
   shareImgBlob: Blob,
+  testUUID?: string,
 ): Promise<Record<string, any> | undefined> => {
   try {
     const md5Result: string = await new Promise((resolve) => {
@@ -350,10 +317,14 @@ export const uploadWorksToServer = async (
     if (reviewTextResult) {
       // 获取filepicker token
       const { token: tokenImg, url: filePickerUrlImg } =
-        await getFilePickerToken(policyName, md5Result)
+        await getFilePickerToken(policyName, md5Result, testUUID)
       // 获取filepicker token
       const { token: tokenShareImg, url: filePickerUrlShareImg } =
-        await getFilePickerToken(shareImgPolicyName, md5ResultShareImg)
+        await getFilePickerToken(
+          shareImgPolicyName,
+          md5ResultShareImg,
+          testUUID,
+        )
       if (tokenImg && tokenShareImg) {
         // 上传稿件至filepicker
         const uploadImgResult = await uploadImgToFilePicker(
@@ -361,26 +332,28 @@ export const uploadWorksToServer = async (
           imgBlob,
           filePickerUrlImg,
         )
-        const uploadshareImgResult = await uploadImgToFilePicker(
+        const uploadShareImgResult = await uploadImgToFilePicker(
           tokenShareImg,
           shareImgBlob,
           filePickerUrlShareImg,
         )
-        if (uploadImgResult?.url && uploadshareImgResult?.url) {
+        if (uploadImgResult?.url && uploadShareImgResult?.url) {
           // 存储稿件最终数据至服务端,完成投稿
           const uploadDataToServerResult =
             await uploadFormAndFilePickerResultToServerApi(
               200,
+              designId,
               policyName,
               reviewTextObj,
               uploadImgResult?.url,
-              uploadshareImgResult?.url,
+              uploadShareImgResult?.url,
+              testUUID,
             )
           if (uploadDataToServerResult) {
             return {
               ...uploadDataToServerResult,
               file_url: uploadImgResult?.url,
-              share_url: uploadshareImgResult?.url,
+              share_url: uploadShareImgResult?.url,
             }
           }
         }
@@ -393,29 +366,96 @@ export const uploadWorksToServer = async (
 }
 
 /**
- * 请求审核组合图
- * @function reviewShareDesign 修改组合图审核状态
- * @param {string} designId 作品id
- * @param {string} policyName 传保存原图filePicker策略名
+ * 检测文本信息是否合规
+ * @function reviewText
+ * @param {string} reviewObj 检查文本信息的对象
+ * @returns {boolean} 信息是否合规的结果
  */
-export const reviewShareDesign = (
-  designId: string,
-  policyName: string,
+export const reviewText = (
+  reviewObj: Record<string, any>,
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     void handlePostMessageToNative({
       type: 'protocol',
-      resource: '/account/web/review_share_design',
+      resource: '/account/web/review_text',
       content: {
-        design_id: designId,
-        policy_name: policyName,
+        text: reviewObj,
       },
-      handleRes: (res: Response) => {
-        const { code, msg } = res
+      handleRes: (res) => {
+        console.log('res', res)
+        const { code, msg }: { code: 200 | 400; msg: string } = res
         if (code === 200) {
           resolve(true)
         } else {
-          reject(new Error(getErrorMessage('review_share_design', code, msg)))
+          reject(new Error(getErrorMessage('review_text', code, msg)))
+        }
+      },
+    })
+  })
+}
+
+/**
+ * @description 生成分享图前，获取作品id
+ * @function getDesignId
+ * @param {string} policyName 策略名
+ * @returns {string} design_id
+ */
+export const getDesignId = (
+  policyName: string,
+  testUUID?: string,
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    void handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/get_design_id',
+      content: {
+        policy_name: policyName,
+        uuid: testUUID,
+      },
+      handleRes: (res) => {
+        const {
+          code,
+          msg,
+          data,
+        }: { code: 200 | 400; msg: string; data: { design_id: string } } = res
+        if (code === 200) {
+          resolve(data.design_id)
+        } else {
+          reject(new Error(getErrorMessage('get_design_id', code, msg)))
+        }
+      },
+    })
+  })
+}
+
+/**
+ * @description 举报接口
+ * @function report
+ * @param {string} policyName 策略名
+ * @param {string} designId 作品id
+ * @returns {boolean} 举报结果
+ */
+export const report = (
+  policyName: string,
+  designId: string,
+): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    void handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/report',
+      content: {
+        policy_name: policyName,
+        design_id: designId,
+      },
+      handleRes: (res) => {
+        const {
+          code,
+          msg,
+        }: { code: 200 | 400; msg: string; data: { design_id: string } } = res
+        if (code === 200) {
+          resolve(true)
+        } else {
+          reject(new Error(getErrorMessage('report', code, msg)))
         }
       },
     })

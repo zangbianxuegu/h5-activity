@@ -64,6 +64,9 @@ export function handlePostMessageToNative({
             })
             resolve()
           }
+          if (pollCount > 100) {
+            clearInterval(intervalId)
+          }
         }, 100)
       }
     }
@@ -78,13 +81,6 @@ export function handlePostMessageToNative({
         dayjs().format('YYYY-MM-DD HH:mm:ss'),
       )
     }
-
-    console.log(
-      `请求类型: ${type}\n请求地址: ${resource}\n请求参数:`,
-      content,
-      '\n请求时间:',
-      dayjs().format('YYYY-MM-DD HH:mm:ss'),
-    )
 
     // 轮询等待 UniSDKJSBridge 挂载成功
     waitForUniSDKJSBridge(() => {
@@ -145,8 +141,8 @@ function fetchPlayerMissionData(
   {
     event,
     token,
-    channel,
-  }: { event?: EventName; token?: string; channel?: string },
+    appChannel,
+  }: { event?: EventName; token?: string; appChannel?: string },
   resolve: (value: Response | PromiseLike<Response>) => void,
   reject: (reason?: any) => void,
 ): Promise<void> {
@@ -159,7 +155,7 @@ function fetchPlayerMissionData(
         source_id: '',
         event,
         token,
-        channel,
+        app_channel: appChannel,
       },
       handleRes: (res) => {
         if (res.code === 200) {
@@ -211,11 +207,11 @@ function fetchPlayerMissionData(
 export function getPlayerMissionData({
   event,
   token,
-  channel,
+  appChannel,
 }: {
   event?: EventName
   token?: string
-  channel?: string
+  appChannel?: string
 }): Promise<Response> {
   return new Promise((resolve, reject) => {
     const now = Date.now()
@@ -253,7 +249,7 @@ export function getPlayerMissionData({
       }
       // 存储请求时间
       Session.set('lastFetchTimeAllEvents', now.toString())
-      fetchPlayerMissionData({ event, channel }, resolve, reject).catch(
+      fetchPlayerMissionData({ event, appChannel }, resolve, reject).catch(
         (err) => {
           reject(err)
         },
@@ -406,7 +402,8 @@ export function getErrorMessage(
  * 保存前端图片至系统相册 [iOS & Android]
  * @function saveImgToDeviceAlbum
  * @param {string} url 在线图片的url
- * @returns {boolean} 上传是否成功的结果
+ * @param {string} timeoutErrorCount 移动端保存图片超时时间（PC不设置）
+ * @returns {boolean} 保存是否成功的结果
  */
 const { isPC } = useEnvironment()
 export const saveImgToDeviceAlbum = (
@@ -415,7 +412,7 @@ export const saveImgToDeviceAlbum = (
 ): Promise<boolean> => {
   return new Promise((resolve, reject) => {
     showLoadingToast({
-      message: '下载中...',
+      message: '下载中......',
       forbidClick: true,
       duration: 0,
     })
@@ -457,5 +454,35 @@ export const saveImgToDeviceAlbum = (
         reject(new Error('下载图片失败'))
       }, timeoutErrorCount)
     }
+  })
+}
+
+export enum CommonConfig {
+  EnableDayOfDesignShare = 'enable_day_of_design_share',
+}
+
+/**
+ * 获取公共配置（公共协议）
+ * @function getCommonConfig
+ */
+export const getCommonConfig = (name: string): Promise<boolean> => {
+  return new Promise((resolve, reject) => {
+    handlePostMessageToNative({
+      type: 'protocol',
+      resource: '/account/web/get_config',
+      content: {
+        name,
+      },
+      handleRes: (res) => {
+        if (res.code === 200) {
+          resolve(res.data)
+        } else {
+          reject(res.msg)
+        }
+      },
+    }).catch((err) => {
+      console.log(err)
+      reject(err)
+    })
   })
 }

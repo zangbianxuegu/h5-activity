@@ -7,6 +7,7 @@ export interface BaseInfo {
   token: string
   returnBuff: string
   gameUid: string
+  sharePlatformCode: string
 }
 
 export interface Activity {

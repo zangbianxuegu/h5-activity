@@ -97,7 +97,7 @@ console.log('factor: ', factor.value)
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 // 基本信息
 const baseStore = useBaseStore()
-const channel = baseStore.baseInfo.channel
+const channel = computed(() => baseStore.baseInfo.channel)
 // 是否已预约
 const isReserved = ref(false)
 
@@ -139,7 +139,7 @@ onUnmounted(() => {
  * 获取预约状态
  */
 function getReserveStatus(): void {
-  getSeasonReservationStatus(channel)
+  getSeasonReservationStatus(channel.value)
     .then(() => {
       isReserved.value = true
     })

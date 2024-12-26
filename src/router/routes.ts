@@ -473,12 +473,30 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/icefestival2025',
+    name: 'Icefestival2025',
+    component: () => import('@/views/Icefestival2025'),
+    meta: {
+      title: '创造！冰雪大世界！',
+      module: 'activitycenter_icefestival2025',
+    },
+  },
+  {
     path: '/doubledan-2024-2',
     name: 'Doubledan2024_2',
     component: () => import('@/views/Doubledan2024_2'),
     meta: {
       title: '落入奇遇茶会',
       module: 'activitycenter_doubledan_2024_2',
+    },
+  },
+  {
+    path: '/season25-reserve',
+    name: 'Season25Reserve',
+    component: () => import('@/views/Season25Reserve'),
+    meta: {
+      title: '彩染季 期待相遇',
+      module: 'activitycenter_season25_reserve',
     },
   },
   {
@@ -524,6 +542,15 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '相遇在更广阔的天空下',
       module: 'activitycenter_pc_celebration',
+    },
+  },
+  {
+    path: '/moomin-test-god',
+    name: 'MoominTestGod',
+    component: () => import('@/views/MoominTestGod'),
+    meta: {
+      title: '姆明谷的身份大揭秘',
+      module: 'activitycenter_moomin_test_god',
     },
   },
   {
