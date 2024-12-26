@@ -1,12 +1,15 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="hmj-contribute flex h-screen">
+    <div
+      class="page relative flex h-screen w-screen items-center justify-center bg-cover bg-center"
+    >
       <!-- 一键上传（测试） -->
       <div
-        :class="['hmj-contribute-main', { 'keyboard-show': isKeyboardShow }]"
+        class="relative h-full w-full"
+        :class="['page-main', { 'keyboard-show': isKeyboardShow }]"
       >
-        <test-upload-auto></test-upload-auto>
-        <Transition appear mode="out-in">
+        <!-- <test-upload-auto></test-upload-auto> -->
+        <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title relative overflow-hidden bg-contain bg-no-repeat">
             <div class="sr-only">绘梦节-我要投稿</div>
             <div
@@ -15,7 +18,7 @@
             ></div>
           </h1>
         </Transition>
-        <Transition appear mode="out-in">
+        <Transition appear :name="mainTransitionName" mode="out-in">
           <div
             class="main-container flex flex-col items-center justify-between bg-contain bg-center bg-no-repeat"
           >
@@ -187,29 +190,28 @@
             <div class="cat-npc bg-contain bg-center bg-no-repeat"></div>
           </div>
         </Transition>
-
-        <!-- 生成拼装图 -->
-        <decorate-works-generate
-          ref="decorateWorksGenerateRef"
-          :worksData="{
-            id: designIdBeforeSubmit,
-            author: worksData.author,
-            worksName: worksData.worksName,
-            worksIntroduce: worksData.worksIntroduce,
-            worksImgSrc: worksData.worksImgSrc,
-          }"
-        ></decorate-works-generate>
-
-        <!-- 我的作品弹窗 -->
-        <works-detail-modal
-          v-model:show="isShowMyWorksModal"
-          :event="EventDayOfDesign01.All"
-          :type="DesignDetailsType.Self"
-          :works-data="myWorksData"
-          :file-picker-config="filePickerConfig"
-          @after-delete="initPageData"
-        ></works-detail-modal>
       </div>
+      <!-- 生成拼装图 -->
+      <decorate-works-generate
+        ref="decorateWorksGenerateRef"
+        :worksData="{
+          id: designIdBeforeSubmit,
+          author: worksData.author,
+          worksName: worksData.worksName,
+          worksIntroduce: worksData.worksIntroduce,
+          worksImgSrc: worksData.worksImgSrc,
+        }"
+      ></decorate-works-generate>
+
+      <!-- 我的作品弹窗 -->
+      <works-detail-modal
+        v-model:show="isShowMyWorksModal"
+        :event="EventDayOfDesign01.All"
+        :type="DesignDetailsType.Self"
+        :works-data="myWorksData"
+        :file-picker-config="filePickerConfig"
+        @after-delete="initPageData"
+      ></works-detail-modal>
       <!-- 活动规则弹框 -->
       <ModalHelp ref="modalHelp" />
     </div>
@@ -247,8 +249,6 @@ import {
 import { Session } from '@/utils/storage'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { useClipboard } from '@vueuse/core'
-
-import TestUploadAuto from './components/TestUploadAuto.vue'
 
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
@@ -734,7 +734,7 @@ onMounted(async () => {
   addEventListenerToWorksIntroduceRef()
 
   await initPageData()
-  Session.set(sessionIsVisitedKey, false)
+  Session.set(sessionIsVisitedKey, true)
 
   // worksData.value = {
   //   id: 'X123123',
@@ -792,27 +792,17 @@ const handleResize = throttle(() => {
 .fade-in-main-enter-from {
   opacity: 0.2;
 }
-.hmj-contribute {
-  position: relative;
-  width: 2100px;
+.page {
+  padding-left: 460px;
+  background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
 
   &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 2040px;
-    height: 1140px;
-    background-color: #fff;
-    padding: 20px 40px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/dayofdesign01/common/bg.jpg');
+    width: 2100px;
+    height: 1200px;
+    transform: scale(var(--scale-factor));
 
     &.keyboard-show {
-      top: -220px;
-      transform: translate(-50%, 0);
+      transform: scale(1);
     }
   }
 }

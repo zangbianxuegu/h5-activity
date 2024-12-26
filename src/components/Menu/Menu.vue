@@ -107,7 +107,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .nav-list {
   border-left: 3px solid rgba(255, 255, 255, 0.2);
 }
@@ -185,6 +185,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   /* 绘梦节-活动会场 */
   &--dayofdesign01_post_exhibit {
     background-image: url('@/assets/images/common/menu/dayofdesign01-exhibit.png');
+  }
+  /* 绘梦节-我要投稿 */
+  &--dayofdesign01_post_submit {
+    background-image: url('@/assets/images/common/menu/dayofdesign01-submit.png');
   }
 }
 .active-star {
