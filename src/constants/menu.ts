@@ -472,9 +472,16 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: 'iframe 外部链接1',
+    label: 'iframe 外部链接',
     value: 'activitycenter_season100_start',
     routeName: 'Season100Start',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: 'iframe 外部链接-情人节活动',
+    value: 'activitycenter_daysoflove_2025',
+    routeName: 'Daysoflove_2025',
     isNew: false,
     hasUnclaimedReward: false,
   },

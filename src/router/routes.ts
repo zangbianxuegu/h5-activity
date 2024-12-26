@@ -563,4 +563,14 @@ export const routes: RouteRecordRaw[] = [
       externalUid: 'Qufder',
     },
   },
+  {
+    path: '/external',
+    name: 'Daysoflove_2025',
+    component: () => import('@/views/IframeView'),
+    meta: {
+      title: '情人节活动',
+      module: 'activitycenter_daysoflove_2025',
+      externalUid: 'Gtbv2O',
+    },
+  },
 ]
