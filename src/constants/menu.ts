@@ -481,7 +481,7 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     label: 'iframe 外部链接-情人节活动',
     value: 'activitycenter_daysoflove_2025',
-    routeName: 'Daysoflove_2025',
+    routeName: 'Daysoflove2025',
     isNew: false,
     hasUnclaimedReward: false,
   },

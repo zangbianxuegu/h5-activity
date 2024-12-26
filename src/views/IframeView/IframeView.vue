@@ -13,11 +13,17 @@ const route = useRoute()
 const externalUid = computed(() => route.meta.externalUid as string)
 const url = ref('')
 
-if (isProd.value) {
-  url.value = `https://sky.h5.163.com/page/${externalUid.value}.html`
-} else {
-  url.value = `https://h5maker-backend-ma75.nie.netease.com/page/dev/${externalUid.value}`
+const updateUrl = (): void => {
+  if (isProd.value) {
+    url.value = `https://sky.h5.163.com/page/${externalUid.value}.html`
+  } else {
+    url.value = `https://h5maker-backend-ma75.nie.netease.com/page/dev/${externalUid.value}`
+  }
 }
+
+updateUrl()
+
+watch(route, updateUrl)
 
 onMounted(() => {
   startListener()

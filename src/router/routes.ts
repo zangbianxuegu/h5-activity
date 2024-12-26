@@ -554,7 +554,7 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/external',
+    path: '/external-season100-start',
     name: 'Season100Start',
     component: () => import('@/views/IframeView'),
     meta: {
@@ -564,8 +564,8 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/external',
-    name: 'Daysoflove_2025',
+    path: '/external-daysoflove-2025',
+    name: 'Daysoflove2025',
     component: () => import('@/views/IframeView'),
     meta: {
       title: '情人节活动',
