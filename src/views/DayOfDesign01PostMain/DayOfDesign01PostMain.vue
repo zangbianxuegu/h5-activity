@@ -130,8 +130,7 @@ function handleHelp(): void {
  * @returns {void}
  */
 function gotoRules(): void {
-  window.location.href =
-    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
+  window.location.href = 'https://sky.163.com/n/2024/hmj/#index'
 }
 </script>
 
