@@ -159,10 +159,10 @@ function handleToSpriteQA(): void {
 }
 .title {
   position: absolute;
-  left: 298px;
-  top: 85px;
-  width: 1020px;
-  height: 194px;
+  left: 391px;
+  top: 103px;
+  width: 927px;
+  height: 176px;
   background-image: url('@/assets/images/return-buff/reunion/title.png');
 }
 .sub-title {
@@ -183,9 +183,8 @@ function handleToSpriteQA(): void {
 }
 .btn {
   position: absolute;
-  left: 50%;
-  bottom: 60px;
-  margin-left: -212px;
+  left: 610px;
+  top: 960px;
   width: 424px;
   height: 132px;
   background-image: url('@/assets/images/return-buff/together/btn.png');

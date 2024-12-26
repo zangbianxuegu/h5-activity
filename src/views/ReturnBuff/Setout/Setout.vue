@@ -84,97 +84,105 @@
           </div>
         </div>
       </Transition>
-      <activity-modal ref="modalHelp">
-        <template #content>
-          <div class="h-[640px] overflow-auto px-2">
-            <p class="modal-text">
-              <span class="font-semibold">参与条件：</span>
-            </p>
-            <p class="modal-text">
-              离开天空王国<span class="text-[#ffcb4d]">≥15天且历史光翼≥30</span
-              >的旅人回归后可参与活动
-            </p>
-            <p class="modal-text mt-4">
-              <span class="font-semibold">参与方式：</span>
-            </p>
-            <p class="modal-text">
-              1、完成收集蜡烛10/20/30根任务，即可依次解锁奖励<span
-                class="text-[#ffcb4d]"
-                >漂浮*2、光能药剂*2、元气满满*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              2、完成使用蜡烛10/20/30根任务，即可依次解锁奖励<span
-                class="text-[#ffcb4d]"
-                >蜡烛*2、蜡烛*4、蜡烛*6</span
-              >；
-            </p>
-            <p class="modal-text">
-              3、完成向好友赠送心火5/10/15次任务，即可依次解锁奖励<span
-                class="text-[#ffcb4d]"
-                >篝火*2、畅谈长桌*2、秋千*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              4、完成使用魔法5/10/15次任务，即可依次解锁奖励<span
-                class="text-[#ffcb4d]"
-                >随机发型魔法*2、随机斗篷魔法*2、随机裤子魔法*2</span
-              >；
-            </p>
-            <p class="modal-text">
-              5、完成10个节点任务，即可领取启程礼<span class="text-[#ffcb4d]"
-                >爱心*3、留影蜡烛*3、彩虹尾迹*3</span
-              >。
-            </p>
-            <p class="modal-text mt-4">
-              <span class="font-semibold">奖励说明：</span>
-            </p>
-            <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
-            <p class="modal-text">
-              2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
-            </p>
-            <p class="modal-text">
-              3、活动将在旅人<span class="text-[#ffcb4d]">回归后14天后结束</span
-              >，请按时参与并领取奖励～
-            </p>
-            <p class="modal-text">
-              4、参与过回归活动的旅人，30天内将无法再次参与。
-            </p>
-          </div>
-        </template>
-      </activity-modal>
-      <activity-modal ref="modalReward" class="reward-box">
-        <template #content>
-          <div class="h-[640px] overflow-auto px-2">
-            <p class="reward-title mt-[40px] h-[60px] leading-[60px]">
-              恭喜你获得活动奖励
-            </p>
-            <div class="flex h-[540px] items-center justify-around">
-              <ul
-                :class="[
-                  'reward-list mt-6 flex w-full items-center justify-around',
-                  `reward-list-${curRewards.length}`,
-                ]"
-              >
-                <li
-                  class="reward-item flex flex-col items-center justify-between"
-                  v-for="item in curRewards"
-                  :key="item.img"
-                >
-                  <div class="reward-img-wrap flex items-center justify-center">
-                    <img
-                      class="reward-img"
-                      :src="handleSrc(item.img)"
-                      alt="reward"
-                    />
-                  </div>
-                  <p class="reward-name">{{ item.name }}</p>
-                </li>
-              </ul>
+      <Teleport to="body">
+        <activity-modal ref="modalHelp">
+          <template #content>
+            <div class="h-[640px] overflow-auto px-4">
+              <p class="modal-text">
+                <span class="font-semibold">参与条件：</span>
+              </p>
+              <p class="modal-text">
+                离开天空王国<span class="text-[#ffcb4d]"
+                  >≥15天且历史光翼≥30</span
+                >的旅人回归后可参与活动
+              </p>
+              <p class="modal-text mt-4">
+                <span class="font-semibold">参与方式：</span>
+              </p>
+              <p class="modal-text">
+                1、完成收集蜡烛10/20/30根任务，即可依次解锁奖励<span
+                  class="text-[#ffcb4d]"
+                  >漂浮*2、光能药剂*2、元气满满*2</span
+                >；
+              </p>
+              <p class="modal-text">
+                2、完成使用蜡烛10/20/30根任务，即可依次解锁奖励<span
+                  class="text-[#ffcb4d]"
+                  >蜡烛*2、蜡烛*4、蜡烛*6</span
+                >；
+              </p>
+              <p class="modal-text">
+                3、完成向好友赠送心火5/10/15次任务，即可依次解锁奖励<span
+                  class="text-[#ffcb4d]"
+                  >篝火*2、畅谈长桌*2、秋千*2</span
+                >；
+              </p>
+              <p class="modal-text">
+                4、完成使用魔法5/10/15次任务，即可依次解锁奖励<span
+                  class="text-[#ffcb4d]"
+                  >随机发型魔法*2、随机斗篷魔法*2、随机裤子魔法*2</span
+                >；
+              </p>
+              <p class="modal-text">
+                5、完成10个节点任务，即可领取启程礼<span class="text-[#ffcb4d]"
+                  >爱心*3、留影蜡烛*3、彩虹尾迹*3</span
+                >。
+              </p>
+              <p class="modal-text mt-4">
+                <span class="font-semibold">奖励说明：</span>
+              </p>
+              <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
+              <p class="modal-text">
+                2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
+              </p>
+              <p class="modal-text">
+                3、活动将在旅人<span class="text-[#ffcb4d]"
+                  >回归后14天后结束</span
+                >，请按时参与并领取奖励～
+              </p>
+              <p class="modal-text">
+                4、参与过回归活动的旅人，30天内将无法再次参与。
+              </p>
             </div>
-          </div>
-        </template>
-      </activity-modal>
+          </template>
+        </activity-modal>
+      </Teleport>
+      <Teleport to="body">
+        <activity-modal ref="modalReward" class="reward-box">
+          <template #content>
+            <div class="h-[640px] overflow-auto px-2">
+              <p class="reward-title mt-[40px] h-[60px] leading-[60px]">
+                恭喜你获得活动奖励
+              </p>
+              <div class="flex h-[540px] items-center justify-around">
+                <ul
+                  :class="[
+                    'reward-list mt-6 flex w-full items-center justify-around',
+                    `reward-list-${curRewards.length}`,
+                  ]"
+                >
+                  <li
+                    class="reward-item flex flex-col items-center justify-between"
+                    v-for="item in curRewards"
+                    :key="item.img"
+                  >
+                    <div
+                      class="reward-img-wrap flex items-center justify-center"
+                    >
+                      <img
+                        class="reward-img"
+                        :src="handleSrc(item.img)"
+                        alt="reward"
+                      />
+                    </div>
+                    <p class="reward-name">{{ item.name }}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
+        </activity-modal>
+      </Teleport>
     </div>
   </Transition>
 </template>
@@ -632,10 +640,10 @@ function handleReward(type: string, status: string): void {
 }
 .title {
   position: absolute;
-  left: 298px;
-  top: 85px;
-  width: 1020px;
-  height: 194px;
+  left: 391px;
+  top: 103px;
+  width: 927px;
+  height: 176px;
   background-image: url('@/assets/images/return-buff/reunion/title.png');
 }
 .sub-title {

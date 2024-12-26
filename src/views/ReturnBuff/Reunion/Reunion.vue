@@ -37,7 +37,9 @@
               </li>
             </ul>
           </div>
-          <div class="common-task">
+          <div
+            class="common-task animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
+          >
             <div
               class="task-common animate__animated animate__fadeIn bg-contain bg-center bg-no-repeat"
               :class="{ redeemed: activityData.return_award }"
@@ -60,83 +62,91 @@
           </div>
         </div>
       </Transition>
-      <activity-modal ref="modalHelp">
-        <template #content>
-          <div class="h-[640px] overflow-auto px-2">
-            <p class="modal-text">
-              <span class="font-semibold">参与条件：</span>
-            </p>
-            <p class="modal-text">
-              离开天空王国<span class="text-[#ffcb4d]">≥15天且历史光翼≥30</span
-              >的旅人回归后可参与活动
-            </p>
-            <p class="modal-text mt-4">
-              <span class="font-semibold">参与方式：</span>
-            </p>
-            <p class="modal-text">
-              1、符合参与条件的回归旅人登录游戏并打开“天空王国回归指南”活动页面，即可领取重逢礼<span
-                class="text-[#ffcb4d]"
-                >皮皮猫套装试用魔法</span
-              >；
-            </p>
-            <p class="modal-text">
-              2、解锁每日回归任务，完成后即可回到活动页面领取对应奖励；
-            </p>
-            <p class="modal-text">
-              3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
-                class="text-[#ffcb4d]"
-                >爱心*3、冥龙克星*3、体型重塑*3</span
-              >；
-            </p>
-            <p class="modal-text mt-4">
-              <span class="font-semibold">奖励说明：</span>
-            </p>
-            <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
-            <p class="modal-text">
-              2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
-            </p>
-            <p class="modal-text">
-              3、活动将在旅人<span class="text-[#ffcb4d]">回归后14天后结束</span
-              >，请按时参与并领取奖励～
-            </p>
-            <p class="modal-text">
-              4、参与过回归活动的旅人，30天内将无法再次参与。
-            </p>
-          </div>
-        </template>
-      </activity-modal>
-      <activity-modal ref="modalReward" class="reward-box">
-        <template #content>
-          <div class="h-[640px] overflow-auto px-2">
-            <p class="reward-title mt-[40px] h-[60px] leading-[60px]">
-              恭喜你获得活动奖励
-            </p>
-            <div class="flex h-[540px] items-center justify-around">
-              <ul
-                :class="[
-                  'reward-list mt-6 flex w-full items-center justify-around',
-                  `reward-list-${curRewards.length}`,
-                ]"
-              >
-                <li
-                  class="reward-item flex flex-col items-center justify-between"
-                  v-for="item in curRewards"
-                  :key="item.img"
-                >
-                  <div class="reward-img-wrap flex items-center justify-center">
-                    <img
-                      class="reward-img"
-                      :src="handleSrc(item.img)"
-                      alt="reward"
-                    />
-                  </div>
-                  <p class="reward-name">{{ item.name }}</p>
-                </li>
-              </ul>
+      <Teleport to="body">
+        <activity-modal ref="modalHelp">
+          <template #content>
+            <div class="h-[640px] overflow-auto px-4">
+              <p class="modal-text">
+                <span class="font-semibold">参与条件：</span>
+              </p>
+              <p class="modal-text">
+                离开天空王国<span class="text-[#ffcb4d]"
+                  >≥15天且历史光翼≥30</span
+                >的旅人回归后可参与活动
+              </p>
+              <p class="modal-text mt-4">
+                <span class="font-semibold">参与方式：</span>
+              </p>
+              <p class="modal-text">
+                1、符合参与条件的回归旅人登录游戏并打开“天空王国回归指南”活动页面，即可领取重逢礼<span
+                  class="text-[#ffcb4d]"
+                  >皮皮猫套装试用魔法</span
+                >；
+              </p>
+              <p class="modal-text">
+                2、解锁每日回归任务，完成后即可回到活动页面领取对应奖励；
+              </p>
+              <p class="modal-text">
+                3、回归后<b>14日内</b>完成全部任务，即可解锁额外奖励<span
+                  class="text-[#ffcb4d]"
+                  >爱心*3、冥龙克星*3、体型重塑*3</span
+                >；
+              </p>
+              <p class="modal-text mt-4">
+                <span class="font-semibold">奖励说明：</span>
+              </p>
+              <p class="modal-text">1、在活动页点击，即可领取对应任务奖励；</p>
+              <p class="modal-text">
+                2、领奖后奖励将直接发送到游戏内角色，请在游戏内确认；
+              </p>
+              <p class="modal-text">
+                3、活动将在旅人<span class="text-[#ffcb4d]"
+                  >回归后14天后结束</span
+                >，请按时参与并领取奖励～
+              </p>
+              <p class="modal-text">
+                4、参与过回归活动的旅人，30天内将无法再次参与。
+              </p>
             </div>
-          </div>
-        </template>
-      </activity-modal>
+          </template>
+        </activity-modal>
+      </Teleport>
+      <Teleport to="body">
+        <activity-modal ref="modalReward" class="reward-box">
+          <template #content>
+            <div class="h-[640px] overflow-auto px-2">
+              <p class="reward-title mt-[40px] h-[60px] leading-[60px]">
+                恭喜你获得活动奖励
+              </p>
+              <div class="flex h-[540px] items-center justify-around">
+                <ul
+                  :class="[
+                    'reward-list mt-6 flex w-full items-center justify-around',
+                    `reward-list-${curRewards.length}`,
+                  ]"
+                >
+                  <li
+                    class="reward-item flex flex-col items-center justify-between"
+                    v-for="item in curRewards"
+                    :key="item.img"
+                  >
+                    <div
+                      class="reward-img-wrap flex items-center justify-center"
+                    >
+                      <img
+                        class="reward-img"
+                        :src="handleSrc(item.img)"
+                        alt="reward"
+                      />
+                    </div>
+                    <p class="reward-name">{{ item.name }}</p>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </template>
+        </activity-modal>
+      </Teleport>
     </div>
   </Transition>
 </template>
@@ -512,10 +522,10 @@ function handleReward(type: string, status: string): void {
 }
 .title {
   position: absolute;
-  left: 298px;
-  top: 85px;
-  width: 1020px;
-  height: 194px;
+  left: 391px;
+  top: 103px;
+  width: 927px;
+  height: 176px;
   background-image: url('@/assets/images/return-buff/reunion/title.png');
 }
 .sub-title {
@@ -574,10 +584,18 @@ function handleReward(type: string, status: string): void {
     background-image: url('@/assets/images/return-buff/reunion/task-extra-redeemed.png');
   }
 }
+.common-task {
+  position: absolute;
+  right: 70px;
+  bottom: 100px;
+  width: 407px;
+  height: 669px;
+  background-image: url('@/assets/images/return-buff/reunion/sky.png');
+}
 .task-common {
   position: absolute;
-  right: 40px;
-  bottom: 250px;
+  right: -40px;
+  top: 180px;
   width: 437px;
   height: 310px;
   background-image: url('@/assets/images/return-buff/reunion/task-common-can.png');
@@ -588,8 +606,8 @@ function handleReward(type: string, status: string): void {
 }
 .btn {
   position: absolute;
-  right: 40px;
-  bottom: 96px;
+  right: -40px;
+  bottom: 40px;
   width: 424px;
   height: 132px;
   background-image: url('@/assets/images/return-buff/reunion/btn.png');
