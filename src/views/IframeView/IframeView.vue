@@ -1,5 +1,5 @@
 <template>
-  <div class="iframe-container absolute flex">
+  <div class="absolute z-10 flex h-screen w-screen">
     <iframe :src="url" frameborder="0" class="absolute h-full w-full"></iframe>
   </div>
 </template>
@@ -33,9 +33,3 @@ onUnmounted(() => {
   stopListener()
 })
 </script>
-<style scoped>
-.iframe-container {
-  width: 2040px;
-  height: 1140px;
-}
-</style>
