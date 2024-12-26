@@ -496,7 +496,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/Season25Reserve'),
     meta: {
       title: '彩染季 期待相遇',
-      module: 'activitycenter_season25_reserve',
+      module: 'activitycenter_season_25_reserve',
     },
   },
   {
