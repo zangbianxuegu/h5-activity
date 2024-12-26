@@ -190,6 +190,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--dayofdesign01_post_submit {
     background-image: url('@/assets/images/common/menu/dayofdesign01-submit.png');
   }
+  /* 在更广阔天空相遇 */
+  &--pc_celebration {
+    background-image: url('@/assets/images/common/menu/pc_celebration.png');
+  }
 }
 .active-star {
   left: -101px;

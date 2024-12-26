@@ -1,21 +1,23 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="pc-celebration flex h-screen">
-      <div class="pc-celebration-main">
+    <div class="pc-celebration relative h-screen w-screen bg-cover bg-center">
+      <div class="h-full w-full">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1 class="title relative h-full">
-            <div class="sr-only">
-              相遇在更广阔的天空下
-              <p>
-                <time datetime="2024-12-6">12.6</time>-
-                <time datetime="2024-2-17">2.17</time>
-              </p>
-            </div>
-            <div
-              class="help cursor-pointer bg-contain"
-              @click="handleHelp"
-            ></div>
-          </h1>
+          <header class="design-header relative">
+            <h1 class="title relative h-full">
+              <div class="sr-only">
+                相遇在更广阔的天空下
+                <p>
+                  <time datetime="2024-12-6">12.6</time>-
+                  <time datetime="2024-2-17">2.17</time>
+                </p>
+              </div>
+              <div
+                class="help cursor-pointer bg-contain"
+                @click="handleHelp"
+              ></div>
+            </h1>
+          </header>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
           <section>
@@ -214,28 +216,24 @@ function setRedDot(): void {
   opacity: 0.2;
 }
 .pc-celebration {
-  position: relative;
-  width: 2100px;
-
-  &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    width: 2040px;
-    height: 1140px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/pc-celebration/bg.jpg');
-  }
+  padding-left: 460px;
+  background-image: url('@/assets/images/pc-celebration/bg.jpg');
+}
+.title {
+  position: absolute;
+  left: 280px;
+  top: 130px;
+  width: 1210px;
+  height: 235px;
+  background-image: url('@/assets/images/pc-celebration/title.png');
+  background-size: cover;
 }
 .help {
   position: absolute;
   width: 61px;
   height: 61px;
-  top: 68px;
-  right: 424px;
+  top: -4px;
+  right: -6px;
   background-image: url('@/assets/images/pc-celebration/help.png');
   background-repeat: no-repeat;
 }
@@ -254,8 +252,8 @@ function setRedDot(): void {
 }
 .reward-container {
   position: absolute;
-  left: 990px;
-  top: 400px;
+  left: 1200px;
+  top: 40%;
 }
 .reward-item {
   width: 260px;
