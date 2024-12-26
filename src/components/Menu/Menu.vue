@@ -6,7 +6,7 @@
       :class="[
         'nav-item relative flex flex-row items-center bg-center bg-no-repeat text-center',
         'hover:cursor-pointer',
-        `nav-item--${item.value.substring(15)}`,
+        `nav-item--${item.value.includes('activitycenter') ? item.value.substring(15) : item.value}`,
         {
           'nav-item-main': isMainNavItem(item),
           'nav-item--active': isMenuItemActive(item),
@@ -117,7 +117,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   border-radius: 35px;
   width: 323px;
   height: 159px;
-  font-size: 40px;
+  font-size: 36px;
   color: rgba(255, 255, 255, 0.6);
   background-size: 307px 143px;
   box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
@@ -178,6 +178,14 @@ function getNavTextClass(curItem: MenuItem): string[] {
     在此处添加不同活动的菜单背景图
     命名为活动事件名，例如 activitycenter_dayofdesign01_post_main，取：dayofdesign01_post_main
   */
+  /* 小光快报 */
+  &--activity_center_notice {
+    background-image: url('@/assets/images/common/menu/bulletin.png');
+  }
+  /* 回流 */
+  &--return_buff {
+    background-image: url('@/assets/images/common/menu/return-buff.png');
+  }
   /* 绘梦节-主页面 */
   &--dayofdesign01_post_main {
     background-image: url('@/assets/images/common/menu/dayofdesign01-main.png');
@@ -201,6 +209,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
 .nav-text {
   margin-left: 110px;
   width: 200px;
+  line-height: 44px;
 }
 @keyframes pulse {
   0% {
