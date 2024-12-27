@@ -1698,7 +1698,6 @@
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/color-palette.png": 1734956825244.0757,
   "src/assets/images/common/share/bg-share-bar-corn.png": 1734956825252.0557,
   "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557,
-  "src/assets/images/common/menu/invitation_code.png": 1735286048227.0083,
   "src/assets/images/invitation-code/title.png": 1735286048227.0083,
   "src/assets/images/invitation-code/bg.jpg": 1735286048227.0083,
   "src/assets/images/common/menu/bulletin.png": 1735207105740.4421,
@@ -1710,5 +1709,6 @@
   "src/assets/images/return-buff/together/bg.jpg": 1735207105743.3706,
   "src/assets/images/invitation-code/reward-bottom-bg.png": 1735294587765.7075,
   "src/assets/images/invitation-code/reward-middle-bg.png": 1735294587765.7075,
-  "src/assets/images/invitation-code/reward-top-bg.png": 1735294587765.7075
+  "src/assets/images/invitation-code/reward-top-bg.png": 1735294587765.7075,
+  "src/assets/images/common/menu/invitation-code.png": 1735300537049.9097
 }

@@ -200,7 +200,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   }
   /* 共沐温暖 不期而遇 */
   &--invitation_code {
-    background-image: url('@/assets/images/common/menu/invitation_code.png');
+    background-image: url('@/assets/images/common/menu/invitation-code.png');
   }
 }
 .active-star {
