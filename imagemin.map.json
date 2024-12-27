@@ -1462,7 +1462,6 @@
   "src/assets/images/pc-celebration/task-can.png": 1732677777589.5742,
   "src/assets/images/pc-celebration/task-redeemed.png": 1732677777589.5742,
   "src/assets/images/pc-celebration/task-wait.png": 1732677777589.5742,
-  "src/assets/images/pc-celebration/bg.jpg": 1732677777589.5742,
   "src/public/images/banner3.png": 1732615524730.1426,
   "src/public/images/banner2.png": 1732615524730.1426,
   "src/assets/images/doubledan-2024-2/task4-overdue.png": 1732615524730.1426,
@@ -1699,5 +1698,8 @@
   "src/assets/images/music-2024/title.png": 1733465797521.919,
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/color-palette.png": 1734956825244.0757,
   "src/assets/images/common/share/bg-share-bar-corn.png": 1734956825252.0557,
-  "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557
+  "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557,
+  "src/assets/images/pc-celebration/title.png": 1735290360919.327,
+  "src/assets/images/common/menu/pc_celebration.png": 1735290360919.327,
+  "src/assets/images/pc-celebration/bg.jpg": 1735290360920.302
 }

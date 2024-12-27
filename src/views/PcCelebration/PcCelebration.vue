@@ -53,7 +53,6 @@ import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { Event } from '@/types'
 import { useMenuStore } from '@/stores/menu'
-import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { useActivityStore } from '@/stores/pcCelebration'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
@@ -66,8 +65,6 @@ import {
 } from './config'
 import { useTransitions } from './composables/useTransition'
 
-// 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
-getResponsiveStylesFactor()
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransitions()
 
