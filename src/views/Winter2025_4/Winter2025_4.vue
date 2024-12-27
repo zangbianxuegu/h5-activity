@@ -773,7 +773,7 @@ const handleResize = throttle(() => {
 .candle-acc-task-icon3.can {
   background-size: 48px 79px;
 }
-@for $i from 1 through 4 {
+@for $i from 1 through 3 {
   .lamp#{$i} {
     background-size: contain;
     background-repeat: no-repeat;
