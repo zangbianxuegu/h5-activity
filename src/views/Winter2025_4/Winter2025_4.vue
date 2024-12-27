@@ -618,7 +618,6 @@ const handleResize = throttle(() => {
 .page {
   background-image: url('@/assets/images/winter2025-4/bg.jpg');
   &-main {
-    transform: scale(var(--scale-factor));
     &.keyboard-show {
       transform: scale(1);
     }
