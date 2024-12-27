@@ -361,4 +361,10 @@ export const ERROR_MESSAGES: ErrorMessages = {
       'already exists': '该作品已被收藏过',
     },
   },
+  // 花灯解谜
+  guess_riddle: {
+    400: {
+      'wrong answer': '答案错误',
+    },
+  },
 }

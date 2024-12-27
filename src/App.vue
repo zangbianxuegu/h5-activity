@@ -3,7 +3,7 @@
     <van-overlay :show="isLoading" class="flex items-center justify-center">
       <van-loading />
     </van-overlay>
-    <nav
+    <!-- <nav
       class="nav absolute left-0 top-0 z-10 flex h-screen shrink-0 flex-col justify-between py-4"
     >
       <div class="menu overflow-y-scroll">
@@ -17,7 +17,7 @@
           >前往调试</a
         >
       </div>
-    </nav>
+    </nav> -->
     <main class="h-screen w-screen">
       <!-- <router-view v-slot="{ Component }">
         <Transition name="fade-in" mode="out-in">
