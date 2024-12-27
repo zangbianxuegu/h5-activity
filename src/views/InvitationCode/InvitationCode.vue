@@ -18,13 +18,15 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section>
-            <!-- 邀请人数 -->
-            <div class="reward-top">
+          <section class="absolute right-0 top-0 h-full w-full">
+            <div
+              class="absolute bottom-0 right-[140px] top-0 m-auto flex flex-col justify-center"
+            >
+              <!-- 邀请人数 -->
               <h2 class="sr-only">邀请人数</h2>
-              <div class="absolute left-[40px] top-[130px] flex">
+              <div class="reward-top relative mb-[24px] flex">
                 <ul
-                  class="absolute left-0 top-[-80px] flex w-[500px] justify-between"
+                  class="absolute left-[30px] top-[60px] flex w-[500px] justify-between"
                 >
                   <li
                     v-for="(item, index) in topAccTaskList"
@@ -52,100 +54,100 @@
                   </li>
                 </ul>
                 <div
-                  class="progress-container absolute left-0 top-[40px] w-[500px]"
+                  class="progress-container absolute left-[30px] top-[180px] w-[500px]"
                 >
                   <div
                     class="progress-bar"
                     :style="`width: ${topAccTaskValue > 100 ? 100 : topAccTaskValue}%;`"
                   ></div>
                 </div>
-              </div>
-              <div
-                class="absolute right-[30px] top-[20px] w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
-              >
-                {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
-              </div>
-            </div>
-            <!-- 被邀请玩家累计收集光之翼数量 -->
-            <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
-            <div class="absolute left-[1140px] top-[580px] flex">
-              <ul
-                class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
-              >
-                <li
-                  v-for="(item, index) in middleAccTaskList"
-                  :key="item.id"
-                  class="flex h-[180px] flex-col items-center justify-between"
-                >
-                  <bubble
-                    :reward="item"
-                    :bubbleScale="1.9"
-                    :bounce-class="`${item.taskId}-${item.id}`"
-                  >
-                    <div
-                      :class="[
-                        'middle-acc-task-item animate__animated animate__fadeIn',
-                        `${item.status}${index + 1}`,
-                      ]"
-                      @click="handleReward(index + 1, item)"
-                    ></div>
-                  </bubble>
-                  <p
-                    class="h-[30px] text-center text-[30px] leading-[36px] text-white"
-                  >
-                    {{ item.stages[index] }}
-                  </p>
-                </li>
-              </ul>
-
-              <div
-                class="progress-container absolute left-0 top-[40px] w-[750px]"
-              >
                 <div
-                  class="progress-bar"
-                  :style="`width: ${middleAccTaskValue > 100 ? 100 : middleAccTaskValue}%;`"
-                ></div>
-              </div>
-            </div>
-            <!-- 被邀请玩家累计献祭次数 -->
-            <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
-            <div class="absolute left-[1140px] top-[860px] flex">
-              <ul
-                class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
-              >
-                <li
-                  v-for="(item, index) in bottomAccTaskList"
-                  :key="item.id"
-                  class="flex h-[180px] flex-col items-center justify-between"
+                  class="absolute right-[30px] top-[10px] w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
                 >
-                  <bubble
-                    :reward="item"
-                    :bubbleScale="1.9"
-                    :bounce-class="`${item.taskId}-${item.id}`"
+                  {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
+                </div>
+              </div>
+              <!-- 被邀请玩家累计收集光之翼数量 -->
+              <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
+              <div class="reward-middle relative mb-[24px] flex">
+                <ul
+                  class="absolute left-[30px] top-[60px] flex w-[760px] justify-between"
+                >
+                  <li
+                    v-for="(item, index) in middleAccTaskList"
+                    :key="item.id"
+                    class="flex h-[180px] flex-col items-center justify-between"
                   >
-                    <div
-                      :class="[
-                        'bottom-acc-task-item animate__animated animate__fadeIn',
-                        item.status,
-                      ]"
-                      @click="handleReward(index + 1, item)"
-                    ></div>
-                  </bubble>
-                  <p
-                    class="h-[30px] text-center text-[30px] leading-[36px] text-white"
-                  >
-                    {{ item.stages[index] }}次
-                  </p>
-                </li>
-              </ul>
+                    <bubble
+                      :reward="item"
+                      :bubbleScale="1.9"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'middle-acc-task-item animate__animated animate__fadeIn',
+                          `${item.status}${index + 1}`,
+                        ]"
+                        @click="handleReward(index + 1, item)"
+                      ></div>
+                    </bubble>
+                    <p
+                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                    >
+                      {{ item.stages[index] }}
+                    </p>
+                  </li>
+                </ul>
 
-              <div
-                class="progress-container absolute left-0 top-[40px] w-[750px]"
-              >
                 <div
-                  class="progress-bar"
-                  :style="`width: ${bottomAccTaskValue > 100 ? 100 : bottomAccTaskValue}%;`"
-                ></div>
+                  class="progress-container absolute left-[30px] top-[180px] w-[750px]"
+                >
+                  <div
+                    class="progress-bar"
+                    :style="`width: ${middleAccTaskValue > 100 ? 100 : middleAccTaskValue}%;`"
+                  ></div>
+                </div>
+              </div>
+              <!-- 被邀请玩家累计献祭次数 -->
+              <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
+              <div class="reward-bottom relative flex">
+                <ul
+                  class="absolute left-[30px] top-[60px] flex w-[760px] justify-between"
+                >
+                  <li
+                    v-for="(item, index) in bottomAccTaskList"
+                    :key="item.id"
+                    class="flex h-[180px] flex-col items-center justify-between"
+                  >
+                    <bubble
+                      :reward="item"
+                      :bubbleScale="1.9"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'bottom-acc-task-item animate__animated animate__fadeIn',
+                          item.status,
+                        ]"
+                        @click="handleReward(index + 1, item)"
+                      ></div>
+                    </bubble>
+                    <p
+                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                    >
+                      {{ item.stages[index] }}次
+                    </p>
+                  </li>
+                </ul>
+
+                <div
+                  class="progress-container absolute left-[30px] top-[180px] w-[750px]"
+                >
+                  <div
+                    class="progress-bar"
+                    :style="`width: ${bottomAccTaskValue > 100 ? 100 : bottomAccTaskValue}%;`"
+                  ></div>
+                </div>
               </div>
             </div>
           </section>
@@ -617,12 +619,21 @@ function handleHelp(): void {
   background-image: url('@/assets/images/invitation-code/help.png');
 }
 .reward-top {
-  position: absolute;
   width: 840px;
   height: 256px;
-  top: 338px;
-  right: 200px;
-  background-image: url('@/assets/images/invitation-code/reward-top.png');
+  background-image: url('@/assets/images/invitation-code/reward-top-bg.png');
+  background-size: cover;
+}
+.reward-middle {
+  width: 840px;
+  height: 257px;
+  background-image: url('@/assets/images/invitation-code/reward-middle-bg.png');
+  background-size: cover;
+}
+.reward-bottom {
+  width: 840px;
+  height: 256px;
+  background-image: url('@/assets/images/invitation-code/reward-bottom-bg.png');
   background-size: cover;
 }
 .progress-container {
