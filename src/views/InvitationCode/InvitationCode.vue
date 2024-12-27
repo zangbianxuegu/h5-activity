@@ -3,7 +3,9 @@
     <div class="invitation-code relative h-screen w-screen bg-cover bg-center">
       <div :class="['h-full w-full', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
+          <h1
+            class="title relative h-full overflow-hidden bg-contain bg-no-repeat"
+          >
             <div class="sr-only">
               共沐温暖 不期而遇
               <p>
@@ -18,15 +20,15 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section class="absolute right-0 top-0 h-full w-full">
+          <section class="absolute bottom-0 right-0 top-0 m-auto">
             <div
-              class="absolute bottom-0 right-[140px] top-0 m-auto flex flex-col justify-center"
+              class="absolute bottom-0 right-[140px] top-0 m-auto flex flex-col justify-center gap-y-[24px]"
             >
               <!-- 邀请人数 -->
               <h2 class="sr-only">邀请人数</h2>
-              <div class="reward-top relative mb-[24px] flex">
+              <div class="reward-top relative flex">
                 <ul
-                  class="absolute left-[30px] top-[60px] flex w-[500px] justify-between"
+                  class="absolute left-[40px] top-[56px] flex w-[500px] justify-between"
                 >
                   <li
                     v-for="(item, index) in topAccTaskList"
@@ -54,7 +56,7 @@
                   </li>
                 </ul>
                 <div
-                  class="progress-container absolute left-[30px] top-[180px] w-[500px]"
+                  class="progress-container absolute left-[44px] top-[180px] w-[500px]"
                 >
                   <div
                     class="progress-bar"
@@ -62,16 +64,16 @@
                   ></div>
                 </div>
                 <div
-                  class="absolute right-[30px] top-[10px] w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
+                  class="absolute right-[30px] top-0 w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
                 >
                   {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
                 </div>
               </div>
               <!-- 被邀请玩家累计收集光之翼数量 -->
               <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
-              <div class="reward-middle relative mb-[24px] flex">
+              <div class="reward-middle relative flex">
                 <ul
-                  class="absolute left-[30px] top-[60px] flex w-[760px] justify-between"
+                  class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
                   <li
                     v-for="(item, index) in middleAccTaskList"
@@ -100,7 +102,7 @@
                 </ul>
 
                 <div
-                  class="progress-container absolute left-[30px] top-[180px] w-[750px]"
+                  class="progress-container absolute left-[44px] top-[180px] w-[750px]"
                 >
                   <div
                     class="progress-bar"
@@ -112,7 +114,7 @@
               <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
               <div class="reward-bottom relative flex">
                 <ul
-                  class="absolute left-[30px] top-[60px] flex w-[760px] justify-between"
+                  class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
                   <li
                     v-for="(item, index) in bottomAccTaskList"
@@ -141,7 +143,7 @@
                 </ul>
 
                 <div
-                  class="progress-container absolute left-[30px] top-[180px] w-[750px]"
+                  class="progress-container absolute left-[44px] top-[180px] w-[750px]"
                 >
                   <div
                     class="progress-bar"
@@ -610,12 +612,20 @@ function handleHelp(): void {
   padding-left: 460px;
   background-image: url('@/assets/images/invitation-code/bg.jpg');
 }
+.title {
+  position: absolute;
+  width: 1210px;
+  height: 235px;
+  top: 130px;
+  left: 570px;
+  background-image: url('@/assets/images/invitation-code/title.png');
+}
 .help {
   position: absolute;
   width: 73px;
   height: 73px;
-  top: 38px;
-  left: 884px;
+  top: -6px;
+  left: 794px;
   background-image: url('@/assets/images/invitation-code/help.png');
 }
 .reward-top {
