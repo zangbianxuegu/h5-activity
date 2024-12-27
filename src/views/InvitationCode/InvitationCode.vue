@@ -4,7 +4,7 @@
       <div :class="['h-full w-full', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1
-            class="title relative h-full overflow-hidden bg-contain bg-no-repeat"
+            class="title animate__animated animate__fadeIn relative h-full overflow-hidden bg-contain bg-no-repeat"
           >
             <div class="sr-only">
               共沐温暖 不期而遇
@@ -25,10 +25,14 @@
               class="absolute bottom-0 right-[140px] top-0 m-auto flex flex-col justify-center gap-y-[24px]"
             >
               <!-- 邀请人数 -->
-              <h2 class="sr-only">邀请人数</h2>
               <div
                 class="reward-top animate__animated animate__fadeIn relative flex"
               >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  邀请人数
+                </h2>
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[500px] justify-between"
                 >
@@ -72,10 +76,14 @@
                 </div>
               </div>
               <!-- 被邀请玩家累计收集光之翼数量 -->
-              <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
               <div
                 class="reward-middle animate__animated animate__fadeIn relative flex"
               >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  被邀请玩家累计收集光之翼数量
+                </h2>
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
@@ -115,10 +123,14 @@
                 </div>
               </div>
               <!-- 被邀请玩家累计献祭次数 -->
-              <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
               <div
                 class="reward-bottom animate__animated animate__fadeIn relative flex"
               >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  被邀请玩家累计献祭次数
+                </h2>
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
