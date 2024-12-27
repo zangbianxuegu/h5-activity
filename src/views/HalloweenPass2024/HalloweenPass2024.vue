@@ -5,7 +5,7 @@
         <Transition appear :name="headTransitionName" mode="out-in">
           <section>
             <h1
-              class="title relative z-10 overflow-hidden bg-contain bg-no-repeat"
+              class="title relative z-20 overflow-hidden bg-contain bg-no-repeat"
             >
               <div class="sr-only">
                 魔法坩埚 惊喜无限
@@ -20,7 +20,7 @@
               ></div>
             </h1>
             <!-- 捣蛋币数 -->
-            <div class="token">
+            <div class="token z-20">
               <div class="token-icon bg-cover"></div>
               <div class="token-count flex justify-center">
                 {{ tokenCount }}
@@ -29,7 +29,7 @@
           </section>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section class="lottery absolute bottom-0 left-0 right-0 top-0">
+          <section class="lottery absolute inset-0 z-10">
             <div class="tips flex items-center justify-center bg-cover">
               <span v-if="isFirstLottery" class="text-[40px] text-[#fff29c]"
                 >首次免费</span
@@ -41,13 +41,33 @@
             </div>
             <button
               type="button"
-              class="btn bg-transparent bg-cover"
-              @click="drawLottery"
+              :class="[
+                'btn bg-transparent bg-cover transition-all',
+                { 'opacity-50': isDrawing || drawId >= 10 },
+              ]"
+              @click="handleDraw"
             >
               <span class="sr-only">抽取礼物</span>
             </button>
           </section>
         </Transition>
+        <!-- 动画 -->
+        <div class="absolute h-full w-full overflow-hidden">
+          <SpinePlayer
+            ref="spinePlayer"
+            class="player absolute"
+            json-path="./spine/halloween-2024/mofaguo/mofaguo.json"
+            atlas-path="./spine/halloween-2024/mofaguo/mofaguo.atlas"
+            :layout="{
+              x: 0,
+              y: 0,
+              width: 2042,
+              height: 1142,
+            }"
+            @success="onAnimationSuccess"
+            @complete="onAnimationComplete"
+          />
+        </div>
         <!-- 活动规则弹框 -->
         <activity-modal ref="modalHelp">
           <template #content>
@@ -127,6 +147,7 @@ import { halloweenLottery } from '@/apis/halloween'
 import { useActivityStore } from '@/stores/halloweenPass2024'
 import useResponsiveStyles from '@/composables/useResponsiveStyles'
 import ActivityModal from '@/components/Modal'
+import SpinePlayer from '@/components/SpinePlayer'
 
 // 设计稿宽
 const DESIGN_WIDTH = 2560
@@ -160,6 +181,7 @@ useResponsiveStyles(designConfig)
 // 弹框
 const modalHelp = ref<InstanceType<typeof ActivityModal> | null>(null)
 const modalReward = ref<InstanceType<typeof ActivityModal> | null>(null)
+const spinePlayer = ref<InstanceType<typeof SpinePlayer> | null>(null)
 
 // 活动数据
 const EVENT_NAME = 'activitycenter_Halloweenpass_2024'
@@ -169,8 +191,14 @@ const activityData = computed(() => activityStore.activityData)
 const tokenCount = computed(() =>
   Number(activityData.value.token_info.halloween_token),
 )
+// 抽奖次数
+const drawId = computed(() => activityData.value.draw_id)
 // 是否首次抽奖
-const isFirstLottery = computed(() => activityData.value.draw_id <= 0)
+const isFirstLottery = computed(() => drawId.value <= 0)
+// 是否正在抽奖
+const isDrawing = ref(false)
+// 动画是否完成加载
+let isAnimationLoaded = false
 
 interface RewardsName {
   repellant_krill: string
@@ -309,20 +337,44 @@ function getActivityData(): void {
 }
 
 /**
- * @function drawLottery
+ * @function handleDraw
  * @description 抽奖
- * @returns void
+ * @returns {void}
  */
-function drawLottery(): void {
+function handleDraw(): void {
+  // 动画还未加载完成
+  if (!isAnimationLoaded) {
+    return
+  }
+  // 正在抽奖
+  if (isDrawing.value) {
+    return
+  }
   if (!isFirstLottery.value && tokenCount.value < 100) {
     showToast('捣蛋币不足！请去【出奇寻宝】获取！')
     return
   }
+  if (drawId.value >= 10) {
+    showToast('奖励已全部抽完')
+    return
+  }
+  isDrawing.value = true
+  // 开始抽奖动画
+  spinePlayer.value?.playAnimation('idle2', false)
+}
+
+/**
+ * @function drawLottery
+ * @description 抽奖接口
+ * @returns {void}
+ */
+function drawLottery(): void {
   halloweenLottery({
     event: EVENT_NAME,
     token_count: tokenCount.value,
   })
     .then((res) => {
+      isDrawing.value = false
       // code = 200 的错误
       const errorMap = {
         'not enough token': '捣蛋币不足！请去【出奇寻宝】获取！',
@@ -345,6 +397,30 @@ function drawLottery(): void {
     .catch((error) => {
       showToast(error.message)
     })
+}
+
+/**
+ * @function onAnimationSuccess
+ * @description 动画加载完成回调函数
+ * @returns {void}
+ */
+function onAnimationSuccess(): void {
+  console.log('魔法坩埚动画加载完成')
+  isAnimationLoaded = true
+  spinePlayer.value?.playAnimation('idle', true)
+}
+
+/**
+ * @function onAnimationComplete
+ * @description 抽奖动画完成回调函数
+ * @param entry
+ * @returns {void}
+ */
+function onAnimationComplete(entry: any): void {
+  if (entry.animation.name.includes('idle2')) {
+    drawLottery()
+    spinePlayer.value?.playAnimation('idle', true)
+  }
 }
 </script>
 
@@ -381,7 +457,7 @@ function drawLottery(): void {
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-    background-image: url('@/assets/images/halloween-pass-2024/bg.jpg');
+    background-image: url('@/assets/images/halloween-pass-2024/bg.png');
   }
 }
 .title {
@@ -475,5 +551,11 @@ function drawLottery(): void {
 .reward-name {
   font-size: 30px;
   color: #666;
+}
+.player {
+  left: -8px;
+  right: -16px;
+  top: -9px;
+  bottom: -7px;
 }
 </style>
