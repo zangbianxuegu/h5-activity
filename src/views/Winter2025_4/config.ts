@@ -43,7 +43,7 @@ export function createCandlesAccTaskList(): TaskItem[] {
     {
       id: 1,
       taskId: 'collecting_season_candles',
-      title: '5根',
+      title: '收集5根季节蜡烛',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -53,7 +53,7 @@ export function createCandlesAccTaskList(): TaskItem[] {
     {
       id: 2,
       taskId: 'collecting_season_candles',
-      title: '15根',
+      title: '收集15根季节蜡烛',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -63,7 +63,7 @@ export function createCandlesAccTaskList(): TaskItem[] {
     {
       id: 3,
       taskId: 'collecting_season_candles',
-      title: '20根',
+      title: '收集20根季节蜡烛',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -79,7 +79,7 @@ export function createRiddlesAccTaskList(): TaskItem[] {
     {
       id: 1,
       taskId: 'activitycenter_winter_2025_4_m1',
-      title: '1次',
+      title: '猜对灯谜1次',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -89,7 +89,7 @@ export function createRiddlesAccTaskList(): TaskItem[] {
     {
       id: 2,
       taskId: 'activitycenter_winter_2025_4_m1',
-      title: '3次',
+      title: '猜对灯谜3次',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -99,7 +99,7 @@ export function createRiddlesAccTaskList(): TaskItem[] {
     {
       id: 3,
       taskId: 'activitycenter_winter_2025_4_m1',
-      title: '5次',
+      title: '猜对灯谜5次',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -115,7 +115,7 @@ export function createBoatAccTaskList(): TaskItem[] {
     {
       id: 1,
       taskId: 'activitycenter_winter_2025_4_m3',
-      title: '1天',
+      title: '累计点赞1天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -125,7 +125,7 @@ export function createBoatAccTaskList(): TaskItem[] {
     {
       id: 2,
       taskId: 'activitycenter_winter_2025_4_m3',
-      title: '3天',
+      title: '累计点赞3天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>
@@ -135,7 +135,7 @@ export function createBoatAccTaskList(): TaskItem[] {
     {
       id: 3,
       taskId: 'activitycenter_winter_2025_4_m3',
-      title: '5天',
+      title: '累计点赞5天',
       status: TaskStatus.WAIT,
       canRewardLottieRef: ref() as Ref<
         Array<InstanceType<typeof CanRewardBubbleAnimation>>

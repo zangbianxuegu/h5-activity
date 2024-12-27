@@ -67,21 +67,24 @@
                           @click="handleReward(index + 1, item)"
                         ></div>
                       </bubble>
+                      <p class="sr-only">{{ item.title }}</p>
                     </li>
                   </ul>
                 </div>
                 <div
-                  class="lamp1 absolute left-[320px] top-[220px] h-[735px] w-[391px]"
+                  class="lamp1 lamp-rabbit absolute left-[320px] top-[220px] h-[735px] w-[391px]"
                 ></div>
               </div>
-              <template v-if="canUseSpine">
-                <Lamp
-                  ref="rabbitLamp"
-                  :class="[isRiddleLampShow ? 'fade' : 'hide']"
-                  class="pointer-events-none absolute left-[272px] top-[250px] h-[912px] w-[486px]"
-                  animation="lamp_01"
-                />
-              </template>
+
+              <SpinePlayer
+                ref="rabbitLamp"
+                :class="[isRiddleLampShow ? 'fade' : 'hide']"
+                class="pointer-events-none absolute left-[272px] top-[250px] h-[912px] w-[486px]"
+                animation="lamp_01"
+                :json-path="jsonPath"
+                :atlas-path="atlasPath"
+              />
+
               <!-- 累计点赞纸船 -->
               <h2 class="sr-only">累计点赞纸船</h2>
               <div :class="[isBoatLampShow ? 'hide' : 'fade']">
@@ -113,21 +116,23 @@
                           @click="handleReward(index + 1, item)"
                         ></div>
                       </bubble>
+                      <p class="sr-only">{{ item.title }}</p>
                     </li>
                   </ul>
                 </div>
                 <div
-                  class="lamp2 absolute left-[784px] top-[188px] h-[578px] w-[422px]"
+                  class="lamp2 lamp-flower absolute left-[784px] top-[188px] h-[578px] w-[422px]"
                 ></div>
               </div>
-              <template v-if="canUseSpine">
-                <Lamp
-                  ref="boatLamp"
-                  :class="[isBoatLampShow ? 'fade' : 'hide']"
-                  class="pointer-events-none absolute left-[718px] top-[160px] h-[727px] w-[561px]"
-                  animation="lamp_02"
-                />
-              </template>
+              <SpinePlayer
+                ref="flowerLamp"
+                :class="[isBoatLampShow ? 'fade' : 'hide']"
+                class="pointer-events-none absolute left-[718px] top-[160px] h-[727px] w-[561px]"
+                :json-path="jsonPath"
+                :atlas-path="atlasPath"
+                animation="lamp_02"
+              />
+
               <!-- 收集季节蜡烛 -->
               <h2 class="sr-only">收集季节蜡烛</h2>
               <div :class="[isCandleLampShow ? 'hide' : 'fade']">
@@ -162,21 +167,23 @@
                           @click="handleReward(index + 1, item)"
                         ></div>
                       </bubble>
+                      <p class="sr-only">{{ item.title }}</p>
                     </li>
                   </ul>
                 </div>
                 <div
-                  class="lamp3 absolute left-[1300px] top-[36px] h-[489px] w-[313px]"
+                  class="lamp3 lamp-moon absolute left-[1300px] top-[36px] h-[489px] w-[313px]"
                 ></div>
               </div>
-              <template v-if="canUseSpine">
-                <Lamp
-                  :class="[isCandleLampShow ? 'fade' : 'hidden']"
-                  ref="candleLamp"
-                  class="pointer-events-none absolute left-[1193px] top-[0px] h-[723px] w-[475px]"
-                  animation="lamp_03"
-                />
-              </template>
+
+              <SpinePlayer
+                :class="[isCandleLampShow ? 'fade' : 'hide']"
+                ref="moonLamp"
+                class="pointer-events-none absolute left-[1193px] top-[0px] h-[723px] w-[475px]"
+                :json-path="jsonPath"
+                :atlas-path="atlasPath"
+                animation="lamp_03"
+              />
             </div>
             <div
               class="riddle-container animate__animated animate__fadeIn flex flex-col items-center"
@@ -242,7 +249,6 @@ import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/winter2025_4'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
-import { checkCanUseSpineAnimation } from '@/utils/utils'
 import Bubble from '@/components/Bubble'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
@@ -261,8 +267,7 @@ import {
 } from './config'
 import gsap from 'gsap'
 import throttle from 'lodash.throttle'
-import Lamp from './components/Lamp.vue'
-
+import SpinePlayer from '@/components/SpinePlayer'
 getResponsiveStylesFactor()
 
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
@@ -272,6 +277,12 @@ const curReward: Ref<Reward> = ref({
   name: 'energy_potion',
   count: 1,
 })
+const jsonPath = './spine/winter2025-4/2024_lamp.json'
+const atlasPath = './spine/winter2025-4/2024_lamp.atlas'
+const rabbitLamp = ref<InstanceType<typeof SpinePlayer> | null>(null)
+const flowerLamp = ref<InstanceType<typeof SpinePlayer> | null>(null)
+const moonLamp = ref<InstanceType<typeof SpinePlayer> | null>(null)
+
 // 今日谜题
 const RIDDLE = createTask()
 // 收集季节蜡烛
@@ -354,8 +365,6 @@ const rewardTokenRiddle = updateRewardToken(1, 5)
 const rewardTokenBoat = updateRewardToken(2, 5)
 const rewardTokenCandle = updateRewardToken(2, 20)
 
-// 是否使用 Spine 动画
-const canUseSpine = ref(checkCanUseSpineAnimation())
 /**
  * @function 是否隐藏任务列表
  * @param taskList 任务列表
@@ -374,8 +383,6 @@ const hideTask = (index: number): ComputedRef<boolean> => {
 const isRiddleLampShow = hideTask(1)
 const isBoatLampShow = hideTask(2)
 const isCandleLampShow = hideTask(3)
-
-const boatLamp = ref<InstanceType<typeof Lamp> | null>(null)
 
 onMounted(() => {
   try {
@@ -466,35 +473,37 @@ function getLanternToken(): void {
  */
 function handleReward(rewardId: number, item: TaskItem): void {
   const { taskId, status } = item
-  if (status === TaskStatus.REDEEMED) {
-    return
-  }
-  if (status === TaskStatus.WAIT) {
-    showToast('还未完成任务')
-    return
-  }
-  claimMissionReward({
-    event: EVENT_NAME,
-    task: taskId,
-    rewardId,
-  })
-    .then(async (res) => {
-      curReward.value = res.data.rewards[0]
-      // 更新页面数据
-      const taskIndex = eventData.value.findIndex(
-        (item) => item.task_id === taskId,
-      )
-      showToast(
-        `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
-      )
-      eventData.value[taskIndex].award[rewardId - 1] = 1
+  const taskIndex = eventData.value.findIndex((item) => item.task_id === taskId)
+  eventData.value[taskIndex].award[rewardId - 1] = 1
+  // if (status === TaskStatus.REDEEMED) {
+  //   return
+  // }
+  // if (status === TaskStatus.WAIT) {
+  //   showToast('还未完成任务')
+  //   return
+  // }
+  // claimMissionReward({
+  //   event: EVENT_NAME,
+  //   task: taskId,
+  //   rewardId,
+  // })
+  //   .then(async (res) => {
+  //     curReward.value = res.data.rewards[0]
+  //     // 更新页面数据
+  //     const taskIndex = eventData.value.findIndex(
+  //       (item) => item.task_id === taskId,
+  //     )
+  //     showToast(
+  //       `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
+  //     )
+  //     eventData.value[taskIndex].award[rewardId - 1] = 1
 
-      // 更新红点
-      setRedDot()
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
+  //     // 更新红点
+  //     setRedDot()
+  //   })
+  //   .catch((error) => {
+  //     showToast(error.message)
+  //   })
 }
 
 const todayRiddle = ref<string[]>(['', '', ''])
@@ -613,6 +622,7 @@ const handleResize = throttle(() => {
   opacity: 0;
   transition: opacity 0.5s ease-in-out;
 }
+
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }

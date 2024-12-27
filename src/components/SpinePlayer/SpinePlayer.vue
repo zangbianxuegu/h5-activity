@@ -22,6 +22,7 @@ interface Props {
   atlasPath: string
   premultipliedAlpha?: boolean
   layout?: Layout
+  animation?: string
 }
 
 const props = defineProps<Props>()
@@ -33,11 +34,12 @@ onMounted(() => {
   if (!spineContainer.value) return
   const premultipliedAlpha = props.premultipliedAlpha ?? true
   const layout = props.layout ?? {}
-
+  const animation = props.animation ?? ''
   // 动画配置
   const config: SpinePlayerConfig = {
     jsonUrl: props.jsonPath,
     atlasUrl: props.atlasPath,
+    animation,
     alpha: true,
     premultipliedAlpha,
     backgroundColor: '#00000000',
