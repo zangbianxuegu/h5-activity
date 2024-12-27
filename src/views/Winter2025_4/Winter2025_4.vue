@@ -35,7 +35,7 @@
             <div class="tree relative">
               <!-- 累计猜对灯谜 -->
               <h2 class="sr-only">累计猜对灯谜</h2>
-              <div :class="[isRiddleLampShow ? 'hide' : 'fade']">
+              <div :class="{ hide: isRiddleLampShow }">
                 <div
                   class="absolute bottom-[-30px] left-[270px] z-10 flex flex-col items-center"
                 >
@@ -87,7 +87,7 @@
 
               <!-- 累计点赞纸船 -->
               <h2 class="sr-only">累计点赞纸船</h2>
-              <div :class="[isBoatLampShow ? 'hide' : 'fade']">
+              <div :class="{ hide: isBoatLampShow }">
                 <div
                   class="absolute bottom-[158px] left-[784px] z-10 flex flex-col items-center"
                 >
@@ -135,7 +135,7 @@
 
               <!-- 收集季节蜡烛 -->
               <h2 class="sr-only">收集季节蜡烛</h2>
-              <div :class="[isCandleLampShow ? 'hide' : 'fade']">
+              <div :class="{ hide: isCandleLampShow }">
                 <div
                   class="absolute right-[-100px] top-[530px] z-10 flex flex-col items-center"
                 >
@@ -175,7 +175,6 @@
                   class="lamp3 lamp-moon absolute left-[1300px] top-[36px] h-[489px] w-[313px]"
                 ></div>
               </div>
-
               <SpinePlayer
                 :class="[isCandleLampShow ? 'fade' : 'hide']"
                 ref="moonLamp"
@@ -614,13 +613,12 @@ const handleResize = throttle(() => {
 
 <style lang="scss" scoped>
 .fade {
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out 1s;
 }
 .hide {
   opacity: 0;
-  transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.8s ease-in-out;
 }
-
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
 }
