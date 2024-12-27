@@ -1699,7 +1699,6 @@
   "src/assets/images/common/share/bg-share-bar-corn.png": 1734956825252.0557,
   "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557,
   "src/assets/images/pc-celebration/title.png": 1735290360919.327,
-  "src/assets/images/common/menu/pc_celebration.png": 1735290360919.327,
   "src/assets/images/pc-celebration/bg.jpg": 1735290360920.302,
   "src/assets/images/common/menu/bulletin.png": 1735207105740.4421,
   "src/assets/images/common/menu/return-buff.png": 1735207105740.4421,
@@ -1707,5 +1706,6 @@
   "src/assets/images/return-buff/reunion/title.png": 1735207105740.4421,
   "src/assets/images/return-buff/reunion/sky.png": 1735207105740.4421,
   "src/assets/images/return-buff/setout/bg.jpg": 1735207105740.4421,
-  "src/assets/images/return-buff/together/bg.jpg": 1735207105743.3706
+  "src/assets/images/return-buff/together/bg.jpg": 1735207105743.3706,
+  "src/assets/images/common/menu/pc-celebration.png": 1735299821736.8486
 }

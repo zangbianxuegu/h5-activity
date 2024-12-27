@@ -200,7 +200,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   }
   /* 在更广阔天空相遇 */
   &--pc_celebration {
-    background-image: url('@/assets/images/common/menu/pc_celebration.png');
+    background-image: url('@/assets/images/common/menu/pc-celebration.png');
   }
 }
 .active-star {
