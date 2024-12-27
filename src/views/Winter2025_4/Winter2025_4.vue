@@ -30,7 +30,7 @@
             <!-- 代币总数 -->
             <div class="coin flex items-center bg-contain">
               <div class="coin-icon"></div>
-              <div class="flex-1 text-center">{{ currentCoin }}</div>
+              <div class="flex-1 text-center">{{ tokenCount }}</div>
             </div>
             <div class="tree relative">
               <!-- 累计猜对灯谜 -->
@@ -199,7 +199,7 @@
                     },
                   ]"
                 ></div>
-                <div class="mr-[10px]">x100</div>
+                <div class="mr-[10px]">x10</div>
                 <p class="right-icon"></p>
               </div>
               <input
@@ -262,6 +262,7 @@ import {
 import gsap from 'gsap'
 import throttle from 'lodash.throttle'
 import Lamp from './components/Lamp.vue'
+import { S } from 'vite/dist/node/types.d-aGj9QkWt'
 
 getResponsiveStylesFactor()
 
@@ -272,8 +273,6 @@ const curReward: Ref<Reward> = ref({
   name: 'energy_potion',
   count: 1,
 })
-// 花灯代币数
-const currentCoin = ref<number>(0)
 // 今日谜题
 const RIDDLE = createTask()
 // 收集季节蜡烛
@@ -288,6 +287,7 @@ const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
+const tokenCount = computed(() => activityData.value.token_count)
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
 const router = useRouter()
@@ -383,6 +383,7 @@ onMounted(() => {
   try {
     window.addEventListener('resize', handleResize)
     getActivityData()
+    getLanternToken()
     getActivityRiddle()
   } catch (error) {
     console.error(error)
@@ -436,6 +437,23 @@ function getActivityData(): void {
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
+}
+/**
+ * @function 获取花灯代币数量
+ * @returns {void}
+ */
+function getLanternToken(): void {
+  getPlayerMissionData({
+    event: 'activitycenter_winter_2025_5',
+    token: 'lantern_token',
+  })
+    .then((res) => {
+      const tokenInfo = res.data.token_info
+      activityStore.updateTokenCount(tokenInfo.lantern_token as string)
     })
     .catch((error) => {
       showToast(error.message)
@@ -518,8 +536,9 @@ function guessRiddle(): void {
         .then(async () => {
           // 更新页面数据
           await handleTokenFly()
-          currentCoin.value += 100
           answer.value = ''
+          const count = activityData.value.token_count
+          activityData.value.token_count = (Number(count) + 10).toString()
           activityData.value.event_data[EVENT_NAME][0].award[0] = 1
           showToast('答案正确，您获得了花灯代币*10')
           // 更新红点

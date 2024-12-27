@@ -48,6 +48,7 @@ export const useActivityStore = defineStore(
         ],
       },
       current_time: 0,
+      token_count: '0',
     })
     // 更新活动数据
     function updateActivityData(
@@ -55,10 +56,15 @@ export const useActivityStore = defineStore(
     ): void {
       activityData.value = newEventData
     }
+    // 更新花灯代币数量
+    function updateTokenCount(newTokenCount: string): void {
+      activityData.value.token_count = newTokenCount
+    }
 
     return {
       activityData,
       updateActivityData,
+      updateTokenCount,
     }
   },
   {

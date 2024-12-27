@@ -364,7 +364,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
   // 花灯解谜
   guess_riddle: {
     400: {
-      'wrong answer': '答案错误',
+      'wrong answer': '没有猜对，再接再厉',
     },
   },
 }
