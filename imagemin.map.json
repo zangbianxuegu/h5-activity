@@ -1516,7 +1516,6 @@
   "src/assets/images/invitation-code/tab2-active.png": 1732786703041.422,
   "src/assets/images/invitation-code/bind-task3-wait.png": 1732786703040.4473,
   "src/assets/images/invitation-code/top-acc-task3-can.png": 1732786703041.422,
-  "src/assets/images/invitation-code/bg.jpg": 1732786703052.1626,
   "src/assets/images/doubledan-2024-1/acc-task-can-star.png": 1732709629678.258,
   "src/assets/images/doubledan-2024-1/acc-task-redeemed-right.png": 1732709629678.258,
   "src/assets/images/doubledan-2024-1/acc-task-can-bg.png": 1732709629678.258,
@@ -1699,5 +1698,11 @@
   "src/assets/images/music-2024/title.png": 1733465797521.919,
   "src/assets/images/dayofdesign01/dayofdesign01-post-exhibit/color-palette.png": 1734956825244.0757,
   "src/assets/images/common/share/bg-share-bar-corn.png": 1734956825252.0557,
-  "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557
+  "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557,
+  "src/assets/images/invitation-code/reward-bottom-bg.png": 1735286048226.0315,
+  "src/assets/images/invitation-code/reward-middle-bg.png": 1735286048227.0083,
+  "src/assets/images/common/menu/invitation_code.png": 1735286048227.0083,
+  "src/assets/images/invitation-code/reward-top-bg.png": 1735286048227.0083,
+  "src/assets/images/invitation-code/title.png": 1735286048227.0083,
+  "src/assets/images/invitation-code/bg.jpg": 1735286048227.0083
 }
