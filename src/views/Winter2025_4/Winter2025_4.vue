@@ -28,7 +28,7 @@
               <div class="sr-only">back</div>
             </div>
             <!-- 代币总数 -->
-            <div class="coin flex items-center bg-contain">
+            <div class="coin flex items-center">
               <div class="coin-icon"></div>
               <div class="flex-1 text-center">{{ tokenCount }}</div>
             </div>
@@ -43,9 +43,9 @@
                     <div class="acc-task1-title"></div>
                     <p class="text-[34px] text-[#fff]">
                       （<span class="text-[#ffeb9c]">{{
-                        rewardTokenrRiddle.currentCount
+                        rewardTokenRiddle.currentCount
                       }}</span
-                      >/{{ rewardTokenrRiddle.targetCount }}）
+                      >/{{ rewardTokenRiddle.targetCount }}）
                     </p>
                   </div>
                   <ul class="relative top-[-30px] flex">
@@ -212,7 +212,7 @@
                 <button
                   type="button"
                   :class="[
-                    'btn indent-[-9999px]',
+                    'btn',
                     {
                       'btn-finished disabled': isFinished,
                     },
@@ -262,7 +262,6 @@ import {
 import gsap from 'gsap'
 import throttle from 'lodash.throttle'
 import Lamp from './components/Lamp.vue'
-import { S } from 'vite/dist/node/types.d-aGj9QkWt'
 
 getResponsiveStylesFactor()
 
@@ -287,7 +286,9 @@ const menuStore = useMenuStore()
 const activityStore = useActivityStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
-const tokenCount = computed(() => activityData.value.token_count)
+const tokenCount = computed(() =>
+  Number(activityData.value.token_info?.lantern_token || 0),
+)
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
 const router = useRouter()
@@ -349,7 +350,7 @@ const boatAccTaskList = updateTaskList(BOAT_ACC_TASK_LIST, 2)
 // 收集季节蜡烛
 const candleAccTaskList = updateTaskList(CANDLES_ACC_TASK_LIST, 3)
 
-const rewardTokenrRiddle = updateRewardToken(1, 5)
+const rewardTokenRiddle = updateRewardToken(1, 5)
 const rewardTokenBoat = updateRewardToken(2, 5)
 const rewardTokenCandle = updateRewardToken(2, 20)
 
@@ -367,9 +368,6 @@ const hideTask = (index: number): ComputedRef<boolean> => {
     const accTasksValid = accTask.stages.every(
       (stage, index) => accTask.value >= stage && accTask.award[index] === 1,
     )
-    if (accTasksValid) {
-      boatLamp.value?.$el.classList.add('loaded')
-    }
     return accTasksValid
   })
 }
@@ -453,7 +451,7 @@ function getLanternToken(): void {
   })
     .then((res) => {
       const tokenInfo = res.data.token_info
-      activityStore.updateTokenCount(tokenInfo.lantern_token as string)
+      activityStore.updateTokenCount(tokenInfo)
     })
     .catch((error) => {
       showToast(error.message)
@@ -537,8 +535,7 @@ function guessRiddle(): void {
           // 更新页面数据
           await handleTokenFly()
           answer.value = ''
-          const count = activityData.value.token_count
-          activityData.value.token_count = (Number(count) + 10).toString()
+          activityData.value.token_info.lantern_token = tokenCount.value + 10
           activityData.value.event_data[EVENT_NAME][0].award[0] = 1
           showToast('答案正确，您获得了花灯代币*10')
           // 更新红点
@@ -687,7 +684,8 @@ const handleResize = throttle(() => {
   height: 51px;
   color: #fff;
   font-size: 32px;
-  background-image: url('@/assets/images/winter2025-4/coin-bg.png');
+  background-color: #1d2e58;
+  border-radius: 40px;
 }
 .coin-icon {
   width: 36px;
@@ -833,10 +831,8 @@ const handleResize = throttle(() => {
   height: 81px;
   font-size: 34px;
   color: #f7ede3;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/winter2025-4/input-bg.png');
-  background-color: transparent;
+  background-color: #dfb58a;
+  border-radius: 40px;
 }
 .riddle-input::placeholder {
   color: #efdac4;
@@ -867,11 +863,13 @@ const handleResize = throttle(() => {
   margin-top: 22px;
   width: 303px;
   height: 93px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/winter2025-4/btn.png');
+  text-align: center;
+  color: #b0824f;
+  background-color: #fffeed;
+  border-radius: 50px;
   &-finished {
-    background-image: url('@/assets/images/winter2025-4/btn-finished.png');
+    color: #584127;
+    background-color: #7f7f76;
   }
 }
 </style>

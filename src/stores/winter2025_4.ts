@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import type { ActivityData } from '@/types'
+import type { Winter2025ResData } from '@/types'
 
 export const useActivityStore = defineStore(
   'activitycenter_winter_2025_4', // 须与活动事件名一致
   () => {
     // 活动数据
-    const activityData = ref<ActivityData<'activitycenter_winter_2025_4'>>({
+    const activityData = ref<Winter2025ResData>({
       event_data: {
         activitycenter_winter_2025_4: [
           {
@@ -48,17 +48,17 @@ export const useActivityStore = defineStore(
         ],
       },
       current_time: 0,
-      token_count: '0',
+      token_info: {
+        lantern_token: 0,
+      },
     })
     // 更新活动数据
-    function updateActivityData(
-      newEventData: ActivityData<'activitycenter_winter_2025_4'>,
-    ): void {
+    function updateActivityData(newEventData: Winter2025ResData): void {
       activityData.value = newEventData
     }
     // 更新花灯代币数量
-    function updateTokenCount(newTokenCount: string): void {
-      activityData.value.token_count = newTokenCount
+    function updateTokenCount(tokenInfo: Record<string, number>): void {
+      activityData.value.token_info = tokenInfo
     }
 
     return {
