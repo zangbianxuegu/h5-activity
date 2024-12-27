@@ -26,7 +26,9 @@
             >
               <!-- 邀请人数 -->
               <h2 class="sr-only">邀请人数</h2>
-              <div class="reward-top relative flex">
+              <div
+                class="reward-top animate__animated animate__fadeIn relative flex"
+              >
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[500px] justify-between"
                 >
@@ -42,7 +44,7 @@
                     >
                       <div
                         :class="[
-                          'top-acc-task-item animate__animated animate__fadeIn',
+                          'top-acc-task-item',
                           `${item.status}${index + 1}`,
                         ]"
                         @click="handleReward(index + 1, item)"
@@ -71,7 +73,9 @@
               </div>
               <!-- 被邀请玩家累计收集光之翼数量 -->
               <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
-              <div class="reward-middle relative flex">
+              <div
+                class="reward-middle animate__animated animate__fadeIn relative flex"
+              >
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
@@ -87,7 +91,7 @@
                     >
                       <div
                         :class="[
-                          'middle-acc-task-item animate__animated animate__fadeIn',
+                          'middle-acc-task-item',
                           `${item.status}${index + 1}`,
                         ]"
                         @click="handleReward(index + 1, item)"
@@ -112,7 +116,9 @@
               </div>
               <!-- 被邀请玩家累计献祭次数 -->
               <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
-              <div class="reward-bottom relative flex">
+              <div
+                class="reward-bottom animate__animated animate__fadeIn relative flex"
+              >
                 <ul
                   class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
                 >
@@ -127,10 +133,7 @@
                       :bounce-class="`${item.taskId}-${item.id}`"
                     >
                       <div
-                        :class="[
-                          'bottom-acc-task-item animate__animated animate__fadeIn',
-                          item.status,
-                        ]"
+                        :class="['bottom-acc-task-item', item.status]"
                         @click="handleReward(index + 1, item)"
                       ></div>
                     </bubble>
