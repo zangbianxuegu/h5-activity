@@ -473,37 +473,35 @@ function getLanternToken(): void {
  */
 function handleReward(rewardId: number, item: TaskItem): void {
   const { taskId, status } = item
-  const taskIndex = eventData.value.findIndex((item) => item.task_id === taskId)
-  eventData.value[taskIndex].award[rewardId - 1] = 1
-  // if (status === TaskStatus.REDEEMED) {
-  //   return
-  // }
-  // if (status === TaskStatus.WAIT) {
-  //   showToast('还未完成任务')
-  //   return
-  // }
-  // claimMissionReward({
-  //   event: EVENT_NAME,
-  //   task: taskId,
-  //   rewardId,
-  // })
-  //   .then(async (res) => {
-  //     curReward.value = res.data.rewards[0]
-  //     // 更新页面数据
-  //     const taskIndex = eventData.value.findIndex(
-  //       (item) => item.task_id === taskId,
-  //     )
-  //     showToast(
-  //       `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
-  //     )
-  //     eventData.value[taskIndex].award[rewardId - 1] = 1
+  if (status === TaskStatus.REDEEMED) {
+    return
+  }
+  if (status === TaskStatus.WAIT) {
+    showToast('还未完成任务')
+    return
+  }
+  claimMissionReward({
+    event: EVENT_NAME,
+    task: taskId,
+    rewardId,
+  })
+    .then(async (res) => {
+      curReward.value = res.data.rewards[0]
+      // 更新页面数据
+      const taskIndex = eventData.value.findIndex(
+        (item) => item.task_id === taskId,
+      )
+      showToast(
+        `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
+      )
+      eventData.value[taskIndex].award[rewardId - 1] = 1
 
-  //     // 更新红点
-  //     setRedDot()
-  //   })
-  //   .catch((error) => {
-  //     showToast(error.message)
-  //   })
+      // 更新红点
+      setRedDot()
+    })
+    .catch((error) => {
+      showToast(error.message)
+    })
 }
 
 const todayRiddle = ref<string[]>(['', '', ''])
