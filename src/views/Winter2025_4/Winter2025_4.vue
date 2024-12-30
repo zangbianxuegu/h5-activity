@@ -613,11 +613,11 @@ const handleResize = throttle(() => {
 
 <style lang="scss" scoped>
 .fade {
-  transition: opacity 0.5s ease-in-out 1s;
+  transition: opacity 0.5s ease-in-out 0.5s;
 }
 .hide {
   opacity: 0;
-  transition: opacity 0.8s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
 }
 .fade-in-body-enter-active {
   transition: opacity 1s ease-out;
