@@ -201,6 +201,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
   /* 共沐温暖 不期而遇 */
   &--invitation_code {
     background-image: url('@/assets/images/common/menu/invitation-code.png');
+  }
   /* 在更广阔天空相遇 */
   &--pc_celebration {
     background-image: url('@/assets/images/common/menu/pc-celebration.png');
