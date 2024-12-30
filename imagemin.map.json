@@ -1461,7 +1461,6 @@
   "src/assets/images/pc-celebration/task-can.png": 1732677777589.5742,
   "src/assets/images/pc-celebration/task-redeemed.png": 1732677777589.5742,
   "src/assets/images/pc-celebration/task-wait.png": 1732677777589.5742,
-  "src/assets/images/pc-celebration/bg.jpg": 1732677777589.5742,
   "src/public/images/banner3.png": 1732615524730.1426,
   "src/public/images/banner2.png": 1732615524730.1426,
   "src/assets/images/doubledan-2024-2/task4-overdue.png": 1732615524730.1426,
@@ -1700,6 +1699,8 @@
   "src/assets/images/cloud-music-2024/title.png": 1734956825252.0557,
   "src/assets/images/invitation-code/title.png": 1735286048227.0083,
   "src/assets/images/invitation-code/bg.jpg": 1735286048227.0083,
+  "src/assets/images/pc-celebration/title.png": 1735290360919.327,
+  "src/assets/images/pc-celebration/bg.jpg": 1735290360920.302,
   "src/assets/images/common/menu/bulletin.png": 1735207105740.4421,
   "src/assets/images/common/menu/return-buff.png": 1735207105740.4421,
   "src/assets/images/return-buff/reunion/bg.jpg": 1735207105740.4421,
@@ -1710,5 +1711,6 @@
   "src/assets/images/invitation-code/reward-bottom-bg.png": 1735294587765.7075,
   "src/assets/images/invitation-code/reward-middle-bg.png": 1735294587765.7075,
   "src/assets/images/invitation-code/reward-top-bg.png": 1735294587765.7075,
-  "src/assets/images/common/menu/invitation-code.png": 1735300537049.9097
+  "src/assets/images/common/menu/invitation-code.png": 1735300537049.9097,
+  "src/assets/images/common/menu/pc-celebration.png": 1735299821736.8486
 }

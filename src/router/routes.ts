@@ -540,7 +540,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'PcCelebration',
     component: () => import('@/views/PcCelebration'),
     meta: {
-      title: '相遇在更广阔的天空下',
+      title: '在更广阔天空相遇',
       module: 'activitycenter_pc_celebration',
     },
   },
