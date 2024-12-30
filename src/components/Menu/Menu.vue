@@ -174,7 +174,7 @@ function getNavTextClass(curItem: MenuItem): string[] {
       background-size: contain;
     }
   }
-  /* 
+  /*
     在此处添加不同活动的菜单背景图
     命名为活动事件名，例如 activitycenter_dayofdesign01_post_main，取：dayofdesign01_post_main
   */
@@ -198,6 +198,9 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--dayofdesign01_post_submit {
     background-image: url('@/assets/images/common/menu/dayofdesign01-submit.png');
   }
+  /* 共沐温暖 不期而遇 */
+  &--invitation_code {
+    background-image: url('@/assets/images/common/menu/invitation-code.png');
   /* 在更广阔天空相遇 */
   &--pc_celebration {
     background-image: url('@/assets/images/common/menu/pc-celebration.png');
