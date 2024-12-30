@@ -554,6 +554,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/winter-2025-4',
+    name: 'Winter2025_4',
+    component: () => import('@/views/Winter2025_4'),
+    meta: {
+      title: '花灯雅集',
+      module: 'activitycenter_winter_2025_4',
+    },
+  },
+  {
     path: '/dayofdesign01-post-main',
     name: 'DayOfDesign01PostMain',
     component: () => import('@/views/DayOfDesign01PostMain'),
