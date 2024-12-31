@@ -1,6 +1,6 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page relative h-screen w-screen bg-cover bg-right">
+    <div class="page relative h-screen w-screen bg-cover bg-center">
       <div class="h-full w-full">
         <Transition appear :name="headTransitionName" mode="out-in">
           <header class="design-header relative">
@@ -23,7 +23,7 @@
           <section>
             <!-- 奖励 -->
             <h2 class="sr-only">奖励</h2>
-            <div class="reward-container">
+            <div class="reward-container flex items-center justify-center">
               <bubble
                 :reward="taskItem"
                 :bubbleScale="2.3"
@@ -38,6 +38,7 @@
                 ></div>
               </bubble>
             </div>
+            <div class="character"></div>
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -222,7 +223,7 @@ function setRedDot(): void {
 }
 .title {
   position: absolute;
-  left: 280px;
+  left: 120px;
   top: 130px;
   width: 685px;
   height: 163px;
@@ -240,8 +241,25 @@ function setRedDot(): void {
 }
 .reward-container {
   position: absolute;
-  left: 1200px;
-  top: 40%;
+  left: 600px;
+  top: 20%;
+  height: 458px;
+  width: 1485px;
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/top-reward-bg.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
+.character {
+  position: absolute;
+  width: 557px;
+  height: 605px;
+  bottom: 50px;
+  right: 0;
+  background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/character.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
 }
 .reward-item {
   width: 208px;
