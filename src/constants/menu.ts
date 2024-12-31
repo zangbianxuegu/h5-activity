@@ -493,6 +493,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '取票站',
+    value: 'activitycenter_dayofdesign01_vote1_mission',
+    routeName: 'Dayofdesign01Vote1Mission',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: 'iframe 外部链接1',
     value: 'activitycenter_season100_start',
     routeName: 'Season100Start',

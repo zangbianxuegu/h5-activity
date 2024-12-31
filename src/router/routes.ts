@@ -590,6 +590,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/dayofdesign01-vote1-mission',
+    name: 'Dayofdesign01Vote1Mission',
+    component: () => import('@/views/Dayofdesign01Vote1Mission'),
+    meta: {
+      title: '取票站',
+      module: 'activitycenter_dayofdesign01_vote1_mission',
+    },
+  },
+  {
     // 外部活动跳转路由固定
     path: '/external',
     // 和普通活动一样的路由名称
