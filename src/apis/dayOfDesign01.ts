@@ -254,12 +254,16 @@ export const uploadFormAndFilePickerResultToServerApi = (
           msg,
           data,
         }: {
-          code: 200 | 400 | 500
+          code: number
           msg: string
           data: Record<string, any>
         } = res
         if (code === 200) {
           resolve(data)
+        } else if (code === 429) {
+          const t = data?.cd
+          const errorText = `您的操作过于频繁，投稿间隔需要大于${t}小时`
+          reject(new Error(errorText))
         } else {
           reject(
             new Error(getErrorMessage('upload_filepicker_result', code, msg)),
