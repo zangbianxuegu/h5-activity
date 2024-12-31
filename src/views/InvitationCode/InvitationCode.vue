@@ -48,7 +48,7 @@
                     >
                       <div
                         :class="[
-                          'top-acc-task-item',
+                          'top-acc-task-item animate__animated animate__fadeIn z-10',
                           `${item.status}${index + 1}`,
                         ]"
                         @click="handleReward(index + 1, item)"
@@ -99,7 +99,7 @@
                     >
                       <div
                         :class="[
-                          'middle-acc-task-item',
+                          'middle-acc-task-item animate__animated animate__fadeIn z-10',
                           `${item.status}${index + 1}`,
                         ]"
                         @click="handleReward(index + 1, item)"
@@ -145,7 +145,10 @@
                       :bounce-class="`${item.taskId}-${item.id}`"
                     >
                       <div
-                        :class="['bottom-acc-task-item', item.status]"
+                        :class="[
+                          'bottom-acc-task-item animate__animated animate__fadeIn z-10',
+                          item.status,
+                        ]"
                         @click="handleReward(index + 1, item)"
                       ></div>
                     </bubble>

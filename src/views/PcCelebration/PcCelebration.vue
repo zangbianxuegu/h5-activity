@@ -236,8 +236,8 @@ function setRedDot(): void {
 }
 .star {
   position: absolute;
-  left: 970px;
-  top: 400px;
+  left: 1180px;
+  top: 40%;
   width: 316px;
   height: 214px;
   background-repeat: no-repeat;
