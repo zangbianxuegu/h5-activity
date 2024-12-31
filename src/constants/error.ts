@@ -304,6 +304,9 @@ export const ERROR_MESSAGES: ErrorMessages = {
     500: {
       fail: '投稿失败',
     },
+    429: {
+      too_many_requests: '您的操作过于频繁，投稿间隔需要大于48小时',
+    },
     409: {
       'already exists': '作品信息已经存在，请刷新页面',
     },
