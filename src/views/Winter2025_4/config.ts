@@ -23,7 +23,7 @@ export interface TaskItem {
   id: number
   taskId: string
   title: string
-  status: 'wait' | 'redeemed' | 'can' | string
+  status: TaskStatus
   canRewardLottieRef?: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
   hadRenderLottie?: Ref<boolean>
 }
@@ -31,7 +31,7 @@ export interface TaskItem {
 // 今日谜题
 export function createTask(): TaskItem {
   return {
-    id: 3,
+    id: 1,
     taskId: TASK_VALUE,
     title: '今日谜题',
     status: TaskStatus.WAIT,

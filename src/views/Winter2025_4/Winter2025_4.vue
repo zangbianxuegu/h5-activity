@@ -12,7 +12,7 @@
             <div class="sr-only">
               花灯雅集
               <p>
-                <time datetime="2025-2-11">2.11</time>-
+                <time datetime="2025-2-11">2.11</time>
                 <time datetime="2025-2-17">2.17</time>
               </p>
             </div>
@@ -214,21 +214,19 @@
                 placeholder="点击输入谜底"
                 class="riddle-input"
               />
-              <div>
-                <button
-                  type="button"
-                  :class="[
-                    'btn',
-                    {
-                      'btn-finished disabled': isFinished,
-                    },
-                  ]"
-                  @click="guessRiddle"
-                >
-                  <span v-if="isFinished"> 今日已完成 </span>
-                  <span v-else> 确定 </span>
-                </button>
-              </div>
+              <button
+                type="button"
+                :class="[
+                  'btn',
+                  {
+                    'btn-finished disabled': isFinished,
+                  },
+                ]"
+                @click="guessRiddle"
+              >
+                <span v-if="isFinished"> 今日已完成 </span>
+                <span v-else> 确定 </span>
+              </button>
             </div>
           </section>
         </Transition>
@@ -688,8 +686,8 @@ const handleResize = throttle(() => {
   right: 70px;
   width: 204px;
   height: 51px;
-  color: #fff;
-  font-size: 32px;
+  color: #fffae9;
+  font-size: 34px;
   background-color: #1d2e58;
   border-radius: 40px;
 }
@@ -854,7 +852,8 @@ const handleResize = throttle(() => {
   }
 }
 .riddle-reward {
-  font-size: 36px;
+  width: 330px;
+  font-size: 38px;
   color: #ce7f3f;
   line-height: 1;
 }
@@ -869,6 +868,7 @@ const handleResize = throttle(() => {
   margin-top: 22px;
   width: 303px;
   height: 93px;
+  font-size: 34px;
   text-align: center;
   color: #b0824f;
   background-color: #fffeed;
