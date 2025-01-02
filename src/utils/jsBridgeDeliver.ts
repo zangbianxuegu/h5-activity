@@ -4,6 +4,9 @@ import {
   handlePostMessageToNativeCache,
 } from './jsBridgeAPI'
 import { getPlayerMissionData, claimMissionReward } from './request'
+import { useMenuStore } from '@/stores/menu'
+
+const { changeMenuVisible } = useMenuStore()
 
 /** 父页面向子页面返回数据 */
 function postMessage2c(event: MessageEvent, message: any): void {
@@ -42,6 +45,12 @@ function listener(event: MessageEvent): void {
   console.log(content)
 
   switch (key) {
+    case 'menuHide':
+      changeMenuVisible(false)
+      break
+    case 'menuShow':
+      changeMenuVisible(true)
+      break
     case 'c2sPostMsgToNative':
       postMsgToNative(content) // TODO:
       break

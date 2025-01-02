@@ -7,7 +7,7 @@
       class="nav absolute left-0 top-0 z-10 flex h-screen shrink-0 flex-col justify-between py-4"
     >
       <div class="menu overflow-y-scroll">
-        <Menu></Menu>
+        <Menu v-show="isMenuVisible"></Menu>
       </div>
       <div>
         <a
@@ -86,6 +86,7 @@ const currentAppChannel = computed(() => baseStore.baseInfo.appChannel)
 
 // 菜单数据
 const menuStore = useMenuStore()
+const isMenuVisible = computed(() => menuStore.isMenuVisible)
 const { updateMenuData } = menuStore
 
 // 活动信息
