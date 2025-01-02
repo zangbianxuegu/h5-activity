@@ -237,67 +237,126 @@ watch(
     }
   },
 )
+
+interface GetImgFileData {
+  file: File
+  blob: Blob
+  fileBase64: string
+  width: number
+  height: number
+  size: number
+  type: string
+}
+
 // 添加上传作品的监听
 const listenUploadImgChange = (): void => {
   imageUploadsInputDomRef.value.addEventListener(
     'change',
-    function (event: Event) {
+    async function (event: Event) {
       const target = event.target as HTMLInputElement
       const files = target.files as FileList
       const file = files[0]
 
       // 设置允许的文件格式和文件大小限制
       const allowedTypes = props.accept
-      const maxSizeLimit = 10 * 1024 * 1024 // 10 MB
-      const minSizeLimit = 100 * 1024 // 100kb
+      const maxSizeLimit = props.maxSize || 10 * 1024 * 1024 // 10 MB
+      const minSizeLimit = props.minSize || 100 * 1024 // 100kb
 
       if (file) {
-        // 检查文件类型
-        if (!allowedTypes.includes(file.type)) {
-          showToast('上传失败，只能上传png和jpg')
-          formRef.value.reset()
-          return
-        }
-        // 检查文件大小
-        if (props.maxSize && file.size > maxSizeLimit) {
-          showToast('您选择的图片大小超过10兆，无法上传')
-          formRef.value.reset()
-          return
-        } else if (props.minSize && file.size < minSizeLimit) {
-          showToast('您选择的图片过小，可能会影响展示效果')
-        }
+        // 获取图片文件的数据
+        async function getImgFileData(): Promise<GetImgFileData> {
+          return await new Promise((resolve, reject) => {
+            const reader = new FileReader()
+            reader.readAsDataURL(file) // 读取文件为 Data URL
+            reader.onload = function (e) {
+              const readFileResult = e.target?.result as string
 
-        if (props.cropper) {
-          showLoadingToast({
-            message: '准备裁剪中......',
-            forbidClick: true,
-            duration: 0,
-          })
-          const reader = new FileReader()
-          reader.readAsDataURL(file) // 读取文件为 Data URL
-          reader.onload = function (e) {
-            const readFileResult = e.target?.result as string
-            const img = new Image()
-            img.src = readFileResult
-            img.onload = async () => {
-              const width = img.width // 获取图像的宽度
-              const height = img.height // 获取图像的高度
-              if (isIos && (width * height) / 1000000 > 15) {
-                // 处理ios MP影响
-                showToast(
-                  '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
-                )
-                formRef.value.reset()
-              } else {
-                cropperData.value.isShow = true
-                cropperData.value.preCropperImgUrl = readFileResult
-                await nextTick()
-                showCropperModal()
+              const img = new Image()
+              img.src = readFileResult
+              img.onload = async () => {
+                const width = img.width // 获取图像的宽度
+                const height = img.height // 获取图像的高度
+
+                const blob = new Blob([file], { type: file.type })
+
+                resolve({
+                  file,
+                  blob,
+                  fileBase64: readFileResult,
+                  width,
+                  height,
+                  size: file.size,
+                  type: file.type,
+                })
+              }
+              img.onerror = () => {
+                reject(new Error('获取图片信息错误'))
               }
             }
+          })
+        }
+
+        try {
+          const {
+            blob: _blob,
+            fileBase64,
+            width,
+            height,
+            size,
+            type,
+          } = await getImgFileData()
+
+          // 裁剪与不裁剪的公共检测处理
+          function commonCheck(): boolean {
+            // 检查文件类型
+            if (!allowedTypes.includes(type)) {
+              showToast('上传失败，只能上传png和jpg')
+              formRef.value.reset()
+              return false
+            }
+            // 检查文件大小
+            if (size > maxSizeLimit) {
+              showToast(
+                `您选择的图片大小超过${maxSizeLimit / 1024 / 1024}兆，无法上传`,
+              )
+              formRef.value.reset()
+              return false
+            } else if (size < minSizeLimit) {
+              showToast('您选择的图片过小，可能会影响展示效果')
+            }
+            return true
           }
-        } else {
-          updateFileData(file)
+
+          if (props.cropper) {
+            if (!commonCheck()) return
+            showLoadingToast({
+              message: '准备裁剪中......',
+              forbidClick: true,
+              duration: 0,
+            })
+            if (isIos && (width * height) / 1000000 > 15) {
+              // 处理ios MP影响
+              showToast(
+                '您选择的图片像素过大，无法上传，建议按照模板上传1200*900的图片',
+              )
+              formRef.value.reset()
+            } else {
+              cropperData.value.isShow = true
+              cropperData.value.preCropperImgUrl = fileBase64
+              await nextTick()
+              showCropperModal()
+            }
+          } else {
+            if (width !== 1200 && height !== 900) {
+              showToast('上传失败，请按活动规则使用指定尺寸的模板进行创作')
+              formRef.value.reset()
+            } else {
+              if (!commonCheck()) return
+              updateFileData(_blob)
+            }
+          }
+        } catch (error) {
+          console.error(error)
         }
       }
     },

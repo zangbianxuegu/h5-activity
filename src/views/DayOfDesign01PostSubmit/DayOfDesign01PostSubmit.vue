@@ -28,7 +28,7 @@
                 >
                   <upload-img
                     v-model:data="worksData.worksImg"
-                    :cropper="true"
+                    :cropper="false"
                     :max-size="10 * 1024 * 1024"
                     :min-size="100 * 1024"
                     :reupload="false"
