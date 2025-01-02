@@ -42,7 +42,16 @@
                   @click="handleReward(1, item)"
                 ></div>
                 <div :class="['tray', `${item.status}`]"></div>
-                <div class="text-center text-[36px] text-white">
+                <div
+                  :class="[
+                    'text-center text-[36px]',
+                    {
+                      'text-white': item.status === 'wait',
+                      'text-[#ffeb9d]': item.status === 'can',
+                      'text-[#dfe6f0]': item.status === 'redeemed',
+                    },
+                  ]"
+                >
                   {{ item.title }}（{{ item.val }}/{{ item.stages[0] }}）
                 </div>
               </div>
