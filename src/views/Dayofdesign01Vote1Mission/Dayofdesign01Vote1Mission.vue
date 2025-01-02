@@ -50,7 +50,7 @@
             <!-- 累计奖励 -->
             <div class="acc-task mt-[50px] flex w-[1480px] justify-between">
               <div
-                class="mt-[144px] h-[48px] w-[229px] rounded-[24px] bg-[#f1f1f1] text-center text-[36px] text-[#5a7091] text-white"
+                class="mt-[144px] h-[48px] w-[229px] rounded-[24px] bg-[#f1f1f1] text-center text-[36px] text-[#5a7091]"
               >
                 累计投票
               </div>
@@ -87,7 +87,7 @@
             <!-- 按钮 -->
             <button
               type="button"
-              class="btn mt-[40px] rounded-full bg-[#ffee91] text-[#836a4e]"
+              class="btn mt-[60px] rounded-full bg-[#ffee91] font-medium text-[#836a4e]"
             >
               <RouterLink
                 to="/dayofdesign01-post-submit"
@@ -414,6 +414,7 @@ const accTaskValue = computed(() => {
   }
   &.can {
     transition: background-image 1s ease;
+    animation: pulse 2s ease-in-out infinite;
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/task-can.png');
   }
   &.redeemed {
@@ -454,6 +455,7 @@ const accTaskValue = computed(() => {
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/acc-task-wait.png');
   }
   &.can {
+    animation: pulse 2s ease-in-out infinite;
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/acc-task-can.png');
   }
   &.redeemed {
@@ -463,7 +465,7 @@ const accTaskValue = computed(() => {
 }
 .progress-container {
   height: 20px;
-  background-color: rgba($color: #fff, $alpha: 0.3);
+  background-color: #7abaaa;
   border-radius: 8px;
 }
 .progress-bar {
@@ -486,12 +488,47 @@ const accTaskValue = computed(() => {
   transition: right 0.4s ease;
 }
 .btn {
-  font-size: 40px;
+  font-size: 36px;
   color: #836a4e;
   width: 430px;
   height: 87px;
   line-height: 87px;
   text-align: center;
   box-shadow: 0 6px 6px 0 rgba(81, 81, 81, 0.2);
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.01);
+  }
+  20% {
+    transform: scale(1.02);
+  }
+  30% {
+    transform: scale(1.03);
+  }
+  40% {
+    transform: scale(1.04);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  60% {
+    transform: scale(1.04);
+  }
+  70% {
+    transform: scale(1.03);
+  }
+  80% {
+    transform: scale(1.02);
+  }
+  90% {
+    transform: scale(1.01);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>
