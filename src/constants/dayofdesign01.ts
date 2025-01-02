@@ -19,8 +19,22 @@ export const getShareH5PageUrl = (): string => {
   // 正式环境
   if (href.includes('https://sky.h5.163.com/game/index.html')) {
     return 'https://sky.h5.163.com/h5/dayofdesign01.html?'
+  } else if (
+    href.includes(
+      'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game_dev/index.html',
+    )
+  ) {
+    // 测试
+    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?'
+  } else if (
+    href.includes(
+      'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/game/index.html',
+    )
+  ) {
+    // 预发布
+    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5/dayofdesign01.html?'
   }
-  // game_dev
+  // 本地开发，默认测试地址
   return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?'
 }
 
