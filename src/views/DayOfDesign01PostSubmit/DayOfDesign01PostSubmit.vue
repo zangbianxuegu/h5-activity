@@ -458,7 +458,9 @@ const onClickGoToDrawingGuide = (): void => {
 
 // 删除作品确认弹窗
 const showConfirmDialogForReupload = (): void => {
-  void showConfirmDialog('确认删除投稿作品？')
+  void showConfirmDialog(
+    '此操作将删除当前作品，不可恢复。且两次投稿间隔时长需大于48小时，请问确认删除当前投稿吗？',
+  )
     .then(async () => {
       try {
         const res = await deleteDesignDetails(
