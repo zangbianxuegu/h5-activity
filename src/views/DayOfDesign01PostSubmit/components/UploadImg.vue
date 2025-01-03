@@ -356,7 +356,8 @@ const listenUploadImgChange = (): void => {
               formRef.value.reset()
               return
             }
-            if (width !== 1200 && height !== 900) {
+
+            if (width !== 1200 || height !== 900) {
               showToast('上传失败，请按活动规则使用指定尺寸的模板进行创作')
               formRef.value.reset()
             } else {
