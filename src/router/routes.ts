@@ -581,13 +581,13 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/external-season100-start',
-    name: 'Season100Start',
+    path: '/external-season25-start',
+    name: 'Season25Start',
     component: () => import('@/views/IframeView'),
     meta: {
-      title: 'iframe 外部链接1',
-      module: 'activitycenter_season100_start',
-      externalUid: 'Qufder',
+      title: '寻颜觅彩焕新裳',
+      module: 'activitycenter_season25_start',
+      externalUid: 'bBkIoR',
     },
   },
   {

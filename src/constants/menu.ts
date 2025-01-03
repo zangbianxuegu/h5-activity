@@ -493,9 +493,9 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: 'iframe 外部链接',
-    value: 'activitycenter_season100_start',
-    routeName: 'Season100Start',
+    label: '寻颜觅彩焕新裳',
+    value: 'activitycenter_season25_start',
+    routeName: 'Season25Start',
     isNew: false,
     hasUnclaimedReward: false,
   },
