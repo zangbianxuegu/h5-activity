@@ -85,7 +85,7 @@ export function createBottomAccTaskList(): TaskItem[] {
     },
     {
       id: 5,
-      taskId: 'activitycenter_invitation_code_m4',
+      taskId: 'activitycenter_dayofdesign01_vote1_mission_m4',
       title: '累计投票50次',
       status: 'wait',
       val: 0,

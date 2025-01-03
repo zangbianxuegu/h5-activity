@@ -451,6 +451,7 @@ const accTaskValue = computed(() => {
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/tray-can.png');
   }
   &.redeemed {
+    transition: background-image 1s ease;
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/tray-redeemed.png');
   }
 }
