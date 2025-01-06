@@ -192,6 +192,7 @@ const personAccTaskList = computed(() => {
 onMounted(() => {
   try {
     getActivityData()
+    tokenStore.initData()
   } catch (error) {
     console.error(error)
   }
