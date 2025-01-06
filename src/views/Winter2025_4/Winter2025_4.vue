@@ -360,7 +360,7 @@ const candleAccTaskList = updateTaskList(CANDLES_ACC_TASK_LIST, 3)
 
 const rewardTokenRiddle = updateRewardToken(1, 5)
 const rewardTokenBoat = updateRewardToken(2, 5)
-const rewardTokenCandle = updateRewardToken(2, 20)
+const rewardTokenCandle = updateRewardToken(3, 20)
 
 /**
  * @function 是否隐藏任务列表
@@ -873,6 +873,7 @@ const handleResize = throttle(() => {
   color: #b0824f;
   background-color: #fffeed;
   border-radius: 50px;
+  box-shadow: 0 6px 6px 0 rgba(81, 81, 81, 0.2);
   &-finished {
     color: #584127;
     background-color: #7f7f76;
