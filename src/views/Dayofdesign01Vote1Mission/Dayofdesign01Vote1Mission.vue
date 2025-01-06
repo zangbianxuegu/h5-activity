@@ -98,6 +98,7 @@
               type="button"
               class="btn mt-[60px] rounded-full bg-[#ffee91] font-medium text-[#836a4e]"
             >
+              <!-- TODO -->
               <RouterLink
                 to="/dayofdesign01-post-submit"
                 class="block h-full w-full"
@@ -155,6 +156,7 @@ const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 const curRewards: Ref<Reward[]> = ref([
+  // TODO
   {
     name: 'CharSkyKid_Horn_CursorHairpin',
     count: 1,
@@ -331,7 +333,7 @@ function calculateAccTaskValue(accTaskVal: number): number {
   return ACC_TASK_VALUES[accTaskVal]
 }
 
-// 底部 进度：10,20,30,40,50
+// 进度：10,20,30,40,50
 const accTaskValue = computed(() => {
   return calculateAccTaskValue(eventData.value[3].value)
 })

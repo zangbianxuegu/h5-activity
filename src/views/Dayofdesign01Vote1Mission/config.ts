@@ -23,7 +23,7 @@ export function createTaskItemLiist(): TaskItem[] {
   return [
     {
       id: 1,
-      taskId: 'activitycenter_dayofdesign01_vote1_mission_m1',
+      taskId: 'login_days',
       title: '登录游戏',
       status: 'wait',
       val: 0,
@@ -31,7 +31,7 @@ export function createTaskItemLiist(): TaskItem[] {
     },
     {
       id: 2,
-      taskId: 'activitycenter_dayofdesign01_vote1_mission_m2',
+      taskId: 'dayofdesign_view_1',
       title: '查看作品详情',
       status: 'wait',
       val: 0,
@@ -39,11 +39,11 @@ export function createTaskItemLiist(): TaskItem[] {
     },
     {
       id: 3,
-      taskId: 'activitycenter_dayofdesign01_vote1_mission_m3',
-      title: '分享作品',
+      taskId: 'dayofdesign_view_3',
+      title: '查看3个作品',
       status: 'wait',
       val: 0,
-      stages: [1],
+      stages: [3],
     },
   ]
 }

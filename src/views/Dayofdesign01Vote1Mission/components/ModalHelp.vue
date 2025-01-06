@@ -25,7 +25,7 @@
       >
         <h2 id="activity-rules-title" class="sr-only">活动规则</h2>
         <h3 class="modal-text">
-          <span class="font-semibold">【xx期】</span>
+          <span class="font-semibold">【选款期】</span>
         </h3>
         <h3 class="modal-text mt-[10px]">
           <span class="font-semibold">活动时间：</span>2025年2月1日 ~ 2月16日
@@ -33,7 +33,31 @@
         <h3 class="modal-text mt-[10px]">
           <span class="font-semibold">活动内容：</span>
         </h3>
-        <p class="modal-text">1、活动期间</p>
+        <p class="modal-text">
+          1、选款期开启后，玩家可对成功参赛的作品进行投票，4个分组中分别投出得票数<span
+            class="text-[#d57518]"
+            >前15名</span
+          >的作品，<span class="text-[#d57518]">共计前60名</span
+          >的作品可进入官方评选期；
+        </p>
+        <p class="modal-text">
+          2、活动期间，前往<span class="text-[#d57518]">绘梦节-活动会场</span
+          >页面可对作品进行投票、收藏、分享；
+        </p>
+        <p class="modal-text">3、选款期开启后，创作者将无法再删除作品；</p>
+        <p class="modal-text">
+          4、完成指定任务即可获得分组投票次数，每个账号每天可以获得<span
+            class="text-[#d57518]"
+            >每个分组的投票次数*3</span
+          >，投票达到指定次数时可获得<span class="text-[#d57518]">助梦礼包</span
+          >，打开后可从<span class="text-[#d57518]">爱心、蜡烛、魔法</span
+          >等多种好礼中随机抽取一个；
+        </p>
+        <p class="modal-text">
+          5、更多活动细则，请前往<span class="text-[#d57518]"
+            >绘梦节-活动详情</span
+          >查看完整活动信息。
+        </p>
       </section>
     </template>
   </activity-modal>

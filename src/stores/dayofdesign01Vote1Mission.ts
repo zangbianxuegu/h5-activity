@@ -12,7 +12,7 @@ export const useActivityStore = defineStore(
         activitycenter_dayofdesign01_vote1_mission: [
           {
             value: 0,
-            task_id: 'activitycenter_dayofdesign01_vote1_mission_m1',
+            task_id: 'login_days',
             stages: [1],
             score: '',
             awarded_types: [],
@@ -20,7 +20,7 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_dayofdesign01_vote1_mission_m2',
+            task_id: 'dayofdesign_view_1',
             stages: [1],
             score: '',
             awarded_types: [],
@@ -28,8 +28,8 @@ export const useActivityStore = defineStore(
           },
           {
             value: 0,
-            task_id: 'activitycenter_dayofdesign01_vote1_mission_m3',
-            stages: [1],
+            task_id: 'dayofdesign_view_3',
+            stages: [3],
             score: '',
             awarded_types: [],
             award: [0],
