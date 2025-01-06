@@ -137,7 +137,7 @@ const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 const tokenStore = useTokenStore()
 const tokenCount = computed(() =>
-  Number(tokenStore.tokeInfo?.lantern_token || 0),
+  Number(tokenStore.tokenInfo?.lantern_token || 0),
 )
 const router = useRouter()
 
@@ -280,7 +280,7 @@ function handleReward(rewardId: number, item: TaskItem): void {
         showToast(
           `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
         )
-        tokenStore.token_info.lantern_token =
+        tokenStore.tokenInfo.lantern_token =
           tokenCount.value + Number(curReward.value.count)
       }
 

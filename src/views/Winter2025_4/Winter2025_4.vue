@@ -524,7 +524,7 @@ function guessRiddle(): void {
           // 更新页面数据
           await handleTokenFly()
           answer.value = ''
-          activityData.value.token_info.lantern_token = tokenCount.value + 10
+          tokenStore.tokenInfo.lantern_token = tokenCount.value + 10
           activityData.value.event_data[EVENT_NAME][0].award[0] = 1
           showToast('答案正确，您获得了花灯代币*10')
           // 更新红点
