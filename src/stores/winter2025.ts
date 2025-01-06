@@ -1,21 +1,21 @@
 import { showToast } from 'vant'
 import { defineStore } from 'pinia'
-import type { TokeInfo } from '@/types'
+import type { TokenInfo } from '@/types'
 import { getPlayerMissionData } from '@/utils/request'
 
 export const useTokenStore = defineStore(
   'activitycenter_winter_main_2025', // 须与活动事件名一致
   () => {
     // 代币数量
-    const tokeInfo = ref<TokeInfo>({
+    const tokenInfo = ref<TokenInfo>({
       lantern_token: 0,
     })
 
     const isLoaded = ref(false)
 
     // 更新花灯代币数量
-    function updateTokenInfo(tokenInfo: TokeInfo): void {
-      tokeInfo.value = tokenInfo
+    function updateTokenInfo(newData: TokenInfo): void {
+      tokenInfo.value = newData
       isLoaded.value = true
     }
 
@@ -39,7 +39,7 @@ export const useTokenStore = defineStore(
     }
 
     return {
-      tokeInfo,
+      tokenInfo,
       updateTokenInfo,
       initData,
     }
