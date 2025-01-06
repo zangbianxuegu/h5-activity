@@ -244,6 +244,7 @@ import { getWinterRiddle, guessWinterRiddle } from '@/apis/winter2025'
 import type { Event } from '@/types'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
+import { useTokenStore } from '@/stores/winter2025'
 import { useActivityStore } from '@/stores/winter2025_4'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
@@ -292,10 +293,11 @@ const BOAT_ACC_TASK_LIST = createBoatAccTaskList()
 // 活动数据
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
+const tokenStore = useTokenStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 const tokenCount = computed(() =>
-  Number(activityData.value.token_info?.lantern_token || 0),
+  Number(tokenStore.tokeInfo?.lantern_token || 0),
 )
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
@@ -385,8 +387,8 @@ onMounted(() => {
   try {
     window.addEventListener('resize', handleResize)
     getActivityData()
-    getLanternToken()
     getActivityRiddle()
+    tokenStore.initData()
   } catch (error) {
     console.error(error)
   }
@@ -439,23 +441,6 @@ function getActivityData(): void {
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
-/**
- * @function 获取花灯代币数量
- * @returns {void}
- */
-function getLanternToken(): void {
-  getPlayerMissionData({
-    event: 'activitycenter_winter_2025_5',
-    token: 'lantern_token',
-  })
-    .then((res) => {
-      const tokenInfo = res.data.token_info
-      activityStore.updateTokenCount(tokenInfo)
     })
     .catch((error) => {
       showToast(error.message)

@@ -110,4 +110,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_invitation_code',
   'activitycenter_winter_2025_3',
   ...DAYOFDESIGN01_LIST,
+  'activitycenter_winter_main_2025',
 ]
