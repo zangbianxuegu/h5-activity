@@ -493,6 +493,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '灵蛇献瑞 喜迎春来',
+    value: 'activitycenter_winter_main_2025',
+    routeName: 'WinterMain2025',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: 'iframe 外部链接1',
     value: 'activitycenter_season100_start',
     routeName: 'Season100Start',

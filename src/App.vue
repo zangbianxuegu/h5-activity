@@ -239,6 +239,13 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
     isNew: false,
     hasUnclaimedReward: false,
   })
+  res.push({
+    activity: 'activitycenter_winter_main_2025',
+    startTime: 0,
+    endTime: 0,
+    isNew: false,
+    hasUnclaimedReward: false,
+  })
   // 调整姆明谷身份测试活动排序
   if (isMoominTestGod) {
     const index = res.findIndex(
