@@ -53,12 +53,18 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
 import { showToast } from 'vant'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import { useTokenStore } from '@/stores/winter2025'
 import { getPlayerMissionData } from '@/utils/request'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.tz.setDefault('Asia/Shanghai')
 
 // 弹框
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
