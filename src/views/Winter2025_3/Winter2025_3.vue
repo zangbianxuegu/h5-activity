@@ -456,7 +456,7 @@ function handleHelp(): void {
   }
 }
 .acc-task-item {
-  border-bottom: 1px dotted #69636e;
+  border-bottom: 1px dashed #69636e;
 }
 .acc-task-icon {
   width: 190px;
