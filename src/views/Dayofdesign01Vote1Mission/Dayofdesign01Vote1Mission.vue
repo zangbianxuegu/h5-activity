@@ -278,7 +278,7 @@ function handleReward(rewardId: number, item: TaskItem): void {
             ),
         )
       } else {
-        showToast('领取成功，您获得了 投票券*1')
+        showToast('领取成功，您获得了 每组投票券*1')
       }
       // 更新红点
       setRedDot()
