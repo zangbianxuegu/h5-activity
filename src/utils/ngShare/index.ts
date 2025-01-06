@@ -92,11 +92,12 @@ export const ngshareByH5 = async (
       shareThumb: u3dshareThumb, // 分享缩略图地址(iOS传入，待后续支持u3dshareThumb)
     }
   } else if (contentType === NgshareContentType.Image) {
-    const { text, title, image } = configForType
+    const { text, title, image, tag } = configForType
     contentTypeConfig = {
       text,
       title,
       image,
+      tag,
     }
   } else {
     showToast('暂不支持分享该类型')

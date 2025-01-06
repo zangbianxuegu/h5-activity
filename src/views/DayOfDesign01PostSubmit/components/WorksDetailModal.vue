@@ -407,6 +407,7 @@ const onClickHandleBarShare = (): void => {
       title: shareInfo.getTitle(),
       text: currentEvent.shareInfo.getText(props.worksData.worksName),
       image: props.worksData.worksDecorateImgSrc || '',
+      tag: shareInfo.getTag(),
     },
     beforeClickShareChannel,
   )
