@@ -18,7 +18,7 @@ export const getShareH5PageUrl = (): string => {
   const href = window.location.href
   // 正式环境
   if (href.includes('https://sky.h5.163.com/game/index.html')) {
-    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5/dayofdesign01.html?'
+    return 'https://sky.h5.163.com/h5/dayofdesign01.html?'
   }
   // game_dev
   return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/dayofdesign01.html?'
@@ -33,6 +33,7 @@ export interface EventMapConfig {
     getTitle: () => string
     getText: (designName: string) => string
     getDesc: (designName: string) => string
+    getTag: () => string
   }
 }
 
@@ -50,6 +51,7 @@ export const eventMap = new Map<EventDayOfDesign01, EventMapConfig>([
           `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`,
         getDesc: (designName: string) =>
           `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`,
+        getTag: () => '光遇绘梦节',
       },
     },
   ],

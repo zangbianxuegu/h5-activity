@@ -1,133 +1,143 @@
 <template>
   <div class="h-screen overflow-scroll bg-gray-200 p-4">
-    <div class="header">
-      <van-button
-        icon="plus"
-        color="linear-gradient(to right, #ff6034, #ee0a24)"
-        @click="onClickAddDebugLink"
-        size="small"
-      >
-        添加本地调试
-      </van-button>
-      <van-overlay
-        :show="formModalConfig.isShow"
-        @click="formModalConfig.isShow = false"
-      >
-        <div class="wrapper" @click.stop>
-          <van-form @submit="onSubmit">
-            <van-cell-group inset>
-              <van-field name="protocol" label="协议" required>
-                <template #input>
-                  <van-radio-group
-                    v-model="debugLinkForm.protocol"
-                    direction="horizontal"
-                  >
-                    <van-radio name="http">http</van-radio>
-                    <van-radio name="https">https</van-radio>
-                  </van-radio-group>
-                </template></van-field
+    <div v-if="showComponentModule.all">
+      <div class="header">
+        <van-button
+          icon="plus"
+          color="linear-gradient(to right, #ff6034, #ee0a24)"
+          @click="onClickAddDebugLink"
+          size="small"
+        >
+          添加本地调试
+        </van-button>
+        <van-overlay
+          :show="formModalConfig.isShow"
+          @click="formModalConfig.isShow = false"
+        >
+          <div class="wrapper" @click.stop>
+            <van-form @submit="onSubmit">
+              <van-cell-group inset>
+                <van-field name="protocol" label="协议" required>
+                  <template #input>
+                    <van-radio-group
+                      v-model="debugLinkForm.protocol"
+                      direction="horizontal"
+                    >
+                      <van-radio name="http">http</van-radio>
+                      <van-radio name="https">https</van-radio>
+                    </van-radio-group>
+                  </template></van-field
+                >
+                <van-field name="isJumpDirectly" label="点击直接跳转" required>
+                  <template #input>
+                    <van-radio-group
+                      v-model="debugLinkForm.isJumpDirectly"
+                      direction="horizontal"
+                    >
+                      <van-radio :name="true">是</van-radio>
+                      <van-radio :name="false">否</van-radio>
+                    </van-radio-group>
+                  </template></van-field
+                >
+                <van-field
+                  v-model="debugLinkForm.domainName"
+                  type="text"
+                  name="domainName"
+                  label="域名"
+                  placeholder="wwww.baidu.com"
+                  required
+                />
+                <van-field
+                  v-model="debugLinkForm.port"
+                  type="text"
+                  name="port"
+                  label="端口"
+                  placeholder="端口"
+                />
+                <van-field
+                  v-model="debugLinkForm.linkName"
+                  type="text"
+                  name="linkName"
+                  label="链接名称"
+                  placeholder="链接名称"
+                  required
+                />
+              </van-cell-group>
+              <van-divider
+                >最终链接：{{
+                  generateWholeLink(
+                    debugLinkForm.protocol,
+                    debugLinkForm.domainName,
+                    debugLinkForm.port,
+                  )
+                }}</van-divider
               >
-              <van-field name="isJumpDirectly" label="点击直接跳转" required>
-                <template #input>
-                  <van-radio-group
-                    v-model="debugLinkForm.isJumpDirectly"
-                    direction="horizontal"
-                  >
-                    <van-radio :name="true">是</van-radio>
-                    <van-radio :name="false">否</van-radio>
-                  </van-radio-group>
-                </template></van-field
-              >
-              <van-field
-                v-model="debugLinkForm.domainName"
-                type="text"
-                name="domainName"
-                label="域名"
-                placeholder="wwww.baidu.com"
-                required
-              />
-              <van-field
-                v-model="debugLinkForm.port"
-                type="text"
-                name="port"
-                label="端口"
-                placeholder="端口"
-              />
-              <van-field
-                v-model="debugLinkForm.linkName"
-                type="text"
-                name="linkName"
-                label="链接名称"
-                placeholder="链接名称"
-                required
-              />
-            </van-cell-group>
-            <van-divider
-              >最终链接：{{
-                generateWholeLink(
-                  debugLinkForm.protocol,
-                  debugLinkForm.domainName,
-                  debugLinkForm.port,
-                )
-              }}</van-divider
-            >
-            <div class="flex" style="margin: 16px">
-              <van-button round block type="primary" native-type="submit">
-                {{ submitBtnText }}
-              </van-button>
-              <van-button
-                round
-                block
-                type="primary"
-                @click="formModalConfig.isShow = false"
-              >
-                关闭
-              </van-button>
-            </div>
-          </van-form>
+              <div class="flex" style="margin: 16px">
+                <van-button round block type="primary" native-type="submit">
+                  {{ submitBtnText }}
+                </van-button>
+                <van-button
+                  round
+                  block
+                  type="primary"
+                  @click="formModalConfig.isShow = false"
+                >
+                  关闭
+                </van-button>
+              </div>
+            </van-form>
+          </div>
+        </van-overlay>
+      </div>
+      <div class="body">
+        <div>
+          <van-divider content-position="center">固定调试链接</van-divider>
+          <div class="grid grid-cols-5 gap-4">
+            <DebugLink
+              v-for="(link, index) in defaultDebugLinks"
+              :key="index"
+              :link-name="link.linkName"
+              :link="link.link"
+              :is-default-link="true"
+              :is-jump-directly="link.isJumpDirectly"
+            ></DebugLink>
+          </div>
         </div>
-      </van-overlay>
-    </div>
-    <div class="body">
-      <div>
-        <van-divider content-position="center">固定调试链接</van-divider>
-        <div class="grid grid-cols-5 gap-4">
-          <DebugLink
-            v-for="(link, index) in defaultDebugLinks"
-            :key="index"
-            :link-name="link.linkName"
-            :link="link.link"
-            :is-default-link="true"
-            :is-jump-directly="link.isJumpDirectly"
-          ></DebugLink>
+        <div>
+          <van-divider content-position="center">本地配置调试链接</van-divider>
+          <div class="grid grid-cols-5 gap-4">
+            <DebugLink
+              v-for="(link, index) in customDebugLinks"
+              :id="link.id"
+              :key="index"
+              :link-name="link.linkName"
+              :link="generateHrefByDebugLinkForm(link)"
+              :is-default-link="false"
+              :is-jump-directly="link.isJumpDirectly"
+              @edit="handleEditDebugLink"
+              @remove="handleRemoveDebugLink"
+            ></DebugLink>
+          </div>
         </div>
       </div>
       <div>
-        <van-divider content-position="center">本地配置调试链接</van-divider>
-        <div class="grid grid-cols-5 gap-4">
-          <DebugLink
-            v-for="(link, index) in customDebugLinks"
-            :id="link.id"
-            :key="index"
-            :link-name="link.linkName"
-            :link="generateHrefByDebugLinkForm(link)"
-            :is-default-link="false"
-            :is-jump-directly="link.isJumpDirectly"
-            @edit="handleEditDebugLink"
-            @remove="handleRemoveDebugLink"
-          ></DebugLink>
-        </div>
+        <h2 class="my-2">上传控件测试</h2>
+        <file-test></file-test>
+        <h2 class="my-2">分享功能测试</h2>
+        <share></share>
+        <h2 class="my-2">deeplink回跳游戏功能测试</h2>
+        <deep-link></deep-link>
+        <h2 class="my-2">H5图片生成</h2>
+        <generate-img></generate-img>
       </div>
     </div>
-    <div>
-      <h2 class="my-2">上传控件测试</h2>
-      <file-test></file-test>
-      <h2 class="my-2">分享功能测试</h2>
-      <share></share>
-      <h2 class="my-2">deeplink回跳游戏功能测试</h2>
-      <deep-link></deep-link>
-      <h2 class="my-2">H5图片生成</h2>
-      <generate-img></generate-img>
+    <div v-if="showComponentModule.testSDKImage">
+      <h2 class="my-2">保存图片</h2>
+      <TestSDKImage></TestSDKImage>
+    </div>
+    <div v-if="showComponentModule.debugRequest">
+      <h2 class="my-2">调试协议</h2>
+      <DebugRequest></DebugRequest>
     </div>
   </div>
 </template>
@@ -139,9 +149,12 @@ import FileTest from './components/FileTest.vue'
 import Share from './components/Share.vue'
 import DeepLink from './components/DeepLink.vue'
 import GenerateImg from './components/GenerateImg.vue'
+import TestSDKImage from './components/TestSDKImage.vue'
+import DebugRequest from './components/DebugRequest.vue'
 import { generateUUID } from '@/utils/utils'
 import defaultDebugLinks from './configs/defaultDebugLinks.ts'
 import { showNotify } from 'vant'
+import qs from 'qs'
 interface DebugLinkForm {
   id: string
   protocol: string
@@ -282,7 +295,30 @@ const onSubmit = (values: DebugLinkForm): void => {
   hideDebugLinkForm()
 }
 
+const showComponentModule = ref({
+  all: true,
+  testSDKImage: false,
+  debugRequest: false,
+})
+const handleUrlToShowComponentModule = (): void => {
+  const href = window.location.href
+  const queryStr = href.split('?')[1]
+  if (queryStr) {
+    showComponentModule.value.all = false
+    const params = qs.parse(queryStr)
+    if (params.test_sdk_image) {
+      showComponentModule.value.testSDKImage = true
+    }
+    if (params.debug_request) {
+      showComponentModule.value.debugRequest = true
+    }
+  } else {
+    showComponentModule.value.all = true
+  }
+}
+
 onMounted(() => {
+  handleUrlToShowComponentModule()
   const _customDebugLinks = Local.get('customDebugLinks')
   if (_customDebugLinks) {
     customDebugLinks.value = _customDebugLinks

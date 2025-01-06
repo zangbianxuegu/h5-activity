@@ -26,7 +26,7 @@
       <div
         class="modal-content flex flex-1 flex-col items-center justify-center"
       >
-        <span>
+        <span class="text-center">
           {{ props.text }}
         </span>
         <img

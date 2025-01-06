@@ -407,6 +407,7 @@ const onClickHandleBarShare = (): void => {
       title: shareInfo.getTitle(),
       text: currentEvent.shareInfo.getText(props.worksData.worksName),
       image: props.worksData.worksDecorateImgSrc || '',
+      tag: shareInfo.getTag(),
     },
     beforeClickShareChannel,
   )
@@ -414,7 +415,9 @@ const onClickHandleBarShare = (): void => {
 
 // 点击删除作品按钮
 const onClickHandleBarDelete = async (): Promise<void> => {
-  void showConfirmDialog('确认删除投稿作品？').then(async () => {
+  void showConfirmDialog(
+    '此操作将删除当前作品，不可恢复。且两次投稿间隔时长需大于48小时，请问确认删除当前投稿吗？',
+  ).then(async () => {
     try {
       const res = await deleteDesignDetails(
         props.filePickerConfig.policyName,

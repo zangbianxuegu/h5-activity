@@ -496,7 +496,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/Season25Reserve'),
     meta: {
       title: '彩染季 期待相遇',
-      module: 'activitycenter_season25_reserve',
+      module: 'activitycenter_season_25_reserve',
     },
   },
   {
@@ -554,15 +554,6 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/winter-2025-4',
-    name: 'Winter2025_4',
-    component: () => import('@/views/Winter2025_4'),
-    meta: {
-      title: '花灯雅集',
-      module: 'activitycenter_winter_2025_4',
-    },
-  },
-  {
     path: '/dayofdesign01-post-main',
     name: 'DayOfDesign01PostMain',
     component: () => import('@/views/DayOfDesign01PostMain'),
@@ -599,38 +590,41 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    // 外部活动跳转路由固定
-    path: '/external',
-    // 和普通活动一样的路由名称
-    name: 'Season100Start',
-    // 外部活动总是使用 IframeView 页面引入
-    component: () => import('@/views/IframeView'),
+    path: '/winter-main-2025',
+    name: 'WinterMain2025',
+    component: () => import('@/views/WinterMain2025'),
     meta: {
-      // 和普通活动一样配置标题
-      title: 'iframe 外部链接1',
-      // 和普通活动一样配置module
-      module: 'activitycenter_season100_start',
-      // 配置外部活动链接
-      externalUrl:
-        'https://h5maker-backend-ma75.nie.netease.com/page/dev/Qufder',
+      title: '灵蛇献瑞 喜迎春来',
+      module: 'activitycenter_winter_main_2025',
     },
   },
   {
-    // 外部活动跳转路由固定
-    path: '/external',
-    // 和普通活动一样的路由名称
-    name: 'Season101Start',
-    // 外部活动总是使用 IframeView 页面引入
+    path: '/winter-2025-4',
+    name: 'Winter2025_4',
+    component: () => import('@/views/Winter2025_4'),
+    meta: {
+      title: '花灯雅集',
+      module: 'activitycenter_winter_2025_4',
+    },
+  },
+  {
+    path: '/external-season25-start',
+    name: 'Season25Start',
     component: () => import('@/views/IframeView'),
     meta: {
-      // 和普通活动一样配置标题
-      title: 'iframe 外部链接2',
-      // 和普通活动一样配置module
-      module: 'activitycenter_season101_start',
-      // 配置外部活动链接
-      externalUrl:
-        // 'https://sky.163.com/client/news/update/20241011/40240_1186029.html',
-        'https://www.baidu.com',
+      title: '寻颜觅彩焕新裳',
+      module: 'activitycenter_season25_start',
+      externalUid: 'bBkIoR',
+    },
+  },
+  {
+    path: '/external-daysoflove-2025',
+    name: 'Daysoflove2025',
+    component: () => import('@/views/IframeView'),
+    meta: {
+      title: '情人节活动',
+      module: 'activitycenter_daysoflove_2025',
+      externalUid: 'Gtbv2O',
     },
   },
 ]

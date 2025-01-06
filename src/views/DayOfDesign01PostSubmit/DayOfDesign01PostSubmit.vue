@@ -3,7 +3,6 @@
     <div
       class="page relative flex h-screen w-screen items-center justify-center bg-cover bg-center"
     >
-      <!-- 一键上传（测试） -->
       <div
         class="relative h-full w-full"
         :class="['page-main', { 'keyboard-show': isKeyboardShow }]"
@@ -29,7 +28,7 @@
                 >
                   <upload-img
                     v-model:data="worksData.worksImg"
-                    :cropper="true"
+                    :cropper="false"
                     :max-size="10 * 1024 * 1024"
                     :min-size="100 * 1024"
                     :reupload="false"
@@ -250,6 +249,8 @@ import { Session } from '@/utils/storage'
 import { showConfirmDialog } from '@/utils/dayOfDesign01/confirmDialog'
 import { useClipboard } from '@vueuse/core'
 
+// import TestUploadAuto from './components/TestUploadAuto.vue'
+
 const sessionIsVisitedKey = 'isVisitedDayOfDesign01PostSubmit'
 const isVisited = Session.get(sessionIsVisitedKey)
 const bodyTransitionName = ref('')
@@ -452,13 +453,14 @@ const onClickDownloadTemplate = async (): Promise<void> => {
 }
 // 点击绘制指南
 const onClickGoToDrawingGuide = (): void => {
-  window.location.href =
-    'https://test.nie.163.com/test_html/sky/n/2024/hmj/#cszycy/900'
+  window.location.href = 'https://sky.163.com/n/2024/hmj/#cszycy'
 }
 
 // 删除作品确认弹窗
 const showConfirmDialogForReupload = (): void => {
-  void showConfirmDialog('确认删除投稿作品？')
+  void showConfirmDialog(
+    '此操作将删除当前作品，不可恢复。且两次投稿间隔时长需大于48小时，请问确认删除当前投稿吗？',
+  )
     .then(async () => {
       try {
         const res = await deleteDesignDetails(

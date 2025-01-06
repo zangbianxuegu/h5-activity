@@ -254,7 +254,7 @@ export const uploadFormAndFilePickerResultToServerApi = (
           msg,
           data,
         }: {
-          code: 200 | 400 | 500
+          code: number
           msg: string
           data: Record<string, any>
         } = res

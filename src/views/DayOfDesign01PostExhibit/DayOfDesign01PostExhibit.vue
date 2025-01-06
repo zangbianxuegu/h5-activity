@@ -927,6 +927,10 @@ $font-family-bold: 'Source Han Sans CN Medium';
       color: #fff;
       opacity: 0.6;
     }
+
+    &:focus {
+      box-shadow: 0 0 2px 1px rgba(134, 178, 179, 0.6);
+    }
   }
 
   &-btn {

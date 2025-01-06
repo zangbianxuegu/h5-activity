@@ -12,7 +12,7 @@
             <div class="sr-only">
               花灯雅集
               <p>
-                <time datetime="2025-2-11">2.11</time>-
+                <time datetime="2025-2-11">2.11</time>
                 <time datetime="2025-2-17">2.17</time>
               </p>
             </div>
@@ -214,21 +214,19 @@
                 placeholder="点击输入谜底"
                 class="riddle-input"
               />
-              <div>
-                <button
-                  type="button"
-                  :class="[
-                    'btn',
-                    {
-                      'btn-finished disabled': isFinished,
-                    },
-                  ]"
-                  @click="guessRiddle"
-                >
-                  <span v-if="isFinished"> 今日已完成 </span>
-                  <span v-else> 确定 </span>
-                </button>
-              </div>
+              <button
+                type="button"
+                :class="[
+                  'btn',
+                  {
+                    'btn-finished disabled': isFinished,
+                  },
+                ]"
+                @click="guessRiddle"
+              >
+                <span v-if="isFinished"> 今日已完成 </span>
+                <span v-else> 确定 </span>
+              </button>
             </div>
           </section>
         </Transition>
@@ -246,6 +244,7 @@ import { getWinterRiddle, guessWinterRiddle } from '@/apis/winter2025'
 import type { Event } from '@/types'
 import { useBaseStore } from '@/stores/base'
 import { useMenuStore } from '@/stores/menu'
+import { useTokenStore } from '@/stores/winter2025'
 import { useActivityStore } from '@/stores/winter2025_4'
 import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
@@ -294,10 +293,11 @@ const BOAT_ACC_TASK_LIST = createBoatAccTaskList()
 // 活动数据
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
+const tokenStore = useTokenStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 const tokenCount = computed(() =>
-  Number(activityData.value.token_info?.lantern_token || 0),
+  Number(tokenStore.tokeInfo?.lantern_token || 0),
 )
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
@@ -362,7 +362,7 @@ const candleAccTaskList = updateTaskList(CANDLES_ACC_TASK_LIST, 3)
 
 const rewardTokenRiddle = updateRewardToken(1, 5)
 const rewardTokenBoat = updateRewardToken(2, 5)
-const rewardTokenCandle = updateRewardToken(2, 20)
+const rewardTokenCandle = updateRewardToken(3, 20)
 
 /**
  * @function 是否隐藏任务列表
@@ -387,8 +387,8 @@ onMounted(() => {
   try {
     window.addEventListener('resize', handleResize)
     getActivityData()
-    getLanternToken()
     getActivityRiddle()
+    tokenStore.initData()
   } catch (error) {
     console.error(error)
   }
@@ -441,23 +441,6 @@ function getActivityData(): void {
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
-/**
- * @function 获取花灯代币数量
- * @returns {void}
- */
-function getLanternToken(): void {
-  getPlayerMissionData({
-    event: 'activitycenter_winter_2025_5',
-    token: 'lantern_token',
-  })
-    .then((res) => {
-      const tokenInfo = res.data.token_info
-      activityStore.updateTokenCount(tokenInfo)
     })
     .catch((error) => {
       showToast(error.message)
@@ -688,8 +671,8 @@ const handleResize = throttle(() => {
   right: 70px;
   width: 204px;
   height: 51px;
-  color: #fff;
-  font-size: 32px;
+  color: #fffae9;
+  font-size: 34px;
   background-color: #1d2e58;
   border-radius: 40px;
 }
@@ -854,7 +837,8 @@ const handleResize = throttle(() => {
   }
 }
 .riddle-reward {
-  font-size: 36px;
+  width: 330px;
+  font-size: 38px;
   color: #ce7f3f;
   line-height: 1;
 }
@@ -869,10 +853,12 @@ const handleResize = throttle(() => {
   margin-top: 22px;
   width: 303px;
   height: 93px;
+  font-size: 34px;
   text-align: center;
   color: #b0824f;
   background-color: #fffeed;
   border-radius: 50px;
+  box-shadow: 0 6px 6px 0 rgba(81, 81, 81, 0.2);
   &-finished {
     color: #584127;
     background-color: #7f7f76;

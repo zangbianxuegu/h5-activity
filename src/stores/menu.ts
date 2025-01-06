@@ -7,6 +7,7 @@ import { showToast } from 'vant'
 export const useMenuStore = defineStore('menu', () => {
   // 菜单数据
   const menuData = ref<MenuItem[]>([])
+  const isMenuVisible = ref(true)
 
   function checkHasRedDot(items: MenuItem[]): boolean {
     for (const item of items) {
@@ -43,6 +44,11 @@ export const useMenuStore = defineStore('menu', () => {
         })
     },
   )
+
+  // 改变菜单显示状态
+  function changeMenuVisible(visible: boolean): void {
+    isMenuVisible.value = visible
+  }
 
   // 更新菜单数据
   function updateMenuData(newMenuData: MenuItem[]): void {
@@ -140,6 +146,8 @@ export const useMenuStore = defineStore('menu', () => {
 
   return {
     menuData,
+    isMenuVisible,
+    changeMenuVisible,
     updateMenuData,
     updatedMenuDataByRoute,
     updateMenuDataByIsNew,
