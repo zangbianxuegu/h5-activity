@@ -53,7 +53,7 @@ export function createPersonAccTaskList(): TaskItem[][] {
         hadRenderLottie: ref(false),
       },
       {
-        id: 2,
+        id: 3,
         taskId: 'send_heart_wax_friend',
         status: TaskStatus.WAIT,
         title: '个人送心火次数达到50次',

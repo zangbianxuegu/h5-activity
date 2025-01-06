@@ -67,13 +67,13 @@
                   <Bubble
                     :bubble-scale="1.8"
                     :reward="item"
-                    :bounce-class="`${item.taskId}-${item.id}`"
+                    :bounce-class="`reward-bubble-${tdx + 1}`"
                     @click="handleReward(tdx + 1, item)"
                   >
                     <div
                       :class="[
                         'acc-task-icon animate__animated animate__fadeIn relative z-10',
-                        `acc-task${tdx + 1}-icon${index + 1}`,
+                        `acc-task-icon${item.id}`,
                         `${item.status}`,
                       ]"
                     ></div>
@@ -104,7 +104,6 @@ import type { Event } from '@/types'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/winter2025_3'
 import { useActivityStore as useActivityLanternStore } from '@/stores/winter2025_4'
-import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
 import ModalHelp from './components/ModalHelp.vue'
 import ModalReward from './components/ModelReward.vue'
@@ -466,42 +465,29 @@ function handleHelp(): void {
   background-size: cover;
   background-position: center;
 }
-@for $i from 1 through 2 {
-  .acc-task#{$i}-icon#{$i} {
+@for $i from 1 through 3 {
+  .acc-task-icon#{$i} {
     &.can {
-      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-can.png');
+      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-can.png');
     }
     &.wait {
-      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-wait.png');
+      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-wait.png');
     }
 
     &.redeemed {
       transition: background-image 1s ease;
-      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-redeemed.png');
     }
   }
 }
-.acc-task2-icon1 {
-  &.can {
-    background-image: url('@/assets/images/winter2025-3/acc2-task1-can.png');
-  }
-  &.wait {
-    background-image: url('@/assets/images/winter2025-3/acc2-task1-wait.png');
-  }
 
-  &.redeemed {
-    transition: background-image 1s ease;
-    background-image: url('@/assets/images/winter2025-3/acc2-task1-redeemed.png');
-  }
-}
-
-.acc-task1-icon1.can {
+.acc-task-icon1.can {
   background-size: 67px 99px;
 }
-.acc-task2-icon1.can {
+.acc-task-icon2.can {
   background-size: 62px 85px;
 }
-.acc-task2-icon2.can {
+.acc-task-icon3.can {
   background-size: 59px 91px;
 }
 </style>
