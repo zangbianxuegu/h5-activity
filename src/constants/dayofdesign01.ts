@@ -33,6 +33,7 @@ export interface EventMapConfig {
     getTitle: () => string
     getText: (designName: string) => string
     getDesc: (designName: string) => string
+    getTag: () => string
   }
 }
 
@@ -50,6 +51,7 @@ export const eventMap = new Map<EventDayOfDesign01, EventMapConfig>([
           `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`,
         getDesc: (designName: string) =>
           `我推荐这个作品《${designName}》，快来支持你喜欢的作品，助力实装吧！`,
+        getTag: () => '光遇绘梦节',
       },
     },
   ],
