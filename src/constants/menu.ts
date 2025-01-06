@@ -506,4 +506,18 @@ export const MENU_ITEMS: MenuItem[] = [
     isNew: false,
     hasUnclaimedReward: false,
   },
+  {
+    label: '相遇寄服',
+    value: 'activitycenter_winter_2025_3',
+    routeName: 'Winter2025_3',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '花灯雅集',
+    value: 'activitycenter_winter_2025_4',
+    routeName: 'Winter2025_4',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
 ]
