@@ -186,6 +186,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--dayofdesign01_post_exhibit {
     background-image: url('@/assets/images/common/menu/dayofdesign01-exhibit.png');
   }
+  /* season25 彩染季季初活跃活动 */
+  &--season25_start {
+    background-image: url('@/assets/images/common/menu/season25-start.png');
+  }
 }
 .active-star {
   left: -101px;
