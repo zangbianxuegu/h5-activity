@@ -554,15 +554,6 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: '/winter-2025-4',
-    name: 'Winter2025_4',
-    component: () => import('@/views/Winter2025_4'),
-    meta: {
-      title: '花灯雅集',
-      module: 'activitycenter_winter_2025_4',
-    },
-  },
-  {
     path: '/dayofdesign01-post-main',
     name: 'DayOfDesign01PostMain',
     component: () => import('@/views/DayOfDesign01PostMain'),
@@ -587,6 +578,24 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '活动会场',
       module: 'activitycenter_dayofdesign01_post_exhibit',
+    },
+  },
+  {
+    path: '/winter-main-2025',
+    name: 'WinterMain2025',
+    component: () => import('@/views/WinterMain2025'),
+    meta: {
+      title: '灵蛇献瑞 喜迎春来',
+      module: 'activitycenter_winter_main_2025',
+    },
+  },
+  {
+    path: '/winter-2025-4',
+    name: 'Winter2025_4',
+    component: () => import('@/views/Winter2025_4'),
+    meta: {
+      title: '花灯雅集',
+      module: 'activitycenter_winter_2025_4',
     },
   },
   {

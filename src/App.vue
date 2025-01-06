@@ -226,13 +226,6 @@ function extractActiveEvents(activitiesResponse: Activities): Activity[] {
   if (isDayOfDesignActive) {
     res = adjustActivitySort(res, DAYOFDESIGN01_LIST)
   }
-  res.push({
-    activity: 'activitycenter_season100_start',
-    startTime: 0,
-    endTime: 0,
-    isNew: false,
-    hasUnclaimedReward: false,
-  })
   // 调整姆明谷身份测试活动排序
   if (isMoominTestGod) {
     const index = res.findIndex(
