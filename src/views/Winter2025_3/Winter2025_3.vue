@@ -8,7 +8,7 @@
               相遇寄福
               <p>
                 <time datetime="2025-1-23">1.23</time>
-                <time datetime="2025-2-11">2.11</time>
+                <time datetime="2025-2-10">2.10</time>
               </p>
             </div>
             <div
@@ -27,6 +27,7 @@
               <div class="coin-icon"></div>
               <div class="flex-1 text-center">{{ tokenCount }}</div>
             </div>
+            <!-- 全服赠送心火 -->
             <div class="absolute left-[308px] top-[20%] h-[590px] w-[1472px]">
               <h2 class="task-title bg-contain bg-no-repeat"></h2>
               <ul class="flex">
@@ -45,6 +46,7 @@
                 </li>
               </ul>
             </div>
+            <!-- 给好友赠送心火 -->
             <ul class="absolute right-[30px] top-[20%]">
               <li
                 v-for="(task, tdx) in personAccTaskList"
@@ -60,7 +62,7 @@
 
                 <div v-for="(item, index) in task" :key="item.taskId">
                   <Bubble
-                    :bubble-scale="1.3"
+                    :bubble-scale="1.8"
                     :reward="item"
                     :bounce-class="`${item.taskId}-${item.id}`"
                     @click="handleReward(tdx + 1, item)"
@@ -76,9 +78,12 @@
                 </div>
               </li>
             </ul>
-            <div></div>
-            <div></div>
-            <div></div>
+            <!-- 左边小人-->
+            <div class="npc1"></div>
+            <!-- 右边小人-->
+            <div class="npc2"></div>
+            <!-- 相遇礼盒-->
+            <div class="gift"></div>
           </section>
         </Transition>
         <!-- 活动规则弹框 -->
@@ -175,10 +180,12 @@ const serverAccTaskList = computed(() => {
 const personAccTaskList = computed(() => {
   const activity = eventData.value[1]
   return PERSON_ACC_TASK_LIST.map((task, index) => {
-    task.forEach((item) => {
-      item.status = getTaskStatus(activity, index)
+    return task.map((item) => {
+      return {
+        ...item,
+        status: getTaskStatus(activity, index),
+      }
     })
-    return [...task]
   })
 })
 
@@ -195,7 +202,9 @@ onMounted(() => {
  * @param tasks 累计任务列表
  */
 function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  return tasks.slice(1, 4).some((task) => {
+  // 使用some方法遍历任务列表，对每个任务的阶段进行检查
+  return tasks.some((task) => {
+    // 判断任务值是否达到或超过当前阶段要求，且奖励未领取
     return task.stages.some(
       (item, index) => task.value >= item && task.award[index] === 0,
     )
@@ -361,6 +370,36 @@ function handleHelp(): void {
   background-repeat: no-repeat;
   background-image: url('@/assets/images/winter2025-4/coin.png');
 }
+.gift {
+  position: absolute;
+  right: 100px;
+  bottom: -30px;
+  width: 548px;
+  height: 544px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/winter2025-3/gift.png');
+}
+.npc1 {
+  position: absolute;
+  left: 340px;
+  bottom: 40px;
+  width: 524px;
+  height: 504px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/winter2025-3/npc1.png');
+}
+.npc2 {
+  position: absolute;
+  right: 720px;
+  bottom: 40px;
+  width: 324px;
+  height: 391px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/winter2025-3/npc2.png');
+}
 .task-title {
   position: absolute;
   left: 638px;
@@ -423,25 +462,38 @@ function handleHelp(): void {
   width: 190px;
   height: 199px;
   background-repeat: no-repeat;
-  background-size: contain;
+  background-size: cover;
   background-position: center;
 }
 @for $i from 1 through 2 {
-  @for $j from 1 through 2 {
-    .acc-task#{$i}-icon#{$j} {
-      &.can {
-        background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$j}-can.png');
-      }
-      &.wait {
-        background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$j}-wait.png');
-      }
+  .acc-task#{$i}-icon#{$i} {
+    &.can {
+      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-can.png');
+    }
+    &.wait {
+      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-wait.png');
+    }
 
-      &.redeemed {
-        background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$j}-redeemed.png');
-      }
+    &.redeemed {
+      transition: background-image 1s ease;
+      background-image: url('@/assets/images/winter2025-3/acc#{$i}-task#{$i}-redeemed.png');
     }
   }
 }
+.acc-task2-icon1 {
+  &.can {
+    background-image: url('@/assets/images/winter2025-3/acc2-task1-can.png');
+  }
+  &.wait {
+    background-image: url('@/assets/images/winter2025-3/acc2-task1-wait.png');
+  }
+
+  &.redeemed {
+    transition: background-image 1s ease;
+    background-image: url('@/assets/images/winter2025-3/acc2-task1-redeemed.png');
+  }
+}
+
 .acc-task1-icon1.can {
   background-size: 67px 99px;
 }

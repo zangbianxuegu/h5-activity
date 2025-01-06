@@ -26,12 +26,7 @@ export interface TaskItem {
   canRewardLottieRef?: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
   hadRenderLottie?: Ref<boolean>
 }
-
-export interface ProcessedTaskItem {
-  title: string
-  content: TaskItem[]
-}
-
+// 全服赠送心火列表
 export function createPersonAccTaskList(): TaskItem[][] {
   return [
     [
@@ -58,7 +53,7 @@ export function createPersonAccTaskList(): TaskItem[][] {
         hadRenderLottie: ref(false),
       },
       {
-        id: 3,
+        id: 2,
         taskId: 'send_heart_wax_friend',
         status: TaskStatus.WAIT,
         title: '个人送心火次数达到50次',
@@ -70,7 +65,7 @@ export function createPersonAccTaskList(): TaskItem[][] {
     ],
   ]
 }
-
+// 好友赠送心火列表
 export function createServerAccTaskList(): TaskItem[] {
   return [
     {
