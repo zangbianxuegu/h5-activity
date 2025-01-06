@@ -34,7 +34,10 @@
                 <li
                   v-for="(item, index) in serverAccTaskList"
                   :key="item.id"
-                  :class="['absolute', `server-acc-task-item${index + 1}`]"
+                  :class="[
+                    'animate__animated animate__fadeIn absolute',
+                    `server-acc-task-item${index + 1}`,
+                  ]"
                 >
                   <p class="text-center text-[32px] text-[#d9dfc8]">
                     {{ item.title }}
