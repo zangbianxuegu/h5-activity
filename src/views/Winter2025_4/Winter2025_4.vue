@@ -297,7 +297,7 @@ const tokenStore = useTokenStore()
 const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 const tokenCount = computed(() =>
-  Number(tokenStore.tokeInfo?.lantern_token || 0),
+  Number(tokenStore.tokenInfo?.lantern_token || 0),
 )
 const baseStore = useBaseStore()
 const gameUid = computed(() => baseStore.baseInfo.gameUid)
