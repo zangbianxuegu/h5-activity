@@ -25,14 +25,20 @@
                 :key="item.path"
                 type="button"
                 :class="[
-                  'lantern absolute bg-transparent bg-center bg-no-repeat',
+                  'lantern animate__animated absolute bg-transparent bg-center bg-no-repeat',
                   `lantern${index + 1}`,
                   item.status,
                 ]"
+                @click="handleClick(item, $event)"
               >
-                <RouterLink :to="item.path" class="block h-full w-full">
+                <RouterLink
+                  v-if="item.status === 'can'"
+                  :to="item.path"
+                  class="block h-full w-full"
+                >
                   <span class="sr-only">{{ item.label }}</span>
                 </RouterLink>
+                <span v-else class="sr-only">{{ item.label }}</span>
               </button>
             </div>
           </section>
@@ -47,6 +53,7 @@
 
 <script setup lang="ts">
 import dayjs from 'dayjs'
+import { showToast } from 'vant'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
@@ -67,6 +74,13 @@ if (!isVisited) {
   bodyTransitionName.value = 'fade-in-body'
   headTransitionName.value = 'fade-in-head'
   mainTransitionName.value = 'fade-in-main'
+}
+interface MenuItem {
+  path: string
+  label: string
+  status: 'can' | 'wait' | 'expired'
+  startDate: string
+  endDate: string
 }
 
 const MENU_ITEMS = [
@@ -107,6 +121,20 @@ const MENU_ITEMS = [
   },
 ]
 
+// 菜单数据
+const menuItems = computed(() => {
+  return MENU_ITEMS.map((item) => {
+    return {
+      ...item,
+      status: getStatus(item.startDate, item.endDate),
+    }
+  })
+})
+
+onMounted(async () => {
+  Session.set(sessionIsVisitedKey, true)
+})
+
 /**
  * @function getStatus
  * @description 获取菜单项状态
@@ -125,19 +153,33 @@ function getStatus(startDate: string, endDate: string): string {
   return 'can'
 }
 
-// 菜单数据
-const menuItems = computed(() => {
-  return MENU_ITEMS.map((item) => {
-    return {
-      ...item,
-      status: getStatus(item.startDate, item.endDate),
+/**
+ * @function handleClick
+ * @description 点击菜单项
+ * @param {MenuItem} item 菜单项
+ * @param {TouchEvent | MouseEvent} event 事件
+ * @returns {void}
+ */
+function handleClick(item: MenuItem, event: TouchEvent | MouseEvent): void {
+  if (['wait', 'expired'].includes(item.status)) {
+    const target = event.currentTarget as HTMLElement
+    if (item.status === 'wait') {
+      const start = dayjs(item.startDate)
+      const formattedDate = start.format('M.DD')
+      showToast('活动开启时间：' + formattedDate)
+    } else {
+      showToast('活动已结束')
     }
-  })
-})
-
-onMounted(async () => {
-  Session.set(sessionIsVisitedKey, true)
-})
+    target.classList.add('animate__headShake')
+    target.addEventListener(
+      'animationend',
+      () => {
+        target.classList.remove('animate__headShake')
+      },
+      { once: true },
+    )
+  }
+}
 
 /**
  * @function handleHelp
@@ -217,7 +259,6 @@ function handleHelp(): void {
   height: 1060px;
 }
 .lantern {
-  // border: 1px solid red;
   width: 272px;
   height: 530px;
 }
