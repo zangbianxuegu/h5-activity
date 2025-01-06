@@ -52,7 +52,9 @@
                     },
                   ]"
                 >
-                  {{ item.title }}（{{ item.val }}/{{ item.stages[0] }}）
+                  {{ item.title }}（{{
+                    item.val > item.stages[0] ? item.stages[0] : item.val
+                  }}/{{ item.stages[0] }}）
                 </div>
               </div>
             </div>
@@ -78,7 +80,7 @@
                     <p
                       class="h-[30px] text-center text-[30px] leading-[36px] text-white"
                     >
-                      {{ item.stages[0] }}次
+                      {{ item.stages[index] }}次
                     </p>
                   </li>
                 </ul>
@@ -156,9 +158,8 @@ const activityData = computed(() => activityStore.activityData)
 const eventData = computed(() => activityData.value.event_data[EVENT_NAME])
 
 const curRewards: Ref<Reward[]> = ref([
-  // TODO
   {
-    name: 'CharSkyKid_Horn_CursorHairpin',
+    name: 'rainbox',
     count: 1,
   },
 ])
@@ -268,13 +269,17 @@ function handleReward(rewardId: number, item: TaskItem): void {
       )
       activityData.value.event_data[EVENT_NAME][taskIndex].award[rewardId - 1] =
         1
-      showToast(
-        '领取成功，您获得了' +
-          curRewards.value.map(
-            (item) =>
-              ` ${REWARD_MAP[item.name as keyof typeof REWARD_MAP]}*${item.count}`,
-          ),
-      )
+      if (taskId === 'activitycenter_dayofdesign01_vote1_mission_m4') {
+        showToast(
+          '领取成功，您获得了' +
+            curRewards.value.map(
+              (item) =>
+                ` ${REWARD_MAP[item.name as keyof typeof REWARD_MAP]}*${item.count}`,
+            ),
+        )
+      } else {
+        showToast('领取成功，您获得了 投票券*1')
+      }
       // 更新红点
       setRedDot()
     })
@@ -322,15 +327,28 @@ function setRedDot(): void {
 function calculateAccTaskValue(accTaskVal: number): number {
   // 如果累积任务值大于等于50，直接返回100
   if (accTaskVal >= 50) return 100
-  const ACC_TASK_VALUES: Readonly<Record<number, number>> = {
-    0: 0,
-    10: 12,
-    20: 32,
-    30: 53,
-    40: 74,
-    50: 100,
+  switch (true) {
+    case accTaskVal < 10:
+      return accTaskVal
+    case accTaskVal === 10:
+      return 12
+    case accTaskVal < 20:
+      return (accTaskVal - 10) * 2 + 12
+    case accTaskVal === 20:
+      return 32
+    case accTaskVal < 30:
+      return (accTaskVal - 20) * 2 + 32
+    case accTaskVal === 30:
+      return 53
+    case accTaskVal < 40:
+      return (accTaskVal - 30) * 2 + 53
+    case accTaskVal === 40:
+      return 74
+    case accTaskVal < 50:
+      return (accTaskVal - 40) * 2.1 + 74
+    default:
+      return 0 // 其他情况（理论上不会发生），返回0
   }
-  return ACC_TASK_VALUES[accTaskVal]
 }
 
 // 进度：10,20,30,40,50
