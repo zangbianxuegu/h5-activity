@@ -388,6 +388,7 @@ onMounted(() => {
     window.addEventListener('resize', handleResize)
     getActivityData()
     getActivityRiddle()
+    tokenStore.initData()
   } catch (error) {
     console.error(error)
   }

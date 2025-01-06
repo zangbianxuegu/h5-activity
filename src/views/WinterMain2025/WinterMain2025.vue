@@ -58,8 +58,6 @@ import timezone from 'dayjs/plugin/timezone'
 import { showToast } from 'vant'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
-import { useTokenStore } from '@/stores/winter2025'
-import { getPlayerMissionData } from '@/utils/request'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 
 dayjs.extend(utc)
@@ -70,7 +68,6 @@ dayjs.tz.setDefault('Asia/Shanghai')
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 const baseStore = useBaseStore()
-const tokenStore = useTokenStore()
 const currentTime = computed(() => baseStore.baseInfo.currentTime)
 
 const sessionIsVisitedKey = 'isVisitedWinterMain2025'
@@ -143,24 +140,6 @@ onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
   getLanternToken()
 })
-
-/**
- * @function 获取花灯代币数量
- * @returns {void}
- */
-function getLanternToken(): void {
-  getPlayerMissionData({
-    event: 'activitycenter_winter_2025_5',
-    token: 'lantern_token',
-  })
-    .then((res) => {
-      const tokenInfo = res.data.token_info
-      tokenStore.updateTokenInfo(tokenInfo)
-    })
-    .catch((error) => {
-      showToast(error.message)
-    })
-}
 
 /**
  * @function getStatus
