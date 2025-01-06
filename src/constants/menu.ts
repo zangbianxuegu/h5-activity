@@ -459,7 +459,7 @@ export const MENU_ITEMS: MenuItem[] = [
   },
   {
     label: '彩染季 期待相遇',
-    value: 'activitycenter_season25_reserve',
+    value: 'activitycenter_season_25_reserve',
     routeName: 'Season25Reserve',
     isNew: false,
     hasUnclaimedReward: false,
@@ -486,7 +486,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '相遇在更广阔的天空下',
+    label: '在更广阔天空相遇',
     value: 'activitycenter_pc_celebration',
     routeName: 'PcCelebration',
     isNew: false,

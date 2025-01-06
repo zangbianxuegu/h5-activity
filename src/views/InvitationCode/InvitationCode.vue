@@ -1,11 +1,11 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="invitation-code flex h-screen">
-      <div
-        :class="['invitation-code-main', { 'keyboard-show': isKeyboardShow }]"
-      >
+    <div class="invitation-code relative h-screen w-screen bg-cover bg-center">
+      <div :class="['h-full w-full', { 'keyboard-show': isKeyboardShow }]">
         <Transition appear :name="headTransitionName" mode="out-in">
-          <h1 class="relative h-full overflow-hidden bg-contain bg-no-repeat">
+          <h1
+            class="title animate__animated animate__fadeIn relative h-full overflow-hidden bg-contain bg-no-repeat"
+          >
             <div class="sr-only">
               共沐温暖 不期而遇
               <p>
@@ -20,132 +20,154 @@
           </h1>
         </Transition>
         <Transition appear :name="mainTransitionName" mode="out-in">
-          <section>
-            <!-- 邀请人数 -->
-            <h2 class="sr-only">邀请人数</h2>
-            <div class="absolute left-[1140px] top-[300px] flex">
-              <ul
-                class="absolute left-0 top-[-80px] flex w-[500px] justify-between"
-              >
-                <li
-                  v-for="(item, index) in topAccTaskList"
-                  :key="item.id"
-                  class="flex h-[180px] flex-col items-center justify-between"
-                >
-                  <bubble
-                    :reward="item"
-                    :bubbleScale="1.9"
-                    :bounce-class="`${item.taskId}-${item.id}`"
-                  >
-                    <div
-                      :class="[
-                        'top-acc-task-item animate__animated animate__fadeIn',
-                        `${item.status}${index + 1}`,
-                      ]"
-                      @click="handleReward(index + 1, item)"
-                    ></div>
-                  </bubble>
-                  <p
-                    class="h-[30px] text-center text-[30px] leading-[36px] text-white"
-                  >
-                    {{ item.stages[index] }}人
-                  </p>
-                </li>
-              </ul>
-              <div
-                class="progress-container absolute left-0 top-[40px] w-[500px]"
-              >
-                <div
-                  class="progress-bar"
-                  :style="`width: ${topAccTaskValue > 100 ? 100 : topAccTaskValue}%;`"
-                ></div>
-              </div>
-            </div>
+          <section class="absolute bottom-0 right-0 top-0 m-auto">
             <div
-              class="absolute left-[1700px] top-[170px] w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
+              class="absolute bottom-0 right-[140px] top-0 m-auto flex flex-col justify-center gap-y-[24px]"
             >
-              {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
-            </div>
-            <!-- 被邀请玩家累计收集光之翼数量 -->
-            <h2 class="sr-only">被邀请玩家累计收集光之翼数量</h2>
-            <div class="absolute left-[1140px] top-[580px] flex">
-              <ul
-                class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
-              >
-                <li
-                  v-for="(item, index) in middleAccTaskList"
-                  :key="item.id"
-                  class="flex h-[180px] flex-col items-center justify-between"
-                >
-                  <bubble
-                    :reward="item"
-                    :bubbleScale="1.9"
-                    :bounce-class="`${item.taskId}-${item.id}`"
-                  >
-                    <div
-                      :class="[
-                        'middle-acc-task-item animate__animated animate__fadeIn',
-                        `${item.status}${index + 1}`,
-                      ]"
-                      @click="handleReward(index + 1, item)"
-                    ></div>
-                  </bubble>
-                  <p
-                    class="h-[30px] text-center text-[30px] leading-[36px] text-white"
-                  >
-                    {{ item.stages[index] }}
-                  </p>
-                </li>
-              </ul>
-
+              <!-- 邀请人数 -->
               <div
-                class="progress-container absolute left-0 top-[40px] w-[750px]"
+                class="reward-top animate__animated animate__fadeIn relative flex"
               >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  邀请人数
+                </h2>
+                <ul
+                  class="absolute left-[40px] top-[56px] flex w-[500px] justify-between"
+                >
+                  <li
+                    v-for="(item, index) in topAccTaskList"
+                    :key="item.id"
+                    class="flex h-[180px] flex-col items-center justify-between"
+                  >
+                    <bubble
+                      :reward="item"
+                      :bubbleScale="1.9"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'top-acc-task-item animate__animated animate__fadeIn z-10',
+                          `${item.status}${index + 1}`,
+                        ]"
+                        @click="handleReward(index + 1, item)"
+                      ></div>
+                    </bubble>
+                    <p
+                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                    >
+                      {{ item.stages[index] }}人
+                    </p>
+                  </li>
+                </ul>
                 <div
-                  class="progress-bar"
-                  :style="`width: ${middleAccTaskValue > 100 ? 100 : middleAccTaskValue}%;`"
-                ></div>
+                  class="progress-container absolute left-[44px] top-[180px] w-[500px]"
+                >
+                  <div
+                    class="progress-bar"
+                    :style="`width: ${topAccTaskValue > 100 ? 100 : topAccTaskValue}%;`"
+                  ></div>
+                </div>
+                <div
+                  class="absolute right-[30px] top-0 w-[200px] text-center font-['SourceHanSansCN'] text-[120px] text-[#fffad6]"
+                >
+                  {{ topAccTaskList[0].val > 99 ? 99 : topAccTaskList[0].val }}
+                </div>
               </div>
-            </div>
-            <!-- 被邀请玩家累计献祭次数 -->
-            <h2 class="sr-only">被邀请玩家累计献祭次数</h2>
-            <div class="absolute left-[1140px] top-[860px] flex">
-              <ul
-                class="absolute left-0 top-[-80px] flex w-[760px] justify-between"
-              >
-                <li
-                  v-for="(item, index) in bottomAccTaskList"
-                  :key="item.id"
-                  class="flex h-[180px] flex-col items-center justify-between"
-                >
-                  <bubble
-                    :reward="item"
-                    :bubbleScale="1.9"
-                    :bounce-class="`${item.taskId}-${item.id}`"
-                  >
-                    <div
-                      :class="[
-                        'bottom-acc-task-item animate__animated animate__fadeIn',
-                        item.status,
-                      ]"
-                      @click="handleReward(index + 1, item)"
-                    ></div>
-                  </bubble>
-                  <p
-                    class="h-[30px] text-center text-[30px] leading-[36px] text-white"
-                  >
-                    {{ item.stages[index] }}次
-                  </p>
-                </li>
-              </ul>
-
+              <!-- 被邀请玩家累计收集光之翼数量 -->
               <div
-                class="progress-container absolute left-0 top-[40px] w-[750px]"
+                class="reward-middle animate__animated animate__fadeIn relative flex"
               >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  被邀请玩家累计收集光之翼数量
+                </h2>
+                <ul
+                  class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
+                >
+                  <li
+                    v-for="(item, index) in middleAccTaskList"
+                    :key="item.id"
+                    class="flex h-[180px] flex-col items-center justify-between"
+                  >
+                    <bubble
+                      :reward="item"
+                      :bubbleScale="1.9"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'middle-acc-task-item animate__animated animate__fadeIn z-10',
+                          `${item.status}${index + 1}`,
+                        ]"
+                        @click="handleReward(index + 1, item)"
+                      ></div>
+                    </bubble>
+                    <p
+                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                    >
+                      {{ item.stages[index] }}
+                    </p>
+                  </li>
+                </ul>
+
                 <div
-                  class="progress-bar"
-                  :style="`width: ${bottomAccTaskValue > 100 ? 100 : bottomAccTaskValue}%;`"
-                ></div>
+                  class="progress-container absolute left-[44px] top-[180px] w-[750px]"
+                >
+                  <div
+                    class="progress-bar"
+                    :style="`width: ${middleAccTaskValue > 100 ? 100 : middleAccTaskValue}%;`"
+                  ></div>
+                </div>
+              </div>
+              <!-- 被邀请玩家累计献祭次数 -->
+              <div
+                class="reward-bottom animate__animated animate__fadeIn relative flex"
+              >
+                <h2
+                  class="absolute left-[20px] top-[-1px] text-[34px] text-white"
+                >
+                  被邀请玩家累计献祭次数
+                </h2>
+                <ul
+                  class="absolute left-[40px] top-[56px] flex w-[760px] justify-between"
+                >
+                  <li
+                    v-for="(item, index) in bottomAccTaskList"
+                    :key="item.id"
+                    class="flex h-[180px] flex-col items-center justify-between"
+                  >
+                    <bubble
+                      :reward="item"
+                      :bubbleScale="1.9"
+                      :bounce-class="`${item.taskId}-${item.id}`"
+                    >
+                      <div
+                        :class="[
+                          'bottom-acc-task-item animate__animated animate__fadeIn z-10',
+                          item.status,
+                        ]"
+                        @click="handleReward(index + 1, item)"
+                      ></div>
+                    </bubble>
+                    <p
+                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                    >
+                      {{ item.stages[index] }}次
+                    </p>
+                  </li>
+                </ul>
+
+                <div
+                  class="progress-container absolute left-[44px] top-[180px] w-[750px]"
+                >
+                  <div
+                    class="progress-bar"
+                    :style="`width: ${bottomAccTaskValue > 100 ? 100 : bottomAccTaskValue}%;`"
+                  ></div>
+                </div>
               </div>
             </div>
           </section>
@@ -182,7 +204,6 @@ import { getInviteInfo } from '@/apis/invitationCode'
 import type { Event } from '@/types'
 import { useMenuStore } from '@/stores/menu'
 import { useActivityStore } from '@/stores/invitationCode'
-import { getResponsiveStylesFactor } from '@/utils/responsive'
 import Bubble from '@/components/Bubble'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import ModalHelp from './components/ModalHelp.vue'
@@ -201,9 +222,6 @@ import {
   SESSION_IS_VISITED_KEY,
 } from './config'
 import throttle from 'lodash.throttle'
-
-// 获取响应式样式因子，用于调整UI元素大小以适应不同屏幕尺寸
-getResponsiveStylesFactor()
 
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransition(SESSION_IS_VISITED_KEY)
@@ -605,32 +623,42 @@ function handleHelp(): void {
   opacity: 0.2;
 }
 .invitation-code {
-  position: relative;
-  width: 2100px;
-
-  &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    width: 2040px;
-    height: 1140px;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
-    background-image: url('@/assets/images/invitation-code/bg.jpg');
-    &.keyboard-show {
-      transform: translate(-50%, -50%);
-    }
-  }
+  padding-left: 460px;
+  background-image: url('@/assets/images/invitation-code/bg.jpg');
+}
+.title {
+  position: absolute;
+  width: 1210px;
+  height: 235px;
+  top: 130px;
+  left: 570px;
+  background-image: url('@/assets/images/invitation-code/title.png');
 }
 .help {
   position: absolute;
   width: 73px;
   height: 73px;
-  top: 38px;
-  left: 884px;
+  top: -6px;
+  left: 794px;
   background-image: url('@/assets/images/invitation-code/help.png');
+}
+.reward-top {
+  width: 840px;
+  height: 256px;
+  background-image: url('@/assets/images/invitation-code/reward-top-bg.png');
+  background-size: cover;
+}
+.reward-middle {
+  width: 840px;
+  height: 257px;
+  background-image: url('@/assets/images/invitation-code/reward-middle-bg.png');
+  background-size: cover;
+}
+.reward-bottom {
+  width: 840px;
+  height: 256px;
+  background-image: url('@/assets/images/invitation-code/reward-bottom-bg.png');
+  background-size: cover;
 }
 .progress-container {
   height: 20px;

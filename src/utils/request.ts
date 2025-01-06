@@ -126,6 +126,10 @@ function handleResponse(
       const resStr = match[1].replace(/\\/g, '')
       res = JSON.parse(resStr)
     }
+
+    // 客户端删除协议内容添加符号后，用此方式取值
+    // const res = JSON.parse(respJSONString)
+    // const webResponse = res.web_response
     handleRes(res)
     resolve(res)
   })

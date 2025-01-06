@@ -496,7 +496,7 @@ export const routes: RouteRecordRaw[] = [
     component: () => import('@/views/Season25Reserve'),
     meta: {
       title: '彩染季 期待相遇',
-      module: 'activitycenter_season25_reserve',
+      module: 'activitycenter_season_25_reserve',
     },
   },
   {
@@ -540,7 +540,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'PcCelebration',
     component: () => import('@/views/PcCelebration'),
     meta: {
-      title: '相遇在更广阔的天空下',
+      title: '在更广阔天空相遇',
       module: 'activitycenter_pc_celebration',
     },
   },
@@ -551,6 +551,15 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '姆明谷的身份大揭秘',
       module: 'activitycenter_moomin_test_god',
+    },
+  },
+  {
+    path: '/winter-2025-4',
+    name: 'Winter2025_4',
+    component: () => import('@/views/Winter2025_4'),
+    meta: {
+      title: '花灯雅集',
+      module: 'activitycenter_winter_2025_4',
     },
   },
   {

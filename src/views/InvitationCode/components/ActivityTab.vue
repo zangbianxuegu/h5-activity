@@ -52,8 +52,8 @@ const switchComponent = (index: number): void => {
 <style lang="scss" scoped>
 .tab-container {
   position: absolute;
-  left: 50px;
-  bottom: 50px;
+  left: 520px;
+  bottom: 3%;
 }
 .tab-title-container {
   display: flex;

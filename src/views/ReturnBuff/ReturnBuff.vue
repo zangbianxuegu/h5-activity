@@ -1,6 +1,11 @@
 <template>
-  <div class="return-buff">
-    <div :class="['return-buff-main flex', `return-buff--${curPage}`]">
+  <div
+    :class="[
+      'return-buff relative flex h-screen w-screen items-center justify-center bg-cover bg-center',
+      `return-buff--${curPage}`,
+    ]"
+  >
+    <div class="return-buff-main flex">
       <nav>
         <ul class="nav">
           <li
@@ -36,9 +41,9 @@ const DESIGN_WIDTH = 2560
 const DESIGN_HEIGHT = 1200
 // 设计稿主体宽，减去边距：因为我们要保留主体部分的边距。
 // 会影响最终计算出来的缩放系数，影响元素转换的实际大小，所以只能在这里减去，而不能在元素上写边距。
-const DESIGN_MAYDAY_WIDTH = 2100 - 60
+const DESIGN_MAYDAY_WIDTH = 2100
 // 设计稿主体高，同宽。
-const DESIGN_MAYDAY_HEIGHT = 1200 - 60
+const DESIGN_MAYDAY_HEIGHT = 1200
 // 设计稿主体内容宽
 const DESIGN_MAYDAY_CONTENT_WIDTH = DESIGN_MAYDAY_WIDTH
 // 设计稿主体内容高
@@ -99,20 +104,12 @@ function handleNav(curItem: MenuItem): void {
   color: #fff;
 }
 .return-buff {
-  position: relative;
-  width: 2100px;
-  height: 1200px;
+  padding-left: 460px;
 
   &-main {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(var(--scale-factor));
-    width: 2040px;
-    height: 1140px;
-    background-repeat: no-repeat;
-    background-position: center;
-    background-size: cover;
+    width: 2100px;
+    height: 1200px;
+    transform: scale(var(--scale-factor));
   }
 
   &--reunion {

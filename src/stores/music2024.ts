@@ -27,7 +27,7 @@ export const useActivityStore = defineStore(
             award: [0],
           },
           {
-            value: 0,
+            value: 1,
             task_id: 'activitycenter_music_2024_m3',
             stages: [1],
             score: '',
