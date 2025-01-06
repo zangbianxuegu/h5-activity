@@ -46,14 +46,20 @@
 </template>
 
 <script setup lang="ts">
+import { useMenuStore } from '@/stores/menu'
+
+const { changeMenuVisible } = useMenuStore()
+
 const isOpen = ref(false)
 const emit = defineEmits(['close'])
 
 const openModal = (): void => {
+  changeMenuVisible(false)
   isOpen.value = true
 }
 
 const closeModal = (): void => {
+  changeMenuVisible(true)
   isOpen.value = false
   emit('close')
 }

@@ -206,6 +206,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--pc_celebration {
     background-image: url('@/assets/images/common/menu/pc-celebration.png');
   }
+  /* season25 彩染季季初活跃活动 */
+  &--season25_start {
+    background-image: url('@/assets/images/common/menu/season25-start.png');
+  }
 }
 .active-star {
   left: -101px;
