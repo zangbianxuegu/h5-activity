@@ -63,7 +63,7 @@
                   </p>
                 </div>
 
-                <div v-for="(item, index) in task" :key="item.taskId">
+                <template v-for="item in task" :key="item.taskId">
                   <Bubble
                     :bubble-scale="1.8"
                     :reward="item"
@@ -78,7 +78,7 @@
                       ]"
                     ></div>
                   </Bubble>
-                </div>
+                </template>
               </li>
             </ul>
             <!-- 左边小人-->
