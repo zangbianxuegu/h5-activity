@@ -117,8 +117,6 @@ import {
   SESSION_IS_VISITED_KEY,
 } from './config'
 
-getResponsiveStylesFactor()
-
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransition(SESSION_IS_VISITED_KEY)
 
