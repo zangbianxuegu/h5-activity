@@ -443,6 +443,7 @@ function handleHelp(): void {
     animation: lanternGlow 2s infinite;
   }
   &.redeemed {
+    transition: background-image 0.5s ease;
     background-image: url('@/assets/images/winter2025-3/lantern-redeemed.png');
   }
 }
@@ -476,7 +477,6 @@ function handleHelp(): void {
     }
 
     &.redeemed {
-      transition: background-image 1s ease;
       background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-redeemed.png');
     }
   }
