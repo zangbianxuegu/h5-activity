@@ -210,6 +210,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--winter_main_2025 {
     background-image: url('@/assets/images/common/menu/winter-main-2025.png');
   }
+  /* season25 彩染季季初活跃活动 */
+  &--season25_start {
+    background-image: url('@/assets/images/common/menu/season25-start.png');
+  }
 }
 .active-star {
   left: -101px;

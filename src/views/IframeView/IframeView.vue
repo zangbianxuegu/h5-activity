@@ -1,44 +1,55 @@
 <template>
-  <div class="iframe-container absolute flex">
-    <iframe :src="url" frameborder="0" class="absolute h-full w-full"></iframe>
+  <div class="iframe-container absolute flex h-screen w-screen">
+    <iframe
+      :src="url"
+      frameborder="0"
+      class="absolute h-full w-full"
+      :onload="fadeIn"
+    ></iframe>
   </div>
 </template>
 
-<script setup>
-import { showToast } from 'vant'
-import { getDataForIframe } from '@/utils/iframe'
-const route = useRoute()
-const url = computed(() => route.meta.externalUrl)
+<script setup lang="ts">
+import { startListener, stopListener } from '@/utils/jsBridgeDeliver'
+import { useEnvironment } from '@/composables/useEnvironment'
+import gsap from 'gsap'
 
-window.addEventListener('message', (event) => {
-  if (event.origin !== 'https://h5maker-backend-ma75.nie.netease.com') {
-    return
+const { isProd } = useEnvironment()
+const route = useRoute()
+const externalUid = computed(() => route.meta.externalUid as string)
+const url = ref('')
+
+const fadeIn = (): void => {
+  gsap.from('.iframe-container', {
+    opacity: 0,
+    duration: 1,
+    ease: 'power1.out',
+  })
+}
+
+const updateUrl = (): void => {
+  if (isProd.value) {
+    url.value = `https://sky.h5.163.com/page/${externalUid.value}.html`
+  } else {
+    url.value = `https://h5maker-backend-ma75.nie.netease.com/page/dev/${externalUid.value}`
   }
-  if (event.data) {
-    console.log('接收 postMessage event.data: ', event.data)
-    // 示例：
-    // event.data = {
-    //   type: 'protocol',
-    //   resource: '/internal/jingling/get_player_mission_data',
-    //   content: {
-    //     source_token: '',
-    //     source_id: '',
-    //     event: 'activitycenter_double_eleven_2024_2',
-    //   },
-    // }
-    getDataForIframe(event.data)
-      .then((res) => {
-        event.source.postMessage(res, event.origin)
-      })
-      .catch((error) => {
-        showToast(error.message)
-      })
-  }
+}
+
+updateUrl()
+
+watch(route, updateUrl)
+
+onMounted(() => {
+  startListener()
+})
+
+onUnmounted(() => {
+  stopListener()
 })
 </script>
+
 <style scoped>
 .iframe-container {
-  width: 2040px;
-  height: 1140px;
+  opacity: 1;
 }
 </style>

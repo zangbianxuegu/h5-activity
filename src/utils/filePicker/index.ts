@@ -40,6 +40,10 @@ export const getFilePickerToken = (
             token,
             url,
           })
+        } else if (code === 429) {
+          const t = data?.cd
+          const errorText = `您的操作过于频繁，投稿间隔需要大于${t}小时`
+          reject(new Error(errorText))
         } else {
           reject(new Error(getErrorMessage('get_file_picker_token', code, msg)))
         }
