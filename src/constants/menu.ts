@@ -416,6 +416,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '中场休息',
+    value: 'activitycenter_dayofdesign01_postfinish_rest',
+    routeName: 'Dayofdesign01PostfinishRest',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
