@@ -80,15 +80,18 @@ if (!isVisited) {
   headTransitionName.value = 'fade-in-head'
   mainTransitionName.value = 'fade-in-main'
 }
+
+type Status = 'can' | 'wait' | 'expired'
+
 interface MenuItem {
   path: string
   label: string
-  status: 'can' | 'wait' | 'expired'
+  status: Status
   startDate: string
   endDate: string
 }
 
-const MENU_ITEMS = [
+const MENU_ITEMS: MenuItem[] = [
   {
     path: '/winter-2025-1',
     label: '瑞蛇呈祥',
@@ -138,7 +141,6 @@ const menuItems = computed(() => {
 
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
-  getLanternToken()
 })
 
 /**
@@ -148,7 +150,7 @@ onMounted(async () => {
  * @param {string} endDate 结束日期
  * @returns {string} 菜单项状态
  */
-function getStatus(startDate: string, endDate: string): string {
+function getStatus(startDate: string, endDate: string): Status {
   const start = dayjs(startDate)
   const end = dayjs(endDate)
   if (dayjs.unix(currentTime.value).isBefore(start)) {
