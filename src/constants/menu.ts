@@ -416,7 +416,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: '中场休息',
+    label: '绘梦节',
     value: 'activitycenter_dayofdesign01_postfinish_rest',
     routeName: 'Dayofdesign01PostfinishRest',
     isNew: false,

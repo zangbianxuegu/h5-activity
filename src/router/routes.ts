@@ -585,7 +585,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'Dayofdesign01PostfinishRest',
     component: () => import('@/views/Dayofdesign01PostfinishRest'),
     meta: {
-      title: '中场休息',
+      title: '绘梦节 中场休息',
       module: 'activitycenter_dayofdesign01_postfinish_rest',
     },
   },
