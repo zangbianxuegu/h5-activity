@@ -500,6 +500,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '取票站',
+    value: 'activitycenter_dayofdesign01_vote1_mission',
+    routeName: 'Dayofdesign01Vote1Mission',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '灵蛇献瑞 喜迎春来',
     value: 'activitycenter_winter_main_2025',
     routeName: 'WinterMain2025',

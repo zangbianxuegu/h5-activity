@@ -110,14 +110,14 @@ const MENU_ITEMS: MenuItem[] = [
     path: '/winter-2025-3',
     label: '相遇寄福',
     status: 'wait',
-    startDate: '2025-01-23',
+    startDate: '2024-01-23',
     endDate: '2025-02-10',
   },
   {
     path: '/winter-2025-4',
     label: '花灯雅集',
     status: 'wait',
-    startDate: '2025-02-11',
+    startDate: '2024-02-11',
     endDate: '2025-02-17',
   },
   {
