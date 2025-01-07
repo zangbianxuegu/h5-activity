@@ -590,6 +590,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/winter-2025-2',
+    name: 'Winter2025_2',
+    component: () => import('@/views/Winter2025_2'),
+    meta: {
+      title: '舞蛇贺岁',
+      module: 'activitycenter_winter_2025_2',
+    },
+  },
+  {
     path: '/winter-2025-3',
     name: 'Winter2025_3',
     component: () => import('@/views/Winter2025_3'),

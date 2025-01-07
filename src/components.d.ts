@@ -9,11 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     RouterLink: (typeof import('vue-router'))['RouterLink']
     RouterView: (typeof import('vue-router'))['RouterView']
-    VanButton: (typeof import('vant/es'))['Button']
-    VanFloatingBubble: (typeof import('vant/es'))['FloatingBubble']
-    VanIcon: (typeof import('vant/es'))['Icon']
     VanLoading: (typeof import('vant/es'))['Loading']
     VanOverlay: (typeof import('vant/es'))['Overlay']
-    VanProgress: (typeof import('vant/es'))['Progress']
   }
 }

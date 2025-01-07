@@ -103,7 +103,7 @@ const MENU_ITEMS: MenuItem[] = [
     path: '/winter-2025-2',
     label: '蛇舞贺岁',
     status: 'wait',
-    startDate: '2025-01-23',
+    startDate: '2024-01-23',
     endDate: '2025-02-10',
   },
   {
