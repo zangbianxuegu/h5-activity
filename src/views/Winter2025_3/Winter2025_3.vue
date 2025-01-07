@@ -35,15 +35,21 @@
                   v-for="(item, index) in serverAccTaskList"
                   :key="item.id"
                   :class="[
-                    'animate__animated animate__fadeIn absolute',
+                    'animate__animated animate__fadeIn absolute z-10',
                     `server-acc-task-item${index + 1}`,
                   ]"
                 >
-                  <p class="text-center text-[32px] text-[#d9dfc8]">
+                  <p
+                    class="relative top-[24px] text-center text-[32px] text-[#d9dfc8]"
+                  >
                     {{ item.title }}
                   </p>
+                  *
                   <div
                     :class="['lantern cursor-pointer', `${item.status}`]"
+                    :style="{
+                      animationDelay: `${item.animationDelay}s`,
+                    }"
                     @click="handleReward(index + 1, item)"
                   ></div>
                 </li>
@@ -440,7 +446,7 @@ function handleHelp(): void {
   }
   &.can {
     background-image: url('@/assets/images/winter2025-3/lantern-can.png');
-    animation: lanternGlow 2s infinite;
+    animation: lanternGlow 3s infinite;
   }
   &.redeemed {
     transition: background-image 0.5s ease;
@@ -454,7 +460,7 @@ function handleHelp(): void {
     opacity: 1;
   }
   50% {
-    opacity: 0.6;
+    opacity: 0.8;
   }
 }
 .acc-task-item {
