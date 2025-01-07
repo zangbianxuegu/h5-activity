@@ -38,6 +38,7 @@ export const DAYOFDESIGN01_LIST = [
   'activitycenter_dayofdesign01_post_submit',
   'activitycenter_dayofdesign01_postfinish_rest',
   'activitycenter_dayofdesign01_vote1_mission',
+  'activitycenter_dayofdesign01_vote1_main',
 ]
 
 // 菜单中字体颜色显示蓝色的活动
