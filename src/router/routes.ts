@@ -581,6 +581,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/dayofdesign01-postfinish-rest',
+    name: 'Dayofdesign01PostfinishRest',
+    component: () => import('@/views/Dayofdesign01PostfinishRest'),
+    meta: {
+      title: '中场休息',
+      module: 'activitycenter_dayofdesign01_postfinish_rest',
+    },
+  },
+  {
     path: '/winter-main-2025',
     name: 'WinterMain2025',
     component: () => import('@/views/WinterMain2025'),
