@@ -8,7 +8,7 @@
           <header class="relative ml-[480px] self-start">
             <h1 class="title animate__animated animate__fadeIn relative h-full">
               <div class="sr-only">
-                取票站
+                绘梦取票站
                 <p>
                   <time datetime="2025-2-1">2.1</time>-
                   <time datetime="2025-2-16">2.16</time>
@@ -66,7 +66,6 @@
                 累计投票
               </div>
               <div class="relative">
-                <!-- 累计奖励 -->
                 <ul class="flex w-[1150px] justify-between">
                   <li
                     v-for="(item, index) in accTaskList"
@@ -131,8 +130,8 @@ import {
   EVENT_NAME,
   type TaskItem,
   type Reward,
-  createTaskItemLiist,
-  createBottomAccTaskList,
+  createTaskList,
+  createAccTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
 import { useTransition } from '@/composables/useTransition'
@@ -140,8 +139,8 @@ import { useTransition } from '@/composables/useTransition'
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransition(SESSION_IS_VISITED_KEY)
 
-const TASK_LIST = createTaskItemLiist()
-const ACC_TASK_LIST = createBottomAccTaskList()
+const TASK_LIST = createTaskList()
+const ACC_TASK_LIST = createAccTaskList()
 
 // 任务排序
 const taskOrderMap = new Map(

@@ -19,7 +19,7 @@ export interface TaskItem {
 }
 
 // 任务列表
-export function createTaskItemLiist(): TaskItem[] {
+export function createTaskList(): TaskItem[] {
   return [
     {
       id: 1,
@@ -48,8 +48,8 @@ export function createTaskItemLiist(): TaskItem[] {
   ]
 }
 
-// 被邀请玩家累计献祭次数
-export function createBottomAccTaskList(): TaskItem[] {
+// 累计任务列表
+export function createAccTaskList(): TaskItem[] {
   return [
     {
       id: 1,
