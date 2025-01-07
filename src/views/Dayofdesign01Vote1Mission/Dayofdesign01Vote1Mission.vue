@@ -499,7 +499,7 @@ const accTaskValue = computed(() => {
 }
 .progress-bar {
   height: 20px;
-  background-color: #ffd871;
+  background: linear-gradient(to right, #ffc85e, #ffde78);
   border-radius: 8px;
   transition: width 0.4s ease;
   position: relative;
