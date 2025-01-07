@@ -1,6 +1,6 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page relative h-screen w-screen bg-cover bg-center">
+    <div class="page relative z-20 h-screen w-screen bg-cover bg-center">
       <div
         :class="[
           'page-main h-full w-full',
