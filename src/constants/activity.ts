@@ -108,7 +108,8 @@ export const ACTIVITY_LIST = [
   'activitycenter_pc_celebration',
   'activitycenter_moomin_test_god',
   'activitycenter_invitation_code',
-  'activitycenter_winter_2025_3',
   ...DAYOFDESIGN01_LIST,
   'activitycenter_winter_main_2025',
+  'activitycenter_winter_2025_3',
+  'activitycenter_winter_2025_4',
 ]
