@@ -28,7 +28,7 @@
               <div class="flex-1 text-center">{{ tokenCount }}</div>
             </div>
             <!-- 全服赠送心火 -->
-            <div class="absolute left-[308px] top-[20%] h-[590px] w-[1472px]">
+            <div class="absolute left-[10%] top-[20%] h-[590px] w-[1472px]">
               <h2 class="task-title bg-contain bg-no-repeat"></h2>
               <ul class="flex">
                 <li
@@ -57,31 +57,35 @@
               <li
                 v-for="(task, tdx) in personAccTaskList"
                 :key="tdx"
-                class="acc-task-item flex items-center justify-end"
+                class="flex flex-col items-end"
               >
-                <div class="text-right text-[32px] text-[#fff]">
-                  <p>给好友赠送心火{{ (tdx * 4 + 1) * 10 }}次</p>
-                  <p class="text-[28px] text-[#ffeb8c]">
-                    （{{ updateRewardToken(tdx) }}/{{ (tdx * 4 + 1) * 10 }}）
-                  </p>
+                <div class="flex items-center justify-end">
+                  <div class="text-right text-[32px] text-[#fff]">
+                    <p>给好友赠送心火{{ (tdx * 4 + 1) * 10 }}次</p>
+                    <p class="text-[28px] text-[#ffeb8c]">
+                      （{{ updateRewardToken(tdx) }}/{{ (tdx * 4 + 1) * 10 }}）
+                    </p>
+                  </div>
+
+                  <template v-for="item in task" :key="item.taskId">
+                    <Bubble
+                      :bubble-scale="1.8"
+                      :reward="item"
+                      :bounce-class="`reward-bubble-${tdx + 1}`"
+                      @click="handleReward(tdx + 1, item)"
+                    >
+                      <div
+                        :class="[
+                          'acc-task-icon animate__animated animate__fadeIn relative z-10',
+                          `acc-task-icon${item.id}`,
+                          `${item.status}`,
+                        ]"
+                      ></div>
+                    </Bubble>
+                  </template>
                 </div>
 
-                <template v-for="item in task" :key="item.taskId">
-                  <Bubble
-                    :bubble-scale="1.8"
-                    :reward="item"
-                    :bounce-class="`reward-bubble-${tdx + 1}`"
-                    @click="handleReward(tdx + 1, item)"
-                  >
-                    <div
-                      :class="[
-                        'acc-task-icon animate__animated animate__fadeIn relative z-10',
-                        `acc-task-icon${item.id}`,
-                        `${item.status}`,
-                      ]"
-                    ></div>
-                  </Bubble>
-                </template>
+                <div class="line"></div>
               </li>
             </ul>
             <!-- 左边小人-->
@@ -460,8 +464,12 @@ function handleHelp(): void {
     opacity: 0.8;
   }
 }
-.acc-task-item {
-  border-bottom: 1px dashed #69636e;
+.line {
+  width: 633px;
+  height: 3px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-image: url('@/assets/images/winter2025-3/line.png');
 }
 .acc-task-icon {
   width: 190px;
