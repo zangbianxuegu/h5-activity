@@ -143,7 +143,11 @@ import {
   report,
   updateFavorites,
 } from '@/apis/dayOfDesign01'
-import { NgshareChannel, sharePlatformCodeOrder } from '@/utils/ngShare/types'
+import {
+  getShareH5PageUrl,
+  NgshareChannel,
+  sharePlatformCodeOrder,
+} from '@/utils/ngShare/types'
 import { useEnvironment } from '@/composables/useEnvironment'
 import likeBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorite.png'
 import likedBtnIcon from '@/assets/images/dayofdesign01/dayofdesign01-post-submit/icon-share-btn-favorited.png'
@@ -157,7 +161,6 @@ import {
   eventMap,
   type EventMapConfig,
   FILE_PICKER_POLICY_NAME,
-  getShareH5PageUrl,
 } from '@/constants/dayofdesign01'
 
 /**
@@ -399,7 +402,7 @@ const onClickHandleBarShare = (): void => {
       title: shareInfo.getTitle(),
       text: shareInfo.getText(props.worksData.worksName),
       desc: shareInfo.getDesc(props.worksData.worksName),
-      link: `${getShareH5PageUrl()}${shareLinkParams.value}`,
+      link: getShareH5PageUrl('dayofdesign01.html', shareLinkParams.value),
       u3dshareThumb: getLogoUrl(), // 分享缩略图地址(安卓必传)
       shareThumb: getLogoUrl(),
     },
