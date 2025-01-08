@@ -77,9 +77,9 @@
                       @click="handleReward(index + 1, item)"
                     ></div>
                     <p
-                      class="h-[30px] text-center text-[30px] leading-[36px] text-white"
+                      class="count h-[30px] text-center text-[34px] leading-[36px] text-[#4f788d]"
                     >
-                      {{ item.stages[index] }}次
+                      {{ item.stages[index] }}
                     </p>
                   </li>
                 </ul>
@@ -491,6 +491,14 @@ const accTaskValue = computed(() => {
     transition: background-image 1s ease;
     background-image: url('@/assets/images/dayofdesign01/dayofdesign01-vote-mission/acc-task-redeemed.png');
   }
+}
+.count {
+  text-shadow:
+    -0.5px -0.5px 0 #c7f7cf,
+    0.5px -0.5px 0 #c7f7cf,
+    -0.5px 0.5px 0 #c7f7cf,
+    0.5px 0.5px 0 #c7f7cf;
+  font-weight: 600;
 }
 .progress-container {
   height: 20px;
