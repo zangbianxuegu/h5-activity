@@ -39,12 +39,9 @@
                     `server-acc-task-item${index + 1}`,
                   ]"
                 >
-                  <p
-                    class="relative top-[24px] text-center text-[32px] text-[#d9dfc8]"
-                  >
+                  <p class="text-center text-[32px] text-[#d9dfc8]">
                     {{ item.title }}
                   </p>
-                  *
                   <div
                     :class="['lantern cursor-pointer', `${item.status}`]"
                     :style="{
