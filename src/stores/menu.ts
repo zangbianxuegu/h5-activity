@@ -65,9 +65,17 @@ export const useMenuStore = defineStore('menu', () => {
   function updateMenuDataByIsNew(event: string): void {
     // 接口更新红点状态
     let curItem = null
-    if (['activity_sign_in_2', 'activity_sign_in_3'].includes(event)) {
+    if (
+      [
+        'activitycenter_winter_2025_1',
+        'activitycenter_winter_2025_2',
+        'activitycenter_winter_2025_3',
+        'activitycenter_winter_2025_4',
+        'activitycenter_winter_2025_5',
+      ].includes(event)
+    ) {
       curItem = menuData.value
-        .find((item) => item.value === 'signin')
+        .find((item) => item.value === 'activitycenter_winter_main_2025')
         ?.children?.find((child) => child.value === event)
     } else {
       curItem = menuData.value.find((item) => item.value === event)
@@ -75,11 +83,32 @@ export const useMenuStore = defineStore('menu', () => {
     if (curItem?.isNew) {
       void setWebRedDot({ event }).then(() => {
         menuData.value = menuData.value.map((item) => {
+          if (
+            ['activitycenter_winter_main_2025'].includes(item.value) &&
+            item.children &&
+            item.children.length > 0
+          ) {
+            const children = item.children.map((child: MenuItem) => {
+              return {
+                ...child,
+                isNew: child.value === event ? false : child.isNew,
+              }
+            })
+            const isNewOfParent: boolean = children.some(
+              (child: MenuItem) => child.isNew,
+            )
+            return {
+              ...item,
+              children,
+              isNew: isNewOfParent,
+            }
+          }
           return {
             ...item,
             isNew: item.value === event ? false : item.isNew,
           }
         })
+        console.log('menuData.value: ', menuData.value)
       })
     }
   }
@@ -95,7 +124,9 @@ export const useMenuStore = defineStore('menu', () => {
   ): void {
     menuData.value = menuData.value.map((item) => {
       if (
-        item.value === 'return_buff' &&
+        ['return_buff', 'activitycenter_winter_main_2025'].includes(
+          item.value,
+        ) &&
         item.children &&
         item.children.length > 0
       ) {

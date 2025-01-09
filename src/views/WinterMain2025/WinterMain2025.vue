@@ -21,19 +21,23 @@
           <section class="animate__animated animate__fadeIn">
             <div class="lantern-box absolute">
               <button
-                v-for="(item, index) in menuItems"
-                :key="item.path"
+                v-for="(item, index) in subMenuData"
+                :key="item.value"
                 type="button"
                 :class="[
                   'lantern animate__animated absolute bg-transparent bg-center bg-no-repeat',
                   `lantern${index + 1}`,
                   item.status,
+                  {
+                    'lantern--new': item.isNew && !item.hasUnclaimedReward,
+                    'lantern--reward': item.hasUnclaimedReward,
+                  },
                 ]"
                 @click="handleClick(item, $event)"
               >
                 <RouterLink
                   v-if="item.status === 'can'"
-                  :to="item.path"
+                  :to="{ name: item.routeName }"
                   class="block h-full w-full"
                 >
                   <span class="sr-only">{{ item.label }}</span>
@@ -56,18 +60,112 @@ import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import timezone from 'dayjs/plugin/timezone'
 import { showToast } from 'vant'
+import { useRoute } from 'vue-router'
+import { type MenuItem } from '@/types'
 import { Session } from '@/utils/storage'
 import { useBaseStore } from '@/stores/base'
+import { useMenuStore } from '@/stores/menu'
+import { webViewStatistics } from '@/apis/base'
 import ModalHelp from '../DayOfDesign01PostExhibit/components/ModalHelp.vue'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.tz.setDefault('Asia/Shanghai')
 
+const route = useRoute()
+
+type Status = 'can' | 'wait' | 'expired'
+
+interface SubMenuItem extends MenuItem {
+  status: Status
+  startDate: string
+  endDate: string
+}
+
+const MENU_ITEMS: SubMenuItem[] = [
+  {
+    label: '瑞蛇呈祥',
+    value: 'activitycenter_winter_2025_1',
+    routeName: 'Winter2025_1',
+    isNew: false,
+    hasUnclaimedReward: false,
+    status: 'wait',
+    startDate: '2025-01-21',
+    endDate: '2025-02-17',
+  },
+  {
+    label: '舞蛇贺岁',
+    value: 'activitycenter_winter_2025_2',
+    routeName: 'Winter2025_2',
+    isNew: false,
+    hasUnclaimedReward: false,
+    status: 'wait',
+    startDate: '2025-01-23',
+    endDate: '2025-02-10',
+  },
+  {
+    label: '相遇寄福',
+    value: 'activitycenter_winter_2025_3',
+    routeName: 'Winter2025_3',
+    isNew: false,
+    hasUnclaimedReward: false,
+    status: 'wait',
+    startDate: '2025-01-23',
+    endDate: '2025-02-10',
+  },
+  {
+    label: '花灯雅集',
+    value: 'activitycenter_winter_2025_4',
+    routeName: 'Winter2025_4',
+    isNew: false,
+    hasUnclaimedReward: false,
+    status: 'wait',
+    startDate: '2025-02-11',
+    endDate: '2025-02-17',
+  },
+  {
+    label: '新春百货',
+    value: 'activitycenter_winter_2025_5',
+    routeName: 'Winter2025_5',
+    isNew: false,
+    hasUnclaimedReward: false,
+    status: 'wait',
+    startDate: '2025-01-21',
+    endDate: '2025-02-17',
+  },
+]
+
 // 弹框
 const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 
 const baseStore = useBaseStore()
+const menuStore = useMenuStore()
+const menuData = computed(() => menuStore.menuData)
+// 菜单数据
+const subMenuData = computed(() => {
+  const list =
+    menuData.value.find(
+      (item) => item.value === 'activitycenter_winter_main_2025',
+    )?.children || []
+  return MENU_ITEMS.map((item) => {
+    const menuItem = list.find((menu) => menu.value === item.value)
+    let isNew = false
+    let hasUnclaimedReward = false
+    let status = getStatus(item.startDate, item.endDate)
+    if (menuItem) {
+      isNew = menuItem.isNew
+      hasUnclaimedReward = menuItem.hasUnclaimedReward
+      status = 'can'
+    }
+    return {
+      ...item,
+      isNew,
+      hasUnclaimedReward,
+      status,
+    }
+  })
+})
+
 const currentTime = computed(() => baseStore.baseInfo.currentTime)
 
 const sessionIsVisitedKey = 'isVisitedWinterMain2025'
@@ -80,64 +178,6 @@ if (!isVisited) {
   headTransitionName.value = 'fade-in-head'
   mainTransitionName.value = 'fade-in-main'
 }
-
-type Status = 'can' | 'wait' | 'expired'
-
-interface MenuItem {
-  path: string
-  label: string
-  status: Status
-  startDate: string
-  endDate: string
-}
-
-const MENU_ITEMS: MenuItem[] = [
-  {
-    path: '/winter-2025-1',
-    label: '瑞蛇呈祥',
-    status: 'wait',
-    startDate: '2025-01-21',
-    endDate: '2025-02-17',
-  },
-  {
-    path: '/winter-2025-2',
-    label: '蛇舞贺岁',
-    status: 'wait',
-    startDate: '2024-01-23',
-    endDate: '2025-02-10',
-  },
-  {
-    path: '/winter-2025-3',
-    label: '相遇寄福',
-    status: 'wait',
-    startDate: '2025-01-23',
-    endDate: '2025-02-10',
-  },
-  {
-    path: '/winter-2025-4',
-    label: '花灯雅集',
-    status: 'wait',
-    startDate: '2025-02-11',
-    endDate: '2025-02-17',
-  },
-  {
-    path: '/winter-2025-5',
-    label: '新春百货',
-    status: 'wait',
-    startDate: '2025-01-21',
-    endDate: '2025-02-17',
-  },
-]
-
-// 菜单数据
-const menuItems = computed(() => {
-  return MENU_ITEMS.map((item) => {
-    return {
-      ...item,
-      status: getStatus(item.startDate, item.endDate),
-    }
-  })
-})
 
 onMounted(async () => {
   Session.set(sessionIsVisitedKey, true)
@@ -168,7 +208,7 @@ function getStatus(startDate: string, endDate: string): Status {
  * @param {TouchEvent | MouseEvent} event 事件
  * @returns {void}
  */
-function handleClick(item: MenuItem, event: TouchEvent | MouseEvent): void {
+function handleClick(item: SubMenuItem, event: TouchEvent | MouseEvent): void {
   if (['wait', 'expired'].includes(item.status)) {
     const target = event.currentTarget as HTMLElement
     if (item.status === 'wait') {
@@ -186,6 +226,14 @@ function handleClick(item: MenuItem, event: TouchEvent | MouseEvent): void {
       },
       { once: true },
     )
+  } else {
+    const module = route?.meta?.module
+    if (typeof module === 'string') {
+      menuStore.updatedMenuDataByRoute(module)
+      void webViewStatistics({ module }).catch((error) => {
+        console.error('winter webViewStatistics error:', error)
+      })
+    }
   }
 }
 
@@ -269,6 +317,49 @@ function handleHelp(): void {
 .lantern {
   width: 272px;
   height: 530px;
+
+  &--new {
+    &::after {
+      position: absolute;
+      right: 35px;
+      top: 120px;
+      display: block;
+      content: '';
+      width: 20px;
+      height: 20px;
+      border-radius: 20px;
+      background-color: rgb(184, 25, 26);
+      animation: pulse 1.5s infinite;
+    }
+  }
+
+  &--reward {
+    &::after {
+      position: absolute;
+      right: 0;
+      top: 80px;
+      display: block;
+      content: '';
+      width: 42px;
+      height: 41px;
+      background-image: url('@/assets/images/common/gift.png');
+      background-size: contain;
+    }
+  }
+}
+@keyframes pulse {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 .lantern1 {
   left: 470px;

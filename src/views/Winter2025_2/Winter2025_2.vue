@@ -224,17 +224,6 @@ function getActivityData(): void {
           ),
         },
       }
-      // newActivityData.event_data.activitycenter_winter_2025_2[0].value = 1
-      // newActivityData.event_data.activitycenter_winter_2025_2[0].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[1].value = 1
-      // newActivityData.event_data.activitycenter_winter_2025_2[1].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[2].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[3].value = 3
-      // newActivityData.event_data.activitycenter_winter_2025_2[3].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[4].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[5].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[6].award = [1]
-      // newActivityData.event_data.activitycenter_winter_2025_2[7].value = 1
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -284,9 +273,9 @@ function handleReward(rewardId: number, item: TaskItem, listId?: number): void {
       }
       tokenStore.updateTokenInfo(newTokenInfo)
       eventData.value[taskIndex].award[rewardId - 1] = 1
-
-      // // 更新红点
-      // setRedDot()
+      // TODO: 三个拼图块完成后，解锁额外任务
+      // 更新红点
+      setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
@@ -516,13 +505,9 @@ function handleHelp(): void {
   border-radius: 24px;
 }
 .task-item {
-  // margin-top: 4px;
-  // box-sizing: content-box;
   width: 346px;
   height: calc(626px / 3);
   border: 4px solid rgb(236, 205, 158);
-  // border-top: 4px solid rgb(236, 205, 158);
-  // border: 4px solid red;
 
   &:nth-child(1) {
     margin-top: 0;
@@ -543,7 +528,6 @@ function handleHelp(): void {
 
   &.can {
     border-color: rgba(255, 237, 209, 1);
-    // border-color: #e07964;
     animation: glow 1s infinite alternate;
   }
 
@@ -559,11 +543,9 @@ function handleHelp(): void {
 @keyframes glow {
   from {
     box-shadow: 0 0 5px rgba(255, 237, 209, 1);
-    // box-shadow: 0 0 5px #e07964;
   }
   to {
     box-shadow: 0 0 50px rgba(255, 237, 209, 1);
-    // box-shadow: 0 0 30px #e07964;
   }
 }
 .task-icon {

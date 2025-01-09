@@ -495,9 +495,32 @@ export const MENU_ITEMS: MenuItem[] = [
   {
     label: '灵蛇献瑞 喜迎春来',
     value: 'activitycenter_winter_main_2025',
-    routeName: 'WinterMain2025',
+    routeName: 'Winter2025Main',
     isNew: false,
     hasUnclaimedReward: false,
+    children: [
+      {
+        label: '舞蛇贺岁',
+        value: 'activitycenter_winter_2025_2',
+        routeName: 'Winter2025_2',
+        isNew: false,
+        hasUnclaimedReward: false,
+      },
+      {
+        label: '相遇寄福',
+        value: 'activitycenter_winter_2025_3',
+        routeName: 'Winter2025_3',
+        isNew: false,
+        hasUnclaimedReward: false,
+      },
+      {
+        label: '花灯雅集',
+        value: 'activitycenter_winter_2025_4',
+        routeName: 'Winter2025_4',
+        isNew: false,
+        hasUnclaimedReward: false,
+      },
+    ],
   },
   {
     label: '寻颜觅彩焕新裳',
