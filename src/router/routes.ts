@@ -649,7 +649,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'Daysoflove2025',
     component: () => import('@/views/IframeView'),
     meta: {
-      title: '情人节活动',
+      title: '温暖传递 怦然心熠',
       module: 'activitycenter_daysoflove_2025',
       externalUid: 'Gtbv2O',
     },

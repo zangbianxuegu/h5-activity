@@ -528,7 +528,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: 'iframe 外部链接-情人节活动',
+    label: '温暖传递 怦然心熠',
     value: 'activitycenter_daysoflove_2025',
     routeName: 'Daysoflove2025',
     isNew: false,

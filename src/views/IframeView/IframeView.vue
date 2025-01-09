@@ -31,7 +31,7 @@ const updateUrl = (): void => {
   if (isProd.value) {
     url.value = `https://sky.h5.163.com/page/${externalUid.value}.html`
   } else {
-    url.value = `https://h5maker-backend-ma75.nie.netease.com/page/dev/${externalUid.value}`
+    url.value = `https://h5maker-backend-ma75.nie.netease.com/page/${externalUid.value}`
   }
 }
 
