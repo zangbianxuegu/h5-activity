@@ -206,6 +206,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--dayofdesign01_vote1_mission {
     background-image: url('@/assets/images/common/menu/dayofdesign01-vote1-mission.png');
   }
+  /* 绘梦节-选款期 */
+  &--dayofdesign01_vote1_main {
+    background-image: url('@/assets/images/common/menu/dayofdesign01-vote1-main.png');
+  }
   /* 共沐温暖 不期而遇 */
   &--invitation_code {
     background-image: url('@/assets/images/common/menu/invitation-code.png');

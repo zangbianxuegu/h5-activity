@@ -423,6 +423,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '绘梦节',
+    value: 'activitycenter_dayofdesign01_vote1_main',
+    routeName: 'Dayofdesign01Vote1Main',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',

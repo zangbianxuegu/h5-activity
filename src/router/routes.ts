@@ -599,6 +599,15 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/dayofdesign01-vote1-main',
+    name: 'Dayofdesign01Vote1Main',
+    component: () => import('@/views/Dayofdesign01Vote1Main'),
+    meta: {
+      title: '绘梦节 选款期',
+      module: 'activitycenter_dayofdesign01_vote1_main',
+    },
+  },
+  {
     path: '/winter-main-2025',
     name: 'WinterMain2025',
     component: () => import('@/views/WinterMain2025'),
