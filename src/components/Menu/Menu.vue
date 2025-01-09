@@ -222,6 +222,10 @@ function getNavTextClass(curItem: MenuItem): string[] {
   &--season25_start {
     background-image: url('@/assets/images/common/menu/season25-start.png');
   }
+  /* 2025 情人节活动 */
+  &--daysoflove_2025 {
+    background-image: url('@/assets/images/common/menu/daysoflove-2025.png');
+  }
 }
 .active-star {
   left: -101px;
