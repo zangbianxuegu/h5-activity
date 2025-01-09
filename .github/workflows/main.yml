@@ -1,0 +1,39 @@
+name: Sync with GitLab
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: '0 0 * * *'
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout the repo
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up Git
+      run: |
+        git config --global user.name "GitHub Action"
+        git config --global user.email "action@github.com"
+
+    - name: Add GitLab as a remote
+      run: git remote add gitlab https://gitlab.nie.netease.com/sigma/ma75/sky-activity.git
+
+    - name: Fetch all branches and tags from GitLab
+      run: git fetch gitlab --prune
+      env:
+        GIT_ASKPASS: /bin/true
+        GIT_TERMINAL_PROMPT: 0
+
+    - name: Push branches to GitHub
+      run: |
+        for branch in $(git branch -r | grep gitlab | grep -v '\->'); do
+          git push origin --force "${branch#gitlab/}:refs/heads/${branch#gitlab/}";
+        done
+
+    - name: Push all tags to GitHub
+      run: git push origin --tags
