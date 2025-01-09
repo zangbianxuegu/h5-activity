@@ -1,7 +1,9 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page relative z-20 h-screen w-screen bg-cover bg-center">
-      <div class="h-full w-full">
+    <div
+      class="page relative z-20 flex h-screen w-screen items-center justify-center bg-cover bg-center"
+    >
+      <div class="page-main">
         <Transition appear :name="headTransitionName" mode="out-in">
           <h1 class="title relative bg-contain bg-no-repeat">
             <div class="sr-only">
@@ -27,86 +29,109 @@
               <div class="coin-icon"></div>
               <div class="flex-1 text-center">{{ tokenCount }}</div>
             </div>
-            <!-- 全服赠送心火 -->
-            <div class="absolute left-[308px] top-[20%] h-[590px] w-[1472px]">
-              <h2 class="task-title bg-contain bg-no-repeat"></h2>
-              <ul class="flex">
-                <li
-                  v-for="(item, index) in serverAccTaskList"
-                  :key="item.id"
-                  :class="[
-                    'animate__animated animate__fadeIn absolute',
-                    `server-acc-task-item${index + 1}`,
-                  ]"
-                >
-                  <p class="text-center text-[32px] text-[#d9dfc8]">
-                    {{ item.title }}
-                  </p>
-                  <div
-                    :class="['lantern cursor-pointer', `${item.status}`]"
-                    @click="handleReward(index + 1, item)"
-                  ></div>
-                </li>
-              </ul>
-            </div>
-            <!-- 给好友赠送心火 -->
-            <ul class="absolute right-[30px] top-[20%]">
-              <li
-                v-for="(task, tdx) in personAccTaskList"
-                :key="tdx"
-                class="acc-task-item flex items-center justify-end"
+            <!-- 任务列表 -->
+            <div class="main-box absolute">
+              <!-- 拼图列表 -->
+              <ul
+                v-for="(list, index) in taskList"
+                :key="list.id"
+                :class="[
+                  'task-list relative bg-contain',
+                  {
+                    active: getListIsActive(index),
+                  },
+                ]"
               >
-                <div class="text-right text-[32px] text-[#fff]">
-                  <p>给好友赠送心火{{ (tdx * 4 + 1) * 10 }}次</p>
-                  <p class="text-[28px] text-[#ffeb8c]">
-                    （{{ updateRewardToken(tdx) }}/{{ (tdx * 4 + 1) * 10 }}）
-                  </p>
-                </div>
-
-                <template v-for="item in task" :key="item.taskId">
-                  <Bubble
-                    :bubble-scale="1.8"
-                    :reward="item"
-                    :bounce-class="`reward-bubble-${tdx + 1}`"
-                    @click="handleReward(tdx + 1, item)"
+                <h2 class="ml-[135px] mt-[138px] text-[42px] text-[#ffedcf]">
+                  {{ list.title }}
+                </h2>
+                <img
+                  :src="handleSrc(`pic${index + 1}`)"
+                  class="task-img absolute left-[21px] top-[200px] h-[626px] w-[346px] overflow-hidden"
+                  alt="pic"
+                />
+                <!-- 拼图块列表 -->
+                <ul
+                  class="absolute left-[21px] top-[200px] h-[626px] w-[346px]"
+                >
+                  <!-- 3块拼图 -->
+                  <li
+                    v-for="task in list.children.slice(0, 3)"
+                    :key="task.id"
+                    :class="[
+                      'task-item relative flex items-center justify-center bg-cover bg-no-repeat',
+                      task.status,
+                      `task-item-${task.id}`,
+                      `task-item-${list.id}-${task.id}`,
+                      { 'opacity-0': task.status === TaskStatus.REDEEMED },
+                    ]"
+                    @click="handleReward(1, task, list.id)"
                   >
+                    <p
+                      class="whitespace-pre-wrap text-center text-[36px] text-[#935733]"
+                    >
+                      {{ task.title }}
+                    </p>
                     <div
                       :class="[
-                        'acc-task-icon animate__animated animate__fadeIn relative z-10',
-                        `acc-task-icon${item.id}`,
-                        `${item.status}`,
+                        'token coin-icon absolute z-20 hidden',
+                        `token-${list.id}-${task.id}`,
                       ]"
                     ></div>
-                  </Bubble>
-                </template>
-              </li>
-            </ul>
-            <!-- 左边小人-->
-            <div class="npc1"></div>
-            <!-- 右边小人-->
-            <div class="npc2"></div>
-            <!-- 相遇礼盒-->
-            <div class="gift"></div>
+                  </li>
+                  <!-- 解锁整块拼图的额外奖励 -->
+                  <li
+                    v-if="
+                      list.children[3].id === 4 &&
+                      list.children[3].status !== TaskStatus.WAIT
+                    "
+                    :class="[
+                      'task-item-extra flex items-center justify-center',
+                      {
+                        'animate__animated animate__fadeOut animate__delay-2s':
+                          list.children[3].status === TaskStatus.REDEEMED,
+                      },
+                    ]"
+                  >
+                    <Bubble
+                      :bubble-scale="1.9"
+                      :reward="list.children[3]"
+                      :bounce-class="`${list.children[3].taskId}-${list.id}`"
+                      @click="handleReward(1, list.children[3])"
+                    >
+                      <div
+                        :class="[
+                          'task-icon animate__animated animate__fadeIn relative z-10 bg-contain bg-center bg-no-repeat',
+                          `task-icon${list.id}`,
+                          `${list.children[3].status}`,
+                        ]"
+                      ></div>
+                    </Bubble>
+                  </li>
+                </ul>
+              </ul>
+            </div>
           </section>
         </Transition>
-        <!-- 活动规则弹框 -->
-        <ModalHelp ref="modalHelp" />
-        <ModalReward ref="modalReward" />
       </div>
+      <!-- 活动规则弹框 -->
+      <ModalHelp ref="modalHelp" />
     </div>
   </Transition>
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import MotionPathPlugin from 'gsap/MotionPathPlugin'
 import { showToast } from 'vant'
 import { getPlayerMissionData, claimMissionReward } from '@/utils/request'
 import type { Event } from '@/types'
+import { getResponsiveStylesFactor } from '@/utils/responsive'
 import { useMenuStore } from '@/stores/menu'
-import { useActivityStore } from '@/stores/winter2025_3'
+import { useActivityStore } from '@/stores/winter2025_2'
 import { useTokenStore } from '@/stores/winter2025'
 import Bubble from '@/components/Bubble'
 import ModalHelp from './components/ModalHelp.vue'
-import ModalReward from './components/ModelReward.vue'
 import { useTransition } from '@/composables/useTransition'
 import { REWARD_MAP } from '@/constants/rewardMap'
 import {
@@ -114,22 +139,35 @@ import {
   type Reward,
   type TaskItem,
   TaskStatus,
-  createPersonAccTaskList,
-  createServerAccTaskList,
+  createTaskList,
   SESSION_IS_VISITED_KEY,
 } from './config'
 
+gsap.registerPlugin(MotionPathPlugin)
+// 响应式缩放
+getResponsiveStylesFactor(2560, 1200)
+const router = useRouter()
+
+// 规则弹框
+const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
 const { bodyTransitionName, headTransitionName, mainTransitionName } =
   useTransition(SESSION_IS_VISITED_KEY)
 
+const TASK_LIST = createTaskList()
+
+// 任务排序
+const TASK_LIST_ALL = TASK_LIST.map((list) => list.children).flat()
+const TASK_ID_list = TASK_LIST_ALL.map((task) => task.taskId)
+const taskOrderMap = new Map(
+  TASK_LIST_ALL.map((task, index) => [task.taskId, index]),
+)
+
+// 当前奖励
 const curReward: Ref<Reward> = ref({
   name: 'lantern_token',
-  count: 10,
+  count: 60,
 })
-const modalReward = ref<InstanceType<typeof ModalReward> | null>(null)
 
-const PERSON_ACC_TASK_LIST = createPersonAccTaskList()
-const SERVER_ACC_TASK_LIST = createServerAccTaskList()
 // 活动数据
 const menuStore = useMenuStore()
 const activityStore = useActivityStore()
@@ -139,55 +177,23 @@ const tokenStore = useTokenStore()
 const tokenCount = computed(() =>
   Number(tokenStore.tokenInfo?.lantern_token || 0),
 )
-const router = useRouter()
 
-// 任务排序
-const taskOrderMap = new Map(
-  [SERVER_ACC_TASK_LIST[0], PERSON_ACC_TASK_LIST[0]].map((task, index) => {
-    if (Array.isArray(task)) {
-      return [task[0].taskId, index]
-    } else {
-      return [task.taskId, index]
-    }
-  }),
-)
-const updateRewardToken = (index: number): ComputedRef => {
-  return computed(() => {
-    const activity = eventData.value[1]
-    const targetCount = activity.stages[index]
-    return Math.min(activity.value, targetCount)
-  })
-}
-
-// 获取任务状态
-const getTaskStatus = (activity: Event, index: number): TaskStatus => {
-  const { award, value, stages } = activity
-  if (award?.[index] === 1) return TaskStatus.REDEEMED
-  if (award?.[index] === 0 && value >= stages?.[index]) return TaskStatus.CAN
-  return TaskStatus.WAIT
-}
-
-const serverAccTaskList = computed(() => {
-  const activity = eventData.value[0]
-  return SERVER_ACC_TASK_LIST.map((item, index) => {
+// 任务列表
+const taskList = computed(() => {
+  return TASK_LIST.map((item, listIndex) => {
     return {
       ...item,
-      status: getTaskStatus(activity, index),
+      children: TASK_LIST[listIndex].children.map((task, taskIndex) => {
+        const index = listIndex * 4 + taskIndex
+        return {
+          ...task,
+          status: getTaskStatus(eventData.value[index], 0),
+        }
+      }),
     }
   })
 })
-
-const personAccTaskList = computed(() => {
-  const activity = eventData.value[1]
-  return PERSON_ACC_TASK_LIST.map((task, index) => {
-    return task.map((item) => {
-      return {
-        ...item,
-        status: getTaskStatus(activity, index),
-      }
-    })
-  })
-})
+console.log('任务列表数据: ', taskList)
 
 onMounted(() => {
   try {
@@ -197,28 +203,6 @@ onMounted(() => {
     console.error(error)
   }
 })
-
-/**
- * @function 是否已领奖
- * @param tasks 累计任务列表
- */
-function checkHasUnclaimedReward(tasks: Event[]): boolean {
-  // 使用some方法遍历任务列表，对每个任务的阶段进行检查
-  return tasks.some((task) => {
-    // 判断任务值是否达到或超过当前阶段要求，且奖励未领取
-    return task.stages.some(
-      (item, index) => task.value >= item && task.award[index] === 0,
-    )
-  })
-}
-
-/**
- * @function 设置红点
- */
-function setRedDot(): void {
-  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
-  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
-}
 
 /**
  * @function 获取任务进度
@@ -240,6 +224,17 @@ function getActivityData(): void {
           ),
         },
       }
+      // newActivityData.event_data.activitycenter_winter_2025_2[0].value = 1
+      // newActivityData.event_data.activitycenter_winter_2025_2[0].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[1].value = 1
+      // newActivityData.event_data.activitycenter_winter_2025_2[1].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[2].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[3].value = 3
+      // newActivityData.event_data.activitycenter_winter_2025_2[3].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[4].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[5].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[6].award = [1]
+      // newActivityData.event_data.activitycenter_winter_2025_2[7].value = 1
       // 更新缓存活动数据
       activityStore.updateActivityData(newActivityData)
       setRedDot()
@@ -252,10 +247,11 @@ function getActivityData(): void {
 /**
  * @function 领奖
  * @param rewardId 第几个奖励节点 不传默认1
- * @param item 任务项
+ * @param {TaskItem} item 任务项
+ * @param {number} [listId] 任务列表id
  * @returns {void}
  */
-function handleReward(rewardId: number, item: TaskItem): void {
+function handleReward(rewardId: number, item: TaskItem, listId?: number): void {
   const { taskId, status } = item
   if (status === TaskStatus.REDEEMED) {
     return
@@ -270,33 +266,150 @@ function handleReward(rewardId: number, item: TaskItem): void {
     rewardId,
   })
     .then(async (res) => {
-      curReward.value = res.data.rewards[0]
+      curReward.value = res.data.rewards.filter(
+        (reward: Reward) => !TASK_ID_list.includes(reward.name),
+      )[0]
       // 更新页面数据
       const taskIndex = eventData.value.findIndex(
         (item) => item.task_id === taskId,
       )
-      if (taskId === 'send_heart_wax_friend' && rewardId === 2) {
-        modalReward.value?.open()
-      } else {
-        showToast(
-          `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
-        )
-        tokenStore.tokenInfo.lantern_token =
-          tokenCount.value + Number(curReward.value.count)
+      if (!taskId.includes('extra')) {
+        await handleTokenFly(item.id, listId as number)
       }
-
+      showToast(
+        `领取成功，您获得了 ${REWARD_MAP[curReward.value.name as keyof typeof REWARD_MAP]}*${curReward.value.count}`,
+      )
+      const newTokenInfo = {
+        lantern_token: tokenCount.value + Number(curReward.value.count),
+      }
+      tokenStore.updateTokenInfo(newTokenInfo)
       eventData.value[taskIndex].award[rewardId - 1] = 1
 
-      // 更新红点
-      setRedDot()
+      // // 更新红点
+      // setRedDot()
     })
     .catch((error) => {
       showToast(error.message)
     })
 }
 
-// 规则弹框
-const modalHelp = ref<InstanceType<typeof ModalHelp> | null>(null)
+/**
+ * @function handleTokenFly
+ * @description 奖励飞入代币总数动画
+ * @param {number} taskId 任务id
+ * @param {number} listId 任务列表id
+ * @returns {Promise<void>}
+ */
+async function handleTokenFly(taskId: number, listId: number): Promise<void> {
+  try {
+    const token = document.querySelector(
+      `.token-${listId}-${taskId}`,
+    ) as HTMLElement
+    token.classList.remove('hidden')
+    const tokenRect = token.getBoundingClientRect()
+    const target = document.querySelector('.coin-icon') as HTMLElement
+    const targetRect = target.getBoundingClientRect()
+
+    await new Promise<void>((resolve) => {
+      gsap.to(token, {
+        duration: 0.7,
+        ease: 'power1.out',
+        opacity: 1,
+        startAt: { x: 0, y: 0, opacity: 1, scale: 1 },
+        motionPath: {
+          path: [
+            // x, y 为目标位置距离运动元素的偏移量
+            {
+              x: -(
+                tokenRect.left -
+                targetRect.left -
+                targetRect.width / 2 +
+                tokenRect.width / 2
+              ),
+              y: -(
+                tokenRect.top -
+                targetRect.top -
+                targetRect.height / 2 +
+                tokenRect.height / 2
+              ),
+              scale: 0.5,
+            },
+          ],
+          autoRotate: false,
+        },
+        onComplete: () => {
+          gsap.set(token, { opacity: 0 })
+          resolve() // 动画完成后调用resolve
+        },
+      })
+    })
+  } catch (error) {
+    console.log('error: ', error)
+  }
+}
+
+/**
+ * @function 是否已领奖
+ * @param tasks 累计任务列表
+ * @returns {boolean} 是否有未领取奖励
+ */
+function checkHasUnclaimedReward(tasks: Event[]): boolean {
+  return tasks.some(
+    (task) => task.value >= task.stages[0] && task.award[0] === 0,
+  )
+}
+
+/**
+ * @function 设置红点
+ */
+function setRedDot(): void {
+  const hasUnclaimedReward = checkHasUnclaimedReward(eventData.value)
+  menuStore.updateMenuDataByHasUnclaimedReward(EVENT_NAME, hasUnclaimedReward)
+}
+
+/**
+ * @function getTaskStatus
+ * @description 获取任务状态
+ * @param {Event} activity 活动数据
+ * @param {number} index 当前索引
+ * @returns {TaskStatus} 任务状态
+ */
+const getTaskStatus = (activity: Event, index: number): TaskStatus => {
+  const { award, value, stages } = activity
+  if (award?.[index] === 1) {
+    return TaskStatus.REDEEMED
+  } else if (award?.[index] === 0 && value >= stages?.[index]) {
+    return TaskStatus.CAN
+  }
+  return TaskStatus.WAIT
+}
+
+/**
+ * @function handleSrc
+ * @description 处理动态图片路径
+ * @param {string} name 图片名称
+ * @returns {string} 图片路径
+ */
+function handleSrc(name: string): string {
+  const imgSrc = new URL(
+    `../../assets/images/winter2025-2/${name}.jpg`,
+    import.meta.url,
+  ).href
+  return imgSrc
+}
+
+/**
+ * @function getListIsActive
+ * @description 获取列表拼图任务是否完成
+ * @param {number} index 任务列表索引
+ * @returns {boolean} 是否完成
+ */
+function getListIsActive(index: number): boolean {
+  return taskList.value[index]?.children
+    .slice(0, 3)
+    .every((task: TaskItem) => task.status === TaskStatus.REDEEMED)
+}
+
 /**
  * @function 显示帮助
  * @returns {void}
@@ -326,23 +439,29 @@ function handleHelp(): void {
   opacity: 0.2;
 }
 .page {
-  background-image: url('@/assets/images/winter2025-3/bg.jpg');
+  background-image: url('@/assets/images/winter2025-2/bg.jpg');
+  // 主体内容区
+  &-main {
+    width: 2560px;
+    height: 1200px;
+    transform: scale(var(--scale-factor));
+  }
 }
 .title {
   position: absolute;
-  left: 863px;
-  top: 86px;
-  width: 661px;
-  height: 154px;
-  background-image: url('@/assets/images/winter2025-3/title.png');
+  left: 1016px;
+  top: 25px;
+  width: 646px;
+  height: 186px;
+  background-image: url('@/assets/images/winter2025-2/title.png');
 }
 .help {
   position: absolute;
   width: 64px;
   height: 64px;
-  bottom: 12px;
-  right: -64px;
-  background-image: url('@/assets/images/winter2025-3/help.png');
+  bottom: 16px;
+  right: -70px;
+  background-image: url('@/assets/images/winter-main-2025/help.png');
 }
 .back {
   position: absolute;
@@ -371,124 +490,112 @@ function handleHelp(): void {
   background-repeat: no-repeat;
   background-image: url('@/assets/images/winter2025-4/coin.png');
 }
-.gift {
-  position: absolute;
-  right: 100px;
-  bottom: -30px;
-  width: 548px;
-  height: 544px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/winter2025-3/gift.png');
+.main-box {
+  left: 50%;
+  top: 180px;
+  transform: translateX(-50%);
+  width: calc(389px * 5 + 30px * 4);
+  height: 988px;
 }
-.npc1 {
-  position: absolute;
-  left: 340px;
-  bottom: 40px;
-  width: 524px;
-  height: 504px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/winter2025-3/npc1.png');
-}
-.npc2 {
-  position: absolute;
-  right: 720px;
-  bottom: 40px;
-  width: 324px;
-  height: 391px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-image: url('@/assets/images/winter2025-3/npc2.png');
-}
-.task-title {
-  position: absolute;
-  left: 638px;
-  top: 62px;
-  width: 525px;
-  height: 53px;
-  background-image: url('@/assets/images/winter2025-3/task-title.png');
-}
-.server-acc-task-item1 {
-  top: 24px;
-  left: 0px;
-}
-.server-acc-task-item2 {
-  top: 84px;
-  left: 310px;
-}
-.server-acc-task-item3 {
-  top: 204px;
-  left: 584px;
-}
-.server-acc-task-item4 {
-  top: 244px;
-  left: 904px;
-}
-.server-acc-task-item5 {
-  top: 100px;
-  right: 0;
-}
-.lantern {
-  width: 266px;
-  height: 352px;
-  background-size: contain;
-  background-position: center;
-  background-repeat: no-repeat;
-  &.wait {
-    background-image: url('@/assets/images/winter2025-3/lantern-wait.png');
+.task-list {
+  float: left;
+  margin-right: 30px;
+  width: 389px;
+  height: 988px;
+  background-image: url('@/assets/images/winter2025-2/box-bg.png');
+
+  &:nth-last-child(1) {
+    margin-right: 0;
   }
+
+  &.active {
+    background-image: url('@/assets/images/winter2025-2/box-bg-active.png');
+  }
+}
+.task-img {
+  border-radius: 24px;
+}
+.task-item {
+  // margin-top: 4px;
+  // box-sizing: content-box;
+  width: 346px;
+  height: calc(626px / 3);
+  border: 4px solid rgb(236, 205, 158);
+  // border-top: 4px solid rgb(236, 205, 158);
+  // border: 4px solid red;
+
+  &:nth-child(1) {
+    margin-top: 0;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    background-image: url('@/assets/images/winter2025-2/box-top.jpg');
+  }
+
+  &:nth-child(2) {
+    background-image: url('@/assets/images/winter2025-2/box-middle.jpg');
+  }
+
+  &:nth-child(3) {
+    border-bottom-left-radius: 24px;
+    border-bottom-right-radius: 24px;
+    background-image: url('@/assets/images/winter2025-2/box-bottom.jpg');
+  }
+
   &.can {
-    background-image: url('@/assets/images/winter2025-3/lantern-can.png');
-    animation: lanternGlow 2s infinite;
+    border-color: rgba(255, 237, 209, 1);
+    // border-color: #e07964;
+    animation: glow 1s infinite alternate;
   }
-  &.redeemed {
-    transition: background-image 0.5s ease;
-    background-image: url('@/assets/images/winter2025-3/lantern-redeemed.png');
-  }
-}
 
-@keyframes lanternGlow {
-  0%,
-  100% {
-    opacity: 1;
+  &-extra {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 346px;
+    height: calc(626px / 3);
+    background: linear-gradient(to bottom, transparent, #a06163);
   }
-  50% {
-    opacity: 0.6;
+}
+@keyframes glow {
+  from {
+    box-shadow: 0 0 5px rgba(255, 237, 209, 1);
+    // box-shadow: 0 0 5px #e07964;
+  }
+  to {
+    box-shadow: 0 0 50px rgba(255, 237, 209, 1);
+    // box-shadow: 0 0 30px #e07964;
   }
 }
-.acc-task-item {
-  border-bottom: 1px dashed #69636e;
+.task-icon {
+  width: 200px;
+  height: 200px;
 }
-.acc-task-icon {
-  width: 190px;
-  height: 199px;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-@for $i from 1 through 3 {
-  .acc-task-icon#{$i} {
+@for $i from 1 through 5 {
+  .task-icon#{$i} {
     &.can {
-      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-can.png');
-    }
-    &.wait {
-      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-wait.png');
-    }
-
-    &.redeemed {
-      background-image: url('@/assets/images/winter2025-3/acc-task#{$i}-redeemed.png');
+      background-image: url('@/assets/images/winter2025-2/task#{$i}.png');
     }
   }
 }
 
-.acc-task-icon1.can {
-  background-size: 67px 99px;
+.task-icon1.can {
+  background-size: 93px 100px;
 }
-.acc-task-icon2.can {
-  background-size: 62px 85px;
+.task-icon2.can {
+  background-size: 79px 112px;
 }
-.acc-task-icon3.can {
-  background-size: 59px 91px;
+.task-icon3.can {
+  background-size: 74px 109px;
+}
+.task-icon4.can {
+  background-size: 48px 114px;
+}
+.task-icon5.can {
+  background-size: 65px 97px;
+}
+.token {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
