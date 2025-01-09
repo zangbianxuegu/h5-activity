@@ -1,6 +1,6 @@
 <template>
   <Transition appear :name="bodyTransitionName" mode="out-in">
-    <div class="page relative h-screen w-screen bg-cover bg-center">
+    <div class="page relative z-20 h-screen w-screen bg-cover bg-center">
       <div
         :class="[
           'page-main h-full w-full',
@@ -189,7 +189,7 @@
             >
               <div class="riddle-title" aria-label="今日灯谜"></div>
               <div
-                class="animate__animated animate__fadeIn mb-[10px] mt-[30px] h-[290px] text-[34px] text-[#cc7b3a]"
+                class="animate__animated animate__fadeIn mb-[10px] mt-[30px] flex h-[290px] text-[34px] text-[#cc7b3a]"
               >
                 <span class="riddle">{{ todayRiddle[0] }}</span>
                 <span class="riddle">{{ todayRiddle[1] }}</span>
@@ -526,6 +526,7 @@ function guessRiddle(): void {
           answer.value = ''
           tokenStore.tokenInfo.lantern_token = tokenCount.value + 10
           activityData.value.event_data[EVENT_NAME][0].award[0] = 1
+          activityData.value.event_data[EVENT_NAME][1].value += 1
           showToast('答案正确，您获得了花灯代币*10')
           // 更新红点
           setRedDot()
@@ -554,6 +555,7 @@ async function handleTokenFly(): Promise<void> {
     position: 'absolute',
     top: tokenRect.top,
     left: tokenRect.left,
+    zIndex: 30,
   })
   const target = document.querySelector('.coin-icon') as HTMLElement
   const targetRect = target.getBoundingClientRect()
@@ -652,7 +654,7 @@ const handleResize = throttle(() => {
   position: absolute;
   width: 83px;
   height: 83px;
-  top: 18px;
+  top: 24px;
   right: -60px;
   background-image: url('@/assets/images/winter2025-4/help.png');
 }

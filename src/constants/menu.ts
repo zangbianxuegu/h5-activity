@@ -416,6 +416,20 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '绘梦节',
+    value: 'activitycenter_dayofdesign01_postfinish_rest',
+    routeName: 'Dayofdesign01PostfinishRest',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
+    label: '绘梦节',
+    value: 'activitycenter_dayofdesign01_vote1_main',
+    routeName: 'Dayofdesign01Vote1Main',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '小光快报',
     value: 'activity_center_notice',
     routeName: 'Bulletin',
@@ -493,6 +507,13 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
+    label: '取票站',
+    value: 'activitycenter_dayofdesign01_vote1_mission',
+    routeName: 'Dayofdesign01Vote1Mission',
+    isNew: false,
+    hasUnclaimedReward: false,
+  },
+  {
     label: '灵蛇献瑞 喜迎春来',
     value: 'activitycenter_winter_main_2025',
     routeName: 'Winter2025Main',
@@ -530,7 +551,7 @@ export const MENU_ITEMS: MenuItem[] = [
     hasUnclaimedReward: false,
   },
   {
-    label: 'iframe 外部链接-情人节活动',
+    label: '温暖传递 怦然心熠',
     value: 'activitycenter_daysoflove_2025',
     routeName: 'Daysoflove2025',
     isNew: false,

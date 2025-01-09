@@ -1,3 +1,7 @@
+import { useEnvironment } from '@/composables/useEnvironment'
+
+const { isGameDev, isGame, isProd } = useEnvironment()
+
 /**
  * @description ngshare分享的渠道枚举
  * @param Weibo 微博
@@ -8,7 +12,6 @@
  * @param Facebook Facebook
  * @param DaShen 网易大神
  */
-
 export enum AndroidInstalledPackage {
   Weibo = 'com.sina.weibo',
   Wechat = 'com.tencent.mm',
@@ -348,3 +351,31 @@ export const sharePlatformCodeOrder = [
   'dashen',
   'xiaohongshu',
 ]
+
+/**
+ * @description 获取h5分享页面的url公共部署地址前缀（根据部署地址匹配，固定配置）
+ * @returns urlPreix
+ */
+export const getShareH5PageUrlPrefix = (): string => {
+  // 正式环境
+  if (isProd) {
+    return 'https://sky.h5.163.com/h5/'
+  } else if (isGameDev) {
+    // 测试
+    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/'
+  } else if (isGame) {
+    // 预发布
+    return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5/'
+  }
+  // 本地开发，默认测试地址
+  return 'https://listsvr.x.netease.com:6678/h5_pl/ma75/sky.h5.163.com/h5_dev/'
+}
+/**
+ * @description 获取h5分享页面的完整url
+ * @param {string} h5Page h5分享页面，比如dayofdesign01.html
+ * @param {string} query query参数
+ * @returns url
+ */
+export const getShareH5PageUrl = (h5Page: string, query: string): string => {
+  return `${getShareH5PageUrlPrefix()}${h5Page}?${query}`
+}

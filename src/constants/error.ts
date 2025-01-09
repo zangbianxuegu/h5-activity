@@ -365,6 +365,7 @@ export const ERROR_MESSAGES: ErrorMessages = {
   guess_riddle: {
     400: {
       'wrong answer': '没有猜对，再接再厉',
+      'illegal answer': '输入的内容无法使用，请重新输入',
     },
   },
 }

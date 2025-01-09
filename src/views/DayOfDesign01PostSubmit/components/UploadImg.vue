@@ -263,6 +263,13 @@ const listenUploadImgChange = (): void => {
       const minSizeLimit = props.minSize || 100 * 1024 // 100kb
 
       if (file) {
+        // 检查文件类型
+        if (!allowedTypes.includes(file.type)) {
+          showToast('上传失败，只能上传png和jpg')
+          formRef.value.reset()
+          return
+        }
+
         // 获取图片文件的数据
         async function getImgFileData(): Promise<GetImgFileData> {
           return await new Promise((resolve, reject) => {
@@ -303,7 +310,6 @@ const listenUploadImgChange = (): void => {
             width,
             height,
             size,
-            type,
           } = await getImgFileData()
 
           // 裁剪与不裁剪的公共检测处理
@@ -322,12 +328,6 @@ const listenUploadImgChange = (): void => {
           }
 
           if (props.cropper) {
-            // 检查文件类型
-            if (!allowedTypes.includes(type)) {
-              showToast('上传失败，只能上传png和jpg')
-              formRef.value.reset()
-              return
-            }
             if (!commonCheck()) {
               formRef.value.reset()
               return
@@ -350,13 +350,6 @@ const listenUploadImgChange = (): void => {
               showCropperModal()
             }
           } else {
-            // 检查文件类型
-            if (!allowedTypes.includes(type)) {
-              showToast('上传失败，只能上传png和jpg')
-              formRef.value.reset()
-              return
-            }
-
             if (width !== 1200 || height !== 900) {
               showToast('上传失败，请按活动规则使用指定尺寸的模板进行创作')
               formRef.value.reset()

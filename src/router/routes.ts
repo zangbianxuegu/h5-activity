@@ -622,6 +622,33 @@ export const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: '/dayofdesign01-postfinish-rest',
+    name: 'Dayofdesign01PostfinishRest',
+    component: () => import('@/views/Dayofdesign01PostfinishRest'),
+    meta: {
+      title: '绘梦节 中场休息',
+      module: 'activitycenter_dayofdesign01_postfinish_rest',
+    },
+  },
+  {
+    path: '/dayofdesign01-vote1-mission',
+    name: 'Dayofdesign01Vote1Mission',
+    component: () => import('@/views/Dayofdesign01Vote1Mission'),
+    meta: {
+      title: '取票站',
+      module: 'activitycenter_dayofdesign01_vote1_mission',
+    },
+  },
+  {
+    path: '/dayofdesign01-vote1-main',
+    name: 'Dayofdesign01Vote1Main',
+    component: () => import('@/views/Dayofdesign01Vote1Main'),
+    meta: {
+      title: '绘梦节 选款期',
+      module: 'activitycenter_dayofdesign01_vote1_main',
+    },
+  },
+  {
     path: '/external-season25-start',
     name: 'Season25Start',
     component: () => import('@/views/IframeView'),
@@ -636,7 +663,7 @@ export const routes: RouteRecordRaw[] = [
     name: 'Daysoflove2025',
     component: () => import('@/views/IframeView'),
     meta: {
-      title: '情人节活动',
+      title: '温暖传递 怦然心熠',
       module: 'activitycenter_daysoflove_2025',
       externalUid: 'Gtbv2O',
     },

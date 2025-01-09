@@ -36,6 +36,9 @@ export const DAYOFDESIGN01_LIST = [
   'activitycenter_dayofdesign01_post_main',
   'activitycenter_dayofdesign01_post_exhibit',
   'activitycenter_dayofdesign01_post_submit',
+  'activitycenter_dayofdesign01_postfinish_rest',
+  'activitycenter_dayofdesign01_vote1_mission',
+  'activitycenter_dayofdesign01_vote1_main',
 ]
 
 // 2025 寒假活动

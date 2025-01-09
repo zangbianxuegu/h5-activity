@@ -25,8 +25,9 @@ export interface TaskItem {
   status: TaskStatus
   canRewardLottieRef?: Ref<Array<InstanceType<typeof CanRewardBubbleAnimation>>>
   hadRenderLottie?: Ref<boolean>
+  animationDelay?: number
 }
-// 全服赠送心火列表
+// 好友赠送心火列表
 export function createPersonAccTaskList(): TaskItem[][] {
   return [
     [
@@ -65,7 +66,8 @@ export function createPersonAccTaskList(): TaskItem[][] {
     ],
   ]
 }
-// 好友赠送心火列表
+
+// 全服赠送心火列表
 export function createServerAccTaskList(): TaskItem[] {
   return [
     {
@@ -73,30 +75,35 @@ export function createServerAccTaskList(): TaskItem[] {
       taskId: 'send_heart_wax_friend_server',
       title: '1000万次',
       status: TaskStatus.WAIT,
+      animationDelay: 0,
     },
     {
       id: 2,
       taskId: 'send_heart_wax_friend_server',
       title: '2000万次',
       status: TaskStatus.WAIT,
+      animationDelay: 0.2,
     },
     {
       id: 3,
       taskId: 'send_heart_wax_friend_server',
       title: '3000万次',
       status: TaskStatus.WAIT,
+      animationDelay: 0.8,
     },
     {
       id: 4,
       taskId: 'send_heart_wax_friend_server',
       title: '4000万次',
       status: TaskStatus.WAIT,
+      animationDelay: 0.2,
     },
     {
       id: 5,
       taskId: 'send_heart_wax_friend_server',
       title: '5000万次',
       status: TaskStatus.WAIT,
+      animationDelay: 0.6,
     },
   ]
 }
