@@ -581,6 +581,47 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
+    path: '/winter-2025-main',
+    children: [
+      {
+        path: '',
+        name: 'Winter2025Main',
+        component: () => import('@/views/WinterMain2025'),
+        meta: {
+          title: '灵蛇献瑞 喜迎春来',
+          module: 'activitycenter_winter_main_2025',
+        },
+      },
+      {
+        path: '/winter-2025-2',
+        name: 'Winter2025_2',
+        component: () => import('@/views/Winter2025_2'),
+        meta: {
+          title: '舞蛇贺岁',
+          module: 'activitycenter_winter_2025_2',
+        },
+      },
+      {
+        path: '/winter-2025-3',
+        name: 'Winter2025_3',
+        component: () => import('@/views/Winter2025_3'),
+        meta: {
+          title: '相遇寄福',
+          module: 'activitycenter_winter_2025_3',
+        },
+      },
+      {
+        path: '/winter-2025-4',
+        name: 'Winter2025_4',
+        component: () => import('@/views/Winter2025_4'),
+        meta: {
+          title: '花灯雅集',
+          module: 'activitycenter_winter_2025_4',
+        },
+      },
+    ],
+  },
+  {
     path: '/dayofdesign01-postfinish-rest',
     name: 'Dayofdesign01PostfinishRest',
     component: () => import('@/views/Dayofdesign01PostfinishRest'),
@@ -605,33 +646,6 @@ export const routes: RouteRecordRaw[] = [
     meta: {
       title: '绘梦节 选款期',
       module: 'activitycenter_dayofdesign01_vote1_main',
-    },
-  },
-  {
-    path: '/winter-main-2025',
-    name: 'WinterMain2025',
-    component: () => import('@/views/WinterMain2025'),
-    meta: {
-      title: '灵蛇献瑞 喜迎春来',
-      module: 'activitycenter_winter_main_2025',
-    },
-  },
-  {
-    path: '/winter-2025-3',
-    name: 'Winter2025_3',
-    component: () => import('@/views/Winter2025_3'),
-    meta: {
-      title: '相遇寄福',
-      module: 'activitycenter_winter_2025_3',
-    },
-  },
-  {
-    path: '/winter-2025-4',
-    name: 'Winter2025_4',
-    component: () => import('@/views/Winter2025_4'),
-    meta: {
-      title: '花灯雅集',
-      module: 'activitycenter_winter_2025_4',
     },
   },
   {

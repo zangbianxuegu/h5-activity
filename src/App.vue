@@ -255,9 +255,20 @@ function generateMenuData(
     (activeMenu, menuItem) => {
       const event = activeEventsMap.get(menuItem.value)
       const updatedMenuItem = { ...menuItem }
+      // TODO: 待优化
+      // 接口未返回 return_buff 菜单信息，为 else if 判断
       if (event) {
         updatedMenuItem.isNew = event.isNew
         updatedMenuItem.hasUnclaimedReward = event.hasUnclaimedReward
+        if (menuItem.children && menuItem.children.length > 0) {
+          const activeChildren = generateMenuData(
+            menuItem.children,
+            activeEvents,
+          )
+          if (activeChildren.length) {
+            updatedMenuItem.children = activeChildren
+          }
+        }
         activeMenu.push(updatedMenuItem)
       } else if (menuItem.children && menuItem.children.length > 0) {
         const activeChildren = generateMenuData(menuItem.children, activeEvents)

@@ -41,6 +41,16 @@ export const DAYOFDESIGN01_LIST = [
   'activitycenter_dayofdesign01_vote1_main',
 ]
 
+// 2025 寒假活动
+export const WINTER_2025_LIST = [
+  'activitycenter_winter_main_2025',
+  'activitycenter_winter_2025_1',
+  'activitycenter_winter_2025_2',
+  'activitycenter_winter_2025_3',
+  'activitycenter_winter_2025_4',
+  'activitycenter_winter_2025_5',
+]
+
 // 菜单中字体颜色显示蓝色的活动
 export const MAIN_ACTIVITY_LIST = [
   'activity_sanrio_2024',
@@ -112,7 +122,5 @@ export const ACTIVITY_LIST = [
   'activitycenter_moomin_test_god',
   'activitycenter_invitation_code',
   ...DAYOFDESIGN01_LIST,
-  'activitycenter_winter_main_2025',
-  'activitycenter_winter_2025_3',
-  'activitycenter_winter_2025_4',
+  ...WINTER_2025_LIST,
 ]

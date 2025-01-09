@@ -8,10 +8,7 @@
         'hover:cursor-pointer',
         `nav-item--${item.value.includes('activitycenter') ? item.value.substring(15) : item.value}`,
         {
-          'nav-item-main': isMainNavItem(item),
           'nav-item--active': isMenuItemActive(item),
-          'nav-item-main--active':
-            isMenuItemActive(item) && isMainNavItem(item),
           'nav-item--new': item.isNew && !item.hasUnclaimedReward,
           'nav-item--reward': item.hasUnclaimedReward,
         },
@@ -36,11 +33,7 @@
 <script setup lang="ts">
 import { useRouter, useRoute } from 'vue-router'
 import { type MenuItem } from '@/types'
-import {
-  FRIENDSHIP_WEEK_2024_LIST,
-  MAIN_ACTIVITY_LIST,
-  RETURN_BUFF_LIST,
-} from '@/constants'
+import { FRIENDSHIP_WEEK_2024_LIST, RETURN_BUFF_LIST } from '@/constants'
 import { useMenuStore } from '@/stores/menu'
 
 const router = useRouter()
@@ -79,10 +72,6 @@ function isMenuItemActive(item: MenuItem): boolean {
     )
   }
   return false
-}
-
-function isMainNavItem(item: MenuItem): boolean {
-  return MAIN_ACTIVITY_LIST.includes(item.value)
 }
 
 // 菜单点击事件
