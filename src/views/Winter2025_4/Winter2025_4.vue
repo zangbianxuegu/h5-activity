@@ -189,7 +189,7 @@
             >
               <div class="riddle-title" aria-label="今日灯谜"></div>
               <div
-                class="animate__animated animate__fadeIn mb-[10px] mt-[30px] h-[290px] text-[34px] text-[#cc7b3a]"
+                class="animate__animated animate__fadeIn mb-[10px] mt-[30px] flex h-[290px] text-[34px] text-[#cc7b3a]"
               >
                 <span class="riddle">{{ todayRiddle[0] }}</span>
                 <span class="riddle">{{ todayRiddle[1] }}</span>
@@ -555,7 +555,7 @@ async function handleTokenFly(): Promise<void> {
     position: 'absolute',
     top: tokenRect.top,
     left: tokenRect.left,
-    zIndex:30
+    zIndex: 30,
   })
   const target = document.querySelector('.coin-icon') as HTMLElement
   const targetRect = target.getBoundingClientRect()
